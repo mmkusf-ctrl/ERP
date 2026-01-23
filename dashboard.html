@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <title>Dashboard | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="erp.css">
 </head>
 
@@ -20,7 +21,7 @@
       </button>
 
       <nav class="nav" aria-label="ERP Navigation">
-        <a href="dashboard.html" class="active">Home</a>
+        <a class="active" href="dashboard.html">Home</a>
         <a href="account.html">Account</a>
         <a href="crm.html">CRM</a>
         <a href="inventory.html">Inventory</a>
@@ -55,46 +56,138 @@
   </div>
 
   <main class="wrap">
-    <div class="hero">
-      <h1 class="h-title">Welcome to Stark Premium ERP</h1>
-      <p class="h-sub">Premium operational overview. Tasks are stored locally for now (Firebase later). Use assignments (A/B/C/D) to share tasks conceptually.</p>
-      <div class="toast-wrap" id="toastWrap"></div>
-    </div>
+    <section class="hero">
+      <div class="hrow">
+        <div>
+          <h1>Welcome to Stark Premium ERP</h1>
+          <p>Premium operations overview: tasks, vendor POs, order validation, and execution cadence — optimized for speed and clarity.</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn secondary" onclick="loadDemoTasks()">Load Demo Tasks</button>
+          <button class="btn" onclick="openTaskModal()">Add Task</button>
+        </div>
+      </div>
+    </section>
 
     <section class="kpis">
-      <div class="card">
-        <div class="card-top"><div class="label">My Pending Tasks</div><div class="chip warn">Local</div></div>
-        <div class="value" id="kTasks">0</div>
-        <div class="sub">Tasks assigned to selected user</div>
+      <div class="card kpi">
+        <div class="kpiTop">
+          <div class="label">My pending tasks</div>
+          <div class="chip warn">Review</div>
+        </div>
+        <div class="value" id="kpiTasks">0</div>
+        <div class="sub" id="kpiTasksSub">—</div>
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Open Vendor POs</div><div class="chip warn">In progress</div></div>
-        <div class="value" id="kPO">18</div>
-        <div class="sub">7 awaiting confirmation, 3 delayed</div>
+      <div class="card kpi">
+        <div class="kpiTop">
+          <div class="label">Open vendor POs</div>
+          <div class="chip warn">In progress</div>
+        </div>
+        <div class="value" id="kpiOpenPO">18</div>
+        <div class="sub">Awaiting confirmation / approvals</div>
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Validated Orders</div><div class="chip good">Healthy</div></div>
-        <div class="value" id="kVal">124</div>
+      <div class="card kpi">
+        <div class="kpiTop">
+          <div class="label">Validated orders</div>
+          <div class="chip good">Healthy</div>
+        </div>
+        <div class="value" id="kpiValid">124</div>
         <div class="sub">Ready for picking & dispatch</div>
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Non-validated Orders</div><div class="chip bad">Attention</div></div>
-        <div class="value" id="kNon">9</div>
+      <div class="card kpi">
+        <div class="kpiTop">
+          <div class="label">Non-validated orders</div>
+          <div class="chip bad">Attention</div>
+        </div>
+        <div class="value" id="kpiNonValid">9</div>
         <div class="sub">Missing payment / address / stock</div>
       </div>
     </section>
 
     <div class="grid2">
-      <section class="section">
+      <section class="panel">
         <h2>Task Manager</h2>
         <div class="goldline"></div>
 
         <div class="controls">
-          <input id="tTitle" class="input" placeholder="Task (e.g., Review Vendor PO-1042)" />
-          <input id="tDue" class="input" type="datetime-local" />
+          <input class="input" id="search" placeholder="Search task / assignees..." oninput="render()" />
+          <select id="cat" onchange="render()">
+            <option value="">All categories</option>
+            <option>Purchasing</option>
+            <option>Inventory</option>
+            <option>Orders</option>
+            <option>Logistics</option>
+          </select>
+          <select id="priority" onchange="render()">
+            <option value="">All priority</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+          <select id="due" onchange="render()">
+            <option value="">All due dates</option>
+            <option value="today">Due today</option>
+            <option value="overdue">Overdue</option>
+            <option value="upcoming">Upcoming</option>
+          </select>
+        </div>
+
+        <div class="table-wrap" style="margin-top:12px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Due</th>
+                <th>Assignees (A/B/C/D)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="note" style="margin-top:12px;">
+          Notes: This version stores tasks in <strong>localStorage</strong> (single device). Multi-user shared tasks requires Firebase/DB later.
+        </div>
+      </section>
+
+      <aside class="panel">
+        <h2>Quick Actions</h2>
+        <div class="goldline"></div>
+
+        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='inventory.html'">
+          Review low stock items
+        </button>
+        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='orders.html'">
+          Validate pending orders
+        </button>
+        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='logistics.html'">
+          Track shipments
+        </button>
+        <button class="btn" style="width:100%;" onclick="openTaskModal()">
+          Add Task
+        </button>
+      </aside>
+    </div>
+
+    <div class="footer">© 2026 Stark Premium. All rights reserved.</div>
+  </main>
+
+  <div class="modal" id="taskModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Add Task</h3>
+        <button class="x" onclick="closeTaskModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid">
+          <input id="tTitle" class="input" placeholder="Task title (required)" />
           <select id="tCat">
             <option>Purchasing</option>
             <option>Inventory</option>
@@ -106,174 +199,195 @@
             <option selected>Medium</option>
             <option>Low</option>
           </select>
+
+          <input id="tDue" class="input" type="date" />
+          <input id="tTime" class="input" type="time" />
+          <input id="tAssign" class="input" placeholder="Assignees (A,B,C,D). Example: A,B" />
         </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 220px; gap:10px; margin-top:10px;">
-          <input id="tAssign" class="input" placeholder="Assign to (A,B,C,D). Example: A,B" />
-          <button class="btn" onclick="addTask()">Add Task</button>
+      </div>
+      <div class="modal-footer">
+        <span class="note">Reminders: stored locally. For real reminders to other users, use Firebase later.</span>
+        <div style="display:flex; gap:10px;">
+          <button class="btn secondary" onclick="closeTaskModal()">Cancel</button>
+          <button class="btn" onclick="addTask()">Save Task</button>
         </div>
-
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:10px;">
-          <label style="display:flex;align-items:center;gap:8px;color:#667085;font-size:12px;">
-            <input type="checkbox" id="dueTodayOnly" onchange="renderTasks()">
-            Due today only
-          </label>
-
-          <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-            <select id="userSel" class="input" style="width:160px; padding:10px 10px;" onchange="renderTasks()">
-              <option>User A</option>
-              <option>User B</option>
-              <option>User C</option>
-              <option>User D</option>
-            </select>
-            <button class="btn secondary" onclick="clearDone()">Clear completed</button>
-          </div>
-        </div>
-
-        <div style="margin-top:14px;" class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Category</th>
-                <th>Priority</th>
-                <th>Assigned</th>
-                <th>Due</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="taskBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside class="section">
-        <h2>Quick Actions</h2>
-        <div class="goldline"></div>
-
-        <button class="btn secondary" style="width:100%;margin-bottom:10px;" onclick="window.location.href='orders.html'">Review non-validated orders</button>
-        <button class="btn secondary" style="width:100%;margin-bottom:10px;" onclick="window.location.href='inventory.html'">Check low stock items</button>
-        <button class="btn secondary" style="width:100%;margin-bottom:10px;" onclick="window.location.href='logistics.html'">Track pending shipments</button>
-        <button class="btn secondary" style="width:100%;" onclick="window.location.href='inventory.html#po'">Manage vendors & approvals</button>
-
-        <div style="margin-top:14px;color:#667085;font-size:12px;line-height:1.5;">
-          Reminders are local (browser). For multi-user shared tasks you will use Firebase later.
-        </div>
-      </aside>
+      </div>
     </div>
-  </main>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
 
   <script src="erp.js"></script>
   <script>
-    requireAuth();
-    setActiveNav("dashboard.html");
-
+    const AUTH_KEY = "stark_erp_auth_v1";
     const TASK_KEY = "stark_erp_tasks_v2";
 
-    function loadTasks(){
-      try { return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); }
-      catch { return []; }
+    function requireAuth(){
+      try{
+        const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+        if (!auth || !auth.user) window.location.href = "index.html";
+      }catch{ window.location.href = "index.html"; }
     }
-    function saveTasks(t){ localStorage.setItem(TASK_KEY, JSON.stringify(t)); }
+    requireAuth();
 
-    function uid(){ return "T-" + Math.random().toString(16).slice(2,8).toUpperCase(); }
+    function logout(){
+      localStorage.removeItem(AUTH_KEY);
+      window.location.href = "index.html";
+    }
+
+    function loadTasks(){
+      try{ return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); }catch{ return []; }
+    }
+    function saveTasks(list){ localStorage.setItem(TASK_KEY, JSON.stringify(list)); }
+
+    function uid(){
+      return "T-" + Math.random().toString(16).slice(2,8).toUpperCase() + "-" + Date.now().toString(16).slice(-4).toUpperCase();
+    }
+
+    function openTaskModal(){
+      document.getElementById("tTitle").value = "";
+      document.getElementById("tAssign").value = "A";
+      document.getElementById("tDue").value = "";
+      document.getElementById("tTime").value = "";
+      document.getElementById("taskModal").classList.add("open");
+    }
+    function closeTaskModal(){ document.getElementById("taskModal").classList.remove("open"); }
 
     function addTask(){
-      const title = (document.getElementById("tTitle").value||"").trim();
-      const due = (document.getElementById("tDue").value||"").trim();
+      const title = (document.getElementById("tTitle").value || "").trim();
       const cat = document.getElementById("tCat").value;
       const pri = document.getElementById("tPri").value;
-      const assign = (document.getElementById("tAssign").value||"").trim();
+      const due = document.getElementById("tDue").value; // yyyy-mm-dd
+      const time = document.getElementById("tTime").value; // hh:mm
+      const assignRaw = (document.getElementById("tAssign").value || "").toUpperCase();
+      const assignees = assignRaw.split(",").map(s=>s.trim()).filter(Boolean);
 
-      if(!title) return toast("Missing task", "Please enter a task title.");
+      if (!title) return toast("Missing field", "Task title is required.");
 
       const list = loadTasks();
       list.unshift({
         id: uid(),
         title, cat, pri,
-        assigned: assign || "A",
         due: due || "",
-        done: false,
+        time: time || "",
+        assignees,
+        status: "Open",
         createdAt: Date.now()
       });
       saveTasks(list);
-
-      document.getElementById("tTitle").value="";
-      document.getElementById("tAssign").value="";
-      toast("Task added", "Task saved to your browser.");
-      renderTasks();
+      closeTaskModal();
+      toast("Task added", "Task saved to your dashboard.");
+      render();
     }
 
     function toggleDone(id){
       const list = loadTasks();
-      const t = list.find(x => x.id === id);
-      if(!t) return;
-      t.done = !t.done;
+      const t = list.find(x=>x.id===id);
+      if (!t) return;
+      t.status = (t.status === "Completed") ? "Open" : "Completed";
       saveTasks(list);
-      renderTasks();
+      render();
     }
 
-    function clearDone(){
-      const list = loadTasks().filter(x => !x.done);
+    function removeTask(id){
+      const list = loadTasks().filter(x=>x.id!==id);
       saveTasks(list);
-      toast("Cleared", "Completed tasks removed.");
-      renderTasks();
+      render();
     }
 
-    function isDueToday(isoLocal){
-      if(!isoLocal) return false;
-      const d = new Date(isoLocal);
-      if (isNaN(d.getTime())) return false;
+    function loadDemoTasks(){
+      const list = loadTasks();
+      if (list.length && !confirm("This will add demo tasks. Continue?")) return;
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,"0");
+      const dd = String(today.getDate()).padStart(2,"0");
+      const d0 = `${yyyy}-${mm}-${dd}`;
+
+      const demo = [
+        { title:"Approve PO #PO-1042 (Vendor: Delta Supplies)", cat:"Purchasing", pri:"High", due:d0, time:"14:00", assignees:["A","B"], status:"Open" },
+        { title:"Validate Order #SO-8891 (payment pending)", cat:"Orders", pri:"High", due:d0, time:"16:00", assignees:["A","C"], status:"Open" },
+        { title:"Follow up on delayed shipment (Carrier: Xpress)", cat:"Logistics", pri:"Medium", due:"", time:"", assignees:["B","D"], status:"Open" },
+        { title:"Cycle count: Warehouse A (Zone 3)", cat:"Inventory", pri:"Low", due:"", time:"", assignees:["A"], status:"Open" }
+      ];
+
+      const merged = demo.map(x=>({ id: uid(), createdAt: Date.now(), ...x })).concat(list);
+      saveTasks(merged);
+      toast("Demo loaded", "Demo tasks added.");
+      render();
+    }
+
+    function dueBucket(due){
+      if (!due) return "upcoming";
+      const d = new Date(due + "T00:00:00");
       const now = new Date();
-      return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      if (d.getTime() === today.getTime()) return "today";
+      if (d.getTime() < today.getTime()) return "overdue";
+      return "upcoming";
     }
 
-    function renderTasks(){
-      const tbody = document.getElementById("taskBody");
-      tbody.innerHTML = "";
+    function render(){
+      const search = (document.getElementById("search").value || "").toLowerCase();
+      const cat = document.getElementById("cat").value;
+      const pri = document.getElementById("priority").value;
+      const due = document.getElementById("due").value;
 
-      const user = document.getElementById("userSel").value.replace("User ","").trim(); // A/B/C/D
-      const dueTodayOnly = document.getElementById("dueTodayOnly").checked;
+      const list = loadTasks();
 
-      const list = loadTasks().filter(t => {
-        const assigned = (t.assigned||"").toUpperCase();
-        const matchUser = assigned.split(",").map(s=>s.trim()).filter(Boolean).includes(user);
-        if(!matchUser) return false;
-        if(dueTodayOnly) return isDueToday(t.due);
+      const filtered = list.filter(t=>{
+        if (cat && t.cat !== cat) return false;
+        if (pri && t.pri !== pri) return false;
+        if (due && dueBucket(t.due) !== due) return false;
+
+        if (search){
+          const blob = `${t.title} ${t.cat} ${t.pri} ${(t.assignees||[]).join(",")}`.toLowerCase();
+          if (!blob.includes(search)) return false;
+        }
         return true;
       });
 
-      document.getElementById("kTasks").textContent = String(list.filter(x=>!x.done).length);
+      // KPI
+      const pending = list.filter(t=>t.status!=="Completed").length;
+      const dueToday = list.filter(t=>t.status!=="Completed" && dueBucket(t.due)==="today").length;
+      const high = list.filter(t=>t.status!=="Completed" && t.pri==="High").length;
 
-      if(list.length === 0){
-        tbody.innerHTML = `<tr><td colspan="6" style="color:#667085;">No tasks found for User ${user}.</td></tr>`;
+      document.getElementById("kpiTasks").textContent = String(pending);
+      document.getElementById("kpiTasksSub").textContent =
+        `${high} high priority · ${dueToday} due today`;
+
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = "";
+
+      if (!filtered.length){
+        tbody.innerHTML = `<tr><td colspan="7" class="note">No tasks match your filters.</td></tr>`;
         return;
       }
 
-      for(const t of list){
+      for (const t of filtered){
         const priTag = t.pri==="High" ? "bad" : (t.pri==="Medium" ? "warn" : "good");
-        const status = t.done ? `<span class="pilltag good">Completed</span>` : `<span class="pilltag warn">Open</span>`;
-        const dueText = t.due ? new Date(t.due).toLocaleString() : "—";
+        const dueText = t.due ? t.due : "—";
+        const statusTag = t.status==="Completed" ? `<span class="pilltag good">Completed</span>` : `<span class="pilltag warn">Open</span>`;
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><strong>${escapeHtml(t.title)}</strong></td>
+          <td><strong>${escapeHtml(t.title)}</strong><div class="note">Created: ${new Date(t.createdAt).toLocaleString()}</div></td>
           <td>${escapeHtml(t.cat)}</td>
           <td><span class="pilltag ${priTag}">${escapeHtml(t.pri)}</span></td>
-          <td>${escapeHtml(t.assigned)}</td>
-          <td>${escapeHtml(dueText)}</td>
+          <td>${escapeHtml(dueText)} ${t.time ? `<span class="pilltag" style="margin-left:6px;">${escapeHtml(t.time)}</span>` : ""}</td>
+          <td>${escapeHtml((t.assignees||[]).join(", ") || "—")}</td>
+          <td>${statusTag}</td>
           <td>
-            ${status}
-            <button class="btn secondary" style="height:32px;margin-left:10px;" onclick="toggleDone('${t.id}')">
-              ${t.done ? "Reopen" : "Done"}
-            </button>
+            <button class="btn secondary" onclick="toggleDone('${t.id}')">${t.status==="Completed" ? "Reopen" : "Complete"}</button>
+            <button class="btn secondary" onclick="removeTask('${t.id}')" style="margin-left:8px;">Delete</button>
           </td>
         `;
         tbody.appendChild(tr);
       }
     }
 
-    renderTasks();
+    render();
   </script>
 </body>
 </html>
