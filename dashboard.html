@@ -16,12 +16,13 @@
       --text:#0b1220;
       --muted:#667085;
       --border:rgba(11,18,32,0.10);
+      --shadow: 0 18px 50px rgba(2,6,23,0.10);
       --shadow2: 0 10px 24px rgba(2,6,23,0.08);
       --radius:18px;
 
       --primary:#0f3d9e;
       --primary2:#1f56d8;
-      --accent:#c9b37e; /* luxury gold */
+      --accent:#c9b37e;
 
       --good:#0f766e;
       --warn:#b45309;
@@ -44,7 +45,7 @@
         linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
     }
 
-    /* Premium top bar */
+    /* Topbar */
     .topbar{
       position: sticky;
       top: 0;
@@ -59,7 +60,7 @@
       margin: 0 auto;
       padding: 14px 18px;
       display: grid;
-      grid-template-columns: 150px 1fr 180px;
+      grid-template-columns: 150px 1fr 300px;
       align-items: center;
       gap: 14px;
     }
@@ -70,24 +71,22 @@
       display:block;
     }
 
-    /* Nav: equidistant */
     .nav{
-      display: grid;
+      display:grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 10px;
-      align-items: center;
+      align-items:center;
     }
 
     .nav a{
-      text-decoration: none;
+      text-decoration:none;
       color: rgba(11,18,32,0.82);
-      text-align: center;
+      text-align:center;
       padding: 10px 8px;
       border-radius: 12px;
       font-size: 13px;
       font-weight: 500;
-      letter-spacing: 0.2px;
-      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+      transition: background 160ms ease, transform 160ms ease;
     }
 
     .nav a:hover{
@@ -102,14 +101,11 @@
       border: 1px solid rgba(31,86,216,0.18);
     }
 
-    /* Right side */
-    .profile{
+    .right{
       display:flex;
       justify-content:flex-end;
       align-items:center;
       gap:10px;
-      color: rgba(11,18,32,0.80);
-      font-size: 13px;
     }
 
     .pill{
@@ -121,6 +117,8 @@
       display:flex;
       align-items:center;
       gap:8px;
+      font-size: 13px;
+      color: rgba(11,18,32,0.80);
     }
 
     .dot{
@@ -128,23 +126,24 @@
       height: 8px;
       border-radius: 999px;
       background: var(--good);
-      display:inline-block;
     }
 
-    /* Page content */
+    .select{
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(11,18,32,0.12);
+      padding: 0 12px;
+      background: rgba(255,255,255,0.75);
+      font-weight: 700;
+      font-size: 13px;
+      color: rgba(11,18,32,0.85);
+      outline: none;
+    }
+
     .wrap{
       max-width: 1240px;
       margin: 0 auto;
       padding: 28px 18px 56px;
-    }
-
-    .headline{
-      display:flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 16px;
-      margin-top: 10px;
-      margin-bottom: 18px;
     }
 
     .headline h1{
@@ -180,7 +179,6 @@
       backdrop-filter: blur(8px);
     }
 
-    /* premium gradient edge */
     .card::before{
       content:"";
       position:absolute;
@@ -210,7 +208,7 @@
 
     .label{
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.5px;
       color: rgba(11,18,32,0.72);
       text-transform: uppercase;
@@ -232,7 +230,7 @@
     .value{
       margin-top: 14px;
       font-size: 30px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.7px;
       position: relative;
       z-index: 1;
@@ -247,7 +245,6 @@
       z-index: 1;
     }
 
-    /* Panels grid */
     .grid2{
       display:grid;
       grid-template-columns: 1.35fr 0.65fr;
@@ -267,7 +264,7 @@
     .panel h2{
       margin: 0 0 12px;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.2px;
     }
 
@@ -277,12 +274,19 @@
       margin: 14px 0;
     }
 
-    /* Task form */
+    /* Task controls */
     .task-form{
       display:grid;
-      grid-template-columns: 1.7fr 1fr 0.6fr;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .task-form2{
+      display:grid;
+      grid-template-columns: 0.8fr 0.6fr 1.2fr;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .input{
@@ -308,20 +312,41 @@
       border-radius: 12px;
       background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
       color:#fff;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 13px;
       cursor:pointer;
       box-shadow: 0 10px 22px rgba(31,86,216,0.22);
       transition: transform 120ms ease, box-shadow 120ms ease;
       white-space: nowrap;
     }
-
     .btn:hover{
       transform: translateY(-1px);
       box-shadow: 0 12px 26px rgba(31,86,216,0.28);
     }
 
-    /* Task list items */
+    .rowline{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 10px 0 12px;
+    }
+
+    .check{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      user-select:none;
+    }
+    .check input{
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary2);
+    }
+
+    /* Task list */
     .list{
       margin: 0;
       padding: 0;
@@ -337,7 +362,7 @@
       padding: 12px 12px;
       border-radius: 14px;
       border: 1px solid rgba(11,18,32,0.08);
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.72);
       gap: 10px;
     }
 
@@ -350,7 +375,7 @@
 
     .item-title{
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -360,6 +385,7 @@
     .item-meta{
       font-size: 12px;
       color: var(--muted);
+      line-height: 1.35;
     }
 
     .actions{
@@ -376,13 +402,9 @@
       border: 1px solid rgba(11,18,32,0.10);
       background: rgba(11,18,32,0.05);
       color: rgba(11,18,32,0.78);
-      cursor: pointer;
       user-select: none;
-      transition: transform 120ms ease, background 120ms ease;
       white-space: nowrap;
     }
-
-    .badge:hover{ transform: translateY(-1px); }
 
     .badge.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
     .badge.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
@@ -390,11 +412,11 @@
 
     .iconbtn{
       border: 1px solid rgba(11,18,32,0.12);
-      background: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.80);
       border-radius: 12px;
       padding: 8px 10px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       color: rgba(11,18,32,0.82);
       cursor: pointer;
       transition: background 120ms ease, transform 120ms ease;
@@ -406,7 +428,6 @@
       display:grid;
       gap: 10px;
     }
-
     .quick a{
       text-decoration:none;
       display:flex;
@@ -415,19 +436,18 @@
       padding: 12px 12px;
       border-radius: 14px;
       border: 1px solid rgba(11,18,32,0.08);
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.72);
       color: rgba(11,18,32,0.85);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       transition: transform 140ms ease, background 140ms ease;
     }
-
     .quick a:hover{
       background: rgba(31,86,216,0.08);
       transform: translateY(-1px);
     }
 
-    /* Toast notification */
+    /* Toast notifications */
     .toast-wrap{
       position: fixed;
       right: 16px;
@@ -437,7 +457,6 @@
       gap: 10px;
       width: min(420px, calc(100vw - 32px));
     }
-
     .toast{
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(11,18,32,0.12);
@@ -451,42 +470,30 @@
       backdrop-filter: blur(10px);
       animation: pop 180ms ease-out;
     }
-
     @keyframes pop{
       from{ transform: translateY(8px); opacity: 0; }
       to{ transform: translateY(0); opacity: 1; }
     }
-
-    .toast strong{
-      display:block;
-      font-size: 13px;
-      margin-bottom: 2px;
-    }
-    .toast span{
-      display:block;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
+    .toast strong{ display:block; font-size: 13px; margin-bottom: 2px; }
+    .toast span{ display:block; color: var(--muted); font-size: 12px; line-height: 1.4; }
     .toast .close{
-      border:none;
-      background: transparent;
-      font-size: 16px;
-      cursor:pointer;
-      color: rgba(11,18,32,0.55);
-      padding: 0 6px;
-      line-height: 1;
+      border:none; background: transparent; font-size: 16px; cursor:pointer;
+      color: rgba(11,18,32,0.55); padding: 0 6px; line-height: 1;
     }
 
-    /* Responsive */
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
     @media (max-width: 1100px){
       .kpis{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
       .grid2{ grid-template-columns: 1fr; }
       .topbar-inner{ grid-template-columns: 150px 1fr; }
-      .profile{ display:none; }
-      .task-form{ grid-template-columns: 1fr; }
-      .btn{ width: 100%; }
+      .right{ display:none; }
+      .task-form, .task-form2{ grid-template-columns: 1fr; }
     }
 
     @media (max-width: 700px){
@@ -497,8 +504,6 @@
 </head>
 
 <body>
-
-  <!-- Premium Topbar -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="logo">
@@ -514,33 +519,34 @@
         <a href="logistics.html">Logistics</a>
       </nav>
 
-      <div class="profile">
+      <div class="right">
         <div class="pill"><span class="dot"></span>Online</div>
-        <div class="pill">Admin</div>
+        <select class="select" id="currentUser">
+          <option value="A" selected>User A</option>
+          <option value="B">User B</option>
+          <option value="C">User C</option>
+          <option value="D">User D</option>
+        </select>
       </div>
     </div>
   </header>
 
   <main class="wrap">
     <div class="headline">
-      <div>
-        <h1>Welcome to Stark Premium ERP</h1>
-        <p>
-          This is your main dashboard. Track operational priorities, procurement status,
-          and order validation at a glance — with premium clarity.
-        </p>
-      </div>
+      <h1>Welcome to Stark Premium ERP</h1>
+      <p>
+        Premium operations overview. Tasks are shared across A/B/C/D using a central database, so assignments appear on each user’s task bar.
+      </p>
     </div>
 
-    <!-- KPI Cards -->
     <section class="kpis" aria-label="Key Metrics">
       <article class="card">
         <div class="card-top">
-          <div class="label">Tasks</div>
-          <div class="chip warn">Reminders</div>
+          <div class="label">My Pending Tasks</div>
+          <div class="chip warn" id="tasksChip">Syncing…</div>
         </div>
         <div class="value" id="kpiTasks">0</div>
-        <div class="sub" id="kpiTasksSub">No pending tasks</div>
+        <div class="sub" id="kpiTasksSub">—</div>
       </article>
 
       <article class="card">
@@ -572,18 +578,55 @@
     </section>
 
     <div class="grid2">
-      <!-- TASK MANAGER (editable + reminders) -->
+      <!-- Shared Task Manager -->
       <section class="panel" aria-label="Task Manager">
         <h2>Task Manager</h2>
         <div class="goldline"></div>
 
         <div class="task-form">
-          <input id="taskText" class="input" placeholder="Add a task to review later (e.g., Approve PO-1042)..." />
+          <input id="taskText" class="input" placeholder="Task (e.g., Meeting to review Vendor PO-1042)..." />
           <input id="taskTime" class="input" type="datetime-local" />
           <button class="btn" type="button" onclick="addTask()">Add Task</button>
         </div>
 
+        <div class="task-form2">
+          <select id="taskCategory" class="input">
+            <option value="Purchasing">Purchasing</option>
+            <option value="Inventory">Inventory</option>
+            <option value="Orders">Orders</option>
+            <option value="Logistics">Logistics</option>
+          </select>
+
+          <select id="taskPriority" class="input">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+
+          <input id="taskPeople" class="input" placeholder="Assign to (A,B,C,D). Example: A,B or B,C,D" />
+        </div>
+
+        <div class="rowline">
+          <label class="check">
+            <input id="dueTodayOnly" type="checkbox" />
+            Due today only
+          </label>
+
+          <div style="display:flex; gap:8px;">
+            <button class="iconbtn" type="button" onclick="toggleShowCompleted()">
+              Toggle completed
+            </button>
+            <button class="iconbtn" type="button" onclick="requestBrowserNotifications()">
+              Enable notifications
+            </button>
+          </div>
+        </div>
+
         <ul id="taskList" class="list"></ul>
+
+        <div class="hint">
+          Note: Reminders show as premium toasts and (optionally) browser notifications. For notifications to appear, the user must have the dashboard open.
+        </div>
       </section>
 
       <!-- Quick Actions -->
@@ -597,39 +640,52 @@
           <a href="logistics.html">Track pending shipments <span>→</span></a>
           <a href="account.html">Manage vendors & approvals <span>→</span></a>
         </div>
+
+        <div class="goldline"></div>
+
+        <div class="hint">
+          For cross-user visibility, tasks are stored centrally (Firestore). Everyone using the same project sees assigned tasks.
+        </div>
       </aside>
     </div>
   </main>
 
-  <!-- Toast notifications -->
   <div class="toast-wrap" id="toastWrap"></div>
 
+  <!-- Firebase (Firestore) - works on GitHub Pages -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+
   <script>
-    /*
-      Task Manager for a static GitHub Pages ERP prototype.
-      - Persists tasks in localStorage
-      - Provides reminder notifications when due
-      - Updates KPI card automatically
-    */
+    /***********************
+     * 1) FIREBASE CONFIG
+     * Create Firebase project -> Firestore Database -> copy web app config
+     ***********************/
+    const firebaseConfig = {
+      // PASTE_YOUR_FIREBASE_CONFIG_HERE
+      // Example:
+      // apiKey: "....",
+      // authDomain: "....firebaseapp.com",
+      // projectId: "....",
+      // storageBucket: "....",
+      // messagingSenderId: "....",
+      // appId: "...."
+    };
 
-    const STORAGE_KEY = "stark_erp_tasks_v1";
-
-    function loadTasks(){
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-      catch { return []; }
-    }
-
-    function saveTasks(tasks){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    }
-
-    function uid(){
-      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    /***********************
+     * 2) UI HELPERS
+     ***********************/
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
     function fmt(dt){
-      try { return new Date(dt).toLocaleString(); }
-      catch { return dt; }
+      try { return new Date(dt).toLocaleString(); } catch { return dt; }
     }
 
     function showToast(title, message){
@@ -648,20 +704,19 @@
       setTimeout(() => { if(el.isConnected) el.remove(); }, 10000);
     }
 
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
     function requestBrowserNotifications(){
-      if (!("Notification" in window)) return;
-      if (Notification.permission === "default") {
-        Notification.requestPermission();
+      if (!("Notification" in window)) {
+        showToast("Not supported", "Browser notifications are not supported on this device.");
+        return;
       }
+      if (Notification.permission === "granted") {
+        showToast("Enabled", "Browser notifications are already enabled.");
+        return;
+      }
+      Notification.requestPermission().then(p=>{
+        if (p === "granted") showToast("Enabled", "Browser notifications enabled.");
+        else showToast("Blocked", "You blocked notifications in the browser.");
+      });
     }
 
     function notifyBrowser(title, body){
@@ -670,151 +725,333 @@
       try { new Notification(title, { body }); } catch {}
     }
 
-    let tasks = loadTasks();
+    function startOfToday(){
+      const d = new Date(); d.setHours(0,0,0,0); return d.getTime();
+    }
+    function endOfToday(){
+      const d = new Date(); d.setHours(23,59,59,999); return d.getTime();
+    }
+    function uid(){
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
 
-    function updateKPI(){
-      const pending = tasks.filter(t => !t.done).length;
-      const dueSoon = tasks.filter(t => !t.done && t.time && (new Date(t.time).getTime() - Date.now()) <= 24*60*60*1000).length;
+    function priorityClass(p){
+      if (p === "High") return "bad";
+      if (p === "Medium") return "warn";
+      return "good";
+    }
 
-      document.getElementById("kpiTasks").textContent = pending;
-      const sub = document.getElementById("kpiTasksSub");
+    /***********************
+     * 3) “CURRENT USER” (A/B/C/D)
+     ***********************/
+    const userSelect = document.getElementById("currentUser");
+    const USER_KEY = "stark_erp_current_user_v1";
 
-      if (pending === 0) {
-        sub.textContent = "No pending tasks";
-      } else {
-        sub.textContent = dueSoon > 0
-          ? `${dueSoon} due within 24 hours`
-          : "All tasks scheduled";
+    function getCurrentUser(){
+      return localStorage.getItem(USER_KEY) || "A";
+    }
+    function setCurrentUser(u){
+      localStorage.setItem(USER_KEY, u);
+    }
+
+    userSelect.value = getCurrentUser();
+    userSelect.addEventListener("change", ()=>{
+      setCurrentUser(userSelect.value);
+      showToast("User switched", `Now viewing tasks for User ${userSelect.value}.`);
+      refreshRealtimeSubscription();
+    });
+
+    /***********************
+     * 4) STORAGE LAYER: FIRESTORE (shared)
+     ***********************/
+    let db = null;
+    let unsub = null;
+
+    function firebaseReady(){
+      // if projectId missing, treat as not configured
+      return firebaseConfig && firebaseConfig.projectId;
+    }
+
+    if (firebaseReady()) {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      document.getElementById("tasksChip").textContent = "Live sync";
+      document.getElementById("tasksChip").className = "chip good";
+    } else {
+      document.getElementById("tasksChip").textContent = "Needs Firebase config";
+      document.getElementById("tasksChip").className = "chip warn";
+      showToast("Setup required", "Paste Firebase config into dashboard.html to enable shared tasks for A/B/C/D.");
+    }
+
+    /***********************
+     * 5) TASK MODEL
+     * - Shared tasks stored in Firestore: collection 'tasks'
+     * - Each task contains assigned users: ["A","B","C"]
+     ***********************/
+    let tasks = [];
+    let showCompleted = true;
+
+    function toggleShowCompleted(){
+      showCompleted = !showCompleted;
+      renderTasks();
+    }
+
+    function parseAssignees(raw){
+      const cleaned = (raw || "").trim();
+      if (!cleaned) return [getCurrentUser()];
+      return cleaned.split(",").map(s=>s.trim().toUpperCase()).filter(Boolean);
+    }
+
+    async function addTask(){
+      const text = (document.getElementById("taskText").value || "").trim();
+      const timeRaw = document.getElementById("taskTime").value || "";
+      const category = document.getElementById("taskCategory").value;
+      const priority = document.getElementById("taskPriority").value;
+      const assigneesRaw = document.getElementById("taskPeople").value || "";
+
+      if (!text) { showToast("Missing task", "Enter a task description."); return; }
+
+      const assignees = parseAssignees(assigneesRaw);
+      const isoTime = timeRaw ? new Date(timeRaw).toISOString() : "";
+
+      const payload = {
+        id: uid(),
+        text,
+        time: isoTime,
+        category,
+        priority,
+        assignees,            // A/B/C/D
+        doneBy: [],           // users who marked done
+        remindedBy: [],       // users already reminded
+        createdAt: Date.now(),
+        createdBy: getCurrentUser()
+      };
+
+      // clear inputs
+      document.getElementById("taskText").value = "";
+      document.getElementById("taskTime").value = "";
+      document.getElementById("taskPeople").value = "";
+
+      if (!db) {
+        showToast("Not configured", "Firebase config missing. Shared tasks won’t work until you add it.");
+        return;
       }
+
+      await db.collection("tasks").doc(payload.id).set(payload);
+      showToast("Task added", `Assigned to: ${assignees.join(", ")}`);
+    }
+
+    async function toggleDone(taskId){
+      if (!db) return;
+
+      const me = getCurrentUser();
+      const ref = db.collection("tasks").doc(taskId);
+      const doc = await ref.get();
+      if (!doc.exists) return;
+
+      const t = doc.data();
+      const doneBy = Array.isArray(t.doneBy) ? t.doneBy : [];
+
+      const next = doneBy.includes(me)
+        ? doneBy.filter(x=>x !== me)
+        : [...doneBy, me];
+
+      await ref.update({ doneBy: next });
+    }
+
+    async function deleteTask(taskId){
+      if (!db) return;
+
+      // Premium note: in real ERP, you'd restrict deletes by role
+      await db.collection("tasks").doc(taskId).delete();
+      showToast("Deleted", "Task removed.");
+    }
+
+    /***********************
+     * 6) REALTIME SUBSCRIPTION (shared tasks)
+     ***********************/
+    function refreshRealtimeSubscription(){
+      if (!db) return;
+
+      if (unsub) { unsub(); unsub = null; }
+
+      const me = getCurrentUser();
+
+      // Get tasks where assignees includes current user
+      unsub = db.collection("tasks")
+        .where("assignees", "array-contains", me)
+        .onSnapshot((snap)=>{
+          tasks = [];
+          snap.forEach(doc => tasks.push(doc.data()));
+          renderTasks();
+          updateKPI();
+          checkReminders();
+        }, (err)=>{
+          showToast("Sync error", String(err?.message || err));
+        });
+    }
+
+    /***********************
+     * 7) RENDERING + FILTERS
+     ***********************/
+    function updateKPI(){
+      const me = getCurrentUser();
+      const pendingMine = tasks.filter(t => !isDoneForMe(t, me)).length;
+
+      const dueTodayMine = tasks.filter(t=>{
+        if (isDoneForMe(t, me)) return false;
+        if (!t.time) return false;
+        const ms = new Date(t.time).getTime();
+        return ms >= startOfToday() && ms <= endOfToday();
+      }).length;
+
+      document.getElementById("kpiTasks").textContent = pendingMine;
+
+      if (pendingMine === 0) {
+        document.getElementById("kpiTasksSub").textContent = "No pending tasks assigned to you.";
+      } else if (dueTodayMine > 0) {
+        document.getElementById("kpiTasksSub").textContent = `${dueTodayMine} due today.`;
+      } else {
+        document.getElementById("kpiTasksSub").textContent = "All tasks scheduled.";
+      }
+    }
+
+    function isDoneForMe(t, me){
+      const doneBy = Array.isArray(t.doneBy) ? t.doneBy : [];
+      return doneBy.includes(me);
     }
 
     function renderTasks(){
       const list = document.getElementById("taskList");
       list.innerHTML = "";
 
-      // Sort: pending first, then by time
-      const sorted = [...tasks].sort((a,b)=>{
-        const ad = a.done ? 1 : 0;
-        const bd = b.done ? 1 : 0;
+      const me = getCurrentUser();
+      const dueTodayOnly = document.getElementById("dueTodayOnly").checked;
+
+      let filtered = tasks.slice();
+
+      if (!showCompleted) {
+        filtered = filtered.filter(t => !isDoneForMe(t, me));
+      }
+
+      if (dueTodayOnly) {
+        filtered = filtered.filter(t=>{
+          if (!t.time) return false;
+          const ms = new Date(t.time).getTime();
+          return ms >= startOfToday() && ms <= endOfToday();
+        });
+      }
+
+      filtered.sort((a,b)=>{
+        // pending first for current user
+        const ad = isDoneForMe(a, me) ? 1 : 0;
+        const bd = isDoneForMe(b, me) ? 1 : 0;
         if (ad !== bd) return ad - bd;
-        return (new Date(a.time || 0).getTime()) - (new Date(b.time || 0).getTime());
+
+        // then earlier time
+        const at = a.time ? new Date(a.time).getTime() : Number.MAX_SAFE_INTEGER;
+        const bt = b.time ? new Date(b.time).getTime() : Number.MAX_SAFE_INTEGER;
+        return at - bt;
       });
 
-      sorted.forEach(t=>{
+      if (filtered.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.textContent = "No tasks match your filters.";
+        list.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(t=>{
         const li = document.createElement("li");
         li.className = "item";
 
-        const dueMs = t.time ? new Date(t.time).getTime() - Date.now() : null;
+        const meDone = isDoneForMe(t, me);
+        const prClass = priorityClass(t.priority || "Medium");
+        const assignees = Array.isArray(t.assignees) ? t.assignees.join(", ") : "—";
+        const dueText = t.time ? fmt(t.time) : "No reminder set";
 
+        // status chip (due soon/overdue) for current user
+        let status = "Scheduled";
         let statusClass = "good";
-        let statusText = t.done ? "Done" : "Pending";
-
-        if (!t.done && dueMs !== null) {
-          if (dueMs < 0) { statusClass = "bad"; statusText = "Overdue"; }
-          else if (dueMs <= 60*60*1000) { statusClass = "warn"; statusText = "Due soon"; }
-          else { statusClass = "good"; statusText = "Scheduled"; }
-        } else if (!t.done) {
-          statusClass = "warn";
-          statusText = "No time";
+        if (!meDone && t.time) {
+          const dueMs = new Date(t.time).getTime() - Date.now();
+          if (dueMs < 0) { status = "Overdue"; statusClass = "bad"; }
+          else if (dueMs <= 60*60*1000) { status = "Due soon"; statusClass = "warn"; }
+          else { status = "Scheduled"; statusClass = "good"; }
+        } else if (meDone) {
+          status = "Done";
+          statusClass = "good";
         }
 
         li.innerHTML = `
           <div class="item-left">
             <div class="item-title">${escapeHtml(t.text)}</div>
-            <div class="item-meta">${t.time ? ("Reminder: " + escapeHtml(fmt(t.time))) : "No reminder time set"}</div>
+            <div class="item-meta">
+              Reminder: ${escapeHtml(dueText)} · ${escapeHtml(t.category || "—")} · Assignees: ${escapeHtml(assignees)}
+            </div>
           </div>
           <div class="actions">
-            <span class="badge ${statusClass}" title="Task status">${statusText}</span>
-            <button class="iconbtn" type="button" title="Toggle done" data-action="toggle">Done</button>
-            <button class="iconbtn" type="button" title="Delete task" data-action="delete">Delete</button>
+            <span class="badge ${prClass}" title="Priority">${escapeHtml(t.priority || "Medium")}</span>
+            <span class="badge ${statusClass}" title="Status">${escapeHtml(status)}</span>
+            <button class="iconbtn" type="button" data-action="done">${meDone ? "Undo" : "Done"}</button>
+            <button class="iconbtn" type="button" data-action="del">Delete</button>
           </div>
         `;
 
-        li.querySelector('[data-action="toggle"]').onclick = () => toggleTask(t.id);
-        li.querySelector('[data-action="delete"]').onclick = () => deleteTask(t.id);
+        li.querySelector('[data-action="done"]').onclick = () => toggleDone(t.id);
+        li.querySelector('[data-action="del"]').onclick = () => deleteTask(t.id);
 
         list.appendChild(li);
       });
-
-      saveTasks(tasks);
-      updateKPI();
     }
 
-    function addTask(){
-      const textEl = document.getElementById("taskText");
-      const timeEl = document.getElementById("taskTime");
-      const text = (textEl.value || "").trim();
-      const time = timeEl.value || "";
-
-      if (!text) {
-        showToast("Missing task", "Please enter a task description.");
-        return;
-      }
-
-      // allow empty time, but encourage time
-      if (!time) {
-        showToast("Tip", "You can set a reminder time to avoid forgetting.");
-      }
-
-      tasks.push({
-        id: uid(),
-        text,
-        time: time ? new Date(time).toISOString() : "",
-        done: false,
-        reminded: false
-      });
-
-      textEl.value = "";
-      timeEl.value = "";
-      renderTasks();
+    /***********************
+     * 8) REMINDERS (per-user)
+     * Each user should get their own reminder even for shared tasks.
+     ***********************/
+    async function markReminded(taskId, me){
+      const ref = db.collection("tasks").doc(taskId);
+      const doc = await ref.get();
+      if (!doc.exists) return;
+      const t = doc.data();
+      const remindedBy = Array.isArray(t.remindedBy) ? t.remindedBy : [];
+      if (remindedBy.includes(me)) return;
+      await ref.update({ remindedBy: [...remindedBy, me] });
     }
 
-    function toggleTask(id){
-      const t = tasks.find(x => x.id === id);
-      if (!t) return;
-      t.done = !t.done;
-      // If marking pending again, allow reminders again
-      if (!t.done) t.reminded = false;
-      renderTasks();
-    }
-
-    function deleteTask(id){
-      tasks = tasks.filter(x => x.id !== id);
-      renderTasks();
+    function alreadyRemindedForMe(t, me){
+      const rb = Array.isArray(t.remindedBy) ? t.remindedBy : [];
+      return rb.includes(me);
     }
 
     function checkReminders(){
-      const now = Date.now();
+      if (!db) return;
+      const me = getCurrentUser();
 
+      const now = Date.now();
       tasks.forEach(t=>{
-        if (t.done) return;
+        if (isDoneForMe(t, me)) return;
         if (!t.time) return;
 
         const due = new Date(t.time).getTime();
         if (Number.isNaN(due)) return;
 
-        // Trigger reminder once when due or overdue
-        if (!t.reminded && due <= now) {
-          t.reminded = true;
-
+        if (due <= now && !alreadyRemindedForMe(t, me)) {
           showToast("Task Reminder", t.text);
           notifyBrowser("Stark Premium ERP — Reminder", t.text);
+          markReminded(t.id, me);
         }
       });
-
-      saveTasks(tasks);
-      updateKPI();
     }
 
-    // Initialize
-    renderTasks();
-    checkReminders();
-    setInterval(checkReminders, 30000); // check every 30 seconds
+    /***********************
+     * 9) INIT
+     ***********************/
+    document.getElementById("dueTodayOnly").addEventListener("change", renderTasks);
 
-    // Ask for browser notification permission (optional)
-    // User interaction is best; here we prompt on first load.
+    if (db) refreshRealtimeSubscription();
     requestBrowserNotifications();
   </script>
-
 </body>
 </html>
