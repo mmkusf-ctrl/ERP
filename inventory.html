@@ -59,7 +59,7 @@
       margin: 0 auto;
       padding: 14px 18px;
       display: grid;
-      grid-template-columns: 150px 1fr 260px;
+      grid-template-columns: 150px 1fr 320px;
       align-items: center;
       gap: 14px;
     }
@@ -68,7 +68,7 @@
 
     .nav{
       display:grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       gap: 10px;
       align-items:center;
     }
@@ -111,6 +111,7 @@
       gap:8px;
       font-size: 13px;
       color: rgba(11,18,32,0.80);
+      white-space: nowrap;
     }
 
     .dot{ width:8px;height:8px;border-radius:999px;background:var(--good); }
@@ -162,7 +163,7 @@
       color: var(--muted);
       font-size: 14px;
       line-height: 1.6;
-      max-width: 820px;
+      max-width: 860px;
     }
     .actions-top{
       display:flex;
@@ -186,6 +187,15 @@
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(8px);
+    }
+
+    .card.clickable{
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .card.clickable:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(2,6,23,0.10);
     }
 
     .card::before{
@@ -528,10 +538,12 @@
         <a class="active" href="inventory.html">Inventory</a>
         <a href="orders.html">Orders</a>
         <a href="logistics.html">Logistics</a>
+        <a href="trends.html">Trends</a>
       </nav>
 
       <div class="right">
         <div class="pill"><span class="dot"></span>Online</div>
+        <button class="btn secondary" type="button" onclick="seedSalesDemo()">Load Demo Sales</button>
         <button class="btn" type="button" onclick="openPOModal()">Create PO</button>
       </div>
     </div>
@@ -551,13 +563,14 @@
 
     <!-- KPIs -->
     <section class="kpis" aria-label="Inventory Metrics">
-      <article class="card">
+      <!-- Trends (reactive) -->
+      <article class="card clickable" onclick="goTrends()">
         <div class="card-top">
-          <div class="label">Total SKUs</div>
-          <div class="chip good">Master</div>
+          <div class="label">Trends</div>
+          <div class="chip good">Reactive</div>
         </div>
-        <div class="value" id="kpiSkus">0</div>
-        <div class="sub">Active items in catalog</div>
+        <div class="value" id="kpiTrends">0</div>
+        <div class="sub" id="kpiTrendsSub">Load demo sales to activate trends</div>
       </article>
 
       <article class="card">
@@ -629,14 +642,12 @@
         <section class="panel">
           <h2>Vendor Purchase Orders</h2>
           <div class="goldline"></div>
-
           <ul class="list" id="poList"></ul>
         </section>
 
         <section class="panel">
           <h2>Recent Stock Movements</h2>
           <div class="goldline"></div>
-
           <ul class="list" id="txList"></ul>
         </section>
       </aside>
@@ -732,11 +743,12 @@
 
   <script>
     /***********************
-     * Storage
+     * Storage (localStorage)
      ***********************/
     const KEY_ITEMS = "stark_erp_items_v1";
     const KEY_TX    = "stark_erp_inventory_tx_v1";
     const KEY_POS   = "stark_erp_purchase_orders_v1";
+    const KEY_SALES = "stark_erp_sales_v1"; // for Trends card
 
     function load(key, fallback){
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
@@ -749,6 +761,7 @@
     let items = load(KEY_ITEMS, []);
     let txs   = load(KEY_TX, []);
     let pos   = load(KEY_POS, []);
+    let sales = load(KEY_SALES, []);
 
     /***********************
      * UI helpers
@@ -808,13 +821,46 @@
       save(KEY_TX, txs);
     }
 
-    /***********************
-     * Filters
-     ***********************/
     function unique(list){
       return Array.from(new Set(list.filter(Boolean))).sort();
     }
 
+    function startMsDaysAgo(days){
+      const d = new Date();
+      d.setDate(d.getDate() - days);
+      d.setHours(0,0,0,0);
+      return d.getTime();
+    }
+
+    /***********************
+     * Trends (reactive KPI)
+     ***********************/
+    function computeTopSku30d(){
+      sales = load(KEY_SALES, []);
+      const start = startMsDaysAgo(30);
+      const recent = sales.filter(s => new Date(s.date || s.ts || s.createdAt || "").getTime() >= start);
+      const unitsBySku = new Map();
+      recent.forEach(s => {
+        const sku = s.sku;
+        const qty = Number(s.qty || 0);
+        if (!sku) return;
+        unitsBySku.set(sku, (unitsBySku.get(sku) || 0) + qty);
+      });
+      const top = Array.from(unitsBySku.entries()).sort((a,b)=>b[1]-a[1])[0];
+      const topSku = top ? top[0] : (items[0]?.sku || "");
+      const topUnits = top ? top[1] : 0;
+      const topSalesCount = topSku ? recent.filter(s => s.sku === topSku).length : 0;
+      return { topSku, topUnits, topSalesCount };
+    }
+
+    function goTrends(){
+      const { topSku } = computeTopSku30d();
+      location.href = topSku ? `trends.html?sku=${encodeURIComponent(topSku)}` : "trends.html";
+    }
+
+    /***********************
+     * Filters
+     ***********************/
     function rebuildFilterOptions(){
       const categories = unique(items.map(i => i.category));
       const suppliers  = unique(items.map(i => i.supplier));
@@ -846,21 +892,30 @@
      * Render KPI + table + side panels
      ***********************/
     function updateKPIs(){
-      const skus = items.length;
-      const low = items.filter(i => {
-        const s = statusFor(i);
-        return s.t === "Low stock";
-      }).length;
+      // Trends (reactive)
+      const t = computeTopSku30d();
+      document.getElementById("kpiTrends").textContent = String(t.topUnits || 0);
+      document.getElementById("kpiTrendsSub").textContent =
+        t.topSku
+          ? `Top SKU: ${t.topSku} · ${t.topSalesCount} sales (30d)`
+          : "Load demo sales to activate trends";
+
+      // Inventory KPIs
+      const low = items.filter(i => statusFor(i).t === "Low stock").length;
       const oos = items.filter(i => statusFor(i).t === "Out of stock").length;
       const value = items.reduce((sum, i) => sum + (Number(i.onHand||0) * Number(i.cost||0)), 0);
 
-      document.getElementById("kpiSkus").textContent = skus;
       document.getElementById("kpiLow").textContent = low;
       document.getElementById("kpiOos").textContent = oos;
       document.getElementById("kpiValue").textContent = money(value);
     }
 
     function render(){
+      items = load(KEY_ITEMS, []);
+      txs   = load(KEY_TX, []);
+      pos   = load(KEY_POS, []);
+      sales = load(KEY_SALES, []);
+
       rebuildFilterOptions();
       updateKPIs();
       renderTable();
@@ -962,13 +1017,12 @@
         return;
       }
 
-      // show newest first
       const show = pos.slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0)).slice(0,8);
 
       show.forEach(po=>{
         const total = po.lines.reduce((sum,l)=> sum + (Number(l.qty||0)*Number(l.unitCost||0)), 0);
-
         const statusClass = po.status === "Received" ? "good" : (po.status === "Open" ? "warn" : "good");
+
         const li = document.createElement("li");
         li.className = "li";
         li.innerHTML = `
@@ -1205,7 +1259,6 @@
           it.onHand = Number(it.onHand||0) + Number(l.qty||0);
           addTx("PO_RECEIPT", l.sku, l.qty, `From ${poNumber}`);
         } else {
-          // If item missing, create it minimally (ERP-style fallback)
           items.push({
             sku: l.sku,
             name: l.name || l.sku,
@@ -1239,7 +1292,7 @@
     }
 
     /***********************
-     * Demo data
+     * Demo data (inventory)
      ***********************/
     function seedDemo(){
       if (items.length > 0){
@@ -1257,6 +1310,45 @@
 
       save(KEY_ITEMS, items);
       toast("Loaded", "Demo inventory loaded.");
+      render();
+    }
+
+    /***********************
+     * Demo data (sales for Trends KPI)
+     ***********************/
+    function seedSalesDemo(){
+      const skuList = items.length ? items.map(i=>i.sku) : ["NK-1001","NK-1002","RG-2001","BX-9001","LB-3001"];
+      const customers = [
+        {name:"Asha Retail", loc:"Austin, TX"},
+        {name:"Blue Harbor Boutique", loc:"Miami, FL"},
+        {name:"Citrine Luxe", loc:"New York, NY"},
+        {name:"Desert Pearl", loc:"Phoenix, AZ"},
+        {name:"Emerald Lane", loc:"Seattle, WA"}
+      ];
+
+      const now = Date.now();
+      const add = [];
+      for (let i=0;i<90;i++){
+        const sku = skuList[Math.floor(Math.random()*skuList.length)];
+        const c = customers[Math.floor(Math.random()*customers.length)];
+        const daysAgo = Math.floor(Math.random()*30);
+        const d = new Date(now - daysAgo*24*3600*1000);
+        const qty = 1 + Math.floor(Math.random()*5);
+
+        add.push({
+          date: d.toISOString(),
+          sku,
+          orderId: "SO-" + (8000 + Math.floor(Math.random()*1500)),
+          customer: c.name,
+          location: c.loc,
+          qty,
+          unitPrice: 25 + Math.floor(Math.random()*200)
+        });
+      }
+
+      sales = load(KEY_SALES, []).concat(add);
+      save(KEY_SALES, sales);
+      toast("Sales loaded", "Demo sales stored. Trends KPI is now reactive.");
       render();
     }
 
