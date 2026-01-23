@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stark Premium</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Times New Roman", serif;
+    }
+
+    /* Top-left logo */
+    .top-left {
+      position: absolute;
+      top: 28px;
+      left: 40px;
+      z-index: 3;
+    }
+    .top-left img {
+      width: 150px;
+      height: auto;
+      display: block;
+    }
+
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: min(680px, 80vw);
+      height: auto;
+      opacity: 0.12;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Login box */
+    .login-card {
+      position: absolute;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+      width: min(520px, 90vw);
+      z-index: 2;
+      padding: 24px 24px 18px;
+      border-left: 6px solid rgba(255, 160, 180, 0.35);
+      border-top: 6px solid rgba(255, 160, 180, 0.15);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      align-items: center;
+      gap: 18px;
+      margin: 16px 0;
+    }
+
+    .label {
+      text-align: right;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      color: #222;
+    }
+
+    .input {
+      width: 100%;
+      height: 44px;
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      background: #8e8e8e;
+      padding: 0 18px;
+      color: #fff;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      display: block;
+      margin: 14px auto 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #222;
+    }
+
+    .btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-left">
+    <img src="images/stark-logo.png" alt="Stark Premium logo">
+  </div>
+
+  <img class="watermark" src="images/stark-watermark.png" alt="" aria-hidden="true">
+
+  <div class="login-card">
+    <div class="row">
+      <div class="label">USER</div>
+      <input class="input" type="text" />
+    </div>
+
+    <div class="row">
+      <div class="label">PASSWORD</div>
+      <input class="input" type="password" />
+    </div>
+
+    <button class="btn" type="button">LOGIN</button>
+  </div>
+</body>
+</html>
