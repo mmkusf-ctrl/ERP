@@ -1,0 +1,268 @@
+:root{
+  --bg1:#f6f8fc;
+  --bg2:#ffffff;
+  --text:#0b1220;
+  --muted:#667085;
+  --border:rgba(11,18,32,0.10);
+  --shadow2: 0 10px 24px rgba(2,6,23,0.08);
+  --radius:18px;
+
+  --primary:#0f3d9e;
+  --primary2:#1f56d8;
+  --accent:#c9b37e;
+
+  --good:#0f766e;
+  --warn:#b45309;
+  --bad:#b42318;
+
+  --glass: rgba(255,255,255,0.72);
+  --chipBg: rgba(11,18,32,0.06);
+
+  --max:1240px;
+  --pad:18px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 500px at 25% 15%, rgba(201,179,126,0.14) 0%, rgba(201,179,126,0.00) 55%),
+    radial-gradient(900px 500px at 80% 20%, rgba(31,86,216,0.14) 0%, rgba(31,86,216,0.00) 55%),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
+}
+
+/* ===== Topbar: desktop + mobile ===== */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(11,18,32,0.08);
+}
+
+.topbar-inner{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 12px var(--pad);
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+
+.logo{ flex:0 0 auto; display:flex; align-items:center; gap:10px; }
+.logo img{ width: 120px; height:auto; display:block; }
+
+.nav{
+  flex: 1 1 auto;
+  display:flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nav a{
+  text-decoration:none;
+  color: rgba(11,18,32,0.82);
+  text-align:center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 160ms ease, transform 160ms ease;
+}
+.nav a:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
+.nav a.active{
+  background: linear-gradient(180deg, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0.08) 100%);
+  color: var(--primary);
+  border: 1px solid rgba(31,86,216,0.18);
+}
+
+.top-actions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: 10px;
+}
+
+.pill{
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(11,18,32,0.10);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size: 13px;
+  color: rgba(11,18,32,0.80);
+  white-space: nowrap;
+}
+.dot{ width:8px;height:8px;border-radius:999px;background:var(--good); }
+
+.btn{
+  height: 38px;
+  border:none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
+  color:#fff;
+  font-weight: 900;
+  font-size: 13px;
+  cursor:pointer;
+  padding: 0 12px;
+  box-shadow: 0 10px 22px rgba(31,86,216,0.22);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  white-space: nowrap;
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,86,216,0.28); }
+
+.btn.secondary{
+  background: rgba(255,255,255,0.85);
+  color: rgba(11,18,32,0.84);
+  border: 1px solid rgba(11,18,32,0.12);
+  box-shadow: none;
+  font-weight: 800;
+}
+.btn.secondary:hover{ background: rgba(11,18,32,0.06); box-shadow:none; }
+
+.hamburger{
+  display:none;
+  width: 42px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(11,18,32,0.12);
+  background: rgba(255,255,255,0.85);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  gap: 4px;
+  flex-direction: column;
+}
+.hamburger span{
+  width: 18px;
+  height: 2px;
+  background: rgba(11,18,32,0.70);
+  border-radius: 99px;
+}
+
+/* Mobile nav drawer */
+.mobile-nav{
+  display:none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(2,6,23,0.55);
+  padding: 16px;
+}
+.mobile-nav.open{ display:block; }
+.mobile-card{
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(11,18,32,0.12);
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(2,6,23,0.35);
+  backdrop-filter: blur(12px);
+  overflow:hidden;
+}
+.mobile-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(11,18,32,0.10);
+}
+.mobile-head strong{ font-size: 14px; }
+.mobile-close{
+  border:none; background: transparent; font-size: 22px;
+  font-weight: 900; cursor:pointer; color: rgba(11,18,32,0.55);
+}
+.mobile-links{
+  display:grid;
+  padding: 10px;
+  gap: 8px;
+}
+.mobile-links a{
+  text-decoration:none;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(11,18,32,0.10);
+  background: rgba(255,255,255,0.75);
+  color: rgba(11,18,32,0.86);
+  font-weight: 900;
+  font-size: 13px;
+}
+.mobile-links a.active{
+  border-color: rgba(31,86,216,0.25);
+  background: rgba(31,86,216,0.08);
+  color: var(--primary);
+}
+
+/* ===== Layout helpers ===== */
+.wrap{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 22px var(--pad) 56px;
+}
+
+.card, .panel{
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(11,18,32,0.10);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow2);
+  backdrop-filter: blur(8px);
+}
+
+/* Safe table scrolling on mobile */
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid rgba(11,18,32,0.10);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.78);
+}
+table{ width:100%; border-collapse: collapse; min-width: 760px; } /* prevents squish */
+thead th{
+  text-align:left;
+  padding: 12px;
+  color: rgba(11,18,32,0.72);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: rgba(11,18,32,0.03);
+  border-bottom: 1px solid rgba(11,18,32,0.08);
+  white-space: nowrap;
+}
+tbody td{
+  padding: 12px;
+  border-bottom: 1px solid rgba(11,18,32,0.06);
+}
+
+/* Forms stack nicely on mobile */
+.controls, .grid2, .kpis{
+  display:grid;
+  gap: 16px;
+}
+
+/* ===== Responsive rules ===== */
+@media (max-width: 1100px){
+  .topbar-inner{ flex-wrap: wrap; }
+  .nav{ justify-content:flex-start; width:100%; }
+}
+
+@media (max-width: 860px){
+  .nav{ display:none; }           /* hide desktop nav */
+  .hamburger{ display:flex; }     /* show menu button */
+  .topbar-inner{ gap: 10px; }
+  .top-actions{ margin-left: auto; }
+}
+
+@media (max-width: 700px){
+  :root{ --pad: 14px; }
+  .logo img{ width: 108px; }
+  .pill{ display:none; } /* optional: hide Online pill to save space */
+}
