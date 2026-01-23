@@ -1,0 +1,1418 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CRM | Stark Premium ERP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#f6f8fc;
+      --bg2:#ffffff;
+      --text:#0b1220;
+      --muted:#667085;
+      --border:rgba(11,18,32,0.10);
+      --shadow2: 0 10px 24px rgba(2,6,23,0.08);
+      --radius:18px;
+
+      --primary:#0f3d9e;
+      --primary2:#1f56d8;
+      --accent:#c9b37e;
+
+      --good:#0f766e;
+      --warn:#b45309;
+      --bad:#b42318;
+
+      --glass: rgba(255,255,255,0.72);
+      --chipBg: rgba(11,18,32,0.06);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 25% 15%, rgba(201,179,126,0.14) 0%, rgba(201,179,126,0.00) 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(31,86,216,0.14) 0%, rgba(31,86,216,0.00) 55%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
+    }
+
+    /* Topbar */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(11,18,32,0.08);
+    }
+
+    .topbar-inner{
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: grid;
+      grid-template-columns: 150px 1fr 320px;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo img{ width: 125px; height:auto; display:block; }
+
+    .nav{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      align-items:center;
+    }
+
+    .nav a{
+      text-decoration:none;
+      color: rgba(11,18,32,0.82);
+      text-align:center;
+      padding: 10px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 160ms ease, transform 160ms ease;
+      white-space: nowrap;
+    }
+
+    .nav a:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
+
+    .nav a.active{
+      background: linear-gradient(180deg, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0.08) 100%);
+      color: var(--primary);
+      font-weight: 600;
+      border: 1px solid rgba(31,86,216,0.18);
+    }
+
+    .right{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:10px;
+    }
+
+    .pill{
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(11,18,32,0.10);
+      box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size: 13px;
+      color: rgba(11,18,32,0.80);
+      white-space: nowrap;
+    }
+
+    .dot{ width:8px;height:8px;border-radius:999px;background:var(--good); }
+
+    .btn{
+      height: 38px;
+      border:none;
+      border-radius: 12px;
+      background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
+      color:#fff;
+      font-weight: 800;
+      font-size: 13px;
+      cursor:pointer;
+      padding: 0 12px;
+      box-shadow: 0 10px 22px rgba(31,86,216,0.22);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,86,216,0.28); }
+
+    .btn.secondary{
+      background: rgba(255,255,255,0.85);
+      color: rgba(11,18,32,0.84);
+      border: 1px solid rgba(11,18,32,0.12);
+      box-shadow: none;
+    }
+    .btn.secondary:hover{ background: rgba(11,18,32,0.06); box-shadow:none; }
+
+    .wrap{
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+    }
+
+    .headline{
+      display:flex;
+      align-items:flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .headline h1{
+      margin:0;
+      font-size: 26px;
+      letter-spacing: -0.6px;
+    }
+    .headline p{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 860px;
+    }
+    .actions-top{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card{
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(11,18,32,0.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      min-height: 130px;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius: var(--radius);
+      pointer-events:none;
+      background: linear-gradient(135deg,
+        rgba(201,179,126,0.18) 0%,
+        rgba(31,86,216,0.14) 40%,
+        rgba(255,255,255,0.00) 75%
+      );
+      opacity: 0.9;
+      mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      padding: 1px;
+      box-sizing: border-box;
+    }
+
+    .card-top{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .label{
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: rgba(11,18,32,0.72);
+      text-transform: uppercase;
+    }
+
+    .chip{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chipBg);
+      border: 1px solid rgba(11,18,32,0.10);
+      color: rgba(11,18,32,0.78);
+      white-space: nowrap;
+    }
+    .chip.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
+    .chip.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
+    .chip.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
+
+    .value{
+      margin-top: 14px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+      position: relative;
+      z-index: 1;
+    }
+    .sub{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .kpi-list{
+      margin-top: 12px;
+      display:grid;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+      max-height: 118px;
+      overflow:auto;
+      padding-right: 4px;
+    }
+    .kpi-item{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid rgba(11,18,32,0.08);
+      border-radius: 14px;
+      padding: 10px 10px;
+      background: rgba(255,255,255,0.72);
+      font-size: 12px;
+    }
+    .kpi-item .name{ font-weight: 800; }
+    .kpi-item .meta{ color: var(--muted); white-space: nowrap; }
+    .kpi-item.red{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.06); }
+    .kpi-item.green{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.06); }
+
+    .panel{
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(11,18,32,0.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+      backdrop-filter: blur(8px);
+      margin-top: 16px;
+    }
+
+    .panel h2{
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .goldline{
+      height: 1px;
+      background: linear-gradient(90deg, rgba(201,179,126,0.0), rgba(201,179,126,0.75), rgba(201,179,126,0.0));
+      margin: 14px 0;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1.4fr 1fr 0.8fr 0.9fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .input, select{
+      width:100%;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(11,18,32,0.12);
+      padding: 0 12px;
+      outline:none;
+      background: rgba(255,255,255,0.85);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .input:focus, select:focus{
+      border-color: rgba(31,86,216,0.45);
+      box-shadow: 0 0 0 4px rgba(31,86,216,0.10);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1.55fr 0.45fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .table-wrap{
+      margin-top: 12px;
+      border: 1px solid rgba(11,18,32,0.10);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(255,255,255,0.78);
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th{
+      text-align:left;
+      padding: 12px;
+      color: rgba(11,18,32,0.72);
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      background: rgba(11,18,32,0.03);
+      border-bottom: 1px solid rgba(11,18,32,0.08);
+    }
+    tbody td{
+      padding: 12px;
+      border-bottom: 1px solid rgba(11,18,32,0.06);
+      vertical-align: top;
+    }
+    tbody tr:hover{ background: rgba(31,86,216,0.04); cursor: pointer; }
+
+    .pilltag{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(11,18,32,0.10);
+      background: rgba(11,18,32,0.05);
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(11,18,32,0.78);
+      white-space: nowrap;
+    }
+    .pilltag.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
+    .pilltag.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
+    .pilltag.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
+
+    .side{
+      display:grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .mini{
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(11,18,32,0.08);
+      background: rgba(255,255,255,0.72);
+    }
+    .mini strong{ font-size: 13px; display:block; }
+    .mini span{ color: var(--muted); font-size: 12px; display:block; margin-top: 4px; }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Modal */
+    .modal{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2,6,23,0.55);
+      z-index: 999;
+      padding: 18px;
+    }
+    .modal.open{ display:flex; }
+    .modal-card{
+      width: min(980px, 100%);
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 22px;
+      box-shadow: 0 24px 70px rgba(2,6,23,0.35);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+    .modal-head{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(11,18,32,0.10);
+    }
+    .modal-head h3{
+      margin:0;
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .x{
+      border:none;
+      background: transparent;
+      font-size: 20px;
+      font-weight: 800;
+      cursor:pointer;
+      color: rgba(11,18,32,0.55);
+    }
+    .modal-body{ padding: 16px; }
+
+    .modal-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-footer{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(11,18,32,0.10);
+      background: rgba(11,18,32,0.02);
+    }
+
+    /* Toast */
+    .toast-wrap{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999;
+      display: grid;
+      gap: 10px;
+      width: min(420px, calc(100vw - 32px));
+    }
+    .toast{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(11,18,32,0.12);
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(2,6,23,0.14);
+      padding: 12px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      animation: pop 180ms ease-out;
+    }
+    @keyframes pop{
+      from{ transform: translateY(8px); opacity: 0; }
+      to{ transform: translateY(0); opacity: 1; }
+    }
+    .toast strong{ display:block; font-size: 13px; margin-bottom: 2px; }
+    .toast span{ display:block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .toast .close{
+      border:none; background: transparent; font-size: 16px; cursor:pointer;
+      color: rgba(11,18,32,0.55); padding: 0 6px; line-height: 1;
+    }
+
+    @media (max-width: 1100px){
+      .kpis{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      .grid2{ grid-template-columns: 1fr; }
+      .controls{ grid-template-columns: 1fr; }
+      .topbar-inner{ grid-template-columns: 150px 1fr; }
+      .right{ display:none; }
+      .modal-grid{ grid-template-columns: 1fr; }
+      .split{ grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px){
+      .nav{ grid-template-columns: repeat(3, 1fr); }
+      .kpis{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium" />
+      </div>
+
+      <nav class="nav" aria-label="ERP Navigation">
+        <a href="dashboard.html">Home</a>
+        <a href="account.html">Account</a>
+        <a class="active" href="crm.html">CRM</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="orders.html">Orders</a>
+        <a href="logistics.html">Logistics</a>
+        <a href="trends.html">Trends</a>
+      </nav>
+
+      <div class="right">
+        <div class="pill"><span class="dot"></span>Online</div>
+        <button class="btn secondary" type="button" onclick="seedCustomers()">Load Demo Customers</button>
+        <button class="btn secondary" type="button" onclick="seedSales()">Load Demo Sales</button>
+        <button class="btn" type="button" onclick="openCustomerModal()">Add Customer</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="headline">
+      <div>
+        <h1>CRM</h1>
+        <p>Customer directory, monthly order activity, retention signal, and most-ordered SKUs — designed for premium operational review.</p>
+      </div>
+
+      <div class="actions-top">
+        <button class="btn secondary" type="button" onclick="exportCustomersCSV()">Export Customers (CSV)</button>
+        <button class="btn secondary" type="button" onclick="exportSalesCSV()">Export Sales (CSV)</button>
+        <button class="btn" type="button" onclick="openCustomerModal()">Add Customer</button>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <section class="panel">
+      <h2>Customer Controls</h2>
+      <div class="goldline"></div>
+
+      <div class="controls">
+        <input id="search" class="input" placeholder="Search customer / location / contact..." oninput="render()" />
+
+        <select id="customerFilter" onchange="onCustomerFilterChange()"></select>
+
+        <select id="monthSelect" onchange="render()"></select>
+
+        <select id="windowSelect" onchange="render()">
+          <option value="3">Consistency: last 3 months</option>
+          <option value="6" selected>Consistency: last 6 months</option>
+          <option value="12">Consistency: last 12 months</option>
+        </select>
+      </div>
+
+      <div class="split" style="margin-top:12px;">
+        <div class="mini">
+          <strong>Retention (Month-over-Month)</strong>
+          <span id="retentionLine">—</span>
+        </div>
+        <div class="mini">
+          <strong>Data source</strong>
+          <span>Customers: <span id="custCount">0</span> · Sales records: <span id="salesCount">0</span> (localStorage)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="kpis" aria-label="CRM KPIs">
+      <article class="card">
+        <div class="card-top">
+          <div class="label">Orders in selected month</div>
+          <div class="chip good">Orders</div>
+        </div>
+        <div class="value" id="kpiOrders">0</div>
+        <div class="sub" id="kpiOrdersSub">—</div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div class="label">Active customers this month</div>
+          <div class="chip good">Engaged</div>
+        </div>
+        <div class="value" id="kpiActive">0</div>
+        <div class="sub">Customers with ≥ 1 order</div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div class="label">No sales this month</div>
+          <div class="chip bad">Attention</div>
+        </div>
+        <div class="sub">Customers with 0 orders (shown in red)</div>
+        <div class="kpi-list" id="noSalesList"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div class="label">Orders every month</div>
+          <div class="chip good">Consistent</div>
+        </div>
+        <div class="sub">Customers ordering every month in the selected window</div>
+        <div class="kpi-list" id="consistentList"></div>
+      </article>
+    </section>
+
+    <div class="grid2">
+      <!-- Customer Directory -->
+      <section class="panel">
+        <h2>Customer Directory</h2>
+        <div class="goldline"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Location</th>
+                <th>Orders (Selected Month)</th>
+                <th>Orders (Lifetime)</th>
+                <th>Top SKU (Lifetime)</th>
+                <th>Status (This Month)</th>
+              </tr>
+            </thead>
+            <tbody id="custBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Customer Detail -->
+      <aside class="side">
+        <section class="panel">
+          <h2>Customer Detail</h2>
+          <div class="goldline"></div>
+
+          <div class="mini" id="detailTop">
+            <strong>Select a customer</strong>
+            <span>Click a row in the directory or choose from the dropdown.</span>
+          </div>
+
+          <div class="mini" id="detailMonthly" style="display:none;">
+            <strong>Orders by Month (last 6)</strong>
+            <span id="monthlyLine">—</span>
+          </div>
+
+          <div class="mini" id="detailSku" style="display:none;">
+            <strong>Most Ordered SKU</strong>
+            <span id="skuLine">—</span>
+          </div>
+
+          <div class="mini" id="detailSkuMonth" style="display:none;">
+            <strong>Top SKU (selected month)</strong>
+            <span id="skuMonthLine">—</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Quick Actions</h2>
+          <div class="goldline"></div>
+          <div class="mini">
+            <strong>Add Customer</strong>
+            <span>Create a new customer profile (directory + KPIs update instantly).</span>
+            <div style="margin-top:10px;">
+              <button class="btn" style="width:100%;" onclick="openCustomerModal()">Add Customer</button>
+            </div>
+          </div>
+          <div class="mini">
+            <strong>Load Demo Data</strong>
+            <span>Populate customers + sales to test monthly orders, retention, red/green KPIs.</span>
+            <div style="margin-top:10px; display:grid; gap:8px;">
+              <button class="btn secondary" onclick="seedCustomers()">Load Demo Customers</button>
+              <button class="btn secondary" onclick="seedSales()">Load Demo Sales</button>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Add Customer Modal -->
+  <div class="modal" id="customerModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Add Customer</h3>
+        <button class="x" onclick="closeCustomerModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <input id="cName" class="input" placeholder="Customer Name (required)" />
+          <input id="cLocation" class="input" placeholder="Location (e.g., Austin, TX)" />
+          <input id="cType" class="input" placeholder="Customer Type (Retailer/Distributor/etc.)" />
+
+          <input id="cContact" class="input" placeholder="Contact Person" />
+          <input id="cEmail" class="input" placeholder="Email" />
+          <input id="cPhone" class="input" placeholder="Phone" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span class="muted">Customer directory and KPIs update immediately (localStorage).</span>
+        <div style="display:flex; gap:10px;">
+          <button class="btn secondary" onclick="closeCustomerModal()">Cancel</button>
+          <button class="btn" onclick="addCustomer()">Save Customer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script>
+    /***********************
+     * Storage
+     ***********************/
+    const KEY_CUSTOMERS = "stark_erp_crm_customers_v1";
+    const KEY_SALES     = "stark_erp_sales_v1";
+    const KEY_ITEMS     = "stark_erp_items_v1"; // optional: use inventory SKUs if available
+
+    function load(key, fallback){
+      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+      catch { return fallback; }
+    }
+    function save(key, data){
+      localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    let customers = load(KEY_CUSTOMERS, []);
+    let sales = load(KEY_SALES, []);
+
+    /***********************
+     * Helpers
+     ***********************/
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function toast(title, message){
+      const wrap = document.getElementById("toastWrap");
+      const el = document.createElement("div");
+      el.className = "toast";
+      el.innerHTML = `
+        <div>
+          <strong>${escapeHtml(title)}</strong>
+          <span>${escapeHtml(message)}</span>
+        </div>
+        <button class="close" aria-label="Close">×</button>
+      `;
+      el.querySelector(".close").onclick = () => el.remove();
+      wrap.prepend(el);
+      setTimeout(() => { if(el.isConnected) el.remove(); }, 9000);
+    }
+
+    function uid(prefix){
+      return `${prefix}-${Math.random().toString(16).slice(2,8).toUpperCase()}${Date.now().toString(16).slice(-4).toUpperCase()}`;
+    }
+
+    function toMonthKey(iso){
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      return `${y}-${m}`;
+    }
+
+    function monthLabel(ym){
+      const [y,m] = ym.split("-");
+      const d = new Date(Number(y), Number(m)-1, 1);
+      return d.toLocaleString(undefined, { month: "long", year: "numeric" });
+    }
+
+    function lastNMonths(endYm, n){
+      const [y,m] = endYm.split("-").map(Number);
+      const out = [];
+      const d = new Date(y, m-1, 1);
+      for (let i=0;i<n;i++){
+        const yy = d.getFullYear();
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        out.push(`${yy}-${mm}`);
+        d.setMonth(d.getMonth()-1);
+      }
+      return out.reverse();
+    }
+
+    function uniqueOrderCount(records){
+      const set = new Set();
+      for (const r of records){
+        const oid = r.orderId || r.so || r.id || "";
+        if (oid) set.add(String(oid));
+      }
+      return set.size;
+    }
+
+    function uniqueOrdersByCustomer(records){
+      const map = new Map(); // customer -> Set(orderId)
+      for (const r of records){
+        const c = (r.customer || "").trim();
+        if (!c) continue;
+        const oid = String(r.orderId || r.so || r.id || "");
+        if (!oid) continue;
+        if (!map.has(c)) map.set(c, new Set());
+        map.get(c).add(oid);
+      }
+      const out = new Map();
+      for (const [k,set] of map.entries()) out.set(k, set.size);
+      return out;
+    }
+
+    function skuUnits(records){
+      const m = new Map();
+      for (const r of records){
+        const sku = (r.sku || "").trim();
+        const qty = Number(r.qty || 0);
+        if (!sku || !Number.isFinite(qty)) continue;
+        m.set(sku, (m.get(sku) || 0) + qty);
+      }
+      return m;
+    }
+
+    function topSkuFromRecords(records){
+      const m = skuUnits(records);
+      const top = Array.from(m.entries()).sort((a,b)=>b[1]-a[1])[0];
+      return top ? { sku: top[0], units: top[1] } : null;
+    }
+
+    function normalizeCustomerName(name){
+      return (name || "").trim();
+    }
+
+    function getCustomerByName(name){
+      const n = normalizeCustomerName(name);
+      return customers.find(c => normalizeCustomerName(c.name) === n) || null;
+    }
+
+    function ensureCustomerExistsFromSales(){
+      // If sales contain customers not in customer master, we can surface them as "Imported"
+      const seen = new Set(customers.map(c => normalizeCustomerName(c.name)));
+      let changed = false;
+      for (const s of sales){
+        const cname = normalizeCustomerName(s.customer);
+        if (!cname) continue;
+        if (seen.has(cname)) continue;
+        customers.push({
+          id: uid("CUST"),
+          name: cname,
+          location: s.location || "",
+          type: "Imported",
+          contact: "",
+          email: "",
+          phone: "",
+          createdAt: Date.now()
+        });
+        seen.add(cname);
+        changed = true;
+      }
+      if (changed) save(KEY_CUSTOMERS, customers);
+    }
+
+    /***********************
+     * Controls init
+     ***********************/
+    function initMonthSelect(){
+      const monthSelect = document.getElementById("monthSelect");
+      const now = new Date();
+      const months = [];
+      for (let i=0;i<18;i++){
+        const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+        const ym = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+        months.push(ym);
+      }
+      monthSelect.innerHTML = months.map(ym => `<option value="${ym}">${escapeHtml(monthLabel(ym))}</option>`).join("");
+
+      // default: current month
+      const currentYm = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+      monthSelect.value = currentYm;
+    }
+
+    function rebuildCustomerDropdown(){
+      const sel = document.getElementById("customerFilter");
+      const list = customers.slice().sort((a,b)=> a.name.localeCompare(b.name));
+      sel.innerHTML =
+        `<option value="">All customers</option>` +
+        list.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("");
+    }
+
+    function onCustomerFilterChange(){
+      render();
+      // if a customer is chosen, set detail panel to that customer
+      const name = document.getElementById("customerFilter").value;
+      if (name) setSelectedCustomer(name);
+      else clearSelectedCustomer();
+    }
+
+    let selectedCustomerName = "";
+
+    function setSelectedCustomer(name){
+      selectedCustomerName = name || "";
+      renderCustomerDetail();
+    }
+
+    function clearSelectedCustomer(){
+      selectedCustomerName = "";
+      renderCustomerDetail();
+    }
+
+    /***********************
+     * Core render
+     ***********************/
+    function render(){
+      customers = load(KEY_CUSTOMERS, []);
+      sales = load(KEY_SALES, []);
+      ensureCustomerExistsFromSales();
+
+      document.getElementById("custCount").textContent = String(customers.length);
+      document.getElementById("salesCount").textContent = String(sales.length);
+
+      rebuildCustomerDropdown();
+
+      const searchQ = (document.getElementById("search").value || "").trim().toLowerCase();
+      const customerFilter = document.getElementById("customerFilter").value || "";
+      const month = document.getElementById("monthSelect").value;
+      const windowN = Number(document.getElementById("windowSelect").value || 6);
+
+      // Build sales slices
+      const salesInMonth = sales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === month);
+
+      // Customer list base
+      let baseCustomers = customers.slice();
+
+      // apply dropdown filter
+      if (customerFilter){
+        baseCustomers = baseCustomers.filter(c => normalizeCustomerName(c.name) === normalizeCustomerName(customerFilter));
+      }
+
+      // apply search
+      if (searchQ){
+        baseCustomers = baseCustomers.filter(c =>
+          (c.name||"").toLowerCase().includes(searchQ) ||
+          (c.location||"").toLowerCase().includes(searchQ) ||
+          (c.contact||"").toLowerCase().includes(searchQ) ||
+          (c.email||"").toLowerCase().includes(searchQ) ||
+          (c.phone||"").toLowerCase().includes(searchQ)
+        );
+      }
+
+      // KPIs
+      const ordersInMonth = customerFilter
+        ? uniqueOrderCount(salesInMonth.filter(s => normalizeCustomerName(s.customer) === normalizeCustomerName(customerFilter)))
+        : uniqueOrderCount(salesInMonth);
+
+      document.getElementById("kpiOrders").textContent = String(ordersInMonth);
+      document.getElementById("kpiOrdersSub").textContent =
+        customerFilter ? `Customer: ${customerFilter}` : `All customers · ${monthLabel(month)}`;
+
+      // active customers this month (based on orders)
+      const ordersByCustMonth = uniqueOrdersByCustomer(salesInMonth);
+      const activeCount = customerFilter
+        ? (ordersByCustMonth.get(normalizeCustomerName(customerFilter)) ? 1 : 0)
+        : Array.from(ordersByCustMonth.values()).filter(v => v > 0).length;
+
+      document.getElementById("kpiActive").textContent = String(activeCount);
+
+      // No-sales list (red)
+      const noSalesContainer = document.getElementById("noSalesList");
+      noSalesContainer.innerHTML = "";
+      if (customerFilter){
+        const cName = normalizeCustomerName(customerFilter);
+        const cnt = ordersByCustMonth.get(cName) || 0;
+        noSalesContainer.innerHTML =
+          cnt === 0
+            ? `<div class="kpi-item red"><div class="name">${escapeHtml(customerFilter)}</div><div class="meta">0 orders</div></div>`
+            : `<div class="kpi-item"><div class="name">${escapeHtml(customerFilter)}</div><div class="meta">${cnt} orders</div></div>`;
+      } else {
+        const noSales = baseCustomers
+          .map(c => ({ name: c.name, cnt: (ordersByCustMonth.get(normalizeCustomerName(c.name)) || 0), location: c.location || "" }))
+          .filter(x => x.cnt === 0)
+          .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
+          .slice(0, 30);
+
+        if (noSales.length === 0){
+          noSalesContainer.innerHTML = `<div class="muted">None — all customers have sales this month.</div>`;
+        } else {
+          for (const x of noSales){
+            const el = document.createElement("div");
+            el.className = "kpi-item red";
+            el.innerHTML = `<div><div class="name">${escapeHtml(x.name)}</div><div class="muted">${escapeHtml(x.location || "—")}</div></div><div class="meta">0</div>`;
+            el.onclick = () => { document.getElementById("customerFilter").value = x.name; onCustomerFilterChange(); };
+            noSalesContainer.appendChild(el);
+          }
+        }
+      }
+
+      // Consistent customers (green) over window
+      const consistentContainer = document.getElementById("consistentList");
+      consistentContainer.innerHTML = "";
+
+      const monthsWindow = lastNMonths(month, windowN);
+      const ordersByCustByMonth = new Map(); // customer -> Map(month->orderCount)
+      for (const ym of monthsWindow){
+        const sYM = sales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === ym);
+        const mapYM = uniqueOrdersByCustomer(sYM);
+        for (const [custName, count] of mapYM.entries()){
+          if (!ordersByCustByMonth.has(custName)) ordersByCustByMonth.set(custName, new Map());
+          ordersByCustByMonth.get(custName).set(ym, count);
+        }
+      }
+
+      function isConsistent(custName){
+        const m = ordersByCustByMonth.get(custName) || new Map();
+        for (const ym of monthsWindow){
+          if ((m.get(ym) || 0) <= 0) return false;
+        }
+        return true;
+      }
+
+      const candidates = customerFilter ? [customerFilter] : baseCustomers.map(c => c.name);
+      const consistent = candidates
+        .filter(Boolean)
+        .map(n => normalizeCustomerName(n))
+        .filter(n => n && isConsistent(n))
+        .map(n => getCustomerByName(n)?.name || n)
+        .sort((a,b)=>a.localeCompare(b))
+        .slice(0, 30);
+
+      if (customerFilter){
+        if (consistent.length){
+          consistentContainer.innerHTML = `<div class="kpi-item green"><div class="name">${escapeHtml(customerFilter)}</div><div class="meta">${windowN}/${windowN} months</div></div>`;
+        } else {
+          consistentContainer.innerHTML = `<div class="muted">Not consistent in the last ${windowN} months.</div>`;
+        }
+      } else {
+        if (consistent.length === 0){
+          consistentContainer.innerHTML = `<div class="muted">No customers meet “every month” in the last ${windowN} months.</div>`;
+        } else {
+          for (const name of consistent){
+            const el = document.createElement("div");
+            el.className = "kpi-item green";
+            el.innerHTML = `<div class="name">${escapeHtml(name)}</div><div class="meta">${windowN}/${windowN}</div>`;
+            el.onclick = () => { document.getElementById("customerFilter").value = name; onCustomerFilterChange(); };
+            consistentContainer.appendChild(el);
+          }
+        }
+      }
+
+      // Retention (month-over-month)
+      const prevMonth = monthsWindow.length >= 2 ? monthsWindow[monthsWindow.length - 2] : (() => {
+        const d = new Date();
+        d.setMonth(d.getMonth() - 1);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+      })();
+
+      const salesPrev = sales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === prevMonth);
+      const custPrev = new Set(salesPrev.map(s => normalizeCustomerName(s.customer)).filter(Boolean));
+      const custCur  = new Set(salesInMonth.map(s => normalizeCustomerName(s.customer)).filter(Boolean));
+
+      // retention defined as: customers who ordered in prev AND current / customers who ordered in prev
+      let numerator = 0;
+      for (const c of custPrev){ if (custCur.has(c)) numerator++; }
+      const denom = custPrev.size || 0;
+      const pct = denom ? Math.round((numerator / denom) * 100) : 0;
+
+      const retentionLine = document.getElementById("retentionLine");
+      if (denom === 0){
+        retentionLine.textContent = `No baseline customers in ${monthLabel(prevMonth)} to calculate retention.`;
+      } else {
+        retentionLine.textContent = `${pct}% retention — ${numerator}/${denom} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(month)}.`;
+      }
+
+      // Customer table
+      renderCustomerTable(baseCustomers, salesInMonth, month);
+
+      // Detail panel refresh if selected
+      renderCustomerDetail();
+    }
+
+    function renderCustomerTable(baseCustomers, salesInMonth, month){
+      const tbody = document.getElementById("custBody");
+      tbody.innerHTML = "";
+
+      // Build lifetime sets per customer
+      const lifetimeOrdersByCust = new Map(); // cust -> Set(orderId)
+      const lifetimeSkuUnitsByCust = new Map(); // cust -> Map(sku->units)
+
+      for (const s of sales){
+        const cust = normalizeCustomerName(s.customer);
+        if (!cust) continue;
+        const oid = String(s.orderId || s.so || s.id || "");
+        if (oid){
+          if (!lifetimeOrdersByCust.has(cust)) lifetimeOrdersByCust.set(cust, new Set());
+          lifetimeOrdersByCust.get(cust).add(oid);
+        }
+        const sku = (s.sku || "").trim();
+        const qty = Number(s.qty || 0);
+        if (sku && Number.isFinite(qty)){
+          if (!lifetimeSkuUnitsByCust.has(cust)) lifetimeSkuUnitsByCust.set(cust, new Map());
+          const m = lifetimeSkuUnitsByCust.get(cust);
+          m.set(sku, (m.get(sku) || 0) + qty);
+        }
+      }
+
+      const ordersThisMonthByCust = uniqueOrdersByCustomer(salesInMonth);
+
+      const rows = baseCustomers.slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
+
+      if (rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">No customers match your search/filter.</td></tr>`;
+        return;
+      }
+
+      for (const c of rows){
+        const cname = normalizeCustomerName(c.name);
+        const mOrders = ordersThisMonthByCust.get(cname) || 0;
+        const lOrders = lifetimeOrdersByCust.get(cname)?.size || 0;
+
+        const skuMap = lifetimeSkuUnitsByCust.get(cname) || new Map();
+        const top = Array.from(skuMap.entries()).sort((a,b)=>b[1]-a[1])[0];
+        const topSku = top ? `${top[0]} (${top[1]})` : "—";
+
+        const statusTag = mOrders === 0
+          ? `<span class="pilltag bad">No sales</span>`
+          : `<span class="pilltag good">Active</span>`;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(c.name)}</strong><div class="muted">${escapeHtml(c.type || "Customer")}</div></td>
+          <td>${escapeHtml(c.location || "—")}</td>
+          <td>${mOrders}</td>
+          <td>${lOrders}</td>
+          <td>${escapeHtml(topSku)}</td>
+          <td>${statusTag}</td>
+        `;
+        tr.onclick = () => {
+          document.getElementById("customerFilter").value = c.name;
+          onCustomerFilterChange();
+        };
+        tbody.appendChild(tr);
+      }
+    }
+
+    /***********************
+     * Customer Detail
+     ***********************/
+    function renderCustomerDetail(){
+      const detailTop = document.getElementById("detailTop");
+      const detailMonthly = document.getElementById("detailMonthly");
+      const detailSku = document.getElementById("detailSku");
+      const detailSkuMonth = document.getElementById("detailSkuMonth");
+
+      const month = document.getElementById("monthSelect").value;
+
+      const nameFromDropdown = document.getElementById("customerFilter").value || "";
+      const name = selectedCustomerName || nameFromDropdown || "";
+
+      if (!name){
+        detailTop.innerHTML = `<strong>Select a customer</strong><span>Click a row in the directory or choose from the dropdown.</span>`;
+        detailMonthly.style.display = "none";
+        detailSku.style.display = "none";
+        detailSkuMonth.style.display = "none";
+        return;
+      }
+
+      const cust = getCustomerByName(name);
+      const location = cust?.location || "";
+
+      // Sales for this customer
+      const custSales = sales.filter(s => normalizeCustomerName(s.customer) === normalizeCustomerName(name));
+      const custSalesMonth = custSales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === month);
+
+      // Monthly orders last 6 months (ending selected month)
+      const months6 = lastNMonths(month, 6);
+      const counts = months6.map(ym => {
+        const rec = custSales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === ym);
+        const n = uniqueOrderCount(rec);
+        return { ym, n };
+      });
+
+      // Lifetime top sku
+      const topLife = topSkuFromRecords(custSales);
+      const topMonth = topSkuFromRecords(custSalesMonth);
+
+      detailTop.innerHTML = `
+        <strong>${escapeHtml(name)}</strong>
+        <span>${escapeHtml(location || "—")} · Lifetime orders: ${uniqueOrderCount(custSales)} · Selected month: ${uniqueOrderCount(custSalesMonth)}</span>
+      `;
+
+      detailMonthly.style.display = "block";
+      document.getElementById("monthlyLine").innerHTML =
+        counts.map(x => `<span class="pilltag ${x.n===0 ? "bad":"good"}" style="margin-right:6px;">${escapeHtml(x.ym)}: ${x.n}</span>`).join(" ");
+
+      detailSku.style.display = "block";
+      document.getElementById("skuLine").textContent =
+        topLife ? `${topLife.sku} · ${topLife.units} units (lifetime)` : "No SKU history";
+
+      detailSkuMonth.style.display = "block";
+      document.getElementById("skuMonthLine").textContent =
+        topMonth ? `${topMonth.sku} · ${topMonth.units} units (${monthLabel(month)})` : `No orders in ${monthLabel(month)}`;
+    }
+
+    /***********************
+     * Customer modal
+     ***********************/
+    function openCustomerModal(){
+      document.getElementById("cName").value = "";
+      document.getElementById("cLocation").value = "";
+      document.getElementById("cType").value = "";
+      document.getElementById("cContact").value = "";
+      document.getElementById("cEmail").value = "";
+      document.getElementById("cPhone").value = "";
+      document.getElementById("customerModal").classList.add("open");
+    }
+    function closeCustomerModal(){
+      document.getElementById("customerModal").classList.remove("open");
+    }
+
+    function addCustomer(){
+      const name = (document.getElementById("cName").value || "").trim();
+      const location = (document.getElementById("cLocation").value || "").trim();
+      const type = (document.getElementById("cType").value || "").trim() || "Customer";
+      const contact = (document.getElementById("cContact").value || "").trim();
+      const email = (document.getElementById("cEmail").value || "").trim();
+      const phone = (document.getElementById("cPhone").value || "").trim();
+
+      if (!name) return toast("Missing field", "Customer name is required.");
+
+      const exists = customers.some(c => normalizeCustomerName(c.name) === normalizeCustomerName(name));
+      if (exists) return toast("Duplicate customer", "A customer with this name already exists.");
+
+      customers.push({
+        id: uid("CUST"),
+        name,
+        location,
+        type,
+        contact,
+        email,
+        phone,
+        createdAt: Date.now()
+      });
+
+      save(KEY_CUSTOMERS, customers);
+      closeCustomerModal();
+      toast("Customer added", `${name} added to CRM.`);
+      document.getElementById("customerFilter").value = name;
+      setSelectedCustomer(name);
+      render();
+    }
+
+    /***********************
+     * Demo data
+     ***********************/
+    function seedCustomers(){
+      customers = load(KEY_CUSTOMERS, []);
+      if (customers.length > 0){
+        const ok = confirm("Demo customers will add additional customers. Continue?");
+        if (!ok) return;
+      }
+
+      const demo = [
+        { name:"Asha Retail", location:"Austin, TX", type:"Retailer", contact:"Asha K.", email:"asha@asharetail.com", phone:"+1 512-555-0123" },
+        { name:"Blue Harbor Boutique", location:"Miami, FL", type:"Retailer", contact:"Mia H.", email:"orders@blueharbor.com", phone:"+1 305-555-0198" },
+        { name:"Citrine Luxe", location:"New York, NY", type:"Distributor", contact:"Noah C.", email:"ops@citrineluxe.com", phone:"+1 212-555-0144" },
+        { name:"Desert Pearl", location:"Phoenix, AZ", type:"Retailer", contact:"Ravi D.", email:"hello@desertpearl.com", phone:"+1 602-555-0110" },
+        { name:"Emerald Lane", location:"Seattle, WA", type:"Retailer", contact:"Eva L.", email:"purchasing@emeraldlane.com", phone:"+1 206-555-0177" },
+        { name:"Frost & Co", location:"Chicago, IL", type:"Retailer", contact:"Finn F.", email:"buy@frostco.com", phone:"+1 312-555-0180" },
+        { name:"Golden Arc Trading", location:"Dallas, TX", type:"Distributor", contact:"Gina A.", email:"trade@goldenarc.com", phone:"+1 469-555-0139" },
+        { name:"Harborline Supply", location:"Los Angeles, CA", type:"Distributor", contact:"Hank S.", email:"supply@harborline.com", phone:"+1 213-555-0162" }
+      ];
+
+      const existing = new Set(customers.map(c => normalizeCustomerName(c.name)));
+      for (const d of demo){
+        if (existing.has(normalizeCustomerName(d.name))) continue;
+        customers.push({ id: uid("CUST"), createdAt: Date.now(), ...d });
+        existing.add(normalizeCustomerName(d.name));
+      }
+
+      save(KEY_CUSTOMERS, customers);
+      toast("Demo customers loaded", "Customer directory populated.");
+      render();
+    }
+
+    function seedSales(){
+      sales = load(KEY_SALES, []);
+      customers = load(KEY_CUSTOMERS, []);
+      if (customers.length === 0){
+        toast("No customers", "Load demo customers first (or add customers) to generate sales.");
+        return;
+      }
+
+      const items = load(KEY_ITEMS, []);
+      const skuPool = items.length ? items.map(i => i.sku).filter(Boolean) : ["NK-1001","NK-1002","RG-2001","BX-9001","LB-3001","BR-1101","ER-4040"];
+
+      const custPool = customers.map(c => ({ name: c.name, location: c.location || "" }));
+
+      const now = new Date();
+      // generate ~10 months of activity with different patterns so red/green KPIs show
+      const monthsToGen = 10;
+      const add = [];
+      let soBase = 9000 + Math.floor(Math.random()*800);
+
+      for (let mi=0; mi<monthsToGen; mi++){
+        const dMonth = new Date(now.getFullYear(), now.getMonth()-mi, 1);
+        const ym = `${dMonth.getFullYear()}-${String(dMonth.getMonth()+1).padStart(2,"0")}`;
+
+        for (const c of custPool){
+          // Pattern logic:
+          // - Some customers will be consistent, some will skip months
+          const nameKey = normalizeCustomerName(c.name);
+          const isConsistent = ["Asha Retail","Citrine Luxe","Emerald Lane"].some(x => normalizeCustomerName(x) === nameKey);
+          const isOftenInactive = ["Harborline Supply","Frost & Co"].some(x => normalizeCustomerName(x) === nameKey);
+
+          const roll = Math.random();
+          let ordersCount = 0;
+
+          if (isConsistent){
+            ordersCount = 1 + (roll < 0.25 ? 1 : 0); // 1-2 orders each month
+          } else if (isOftenInactive){
+            ordersCount = roll < 0.35 ? 1 : 0; // mostly zero months
+          } else {
+            ordersCount = roll < 0.70 ? 1 : 0; // mixed
+            if (roll < 0.15) ordersCount = 2;
+          }
+
+          for (let oi=0; oi<ordersCount; oi++){
+            const orderId = `SO-${soBase++}`;
+            const day = 1 + Math.floor(Math.random()*26);
+            const date = new Date(dMonth.getFullYear(), dMonth.getMonth(), day, 10+Math.floor(Math.random()*7), 0, 0);
+
+            const lines = 1 + Math.floor(Math.random()*3);
+            for (let li=0; li<lines; li++){
+              const sku = skuPool[Math.floor(Math.random()*skuPool.length)];
+              const qty = 1 + Math.floor(Math.random()*5);
+              const unitPrice = 25 + Math.floor(Math.random()*250);
+              add.push({
+                date: date.toISOString(),
+                sku,
+                orderId,
+                customer: c.name,
+                location: c.location || "",
+                qty,
+                unitPrice
+              });
+            }
+          }
+        }
+      }
+
+      sales = sales.concat(add);
+      save(KEY_SALES, sales);
+      toast("Demo sales loaded", "Monthly orders, retention, red/green KPIs are now active.");
+      render();
+    }
+
+    /***********************
+     * Export
+     ***********************/
+    function downloadText(filename, text){
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportCustomersCSV(){
+      const rows = [["Customer","Location","Type","Contact","Email","Phone"]];
+      for (const c of customers){
+        rows.push([c.name||"", c.location||"", c.type||"", c.contact||"", c.email||"", c.phone||""]);
+      }
+      const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+      downloadText("crm_customers.csv", csv);
+      toast("Exported", "crm_customers.csv downloaded.");
+    }
+
+    function exportSalesCSV(){
+      const rows = [["Date","OrderId","Customer","Location","SKU","Qty","UnitPrice"]];
+      for (const s of sales){
+        rows.push([s.date||"", s.orderId||"", s.customer||"", s.location||"", s.sku||"", s.qty||"", s.unitPrice||""]);
+      }
+      const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+      downloadText("crm_sales.csv", csv);
+      toast("Exported", "crm_sales.csv downloaded.");
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    initMonthSelect();
+    rebuildCustomerDropdown();
+    render();
+  </script>
+</body>
+</html>
