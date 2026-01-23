@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -44,7 +44,7 @@
         linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
     }
 
-    /* Topbar */
+    /* ===== TOPBAR (ORDERED + RESPONSIVE) ===== */
     .topbar{
       position: sticky;
       top: 0;
@@ -57,48 +57,49 @@
     .topbar-inner{
       max-width: 1240px;
       margin: 0 auto;
-      padding: 14px 18px;
-      display: grid;
-      grid-template-columns: 150px 1fr 320px;
-      align-items: center;
+      padding: 12px 18px;
+      display:flex;
+      align-items:center;
       gap: 14px;
     }
 
+    .logo{ flex: 0 0 auto; display:flex; align-items:center; }
     .logo img{ width: 125px; height:auto; display:block; }
 
     .nav{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
+      flex: 1 1 auto;
+      display:flex;
+      justify-content: center;
       gap: 10px;
-      align-items:center;
+      flex-wrap: wrap;
+      min-width: 320px;
     }
 
     .nav a{
       text-decoration:none;
       color: rgba(11,18,32,0.82);
       text-align:center;
-      padding: 10px 8px;
+      padding: 10px 12px;
       border-radius: 12px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       transition: background 160ms ease, transform 160ms ease;
       white-space: nowrap;
     }
-
     .nav a:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
-
     .nav a.active{
       background: linear-gradient(180deg, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0.08) 100%);
       color: var(--primary);
-      font-weight: 600;
       border: 1px solid rgba(31,86,216,0.18);
     }
 
-    .right{
+    .top-actions{
+      flex: 0 0 auto;
       display:flex;
-      justify-content:flex-end;
       align-items:center;
-      gap:10px;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 260px;
     }
 
     .pill{
@@ -114,7 +115,6 @@
       color: rgba(11,18,32,0.80);
       white-space: nowrap;
     }
-
     .dot{ width:8px;height:8px;border-radius:999px;background:var(--good); }
 
     .btn{
@@ -123,7 +123,7 @@
       border-radius: 12px;
       background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
       color:#fff;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 13px;
       cursor:pointer;
       padding: 0 12px;
@@ -138,21 +138,71 @@
       color: rgba(11,18,32,0.84);
       border: 1px solid rgba(11,18,32,0.12);
       box-shadow: none;
+      font-weight: 800;
     }
     .btn.secondary:hover{ background: rgba(11,18,32,0.06); box-shadow:none; }
 
+    .dd{
+      position: relative;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .dd-menu{
+      position:absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 240px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(11,18,32,0.12);
+      border-radius: 16px;
+      box-shadow: 0 18px 44px rgba(2,6,23,0.16);
+      padding: 8px;
+      display:none;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+    .dd.open .dd-menu{ display:block; }
+    .dd-item{
+      width:100%;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: transparent;
+      cursor:pointer;
+      text-align:left;
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(11,18,32,0.86);
+    }
+    .dd-item:hover{
+      background: rgba(31,86,216,0.06);
+      border-color: rgba(31,86,216,0.12);
+    }
+    .dd-hint{
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* ===== PAGE ===== */
     .wrap{
       max-width: 1240px;
       margin: 0 auto;
-      padding: 24px 18px 56px;
+      padding: 22px 18px 56px;
     }
 
     .headline{
       display:flex;
-      align-items:flex-end;
+      align-items:flex-start;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
     .headline h1{
       margin:0;
@@ -164,9 +214,9 @@
       color: var(--muted);
       font-size: 14px;
       line-height: 1.6;
-      max-width: 860px;
+      max-width: 900px;
     }
-    .actions-top{
+    .page-actions{
       display:flex;
       gap:10px;
       align-items:center;
@@ -178,7 +228,7 @@
       display:grid;
       grid-template-columns: repeat(4, minmax(220px, 1fr));
       gap: 16px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     .card{
@@ -192,7 +242,6 @@
       backdrop-filter: blur(8px);
       min-height: 130px;
     }
-
     .card::before{
       content:"";
       position:absolute;
@@ -219,15 +268,13 @@
       position: relative;
       z-index: 1;
     }
-
     .label{
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 0.5px;
       color: rgba(11,18,32,0.72);
       text-transform: uppercase;
     }
-
     .chip{
       font-size: 12px;
       padding: 6px 10px;
@@ -236,15 +283,15 @@
       border: 1px solid rgba(11,18,32,0.10);
       color: rgba(11,18,32,0.78);
       white-space: nowrap;
+      font-weight: 800;
     }
     .chip.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
-    .chip.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
     .chip.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
 
     .value{
       margin-top: 14px;
       font-size: 30px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -0.7px;
       position: relative;
       z-index: 1;
@@ -279,7 +326,7 @@
       background: rgba(255,255,255,0.72);
       font-size: 12px;
     }
-    .kpi-item .name{ font-weight: 800; }
+    .kpi-item .name{ font-weight: 900; }
     .kpi-item .meta{ color: var(--muted); white-space: nowrap; }
     .kpi-item.red{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.06); }
     .kpi-item.green{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.06); }
@@ -293,11 +340,10 @@
       backdrop-filter: blur(8px);
       margin-top: 16px;
     }
-
     .panel h2{
       margin: 0 0 10px;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -0.2px;
     }
 
@@ -309,7 +355,7 @@
 
     .controls{
       display:grid;
-      grid-template-columns: 1.4fr 1fr 0.8fr 0.9fr;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
       gap: 10px;
       margin-top: 12px;
     }
@@ -345,11 +391,7 @@
       background: rgba(255,255,255,0.78);
     }
 
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
+    table{ width:100%; border-collapse: collapse; font-size: 13px; }
     thead th{
       text-align:left;
       padding: 12px;
@@ -359,6 +401,7 @@
       text-transform: uppercase;
       background: rgba(11,18,32,0.03);
       border-bottom: 1px solid rgba(11,18,32,0.08);
+      white-space: nowrap;
     }
     tbody td{
       padding: 12px;
@@ -374,19 +417,14 @@
       border: 1px solid rgba(11,18,32,0.10);
       background: rgba(11,18,32,0.05);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 900;
       color: rgba(11,18,32,0.78);
       white-space: nowrap;
     }
     .pilltag.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
     .pilltag.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
-    .pilltag.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
 
-    .side{
-      display:grid;
-      gap: 16px;
-      align-content: start;
-    }
+    .side{ display:grid; gap: 16px; align-content: start; }
 
     .mini{
       padding: 12px;
@@ -394,8 +432,8 @@
       border: 1px solid rgba(11,18,32,0.08);
       background: rgba(255,255,255,0.72);
     }
-    .mini strong{ font-size: 13px; display:block; }
-    .mini span{ color: var(--muted); font-size: 12px; display:block; margin-top: 4px; }
+    .mini strong{ font-size: 13px; display:block; font-weight: 900; }
+    .mini span{ color: var(--muted); font-size: 12px; display:block; margin-top: 4px; line-height: 1.5; }
 
     .split{
       display:grid;
@@ -431,27 +469,17 @@
       justify-content: space-between;
       border-bottom: 1px solid rgba(11,18,32,0.10);
     }
-    .modal-head h3{
-      margin:0;
-      font-size: 15px;
-      font-weight: 900;
-    }
+    .modal-head h3{ margin:0; font-size: 15px; font-weight: 900; }
     .x{
-      border:none;
-      background: transparent;
-      font-size: 20px;
-      font-weight: 800;
-      cursor:pointer;
-      color: rgba(11,18,32,0.55);
+      border:none; background: transparent; font-size: 20px; font-weight: 900;
+      cursor:pointer; color: rgba(11,18,32,0.55);
     }
     .modal-body{ padding: 16px; }
-
     .modal-grid{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
     }
-
     .modal-footer{
       display:flex;
       align-items:center;
@@ -459,7 +487,10 @@
       padding: 14px 16px;
       border-top: 1px solid rgba(11,18,32,0.10);
       background: rgba(11,18,32,0.02);
+      gap: 10px;
+      flex-wrap: wrap;
     }
+    .muted{ color: var(--muted); font-size: 12px; }
 
     /* Toast */
     .toast-wrap{
@@ -488,26 +519,27 @@
       from{ transform: translateY(8px); opacity: 0; }
       to{ transform: translateY(0); opacity: 1; }
     }
-    .toast strong{ display:block; font-size: 13px; margin-bottom: 2px; }
+    .toast strong{ display:block; font-size: 13px; margin-bottom: 2px; font-weight: 900; }
     .toast span{ display:block; color: var(--muted); font-size: 12px; line-height: 1.4; }
     .toast .close{
       border:none; background: transparent; font-size: 16px; cursor:pointer;
       color: rgba(11,18,32,0.55); padding: 0 6px; line-height: 1;
     }
 
+    /* Responsive */
     @media (max-width: 1100px){
       .kpis{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
       .grid2{ grid-template-columns: 1fr; }
       .controls{ grid-template-columns: 1fr; }
-      .topbar-inner{ grid-template-columns: 150px 1fr; }
-      .right{ display:none; }
       .modal-grid{ grid-template-columns: 1fr; }
       .split{ grid-template-columns: 1fr; }
+      .topbar-inner{ flex-wrap: wrap; }
+      .nav{ justify-content: flex-start; min-width: 100%; }
+      .top-actions{ margin-left: auto; }
     }
-
     @media (max-width: 700px){
-      .nav{ grid-template-columns: repeat(3, 1fr); }
       .kpis{ grid-template-columns: 1fr; }
+      .top-actions{ width:100%; justify-content: flex-end; }
     }
   </style>
 </head>
@@ -529,10 +561,21 @@
         <a href="trends.html">Trends</a>
       </nav>
 
-      <div class="right">
+      <div class="top-actions">
         <div class="pill"><span class="dot"></span>Online</div>
-        <button class="btn secondary" type="button" onclick="seedCustomers()">Load Demo Customers</button>
-        <button class="btn secondary" type="button" onclick="seedSales()">Load Demo Sales</button>
+
+        <div class="dd" id="demoDD">
+          <button class="btn secondary" type="button" onclick="toggleDD('demoDD')">Demo ▾</button>
+          <div class="dd-menu" role="menu" aria-label="Demo menu">
+            <button class="dd-item" type="button" onclick="seedCustomers(); closeDD('demoDD')">
+              Load Demo Customers <span class="dd-hint">CRM</span>
+            </button>
+            <button class="dd-item" type="button" onclick="seedSales(); closeDD('demoDD')">
+              Load Demo Sales <span class="dd-hint">Orders</span>
+            </button>
+          </div>
+        </div>
+
         <button class="btn" type="button" onclick="openCustomerModal()">Add Customer</button>
       </div>
     </div>
@@ -545,9 +588,19 @@
         <p>Customer directory, monthly order activity, retention signal, and most-ordered SKUs — designed for premium operational review.</p>
       </div>
 
-      <div class="actions-top">
-        <button class="btn secondary" type="button" onclick="exportCustomersCSV()">Export Customers (CSV)</button>
-        <button class="btn secondary" type="button" onclick="exportSalesCSV()">Export Sales (CSV)</button>
+      <div class="page-actions">
+        <div class="dd" id="actionsDD">
+          <button class="btn secondary" type="button" onclick="toggleDD('actionsDD')">Actions ▾</button>
+          <div class="dd-menu" role="menu" aria-label="Actions menu">
+            <button class="dd-item" type="button" onclick="exportCustomersCSV(); closeDD('actionsDD')">
+              Export Customers (CSV) <span class="dd-hint">CRM</span>
+            </button>
+            <button class="dd-item" type="button" onclick="exportSalesCSV(); closeDD('actionsDD')">
+              Export Sales (CSV) <span class="dd-hint">Orders</span>
+            </button>
+          </div>
+        </div>
+
         <button class="btn" type="button" onclick="openCustomerModal()">Add Customer</button>
       </div>
     </div>
@@ -559,11 +612,8 @@
 
       <div class="controls">
         <input id="search" class="input" placeholder="Search customer / location / contact..." oninput="render()" />
-
         <select id="customerFilter" onchange="onCustomerFilterChange()"></select>
-
         <select id="monthSelect" onchange="render()"></select>
-
         <select id="windowSelect" onchange="render()">
           <option value="3">Consistency: last 3 months</option>
           <option value="6" selected>Consistency: last 6 months</option>
@@ -675,6 +725,7 @@
         <section class="panel">
           <h2>Quick Actions</h2>
           <div class="goldline"></div>
+
           <div class="mini">
             <strong>Add Customer</strong>
             <span>Create a new customer profile (directory + KPIs update instantly).</span>
@@ -682,6 +733,7 @@
               <button class="btn" style="width:100%;" onclick="openCustomerModal()">Add Customer</button>
             </div>
           </div>
+
           <div class="mini">
             <strong>Load Demo Data</strong>
             <span>Populate customers + sales to test monthly orders, retention, red/green KPIs.</span>
@@ -729,19 +781,39 @@
 
   <script>
     /***********************
+     * Dropdown helpers (premium header)
+     ***********************/
+    function toggleDD(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const isOpen = el.classList.contains("open");
+      closeAllDD();
+      if (!isOpen) el.classList.add("open");
+    }
+    function closeDD(id){
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("open");
+    }
+    function closeAllDD(){
+      document.querySelectorAll(".dd.open").forEach(x => x.classList.remove("open"));
+    }
+    document.addEventListener("click", (e) => {
+      const inside = e.target.closest(".dd");
+      if (!inside) closeAllDD();
+    });
+
+    /***********************
      * Storage
      ***********************/
     const KEY_CUSTOMERS = "stark_erp_crm_customers_v1";
     const KEY_SALES     = "stark_erp_sales_v1";
-    const KEY_ITEMS     = "stark_erp_items_v1"; // optional: use inventory SKUs if available
+    const KEY_ITEMS     = "stark_erp_items_v1"; // optional
 
     function load(key, fallback){
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
     }
-    function save(key, data){
-      localStorage.setItem(key, JSON.stringify(data));
-    }
+    function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
 
     let customers = load(KEY_CUSTOMERS, []);
     let sales = load(KEY_SALES, []);
@@ -815,7 +887,7 @@
     }
 
     function uniqueOrdersByCustomer(records){
-      const map = new Map(); // customer -> Set(orderId)
+      const map = new Map();
       for (const r of records){
         const c = (r.customer || "").trim();
         if (!c) continue;
@@ -846,17 +918,13 @@
       return top ? { sku: top[0], units: top[1] } : null;
     }
 
-    function normalizeCustomerName(name){
-      return (name || "").trim();
-    }
-
+    function normalizeCustomerName(name){ return (name || "").trim(); }
     function getCustomerByName(name){
       const n = normalizeCustomerName(name);
       return customers.find(c => normalizeCustomerName(c.name) === n) || null;
     }
 
     function ensureCustomerExistsFromSales(){
-      // If sales contain customers not in customer master, we can surface them as "Imported"
       const seen = new Set(customers.map(c => normalizeCustomerName(c.name)));
       let changed = false;
       for (const s of sales){
@@ -893,7 +961,6 @@
       }
       monthSelect.innerHTML = months.map(ym => `<option value="${ym}">${escapeHtml(monthLabel(ym))}</option>`).join("");
 
-      // default: current month
       const currentYm = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
       monthSelect.value = currentYm;
     }
@@ -908,19 +975,16 @@
 
     function onCustomerFilterChange(){
       render();
-      // if a customer is chosen, set detail panel to that customer
       const name = document.getElementById("customerFilter").value;
       if (name) setSelectedCustomer(name);
       else clearSelectedCustomer();
     }
 
     let selectedCustomerName = "";
-
     function setSelectedCustomer(name){
       selectedCustomerName = name || "";
       renderCustomerDetail();
     }
-
     function clearSelectedCustomer(){
       selectedCustomerName = "";
       renderCustomerDetail();
@@ -944,18 +1008,14 @@
       const month = document.getElementById("monthSelect").value;
       const windowN = Number(document.getElementById("windowSelect").value || 6);
 
-      // Build sales slices
       const salesInMonth = sales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === month);
 
-      // Customer list base
       let baseCustomers = customers.slice();
 
-      // apply dropdown filter
       if (customerFilter){
         baseCustomers = baseCustomers.filter(c => normalizeCustomerName(c.name) === normalizeCustomerName(customerFilter));
       }
 
-      // apply search
       if (searchQ){
         baseCustomers = baseCustomers.filter(c =>
           (c.name||"").toLowerCase().includes(searchQ) ||
@@ -966,7 +1026,6 @@
         );
       }
 
-      // KPIs
       const ordersInMonth = customerFilter
         ? uniqueOrderCount(salesInMonth.filter(s => normalizeCustomerName(s.customer) === normalizeCustomerName(customerFilter)))
         : uniqueOrderCount(salesInMonth);
@@ -975,7 +1034,6 @@
       document.getElementById("kpiOrdersSub").textContent =
         customerFilter ? `Customer: ${customerFilter}` : `All customers · ${monthLabel(month)}`;
 
-      // active customers this month (based on orders)
       const ordersByCustMonth = uniqueOrdersByCustomer(salesInMonth);
       const activeCount = customerFilter
         ? (ordersByCustMonth.get(normalizeCustomerName(customerFilter)) ? 1 : 0)
@@ -1018,7 +1076,7 @@
       consistentContainer.innerHTML = "";
 
       const monthsWindow = lastNMonths(month, windowN);
-      const ordersByCustByMonth = new Map(); // customer -> Map(month->orderCount)
+      const ordersByCustByMonth = new Map();
       for (const ym of monthsWindow){
         const sYM = sales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === ym);
         const mapYM = uniqueOrdersByCustomer(sYM);
@@ -1027,7 +1085,6 @@
           ordersByCustByMonth.get(custName).set(ym, count);
         }
       }
-
       function isConsistent(custName){
         const m = ordersByCustByMonth.get(custName) || new Map();
         for (const ym of monthsWindow){
@@ -1035,7 +1092,6 @@
         }
         return true;
       }
-
       const candidates = customerFilter ? [customerFilter] : baseCustomers.map(c => c.name);
       const consistent = candidates
         .filter(Boolean)
@@ -1065,10 +1121,10 @@
         }
       }
 
-      // Retention (month-over-month)
-      const prevMonth = monthsWindow.length >= 2 ? monthsWindow[monthsWindow.length - 2] : (() => {
-        const d = new Date();
-        d.setMonth(d.getMonth() - 1);
+      // Retention (MoM)
+      const prevMonth = (() => {
+        const [y,m] = month.split("-").map(Number);
+        const d = new Date(y, m-2, 1);
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
       })();
 
@@ -1076,7 +1132,6 @@
       const custPrev = new Set(salesPrev.map(s => normalizeCustomerName(s.customer)).filter(Boolean));
       const custCur  = new Set(salesInMonth.map(s => normalizeCustomerName(s.customer)).filter(Boolean));
 
-      // retention defined as: customers who ordered in prev AND current / customers who ordered in prev
       let numerator = 0;
       for (const c of custPrev){ if (custCur.has(c)) numerator++; }
       const denom = custPrev.size || 0;
@@ -1089,29 +1144,27 @@
         retentionLine.textContent = `${pct}% retention — ${numerator}/${denom} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(month)}.`;
       }
 
-      // Customer table
-      renderCustomerTable(baseCustomers, salesInMonth, month);
-
-      // Detail panel refresh if selected
+      renderCustomerTable(baseCustomers, salesInMonth);
       renderCustomerDetail();
     }
 
-    function renderCustomerTable(baseCustomers, salesInMonth, month){
+    function renderCustomerTable(baseCustomers, salesInMonth){
       const tbody = document.getElementById("custBody");
       tbody.innerHTML = "";
 
-      // Build lifetime sets per customer
-      const lifetimeOrdersByCust = new Map(); // cust -> Set(orderId)
-      const lifetimeSkuUnitsByCust = new Map(); // cust -> Map(sku->units)
+      const lifetimeOrdersByCust = new Map();
+      const lifetimeSkuUnitsByCust = new Map();
 
       for (const s of sales){
         const cust = normalizeCustomerName(s.customer);
         if (!cust) continue;
+
         const oid = String(s.orderId || s.so || s.id || "");
         if (oid){
           if (!lifetimeOrdersByCust.has(cust)) lifetimeOrdersByCust.set(cust, new Set());
           lifetimeOrdersByCust.get(cust).add(oid);
         }
+
         const sku = (s.sku || "").trim();
         const qty = Number(s.qty || 0);
         if (sku && Number.isFinite(qty)){
@@ -1122,7 +1175,6 @@
       }
 
       const ordersThisMonthByCust = uniqueOrdersByCustomer(salesInMonth);
-
       const rows = baseCustomers.slice().sort((a,b)=> (a.name||"").localeCompare(b.name||""));
 
       if (rows.length === 0){
@@ -1160,9 +1212,6 @@
       }
     }
 
-    /***********************
-     * Customer Detail
-     ***********************/
     function renderCustomerDetail(){
       const detailTop = document.getElementById("detailTop");
       const detailMonthly = document.getElementById("detailMonthly");
@@ -1170,7 +1219,6 @@
       const detailSkuMonth = document.getElementById("detailSkuMonth");
 
       const month = document.getElementById("monthSelect").value;
-
       const nameFromDropdown = document.getElementById("customerFilter").value || "";
       const name = selectedCustomerName || nameFromDropdown || "";
 
@@ -1185,11 +1233,9 @@
       const cust = getCustomerByName(name);
       const location = cust?.location || "";
 
-      // Sales for this customer
       const custSales = sales.filter(s => normalizeCustomerName(s.customer) === normalizeCustomerName(name));
       const custSalesMonth = custSales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === month);
 
-      // Monthly orders last 6 months (ending selected month)
       const months6 = lastNMonths(month, 6);
       const counts = months6.map(ym => {
         const rec = custSales.filter(s => toMonthKey(s.date || s.ts || s.createdAt) === ym);
@@ -1197,7 +1243,6 @@
         return { ym, n };
       });
 
-      // Lifetime top sku
       const topLife = topSkuFromRecords(custSales);
       const topMonth = topSkuFromRecords(custSalesMonth);
 
@@ -1231,9 +1276,7 @@
       document.getElementById("cPhone").value = "";
       document.getElementById("customerModal").classList.add("open");
     }
-    function closeCustomerModal(){
-      document.getElementById("customerModal").classList.remove("open");
-    }
+    function closeCustomerModal(){ document.getElementById("customerModal").classList.remove("open"); }
 
     function addCustomer(){
       const name = (document.getElementById("cName").value || "").trim();
@@ -1245,17 +1288,13 @@
 
       if (!name) return toast("Missing field", "Customer name is required.");
 
+      customers = load(KEY_CUSTOMERS, []);
       const exists = customers.some(c => normalizeCustomerName(c.name) === normalizeCustomerName(name));
       if (exists) return toast("Duplicate customer", "A customer with this name already exists.");
 
       customers.push({
         id: uid("CUST"),
-        name,
-        location,
-        type,
-        contact,
-        email,
-        phone,
+        name, location, type, contact, email, phone,
         createdAt: Date.now()
       });
 
@@ -1310,22 +1349,17 @@
 
       const items = load(KEY_ITEMS, []);
       const skuPool = items.length ? items.map(i => i.sku).filter(Boolean) : ["NK-1001","NK-1002","RG-2001","BX-9001","LB-3001","BR-1101","ER-4040"];
-
       const custPool = customers.map(c => ({ name: c.name, location: c.location || "" }));
 
       const now = new Date();
-      // generate ~10 months of activity with different patterns so red/green KPIs show
       const monthsToGen = 10;
       const add = [];
       let soBase = 9000 + Math.floor(Math.random()*800);
 
       for (let mi=0; mi<monthsToGen; mi++){
         const dMonth = new Date(now.getFullYear(), now.getMonth()-mi, 1);
-        const ym = `${dMonth.getFullYear()}-${String(dMonth.getMonth()+1).padStart(2,"0")}`;
 
         for (const c of custPool){
-          // Pattern logic:
-          // - Some customers will be consistent, some will skip months
           const nameKey = normalizeCustomerName(c.name);
           const isConsistent = ["Asha Retail","Citrine Luxe","Emerald Lane"].some(x => normalizeCustomerName(x) === nameKey);
           const isOftenInactive = ["Harborline Supply","Frost & Co"].some(x => normalizeCustomerName(x) === nameKey);
@@ -1334,11 +1368,11 @@
           let ordersCount = 0;
 
           if (isConsistent){
-            ordersCount = 1 + (roll < 0.25 ? 1 : 0); // 1-2 orders each month
+            ordersCount = 1 + (roll < 0.25 ? 1 : 0);
           } else if (isOftenInactive){
-            ordersCount = roll < 0.35 ? 1 : 0; // mostly zero months
+            ordersCount = roll < 0.35 ? 1 : 0;
           } else {
-            ordersCount = roll < 0.70 ? 1 : 0; // mixed
+            ordersCount = roll < 0.70 ? 1 : 0;
             if (roll < 0.15) ordersCount = 2;
           }
 
@@ -1388,6 +1422,7 @@
     }
 
     function exportCustomersCSV(){
+      customers = load(KEY_CUSTOMERS, []);
       const rows = [["Customer","Location","Type","Contact","Email","Phone"]];
       for (const c of customers){
         rows.push([c.name||"", c.location||"", c.type||"", c.contact||"", c.email||"", c.phone||""]);
@@ -1398,6 +1433,7 @@
     }
 
     function exportSalesCSV(){
+      sales = load(KEY_SALES, []);
       const rows = [["Date","OrderId","Customer","Location","SKU","Qty","UnitPrice"]];
       for (const s of sales){
         rows.push([s.date||"", s.orderId||"", s.customer||"", s.location||"", s.sku||"", s.qty||"", s.unitPrice||""]);
