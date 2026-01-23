@@ -4,534 +4,46 @@
   <meta charset="UTF-8" />
   <title>Inventory | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg1:#f6f8fc;
-      --bg2:#ffffff;
-      --text:#0b1220;
-      --muted:#667085;
-      --border:rgba(11,18,32,0.10);
-      --shadow2: 0 10px 24px rgba(2,6,23,0.08);
-      --radius:18px;
-
-      --primary:#0f3d9e;
-      --primary2:#1f56d8;
-      --accent:#c9b37e;
-
-      --good:#0f766e;
-      --warn:#b45309;
-      --bad:#b42318;
-
-      --glass: rgba(255,255,255,0.72);
-      --chipBg: rgba(11,18,32,0.06);
-    }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(900px 500px at 25% 15%, rgba(201,179,126,0.14) 0%, rgba(201,179,126,0.00) 55%),
-        radial-gradient(900px 500px at 80% 20%, rgba(31,86,216,0.14) 0%, rgba(31,86,216,0.00) 55%),
-        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
-    }
-
-    /* Topbar */
-    .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(11,18,32,0.08);
-    }
-
-    .topbar-inner{
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 14px 18px;
-      display: grid;
-      grid-template-columns: 150px 1fr 320px;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo img{ width: 125px; height:auto; display:block; }
-
-    .nav{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-      align-items:center;
-    }
-
-    .nav a{
-      text-decoration:none;
-      color: rgba(11,18,32,0.82);
-      text-align:center;
-      padding: 10px 8px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 500;
-      transition: background 160ms ease, transform 160ms ease;
-    }
-
-    .nav a:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
-
-    .nav a.active{
-      background: linear-gradient(180deg, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0.08) 100%);
-      color: var(--primary);
-      font-weight: 600;
-      border: 1px solid rgba(31,86,216,0.18);
-    }
-
-    .right{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-      gap:10px;
-    }
-
-    .pill{
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.7);
-      border: 1px solid rgba(11,18,32,0.10);
-      box-shadow: 0 8px 20px rgba(2,6,23,0.06);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size: 13px;
-      color: rgba(11,18,32,0.80);
-      white-space: nowrap;
-    }
-
-    .dot{ width:8px;height:8px;border-radius:999px;background:var(--good); }
-
-    .btn{
-      height: 38px;
-      border:none;
-      border-radius: 12px;
-      background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
-      color:#fff;
-      font-weight: 800;
-      font-size: 13px;
-      cursor:pointer;
-      padding: 0 12px;
-      box-shadow: 0 10px 22px rgba(31,86,216,0.22);
-      transition: transform 120ms ease, box-shadow 120ms ease;
-      white-space: nowrap;
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,86,216,0.28); }
-
-    .btn.secondary{
-      background: rgba(255,255,255,0.85);
-      color: rgba(11,18,32,0.84);
-      border: 1px solid rgba(11,18,32,0.12);
-      box-shadow: none;
-    }
-    .btn.secondary:hover{ background: rgba(11,18,32,0.06); box-shadow:none; }
-
-    .wrap{
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 24px 18px 56px;
-    }
-
-    .headline{
-      display:flex;
-      align-items:flex-end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .headline h1{
-      margin:0;
-      font-size: 26px;
-      letter-spacing: -0.6px;
-    }
-    .headline p{
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-      max-width: 860px;
-    }
-    .actions-top{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .kpis{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .card{
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
-      padding: 18px 18px 16px;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(8px);
-    }
-
-    .card.clickable{
-      cursor: pointer;
-      transition: transform 140ms ease, box-shadow 140ms ease;
-    }
-    .card.clickable:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(2,6,23,0.10);
-    }
-
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      border-radius: var(--radius);
-      pointer-events:none;
-      background: linear-gradient(135deg,
-        rgba(201,179,126,0.18) 0%,
-        rgba(31,86,216,0.14) 40%,
-        rgba(255,255,255,0.00) 75%
-      );
-      opacity: 0.9;
-      mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-      -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-      padding: 1px;
-      box-sizing: border-box;
-    }
-
-    .card-top{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .label{
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: rgba(11,18,32,0.72);
-      text-transform: uppercase;
-    }
-
-    .chip{
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--chipBg);
-      border: 1px solid rgba(11,18,32,0.10);
-      color: rgba(11,18,32,0.78);
-      white-space: nowrap;
-    }
-    .chip.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
-    .chip.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
-    .chip.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
-
-    .value{
-      margin-top: 14px;
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.7px;
-      position: relative;
-      z-index: 1;
-    }
-    .sub{
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      position: relative;
-      z-index: 1;
-    }
-
-    .grid2{
-      display:grid;
-      grid-template-columns: 1.55fr 0.45fr;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .panel{
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
-      padding: 18px;
-      backdrop-filter: blur(8px);
-    }
-
-    .panel h2{
-      margin: 0 0 10px;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
-
-    .goldline{
-      height: 1px;
-      background: linear-gradient(90deg, rgba(201,179,126,0.0), rgba(201,179,126,0.75), rgba(201,179,126,0.0));
-      margin: 14px 0;
-    }
-
-    .controls{
-      display:grid;
-      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .input, select{
-      width:100%;
-      height: 42px;
-      border-radius: 12px;
-      border: 1px solid rgba(11,18,32,0.12);
-      padding: 0 12px;
-      outline:none;
-      background: rgba(255,255,255,0.85);
-      font-size: 13px;
-      color: var(--text);
-    }
-    .input:focus, select:focus{
-      border-color: rgba(31,86,216,0.45);
-      box-shadow: 0 0 0 4px rgba(31,86,216,0.10);
-    }
-
-    .table-wrap{
-      margin-top: 12px;
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: 16px;
-      overflow:hidden;
-      background: rgba(255,255,255,0.78);
-    }
-
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    thead th{
-      text-align:left;
-      padding: 12px;
-      color: rgba(11,18,32,0.72);
-      font-size: 12px;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      background: rgba(11,18,32,0.03);
-      border-bottom: 1px solid rgba(11,18,32,0.08);
-    }
-    tbody td{
-      padding: 12px;
-      border-bottom: 1px solid rgba(11,18,32,0.06);
-      vertical-align: top;
-    }
-    tbody tr:hover{ background: rgba(31,86,216,0.04); }
-
-    .sku{ font-weight:800; }
-    .muted{ color: var(--muted); font-size: 12px; }
-
-    .status{
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(11,18,32,0.05);
-      display:inline-block;
-      font-weight: 700;
-    }
-    .status.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
-    .status.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
-    .status.bad{  color: var(--bad);  border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); }
-
-    .row-actions{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .iconbtn{
-      border: 1px solid rgba(11,18,32,0.12);
-      background: rgba(255,255,255,0.80);
-      border-radius: 12px;
-      padding: 8px 10px;
-      font-size: 12px;
-      font-weight: 800;
-      color: rgba(11,18,32,0.82);
-      cursor: pointer;
-      transition: background 120ms ease, transform 120ms ease;
-    }
-    .iconbtn:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
-
-    .side{
-      display:grid;
-      gap: 16px;
-      align-content: start;
-    }
-
-    .list{
-      list-style:none;
-      margin:0;
-      padding:0;
-      display:grid;
-      gap:10px;
-    }
-
-    .li{
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(11,18,32,0.08);
-      background: rgba(255,255,255,0.72);
-    }
-
-    .li strong{ font-size: 13px; display:block; }
-    .li span{ color: var(--muted); font-size: 12px; display:block; margin-top: 4px; }
-
-    /* Modal */
-    .modal{
-      position: fixed;
-      inset: 0;
-      display:none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(2,6,23,0.55);
-      z-index: 999;
-      padding: 18px;
-    }
-    .modal.open{ display:flex; }
-    .modal-card{
-      width: min(980px, 100%);
-      background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 22px;
-      box-shadow: 0 24px 70px rgba(2,6,23,0.35);
-      backdrop-filter: blur(12px);
-      overflow:hidden;
-    }
-    .modal-head{
-      padding: 14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(11,18,32,0.10);
-    }
-    .modal-head h3{
-      margin:0;
-      font-size: 15px;
-      font-weight: 900;
-    }
-    .x{
-      border:none;
-      background: transparent;
-      font-size: 20px;
-      font-weight: 800;
-      cursor:pointer;
-      color: rgba(11,18,32,0.55);
-    }
-    .modal-body{ padding: 16px; }
-
-    .modal-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    .po-items{
-      margin-top: 12px;
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: 16px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.78);
-    }
-
-    .po-footer{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-top: 1px solid rgba(11,18,32,0.10);
-      background: rgba(11,18,32,0.02);
-    }
-
-    .total{
-      font-weight: 900;
-      letter-spacing: -0.2px;
-    }
-
-    /* Toast */
-    .toast-wrap{
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index: 999;
-      display: grid;
-      gap: 10px;
-      width: min(420px, calc(100vw - 32px));
-    }
-    .toast{
-      background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(11,18,32,0.12);
-      border-radius: 16px;
-      box-shadow: 0 18px 40px rgba(2,6,23,0.14);
-      padding: 12px 12px;
-      display:flex;
-      align-items:flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      backdrop-filter: blur(10px);
-      animation: pop 180ms ease-out;
-    }
-    @keyframes pop{
-      from{ transform: translateY(8px); opacity: 0; }
-      to{ transform: translateY(0); opacity: 1; }
-    }
-    .toast strong{ display:block; font-size: 13px; margin-bottom: 2px; }
-    .toast span{ display:block; color: var(--muted); font-size: 12px; line-height: 1.4; }
-    .toast .close{
-      border:none; background: transparent; font-size: 16px; cursor:pointer;
-      color: rgba(11,18,32,0.55); padding: 0 6px; line-height: 1;
-    }
-
-    @media (max-width: 1100px){
-      .kpis{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-      .grid2{ grid-template-columns: 1fr; }
-      .controls{ grid-template-columns: 1fr; }
-      .topbar-inner{ grid-template-columns: 150px 1fr; }
-      .right{ display:none; }
-      .modal-grid{ grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px){
-      .nav{ grid-template-columns: repeat(3, 1fr); }
-      .kpis{ grid-template-columns: 1fr; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="erp.css">
 </head>
 
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo">
-        <img src="images/stark-logo.png" alt="Stark Premium" />
-      </div>
+      <div class="logo"><img src="images/stark-logo.png" alt="Stark Premium" /></div>
+
+      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
 
       <nav class="nav" aria-label="ERP Navigation">
+        <a href="dashboard.html">Home</a>
+        <a href="account.html">Account</a>
+        <a href="crm.html">CRM</a>
+        <a href="inventory.html" class="active">Inventory</a>
+        <a href="orders.html">Orders</a>
+        <a href="logistics.html">Logistics</a>
+        <a href="trends.html">Trends</a>
+      </nav>
+
+      <div class="top-actions">
+        <div class="pill"><span class="dot"></span>Online</div>
+        <button class="btn secondary" onclick="window.location.href='trends.html'">Trends</button>
+        <button class="btn" onclick="openPOModal()">Create PO</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <div class="mobile-card">
+      <div class="mobile-head">
+        <strong>Menu</strong>
+        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
+      </div>
+      <div class="mobile-links">
         <a href="dashboard.html">Home</a>
         <a href="account.html">Account</a>
         <a href="crm.html">CRM</a>
@@ -539,821 +51,371 @@
         <a href="orders.html">Orders</a>
         <a href="logistics.html">Logistics</a>
         <a href="trends.html">Trends</a>
-      </nav>
-
-      <div class="right">
-        <div class="pill"><span class="dot"></span>Online</div>
-        <button class="btn secondary" type="button" onclick="seedSalesDemo()">Load Demo Sales</button>
-        <button class="btn" type="button" onclick="openPOModal()">Create PO</button>
       </div>
     </div>
-  </header>
+  </div>
 
   <main class="wrap">
-    <div class="headline">
-      <div>
-        <h1>Inventory</h1>
-        <p>Manage SKU master data, stock movements, reorder control, and purchase orders — in a premium ERP view.</p>
+    <div class="hero">
+      <h1 class="h-title">Inventory</h1>
+      <p class="h-sub">Manage SKU master data, reorder control, stock visibility, and purchase orders — modern & premium.</p>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn secondary" onclick="loadDemoItems()">Load Demo Data</button>
+        <button class="btn" onclick="openItemModal()">Add Item</button>
       </div>
-      <div class="actions-top">
-        <button class="btn secondary" type="button" onclick="seedDemo()">Load Demo Data</button>
-        <button class="btn" type="button" onclick="openItemModal()">Add Item</button>
-      </div>
+      <div class="toast-wrap" id="toastWrap"></div>
     </div>
 
-    <!-- KPIs -->
-    <section class="kpis" aria-label="Inventory Metrics">
-      <!-- Trends (reactive) -->
-      <article class="card clickable" onclick="goTrends()">
-        <div class="card-top">
-          <div class="label">Trends</div>
-          <div class="chip good">Reactive</div>
-        </div>
-        <div class="value" id="kpiTrends">0</div>
-        <div class="sub" id="kpiTrendsSub">Load demo sales to activate trends</div>
-      </article>
+    <section class="kpis">
+      <div class="card">
+        <div class="card-top"><div class="label">Trends</div><div class="chip good">Reactive</div></div>
+        <div class="value" id="kTrends">—</div>
+        <div class="sub">Track SKU performance in Trends</div>
+      </div>
 
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Low Stock</div>
-          <div class="chip warn">Reorder</div>
-        </div>
-        <div class="value" id="kpiLow">0</div>
+      <div class="card">
+        <div class="card-top"><div class="label">Low stock</div><div class="chip warn">Reorder</div></div>
+        <div class="value" id="kLow">0</div>
         <div class="sub">At / below reorder point</div>
-      </article>
+      </div>
 
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Out of Stock</div>
-          <div class="chip bad">Urgent</div>
-        </div>
-        <div class="value" id="kpiOos">0</div>
+      <div class="card">
+        <div class="card-top"><div class="label">Out of stock</div><div class="chip bad">Urgent</div></div>
+        <div class="value" id="kOOS">0</div>
         <div class="sub">Immediate replenishment needed</div>
-      </article>
+      </div>
 
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Inventory Value</div>
-          <div class="chip good">Cost basis</div>
-        </div>
-        <div class="value" id="kpiValue">$0</div>
+      <div class="card">
+        <div class="card-top"><div class="label">Inventory value</div><div class="chip good">Cost basis</div></div>
+        <div class="value" id="kValue">$0.00</div>
         <div class="sub">On-hand × unit cost</div>
-      </article>
+      </div>
     </section>
 
-    <div class="grid2">
-      <!-- Main Inventory Table -->
-      <section class="panel">
-        <h2>Item Master</h2>
-        <div class="goldline"></div>
+    <section class="section">
+      <h2>Item Master</h2>
+      <div class="goldline"></div>
 
-        <div class="controls">
-          <input id="q" class="input" placeholder="Search SKU / item / supplier..." oninput="render()" />
-          <select id="fCategory" onchange="render()"></select>
-          <select id="fStatus" onchange="render()"></select>
-          <select id="fWarehouse" onchange="render()"></select>
-          <select id="fSupplier" onchange="render()"></select>
-        </div>
+      <div class="controls">
+        <input id="q" class="input" placeholder="Search SKU / item / supplier..." oninput="renderItems()">
+        <select id="catF" onchange="renderItems()"></select>
+        <select id="whF" onchange="renderItems()"></select>
+        <select id="supF" onchange="renderItems()"></select>
+      </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Item</th>
-                <th>Category</th>
-                <th>Warehouse</th>
-                <th>Supplier</th>
-                <th>On Hand</th>
-                <th>ROP</th>
-                <th>Unit Cost</th>
-                <th>Value</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-      </section>
+      <div class="table-wrap" style="margin-top:12px;">
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Warehouse</th>
+              <th>Supplier</th>
+              <th>On hand</th>
+              <th>ROP</th>
+              <th>Unit cost</th>
+              <th>Value</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="itemBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-      <!-- Side: Open POs + Transactions -->
-      <aside class="side">
-        <section class="panel">
-          <h2>Vendor Purchase Orders</h2>
-          <div class="goldline"></div>
-          <ul class="list" id="poList"></ul>
-        </section>
-
-        <section class="panel">
-          <h2>Recent Stock Movements</h2>
-          <div class="goldline"></div>
-          <ul class="list" id="txList"></ul>
-        </section>
-      </aside>
-    </div>
+    <section class="section" id="po">
+      <h2>Vendor Purchase Orders</h2>
+      <div class="goldline"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>PO</th>
+              <th>Vendor</th>
+              <th>Warehouse</th>
+              <th>Lines</th>
+              <th>Status</th>
+              <th>ETA</th>
+            </tr>
+          </thead>
+          <tbody id="poBody"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <!-- Add Item Modal -->
-  <div class="modal" id="itemModal" aria-hidden="true">
+  <div class="modal" id="itemModal">
     <div class="modal-card">
       <div class="modal-head">
         <h3>Add Inventory Item</h3>
         <button class="x" onclick="closeItemModal()">×</button>
       </div>
       <div class="modal-body">
-        <div class="modal-grid">
-          <input id="iSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-          <input id="iName" class="input" placeholder="Item name" />
-          <input id="iCategory" class="input" placeholder="Category (e.g., Jewelry)" />
-
-          <input id="iWarehouse" class="input" placeholder="Warehouse (e.g., WH-A)" />
-          <input id="iSupplier" class="input" placeholder="Supplier (e.g., Delta Supplies)" />
-          <input id="iCost" class="input" type="number" step="0.01" placeholder="Unit cost" />
-
-          <input id="iOnHand" class="input" type="number" step="1" placeholder="On hand qty" />
-          <input id="iRop" class="input" type="number" step="1" placeholder="Reorder point (ROP)" />
-          <input id="iUom" class="input" placeholder="UOM (e.g., pcs)" />
+        <div class="controls">
+          <input id="iSku" class="input" placeholder="SKU (required)" />
+          <input id="iName" class="input" placeholder="Item name (required)" />
+          <input id="iCat" class="input" placeholder="Category (e.g., Packaging)" />
+          <input id="iWh" class="input" placeholder="Warehouse (e.g., WH-A)" />
+        </div>
+        <div class="controls" style="margin-top:10px;">
+          <input id="iSup" class="input" placeholder="Supplier (e.g., PackPro)" />
+          <input id="iOn" class="input" placeholder="On-hand" type="number" />
+          <input id="iRop" class="input" placeholder="Reorder point" type="number" />
+          <input id="iCost" class="input" placeholder="Unit cost" type="number" step="0.01" />
         </div>
       </div>
-      <div class="po-footer">
-        <span class="muted">Tip: Keep SKU unique for clean PO and stock movement tracking.</span>
-        <div style="display:flex; gap:10px;">
+      <div class="modal-head" style="border-top:1px solid rgba(11,18,32,0.10);">
+        <div style="color:#667085;font-size:12px;">Saved to localStorage</div>
+        <div style="display:flex;gap:10px;">
           <button class="btn secondary" onclick="closeItemModal()">Cancel</button>
-          <button class="btn" onclick="addItem()">Save Item</button>
+          <button class="btn" onclick="addItem()">Save</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Create PO Modal -->
-  <div class="modal" id="poModal" aria-hidden="true">
+  <div class="modal" id="poModal">
     <div class="modal-card">
       <div class="modal-head">
         <h3>Create Purchase Order</h3>
         <button class="x" onclick="closePOModal()">×</button>
       </div>
-
       <div class="modal-body">
-        <div class="modal-grid">
-          <input id="poSupplier" class="input" placeholder="Supplier (e.g., Delta Supplies)" />
-          <input id="poWarehouse" class="input" placeholder="Warehouse (e.g., WH-A)" />
-          <input id="poExpected" class="input" type="date" />
+        <div class="controls">
+          <input id="pVendor" class="input" placeholder="Vendor (required)" />
+          <input id="pWh" class="input" placeholder="Warehouse (e.g., WH-A)" />
+          <input id="pEta" class="input" type="date" />
+          <select id="pStatus">
+            <option>Open</option>
+            <option>Awaiting approval</option>
+            <option>Confirmed</option>
+            <option>Delayed</option>
+          </select>
         </div>
-
-        <div class="goldline"></div>
-
-        <div style="display:flex;gap:10px;align-items:center;">
-          <select id="poItemSelect"></select>
-          <input id="poQty" class="input" type="number" step="1" placeholder="Qty" style="max-width:180px;">
-          <button class="btn" onclick="poAddLine()">Add Line</button>
-        </div>
-
-        <div class="po-items" style="margin-top:12px;">
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Unit Cost</th>
-                <th>Line Total</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="poLinesBody"></tbody>
-          </table>
+        <div style="margin-top:10px;">
+          <textarea id="pLines" placeholder="PO lines (one per line): SKU,Qty   Example: BX-9001,100"></textarea>
         </div>
       </div>
-
-      <div class="po-footer">
-        <div>
-          <div class="total">PO Total: <span id="poTotal">$0.00</span></div>
-          <div class="muted">Status starts as Open. Use Receive to update inventory.</div>
-        </div>
-        <div style="display:flex; gap:10px;">
+      <div class="modal-head" style="border-top:1px solid rgba(11,18,32,0.10);">
+        <div style="color:#667085;font-size:12px;">Saved to localStorage</div>
+        <div style="display:flex;gap:10px;">
           <button class="btn secondary" onclick="closePOModal()">Cancel</button>
-          <button class="btn" onclick="createPO()">Create PO</button>
+          <button class="btn" onclick="createPO()">Create</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="toast-wrap" id="toastWrap"></div>
-
+  <script src="erp.js"></script>
   <script>
-    /***********************
-     * Storage (localStorage)
-     ***********************/
-    const KEY_ITEMS = "stark_erp_items_v1";
-    const KEY_TX    = "stark_erp_inventory_tx_v1";
-    const KEY_POS   = "stark_erp_purchase_orders_v1";
-    const KEY_SALES = "stark_erp_sales_v1"; // for Trends card
+    requireAuth();
+    setActiveNav("inventory.html");
+
+    const ITEM_KEY = "stark_erp_items_v2";
+    const PO_KEY   = "stark_erp_pos_v1";
 
     function load(key, fallback){
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
     }
-    function save(key, data){
-      localStorage.setItem(key, JSON.stringify(data));
-    }
-
-    let items = load(KEY_ITEMS, []);
-    let txs   = load(KEY_TX, []);
-    let pos   = load(KEY_POS, []);
-    let sales = load(KEY_SALES, []);
-
-    /***********************
-     * UI helpers
-     ***********************/
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
+    function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
     function money(n){
-      const v = Number(n || 0);
-      return v.toLocaleString(undefined, { style: "currency", currency: "USD" });
+      const v = Number(n||0);
+      return v.toLocaleString(undefined,{style:"currency",currency:"USD"});
     }
 
-    function toast(title, message){
-      const wrap = document.getElementById("toastWrap");
-      const el = document.createElement("div");
-      el.className = "toast";
-      el.innerHTML = `
-        <div>
-          <strong>${escapeHtml(title)}</strong>
-          <span>${escapeHtml(message)}</span>
-        </div>
-        <button class="close" aria-label="Close">×</button>
-      `;
-      el.querySelector(".close").onclick = () => el.remove();
-      wrap.prepend(el);
-      setTimeout(() => { if(el.isConnected) el.remove(); }, 9000);
-    }
-
-    function statusFor(it){
-      const onHand = Number(it.onHand || 0);
-      const rop = Number(it.rop || 0);
-      if (onHand <= 0) return { t: "Out of stock", c: "bad" };
-      if (onHand <= rop) return { t: "Low stock", c: "warn" };
-      return { t: "Healthy", c: "good" };
-    }
-
-    function uid(prefix){
-      return `${prefix}-${Math.random().toString(16).slice(2,8).toUpperCase()}${Date.now().toString(16).slice(-4).toUpperCase()}`;
-    }
-
-    function addTx(type, sku, qty, note){
-      txs.unshift({
-        id: uid("TX"),
-        type,
-        sku,
-        qty: Number(qty || 0),
-        note: note || "",
-        ts: new Date().toISOString()
-      });
-      txs = txs.slice(0, 30);
-      save(KEY_TX, txs);
-    }
-
-    function unique(list){
-      return Array.from(new Set(list.filter(Boolean))).sort();
-    }
-
-    function startMsDaysAgo(days){
-      const d = new Date();
-      d.setDate(d.getDate() - days);
-      d.setHours(0,0,0,0);
-      return d.getTime();
-    }
-
-    /***********************
-     * Trends (reactive KPI)
-     ***********************/
-    function computeTopSku30d(){
-      sales = load(KEY_SALES, []);
-      const start = startMsDaysAgo(30);
-      const recent = sales.filter(s => new Date(s.date || s.ts || s.createdAt || "").getTime() >= start);
-      const unitsBySku = new Map();
-      recent.forEach(s => {
-        const sku = s.sku;
-        const qty = Number(s.qty || 0);
-        if (!sku) return;
-        unitsBySku.set(sku, (unitsBySku.get(sku) || 0) + qty);
-      });
-      const top = Array.from(unitsBySku.entries()).sort((a,b)=>b[1]-a[1])[0];
-      const topSku = top ? top[0] : (items[0]?.sku || "");
-      const topUnits = top ? top[1] : 0;
-      const topSalesCount = topSku ? recent.filter(s => s.sku === topSku).length : 0;
-      return { topSku, topUnits, topSalesCount };
-    }
-
-    function goTrends(){
-      const { topSku } = computeTopSku30d();
-      location.href = topSku ? `trends.html?sku=${encodeURIComponent(topSku)}` : "trends.html";
-    }
-
-    /***********************
-     * Filters
-     ***********************/
-    function rebuildFilterOptions(){
-      const categories = unique(items.map(i => i.category));
-      const suppliers  = unique(items.map(i => i.supplier));
-      const warehouses = unique(items.map(i => i.warehouse));
-
-      const fCategory = document.getElementById("fCategory");
-      const fSupplier = document.getElementById("fSupplier");
-      const fWarehouse = document.getElementById("fWarehouse");
-      const fStatus = document.getElementById("fStatus");
-
-      fCategory.innerHTML = `<option value="">All categories</option>` +
-        categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-
-      fSupplier.innerHTML = `<option value="">All suppliers</option>` +
-        suppliers.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
-
-      fWarehouse.innerHTML = `<option value="">All warehouses</option>` +
-        warehouses.map(w => `<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join("");
-
-      fStatus.innerHTML = `
-        <option value="">All status</option>
-        <option value="Healthy">Healthy</option>
-        <option value="Low stock">Low stock</option>
-        <option value="Out of stock">Out of stock</option>
-      `;
-    }
-
-    /***********************
-     * Render KPI + table + side panels
-     ***********************/
-    function updateKPIs(){
-      // Trends (reactive)
-      const t = computeTopSku30d();
-      document.getElementById("kpiTrends").textContent = String(t.topUnits || 0);
-      document.getElementById("kpiTrendsSub").textContent =
-        t.topSku
-          ? `Top SKU: ${t.topSku} · ${t.topSalesCount} sales (30d)`
-          : "Load demo sales to activate trends";
-
-      // Inventory KPIs
-      const low = items.filter(i => statusFor(i).t === "Low stock").length;
-      const oos = items.filter(i => statusFor(i).t === "Out of stock").length;
-      const value = items.reduce((sum, i) => sum + (Number(i.onHand||0) * Number(i.cost||0)), 0);
-
-      document.getElementById("kpiLow").textContent = low;
-      document.getElementById("kpiOos").textContent = oos;
-      document.getElementById("kpiValue").textContent = money(value);
-    }
-
-    function render(){
-      items = load(KEY_ITEMS, []);
-      txs   = load(KEY_TX, []);
-      pos   = load(KEY_POS, []);
-      sales = load(KEY_SALES, []);
-
-      rebuildFilterOptions();
-      updateKPIs();
-      renderTable();
-      renderTx();
-      renderPOs();
-      rebuildPOItemSelect();
-    }
-
-    function renderTable(){
-      const q = (document.getElementById("q").value || "").trim().toLowerCase();
-      const c = document.getElementById("fCategory").value;
-      const s = document.getElementById("fSupplier").value;
-      const w = document.getElementById("fWarehouse").value;
-      const st = document.getElementById("fStatus").value;
-
-      let filtered = items.slice();
-
-      if (q){
-        filtered = filtered.filter(i =>
-          (i.sku||"").toLowerCase().includes(q) ||
-          (i.name||"").toLowerCase().includes(q) ||
-          (i.supplier||"").toLowerCase().includes(q)
-        );
-      }
-      if (c) filtered = filtered.filter(i => i.category === c);
-      if (s) filtered = filtered.filter(i => i.supplier === s);
-      if (w) filtered = filtered.filter(i => i.warehouse === w);
-      if (st) filtered = filtered.filter(i => statusFor(i).t === st);
-
-      filtered.sort((a,b)=>{
-        const as = (a.sku||"").toUpperCase();
-        const bs = (b.sku||"").toUpperCase();
-        return as.localeCompare(bs);
-      });
-
-      const tbody = document.getElementById("tbody");
-      tbody.innerHTML = "";
-
-      if (filtered.length === 0){
-        tbody.innerHTML = `<tr><td colspan="11" class="muted">No items found.</td></tr>`;
-        return;
-      }
-
-      filtered.forEach(it=>{
-        const stObj = statusFor(it);
-        const val = Number(it.onHand||0) * Number(it.cost||0);
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><div class="sku">${escapeHtml(it.sku)}</div><div class="muted">${escapeHtml(it.uom || "pcs")}</div></td>
-          <td><div style="font-weight:800">${escapeHtml(it.name)}</div><div class="muted">Cost basis</div></td>
-          <td>${escapeHtml(it.category || "—")}</td>
-          <td>${escapeHtml(it.warehouse || "—")}</td>
-          <td>${escapeHtml(it.supplier || "—")}</td>
-          <td>${Number(it.onHand||0)}</td>
-          <td>${Number(it.rop||0)}</td>
-          <td>${money(it.cost||0)}</td>
-          <td>${money(val)}</td>
-          <td><span class="status ${stObj.c}">${escapeHtml(stObj.t)}</span></td>
-          <td>
-            <div class="row-actions">
-              <button class="iconbtn" onclick="receiveStock('${escapeHtml(it.sku)}')">Receive</button>
-              <button class="iconbtn" onclick="issueStock('${escapeHtml(it.sku)}')">Issue</button>
-              <button class="iconbtn" onclick="adjustStock('${escapeHtml(it.sku)}')">Adjust</button>
-              <button class="iconbtn" onclick="deleteItem('${escapeHtml(it.sku)}')">Delete</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderTx(){
-      const txList = document.getElementById("txList");
-      txList.innerHTML = "";
-
-      if (txs.length === 0){
-        txList.innerHTML = `<li class="li"><strong>No movements yet</strong><span>Receive, issue, adjust, or PO-receive will appear here.</span></li>`;
-        return;
-      }
-
-      txs.slice(0,10).forEach(t=>{
-        const li = document.createElement("li");
-        li.className = "li";
-        li.innerHTML = `
-          <strong>${escapeHtml(t.type)} — ${escapeHtml(t.sku)}</strong>
-          <span>${escapeHtml(String(t.qty))} · ${escapeHtml(new Date(t.ts).toLocaleString())}${t.note ? " · " + escapeHtml(t.note) : ""}</span>
-        `;
-        txList.appendChild(li);
-      });
-    }
-
-    function renderPOs(){
-      const poList = document.getElementById("poList");
-      poList.innerHTML = "";
-
-      if (pos.length === 0){
-        poList.innerHTML = `<li class="li"><strong>No purchase orders</strong><span>Create a PO to replenish low/out of stock items.</span></li>`;
-        return;
-      }
-
-      const show = pos.slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0)).slice(0,8);
-
-      show.forEach(po=>{
-        const total = po.lines.reduce((sum,l)=> sum + (Number(l.qty||0)*Number(l.unitCost||0)), 0);
-        const statusClass = po.status === "Received" ? "good" : (po.status === "Open" ? "warn" : "good");
-
-        const li = document.createElement("li");
-        li.className = "li";
-        li.innerHTML = `
-          <strong>${escapeHtml(po.poNumber)} · ${escapeHtml(po.supplier || "—")}</strong>
-          <span>Status: <span class="status ${statusClass}">${escapeHtml(po.status)}</span> · Total: ${escapeHtml(money(total))}</span>
-          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="iconbtn" onclick="viewPO('${escapeHtml(po.poNumber)}')">View</button>
-            ${po.status !== "Received" ? `<button class="iconbtn" onclick="receivePO('${escapeHtml(po.poNumber)}')">Receive</button>` : ""}
-            <button class="iconbtn" onclick="deletePO('${escapeHtml(po.poNumber)}')">Delete</button>
-          </div>
-        `;
-        poList.appendChild(li);
-      });
-    }
-
-    /***********************
-     * Item actions
-     ***********************/
-    function findItem(sku){
-      return items.find(i => (i.sku||"") === sku);
-    }
-
-    function receiveStock(sku){
-      const it = findItem(sku);
-      if (!it) return;
-      const qty = prompt(`Receive quantity for ${sku}:`, "10");
-      if (qty === null) return;
-      const q = Number(qty);
-      if (!Number.isFinite(q) || q <= 0) return toast("Invalid qty", "Enter a valid quantity > 0.");
-      it.onHand = Number(it.onHand||0) + q;
-      save(KEY_ITEMS, items);
-      addTx("RECEIPT", sku, q, "Manual receipt");
-      render();
-    }
-
-    function issueStock(sku){
-      const it = findItem(sku);
-      if (!it) return;
-      const qty = prompt(`Issue quantity for ${sku}:`, "1");
-      if (qty === null) return;
-      const q = Number(qty);
-      if (!Number.isFinite(q) || q <= 0) return toast("Invalid qty", "Enter a valid quantity > 0.");
-      if (q > Number(it.onHand||0)) return toast("Insufficient stock", "Cannot issue more than on-hand.");
-      it.onHand = Number(it.onHand||0) - q;
-      save(KEY_ITEMS, items);
-      addTx("ISSUE", sku, q, "Manual issue");
-      render();
-    }
-
-    function adjustStock(sku){
-      const it = findItem(sku);
-      if (!it) return;
-      const qty = prompt(`Set on-hand quantity for ${sku}:`, String(it.onHand||0));
-      if (qty === null) return;
-      const q = Number(qty);
-      if (!Number.isFinite(q) || q < 0) return toast("Invalid qty", "Enter a valid quantity >= 0.");
-      const delta = q - Number(it.onHand||0);
-      it.onHand = q;
-      save(KEY_ITEMS, items);
-      addTx("ADJUST", sku, delta, "Stock adjustment");
-      render();
-    }
-
-    function deleteItem(sku){
-      const ok = confirm(`Delete item ${sku}? This will remove it from PO selection.`);
-      if (!ok) return;
-      items = items.filter(i => i.sku !== sku);
-      save(KEY_ITEMS, items);
-      render();
-    }
-
-    /***********************
-     * Add item modal
-     ***********************/
     function openItemModal(){ document.getElementById("itemModal").classList.add("open"); }
     function closeItemModal(){ document.getElementById("itemModal").classList.remove("open"); }
+    function openPOModal(){ document.getElementById("poModal").classList.add("open"); }
+    function closePOModal(){ document.getElementById("poModal").classList.remove("open"); }
+
+    function loadDemoItems(){
+      const demo = [
+        { sku:"BX-9001", name:"Premium Gift Box", cat:"Packaging", wh:"WH-A", sup:"PackPro", on:140, rop:50, cost:1.60 },
+        { sku:"LB-3001", name:"Luxury Label Set", cat:"Packaging", wh:"WH-A", sup:"PackPro", on:18, rop:25, cost:0.75 },
+        { sku:"NK-1001", name:"Necklace — Aurora", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:62, rop:30, cost:42.00 },
+        { sku:"RG-2001", name:"Ring — Obsidian", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:0, rop:18, cost:38.00 },
+        { sku:"ER-4040", name:"Earrings — Halo", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:24, rop:20, cost:16.50 }
+      ];
+      save(ITEM_KEY, demo);
+      toast("Loaded demo", "Inventory demo items loaded.");
+      renderItems(); renderKpis();
+    }
 
     function addItem(){
       const sku = (document.getElementById("iSku").value||"").trim();
       const name = (document.getElementById("iName").value||"").trim();
-      const category = (document.getElementById("iCategory").value||"").trim();
-      const warehouse = (document.getElementById("iWarehouse").value||"").trim();
-      const supplier = (document.getElementById("iSupplier").value||"").trim();
-      const cost = Number(document.getElementById("iCost").value||0);
-      const onHand = Number(document.getElementById("iOnHand").value||0);
-      const rop = Number(document.getElementById("iRop").value||0);
-      const uom = (document.getElementById("iUom").value||"pcs").trim();
+      if(!sku || !name) return toast("Missing fields", "SKU and Item name are required.");
 
-      if (!sku || !name) return toast("Missing fields", "SKU and Item name are required.");
-      if (findItem(sku)) return toast("Duplicate SKU", "SKU already exists. Use a unique SKU.");
+      const item = {
+        sku,
+        name,
+        cat: (document.getElementById("iCat").value||"").trim() || "General",
+        wh: (document.getElementById("iWh").value||"").trim() || "WH-A",
+        sup: (document.getElementById("iSup").value||"").trim() || "Vendor",
+        on: Number(document.getElementById("iOn").value||0),
+        rop: Number(document.getElementById("iRop").value||0),
+        cost: Number(document.getElementById("iCost").value||0)
+      };
 
-      items.push({
-        sku, name, category, warehouse, supplier,
-        cost: Number.isFinite(cost) ? cost : 0,
-        onHand: Number.isFinite(onHand) ? onHand : 0,
-        rop: Number.isFinite(rop) ? rop : 0,
-        uom
-      });
-      save(KEY_ITEMS, items);
-      addTx("ITEM_CREATE", sku, 0, "New item created");
-      closeItemModal();
-      toast("Saved", `Item ${sku} added.`);
-      render();
-    }
-
-    /***********************
-     * PO (Create / Receive)
-     ***********************/
-    let poLines = [];
-
-    function openPOModal(){
-      poLines = [];
-      document.getElementById("poSupplier").value = "";
-      document.getElementById("poWarehouse").value = "";
-      document.getElementById("poExpected").valueAsDate = new Date();
-      document.getElementById("poModal").classList.add("open");
-      renderPOLines();
-    }
-    function closePOModal(){ document.getElementById("poModal").classList.remove("open"); }
-
-    function rebuildPOItemSelect(){
-      const sel = document.getElementById("poItemSelect");
-      if (!sel) return;
-      sel.innerHTML = items.length
-        ? items.map(i => `<option value="${escapeHtml(i.sku)}">${escapeHtml(i.sku)} — ${escapeHtml(i.name)}</option>`).join("")
-        : `<option value="">No items available</option>`;
-    }
-
-    function poAddLine(){
-      if (items.length === 0) return toast("No items", "Add items to inventory before creating a PO.");
-
-      const sku = document.getElementById("poItemSelect").value;
-      const qty = Number(document.getElementById("poQty").value || 0);
-      if (!sku) return toast("Select item", "Choose an item SKU to add.");
-      if (!Number.isFinite(qty) || qty <= 0) return toast("Invalid qty", "Enter a quantity > 0.");
-
-      const it = findItem(sku);
-      if (!it) return toast("Item missing", "Item not found in master.");
-
-      const existing = poLines.find(l => l.sku === sku);
-      if (existing) existing.qty += qty;
-      else poLines.push({ sku, name: it.name, qty, unitCost: Number(it.cost||0) });
-
-      document.getElementById("poQty").value = "";
-      renderPOLines();
-    }
-
-    function poRemoveLine(sku){
-      poLines = poLines.filter(l => l.sku !== sku);
-      renderPOLines();
-    }
-
-    function renderPOLines(){
-      const body = document.getElementById("poLinesBody");
-      body.innerHTML = "";
-
-      let total = 0;
-      poLines.forEach(l=>{
-        const lineTotal = Number(l.qty||0) * Number(l.unitCost||0);
-        total += lineTotal;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${escapeHtml(l.sku)}</td>
-          <td>${escapeHtml(l.name)}</td>
-          <td>${Number(l.qty||0)}</td>
-          <td>${money(l.unitCost||0)}</td>
-          <td>${money(lineTotal)}</td>
-          <td><button class="iconbtn" onclick="poRemoveLine('${escapeHtml(l.sku)}')">Remove</button></td>
-        `;
-        body.appendChild(tr);
-      });
-
-      if (poLines.length === 0){
-        body.innerHTML = `<tr><td colspan="6" class="muted">No lines yet. Add items to build the PO.</td></tr>`;
+      const list = load(ITEM_KEY, []);
+      if(list.some(x => (x.sku||"").toUpperCase() === sku.toUpperCase())){
+        return toast("Duplicate SKU", "This SKU already exists.");
       }
-
-      document.getElementById("poTotal").textContent = money(total);
+      list.unshift(item);
+      save(ITEM_KEY, list);
+      closeItemModal();
+      toast("Item added", `${sku} saved.`);
+      renderItems(); renderKpis();
     }
 
     function createPO(){
-      const supplier = (document.getElementById("poSupplier").value || "").trim();
-      const warehouse = (document.getElementById("poWarehouse").value || "").trim();
-      const expected = document.getElementById("poExpected").value || "";
+      const vendor = (document.getElementById("pVendor").value||"").trim();
+      if(!vendor) return toast("Missing field", "Vendor is required.");
 
-      if (!supplier) return toast("Missing supplier", "Supplier is required.");
-      if (!warehouse) return toast("Missing warehouse", "Warehouse is required.");
-      if (poLines.length === 0) return toast("No lines", "Add at least one item line to create PO.");
+      const po = {
+        id: "PO-" + Math.floor(1000 + Math.random()*9000),
+        vendor,
+        wh: (document.getElementById("pWh").value||"").trim() || "WH-A",
+        eta: (document.getElementById("pEta").value||"").trim(),
+        status: document.getElementById("pStatus").value,
+        lines: (document.getElementById("pLines").value||"").trim(),
+        createdAt: Date.now()
+      };
 
-      const poNumber = uid("PO");
-      pos.push({
-        poNumber,
-        supplier,
-        warehouse,
-        expected,
-        status: "Open",
-        createdAt: Date.now(),
-        lines: poLines.map(l => ({...l}))
-      });
-
-      save(KEY_POS, pos);
-      addTx("PO_CREATE", poNumber, 0, `Supplier: ${supplier}`);
+      const list = load(PO_KEY, []);
+      list.unshift(po);
+      save(PO_KEY, list);
       closePOModal();
-      toast("PO created", `${poNumber} created for ${supplier}.`);
-      render();
+      toast("PO created", `${po.id} saved.`);
+      renderPOs();
     }
 
-    function findPO(poNumber){
-      return pos.find(p => p.poNumber === poNumber);
+    function renderFilters(items){
+      const cats = Array.from(new Set(items.map(x=>x.cat))).sort();
+      const whs  = Array.from(new Set(items.map(x=>x.wh))).sort();
+      const sups = Array.from(new Set(items.map(x=>x.sup))).sort();
+
+      const catF = document.getElementById("catF");
+      const whF  = document.getElementById("whF");
+      const supF = document.getElementById("supF");
+
+      if(!catF.dataset.init){
+        catF.innerHTML = `<option value="">All categories</option>` + cats.map(c=>`<option>${escapeHtml(c)}</option>`).join("");
+        whF.innerHTML  = `<option value="">All warehouses</option>` + whs.map(w=>`<option>${escapeHtml(w)}</option>`).join("");
+        supF.innerHTML = `<option value="">All suppliers</option>` + sups.map(s=>`<option>${escapeHtml(s)}</option>`).join("");
+        catF.dataset.init="1";
+      }
     }
 
-    function viewPO(poNumber){
-      const po = findPO(poNumber);
-      if (!po) return;
-      const lines = po.lines.map(l => `${l.sku} (${l.qty} @ ${money(l.unitCost)})`).join("\n");
-      alert(
-        `Purchase Order: ${po.poNumber}\n`+
-        `Supplier: ${po.supplier}\nWarehouse: ${po.warehouse}\nExpected: ${po.expected || "—"}\nStatus: ${po.status}\n\n`+
-        `Lines:\n${lines}`
-      );
+    function renderKpis(){
+      const items = load(ITEM_KEY, []);
+      const low = items.filter(i => Number(i.on) <= Number(i.rop) && Number(i.on) > 0).length;
+      const oos = items.filter(i => Number(i.on) <= 0).length;
+      const val = items.reduce((sum,i)=> sum + (Number(i.on)||0)*(Number(i.cost)||0), 0);
+
+      document.getElementById("kLow").textContent = String(low);
+      document.getElementById("kOOS").textContent = String(oos);
+      document.getElementById("kValue").textContent = money(val);
+
+      const skuCount = items.length;
+      document.getElementById("kTrends").textContent = skuCount ? `${skuCount} SKUs` : "—";
     }
 
-    function receivePO(poNumber){
-      const po = findPO(poNumber);
-      if (!po) return;
-      if (po.status === "Received") return toast("Already received", "This PO was already received.");
+    function renderItems(){
+      const items = load(ITEM_KEY, []);
+      renderFilters(items);
 
-      const ok = confirm(`Receive PO ${poNumber}? This will add quantities to inventory on-hand.`);
-      if (!ok) return;
+      const q = (document.getElementById("q").value||"").toLowerCase().trim();
+      const cat = document.getElementById("catF").value || "";
+      const wh  = document.getElementById("whF").value || "";
+      const sup = document.getElementById("supF").value || "";
 
-      po.lines.forEach(l=>{
-        const it = findItem(l.sku);
-        if (it){
-          it.onHand = Number(it.onHand||0) + Number(l.qty||0);
-          addTx("PO_RECEIPT", l.sku, l.qty, `From ${poNumber}`);
-        } else {
-          items.push({
-            sku: l.sku,
-            name: l.name || l.sku,
-            category: "",
-            warehouse: po.warehouse,
-            supplier: po.supplier,
-            cost: Number(l.unitCost||0),
-            onHand: Number(l.qty||0),
-            rop: 0,
-            uom: "pcs"
-          });
-          addTx("PO_RECEIPT_NEWITEM", l.sku, l.qty, `Auto-created from ${poNumber}`);
-        }
-      });
+      let list = items.slice();
+      if(q){
+        list = list.filter(i =>
+          (i.sku||"").toLowerCase().includes(q) ||
+          (i.name||"").toLowerCase().includes(q) ||
+          (i.sup||"").toLowerCase().includes(q)
+        );
+      }
+      if(cat) list = list.filter(i => i.cat === cat);
+      if(wh)  list = list.filter(i => i.wh === wh);
+      if(sup) list = list.filter(i => i.sup === sup);
 
-      po.status = "Received";
-      save(KEY_POS, pos);
-      save(KEY_ITEMS, items);
+      const tbody = document.getElementById("itemBody");
+      tbody.innerHTML = "";
 
-      toast("Received", `${poNumber} received into inventory.`);
-      render();
-    }
-
-    function deletePO(poNumber){
-      const ok = confirm(`Delete PO ${poNumber}?`);
-      if (!ok) return;
-      pos = pos.filter(p => p.poNumber !== poNumber);
-      save(KEY_POS, pos);
-      toast("Deleted", `${poNumber} removed.`);
-      render();
-    }
-
-    /***********************
-     * Demo data (inventory)
-     ***********************/
-    function seedDemo(){
-      if (items.length > 0){
-        const ok = confirm("Demo data will add additional items. Continue?");
-        if (!ok) return;
+      if(list.length === 0){
+        tbody.innerHTML = `<tr><td colspan="10" style="color:#667085;">No items found. Load demo data or add items.</td></tr>`;
+        renderKpis();
+        renderPOs();
+        return;
       }
 
-      items.push(
-        { sku:"NK-1001", name:"Pearl Necklace", category:"Jewelry", warehouse:"WH-A", supplier:"Delta Supplies", onHand:22, rop:15, cost:28.50, uom:"pcs" },
-        { sku:"NK-1002", name:"Gold Chain Necklace", category:"Jewelry", warehouse:"WH-A", supplier:"Delta Supplies", onHand:8, rop:12, cost:45.00, uom:"pcs" },
-        { sku:"RG-2001", name:"Diamond Ring (Classic)", category:"Jewelry", warehouse:"WH-B", supplier:"Orion Gems", onHand:0, rop:3, cost:210.00, uom:"pcs" },
-        { sku:"BX-9001", name:"Premium Gift Box", category:"Packaging", warehouse:"WH-A", supplier:"PackPro", onHand:140, rop:50, cost:1.60, uom:"pcs" },
-        { sku:"LB-3001", name:"Luxury Label Set", category:"Packaging", warehouse:"WH-B", supplier:"PackPro", onHand:40, rop:60, cost:0.35, uom:"sets" }
-      );
+      for(const i of list){
+        const on = Number(i.on)||0;
+        const rop = Number(i.rop)||0;
+        const cost = Number(i.cost)||0;
+        const value = on*cost;
 
-      save(KEY_ITEMS, items);
-      toast("Loaded", "Demo inventory loaded.");
-      render();
-    }
+        let tag = `<span class="pilltag good">Healthy</span>`;
+        if(on <= 0) tag = `<span class="pilltag bad">Out</span>`;
+        else if(on <= rop) tag = `<span class="pilltag warn">Low</span>`;
 
-    /***********************
-     * Demo data (sales for Trends KPI)
-     ***********************/
-    function seedSalesDemo(){
-      const skuList = items.length ? items.map(i=>i.sku) : ["NK-1001","NK-1002","RG-2001","BX-9001","LB-3001"];
-      const customers = [
-        {name:"Asha Retail", loc:"Austin, TX"},
-        {name:"Blue Harbor Boutique", loc:"Miami, FL"},
-        {name:"Citrine Luxe", loc:"New York, NY"},
-        {name:"Desert Pearl", loc:"Phoenix, AZ"},
-        {name:"Emerald Lane", loc:"Seattle, WA"}
-      ];
-
-      const now = Date.now();
-      const add = [];
-      for (let i=0;i<90;i++){
-        const sku = skuList[Math.floor(Math.random()*skuList.length)];
-        const c = customers[Math.floor(Math.random()*customers.length)];
-        const daysAgo = Math.floor(Math.random()*30);
-        const d = new Date(now - daysAgo*24*3600*1000);
-        const qty = 1 + Math.floor(Math.random()*5);
-
-        add.push({
-          date: d.toISOString(),
-          sku,
-          orderId: "SO-" + (8000 + Math.floor(Math.random()*1500)),
-          customer: c.name,
-          location: c.loc,
-          qty,
-          unitPrice: 25 + Math.floor(Math.random()*200)
-        });
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(i.sku)}</strong></td>
+          <td>${escapeHtml(i.name)}</td>
+          <td>${escapeHtml(i.cat)}</td>
+          <td>${escapeHtml(i.wh)}</td>
+          <td>${escapeHtml(i.sup)}</td>
+          <td>${on}</td>
+          <td>${rop}</td>
+          <td>${money(cost)}</td>
+          <td>${money(value)}</td>
+          <td>${tag}</td>
+        `;
+        tbody.appendChild(tr);
       }
 
-      sales = load(KEY_SALES, []).concat(add);
-      save(KEY_SALES, sales);
-      toast("Sales loaded", "Demo sales stored. Trends KPI is now reactive.");
-      render();
+      renderKpis();
+      renderPOs();
     }
 
-    // init
-    render();
+    function renderPOs(){
+      const pos = load(PO_KEY, []);
+      const tbody = document.getElementById("poBody");
+      tbody.innerHTML = "";
+
+      if(pos.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#667085;">No purchase orders yet. Use “Create PO”.</td></tr>`;
+        return;
+      }
+
+      for(const p of pos){
+        const st = p.status || "Open";
+        const chip = st.includes("Delayed") ? "bad" : (st.includes("Awaiting") ? "warn" : "good");
+        const linesCount = (p.lines||"").trim() ? (p.lines.split("\n").filter(Boolean).length) : 0;
+        const eta = p.eta ? new Date(p.eta).toLocaleDateString() : "—";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(p.id)}</strong></td>
+          <td>${escapeHtml(p.vendor)}</td>
+          <td>${escapeHtml(p.wh)}</td>
+          <td>${linesCount}</td>
+          <td><span class="pilltag ${chip}">${escapeHtml(st)}</span></td>
+          <td>${escapeHtml(eta)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    renderItems();
   </script>
 </body>
 </html>
