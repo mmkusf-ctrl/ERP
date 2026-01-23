@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP Navigation | Stark Premium</title>
+
+  <style>
+    :root{
+      --text:#111827;
+      --hover:rgba(17,24,39,0.06);
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:#fff;
+      font-family:"Times New Roman", serif;
+      overflow:hidden;
+    }
+    .page{
+      position:relative;
+      min-height:100vh;
+      padding:18px 22px;
+    }
+    .topbar{
+      display:grid;
+      grid-template-columns:160px 1fr;
+      align-items:center;
+      gap:10px;
+    }
+    .logo img{
+      width:125px;
+      height:auto;
+      display:block;
+    }
+    .nav{
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      align-items:center;
+      justify-items:center;
+      padding:0 10px;
+    }
+    .nav a{
+      width:100%;
+      text-align:center;
+      text-decoration:none;
+      color:var(--text);
+      font-size:14px;
+      letter-spacing:0.6px;
+      padding:10px 0;
+      border-radius:8px;
+      text-transform:uppercase;
+      transition:background 120ms ease;
+    }
+    .nav a:hover{ background:var(--hover); }
+    .nav a.active{ font-weight:700; }
+
+    .watermark{
+      position:absolute;
+      left:50%;
+      top:56%;
+      transform:translate(-50%,-50%);
+      width:min(720px,84vw);
+      opacity:0.14;
+      pointer-events:none;
+      user-select:none;
+    }
+    .frame{
+      position:absolute;
+      inset:10px;
+      border:1px solid rgba(0,0,0,0.06);
+      pointer-events:none;
+    }
+
+    @media (max-width:780px){
+      body{ overflow:auto; }
+      .topbar{ grid-template-columns:1fr; justify-items:center; }
+      .nav{ grid-template-columns:repeat(3,1fr); width:100%; max-width:720px; }
+      .watermark{ top:62%; opacity:0.10; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="frame"></div>
+
+    <header class="topbar">
+      <div class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium" />
+      </div>
+
+      <nav class="nav" aria-label="ERP Navigation">
+        <a class="active" href="home.html">Home</a>
+        <a href="account.html">Account</a>
+        <a href="crm.html">CRM</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="orders.html">Orders</a>
+        <a href="logistics.html">Logistics</a>
+      </nav>
+    </header>
+
+    <img class="watermark" src="images/stark-watermark.png" alt="" aria-hidden="true" />
+  </div>
+</body>
+</html>
