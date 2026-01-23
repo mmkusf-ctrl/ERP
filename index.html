@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login | Stark Premium ERP</title>
+  <title>Stark Premium ERP | Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="erp.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="erp.css">
   <style>
     .login-bg{
       min-height: 100vh;
@@ -20,127 +20,200 @@
       position: relative;
       overflow:hidden;
     }
-    .brand-watermark{
+    .login-bg::after{
+      content:"";
       position:absolute;
       inset:0;
-      background: url("images/stark-watermark.png") center/cover no-repeat;
-      opacity: 0.10;
+      background:
+        radial-gradient(800px 420px at 30% 20%, rgba(201,179,126,0.16) 0%, rgba(201,179,126,0) 60%),
+        radial-gradient(900px 500px at 75% 15%, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0) 60%);
       pointer-events:none;
     }
+
     .login-shell{
       width: min(980px, 100%);
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: stretch;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
       position: relative;
       z-index: 1;
     }
-    .login-left{
+
+    .brand{
       padding: 22px;
       border-radius: 22px;
-      background: rgba(255,255,255,0.72);
+      background: rgba(255,255,255,0.60);
       border: 1px solid rgba(11,18,32,0.10);
       box-shadow: var(--shadow2);
       backdrop-filter: blur(10px);
+      position: relative;
+      overflow:hidden;
+      min-height: 420px;
       display:flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    .login-left img{ width: 160px; height:auto; }
-    .login-left h1{ margin: 16px 0 0; font-size: 28px; letter-spacing:-0.8px; }
-    .login-left p{ margin: 8px 0 0; color: var(--muted); line-height:1.6; font-size: 14px; }
-    .login-right{
+    .brand::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius: 22px;
+      pointer-events:none;
+      background: linear-gradient(135deg,
+        rgba(201,179,126,0.20) 0%,
+        rgba(31,86,216,0.14) 45%,
+        rgba(255,255,255,0.00) 78%
+      );
+    }
+    .brand-inner{ position:relative; z-index:1; }
+
+    .brand img{ width: 150px; height:auto; display:block; }
+    .brand h1{
+      margin: 14px 0 0;
+      font-size: 30px;
+      letter-spacing: -0.9px;
+    }
+    .brand p{
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+      max-width: 520px;
+    }
+
+    .login-card{
       padding: 22px;
       border-radius: 22px;
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.86);
       border: 1px solid rgba(11,18,32,0.10);
-      box-shadow: var(--shadow2);
-      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow3);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow:hidden;
+      min-height: 420px;
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .form-row{ display:grid; gap:10px; margin-top: 12px; }
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items:center; margin-top: 10px;}
-    .muted{ color: var(--muted); font-size: 12px; }
+
+    .login-card h2{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.4px;
+    }
+    .login-card p{
+      margin: 8px 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .row{ display:grid; gap: 8px; margin-bottom: 12px; }
+    label{ font-size: 12px; font-weight: 900; color: rgba(11,18,32,0.72); letter-spacing:0.5px; text-transform: uppercase; }
+
+    .actions{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 12px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
     .hint{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(201,179,126,0.25);
-      background: rgba(201,179,126,0.10);
+      color: rgba(11,18,32,0.60);
       font-size: 12px;
-      color: rgba(11,18,32,0.75);
-      line-height: 1.45;
+      line-height: 1.5;
     }
+
     @media (max-width: 900px){
       .login-shell{ grid-template-columns: 1fr; }
+      .brand{ min-height: unset; }
+      .login-card{ min-height: unset; }
     }
   </style>
 </head>
 
 <body>
   <div class="login-bg">
-    <div class="brand-watermark"></div>
-
     <div class="login-shell">
-      <div class="login-left">
-        <div>
-          <img src="images/stark-logo.png" alt="Stark Premium" />
+      <section class="brand">
+        <div class="brand-inner">
+          <img src="images/stark-logo.png" alt="Stark Premium">
           <h1>Stark Premium ERP</h1>
-          <p>Luxury-grade operations cockpit for purchasing, inventory, CRM, orders, and logistics.</p>
+          <p>
+            A modern, premium operations suite designed for fast decisions:
+            tasks, purchasing, inventory, orders, logistics, and customer performance.
+          </p>
+        </div>
+
+        <div class="brand-inner">
+          <div class="note">
+            Demo credentials (local login):
+            <strong>admin / admin123</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="login-card">
+        <h2>Sign in</h2>
+        <p>Enter your credentials to access the ERP dashboard.</p>
+
+        <div class="row">
+          <label for="u">Username</label>
+          <input id="u" class="input" placeholder="admin" autocomplete="username" />
+        </div>
+
+        <div class="row">
+          <label for="p">Password</label>
+          <input id="p" class="input" type="password" placeholder="admin123" autocomplete="current-password" />
+        </div>
+
+        <button class="btn" style="width:100%; margin-top: 8px;" onclick="login()">Login</button>
+
+        <div class="actions">
           <div class="hint">
-            Demo credentials<br>
-            <strong>Username:</strong> admin<br>
-            <strong>Password:</strong> admin123
+            Tip: stay logged in on this device.<br>
+            (Stored in localStorage)
           </div>
-        </div>
-        <div class="muted">© 2026 Stark Premium. All rights reserved.</div>
-      </div>
-
-      <div class="login-right">
-        <div style="font-size:18px;font-weight:900;">Sign in</div>
-        <div class="muted" style="margin-top:6px;">Enter your credentials to access the ERP dashboard.</div>
-
-        <div class="form-row">
-          <input id="u" class="input" placeholder="Username" autocomplete="username" />
-          <input id="p" class="input" placeholder="Password" type="password" autocomplete="current-password" />
-          <button class="btn" onclick="login()">Login</button>
-          <div class="row2">
-            <label class="muted" style="display:flex;align-items:center;gap:8px;">
-              <input type="checkbox" id="remember" />
-              Remember me
-            </label>
-            <a href="#" class="muted" style="text-align:right;text-decoration:none;" onclick="return false;">Forgot password?</a>
-          </div>
+          <button class="btn secondary" onclick="fillDemo()">Use demo</button>
         </div>
 
-        <div class="toast-wrap" id="toastWrap"></div>
-      </div>
+        <div class="footer">© 2026 Stark Premium. All rights reserved.</div>
+      </section>
     </div>
   </div>
 
+  <div class="toast-wrap" id="toastWrap"></div>
+
   <script src="erp.js"></script>
   <script>
-    // If already logged in
-    if (isAuthed()) window.location.href = "dashboard.html";
+    const AUTH_KEY = "stark_erp_auth_v1";
 
-    function login(){
-      const user = (document.getElementById("u").value || "").trim();
-      const pass = (document.getElementById("p").value || "").trim();
-
-      if (user === "admin" && pass === "admin123"){
-        localStorage.setItem("stark_erp_authed", "1");
-        localStorage.setItem("stark_erp_user", user);
-        toast("Login successful", "Redirecting to dashboard...");
-        setTimeout(() => window.location.href = "dashboard.html", 450);
-      } else {
-        toast("Invalid credentials", "Use Username: admin and Password: admin123");
-      }
+    function fillDemo(){
+      document.getElementById("u").value = "admin";
+      document.getElementById("p").value = "admin123";
     }
 
-    // Enter key submits
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") login();
-    });
+    function login(){
+      const u = (document.getElementById("u").value || "").trim();
+      const p = (document.getElementById("p").value || "").trim();
+
+      if (u === "admin" && p === "admin123"){
+        localStorage.setItem(AUTH_KEY, JSON.stringify({ user: "admin", ts: Date.now() }));
+        window.location.href = "dashboard.html";
+        return;
+      }
+      toast("Login failed", "Invalid username or password.");
+    }
+
+    // If already logged in, go to dashboard
+    (function(){
+      try{
+        const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+        if (auth && auth.user) window.location.href = "dashboard.html";
+      }catch{}
+    })();
   </script>
 </body>
 </html>
