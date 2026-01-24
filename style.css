@@ -135,8 +135,10 @@ textarea {
   font-size: 20px;
   letter-spacing: -0.03em;
   background: linear-gradient(135deg, var(--text-main), var(--primary));
+  background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
+  display: inline-block;
 }
 
 /* Desktop Nav */
@@ -393,9 +395,10 @@ textarea {
   padding: 2px;
   /* Thicker premium border */
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(79, 70, 229, 0.1) 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
   mask-composite: exclude;
+  -webkit-mask-composite: xor;
   pointer-events: none;
 }
 
