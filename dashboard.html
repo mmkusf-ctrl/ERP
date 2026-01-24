@@ -93,7 +93,7 @@
     <!-- KPI Grid -->
     <section class="kpi-grid" style="margin-bottom:32px;">
 
-      <div class="card-kpi">
+      <div class="card-kpi click-action" onclick="filterDashboard('Pending', this)" style="cursor:pointer;">
         <div class="card-header">
           <span class="card-title"
             style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Pending
@@ -106,7 +106,7 @@
           Needs Review</div>
       </div>
 
-      <div class="card-kpi">
+      <div class="card-kpi click-action" onclick="filterDashboard('Purchasing', this)" style="cursor:pointer;">
         <div class="card-header">
           <span class="card-title"
             style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Open POs</span>
@@ -118,7 +118,7 @@
           Awaiting Approval</div>
       </div>
 
-      <div class="card-kpi">
+      <div class="card-kpi click-action" onclick="filterDashboard('Orders', this)" style="cursor:pointer;">
         <div class="card-header">
           <span class="card-title"
             style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Validated
@@ -131,7 +131,7 @@
           Ready to Ship</div>
       </div>
 
-      <div class="card-kpi">
+      <div class="card-kpi click-action" onclick="filterDashboard('High', this)" style="cursor:pointer;">
         <div class="card-header">
           <span class="card-title"
             style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On Hold</span>
@@ -156,7 +156,7 @@
 
           <div style="display:flex; gap:8px;">
             <select id="cat" class="input" style="width:auto; height:36px; padding:0 10px; font-size:13px;"
-              onchange="render()">
+              onchange="setManualFilter()">
               <option value="">All Categories</option>
               <option>Vendor</option>
               <option>Purchasing</option>
@@ -165,7 +165,7 @@
               <option>Logistics</option>
             </select>
             <select id="priority" class="input" style="width:auto; height:36px; padding:0 10px; font-size:13px;"
-              onchange="render()">
+              onchange="setManualFilter()">
               <option value="">All Priority</option>
               <option>High</option>
               <option>Medium</option>
@@ -312,6 +312,7 @@
   <script>
     const AUTH_KEY = "stark_erp_auth_v1";
     const TASK_KEY = "stark_erp_tasks_v2";
+    let activeFilter = 'Pending'; // Default
 
     // Auth Check
     (function () {
@@ -386,15 +387,59 @@
       render();
     }
 
+    // Filter Logic
+    function filterDashboard(type, card) {
+      activeFilter = type;
+
+      // Reset Dropdowns if using Card Filters
+      if (type !== 'Manual') {
+        document.getElementById("cat").value = "";
+        document.getElementById("priority").value = "";
+      }
+
+      // Highlight active card (optional visual cue could be added here)
+      render();
+    }
+
+    function setManualFilter() {
+      activeFilter = 'Manual';
+      render();
+    }
+
     function render() {
       const list = loadTasks();
-      // Search disabled for static demo unless implemented
-      // const search = (document.getElementById("search").value || "").toLowerCase();
-      // const catFilter = document.getElementById("cat").value;
+
+      const catFilter = document.getElementById("cat").value;
+      const priFilter = document.getElementById("priority").value;
 
       // KPI Update
       const pending = list.filter(t => t.status !== "Completed");
       document.getElementById("kpiTasks").textContent = pending.length;
+      document.getElementById("kpiOpenPO").textContent = list.filter(t => t.cat === 'Purchasing' && t.status !== 'Completed').length;
+      document.getElementById("kpiValid").textContent = list.filter(t => t.cat === 'Orders' && t.status !== 'Completed').length;
+      document.getElementById("kpiNonValid").textContent = list.filter(t => t.pri === 'High' && t.status !== 'Completed').length;
+
+
+      // Filter
+      const shown = list.filter(t => {
+        if (activeFilter === 'Pending') {
+          return t.status !== 'Completed';
+        }
+        if (activeFilter === 'Purchasing') {
+          return t.cat === 'Purchasing' && t.status !== 'Completed';
+        }
+        if (activeFilter === 'Orders') {
+          return t.cat === 'Orders' && t.status !== 'Completed';
+        }
+        if (activeFilter === 'High') {
+          return t.pri === 'High' && t.status !== 'Completed';
+        }
+
+        // Manual Fallback
+        if (catFilter && t.cat !== catFilter) return false;
+        if (priFilter && t.pri !== priFilter) return false;
+        return true;
+      });
 
       // Table
       const tbody = document.getElementById("tbody");
@@ -405,7 +450,12 @@
         return;
       }
 
-      list.forEach(t => {
+      if (shown.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No matching tasks. Try a different filter.</td></tr>`;
+        return;
+      }
+
+      shown.forEach(t => {
         const tr = document.createElement("tr");
         const isDone = t.status === "Completed";
 
@@ -449,10 +499,9 @@
       if (list.length > 0 && !confirm("Add demo tasks to existing list?")) return;
 
       const demo = [
-        { id: uid(), title: "Approve PO #PO-1042 (Vendor: Delta Supplies)", cat: "Purchasing", pri: "High", due: "2026-01-23", assignees: ["A", "B"], status: "Open" },
-        { id: uid(), title: "Validate Order #SO-8891 (payment pending)", cat: "Orders", pri: "High", due: "2026-01-23", assignees: ["A", "C"], status: "Open" },
-        { id: uid(), title: "Follow up on delayed shipment (Carrier: Xpress)", cat: "Logistics", pri: "Medium", due: "—", assignees: [], status: "Open" },
-        { id: uid(), title: "Cycle count: Warehouse A (Zone 3)", cat: "Inventory", pri: "Low", due: "—", assignees: ["A"], status: "Open" }
+        { id: uid(), title: "Approve Vendor PO #9921", cat: "Purchasing", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" },
+        { id: uid(), title: "Inventory Count: Zone A", cat: "Inventory", pri: "Medium", due: "2026-02-12", assignees: ["B", "C"], status: "Open" },
+        { id: uid(), title: "Validate Order #SO-5512", cat: "Orders", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" }
       ];
       saveTasks([...demo, ...list]);
       toast("Demo Data", "Loaded demo tasks.");
