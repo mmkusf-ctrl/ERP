@@ -1134,3 +1134,150 @@ tr:hover td {
     transform: translateY(0);
   }
 }
+
+/* --- Soft UI Theme (Accounting Redesign) --- */
+:root {
+  --bg-soft-purple: #f3e8ff;
+  --bg-soft-pink: #fdf2f8;
+  --card-glow: 0 8px 32px rgba(192, 132, 252, 0.15);
+  --text-purple-dark: #581c87;
+  --text-pink-dark: #831843;
+}
+
+.soft-ui-wrapper {
+  background: linear-gradient(135deg, #f5f3ff 0%, #fdf4ff 100%);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.accounting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+.card-soft {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.card-soft:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-glow);
+}
+
+.soft-header {
+  background: linear-gradient(90deg, #e9d5ff 0%, #fae8ff 100%);
+  padding: 24px;
+  border-radius: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kpi-row-soft {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.kpi-card-soft {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f3e8ff;
+}
+
+.kpi-card-soft .label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.kpi-card-soft .val {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.kpi-card-soft .badge-soft {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Specific Card Styles from Mockup */
+.card-purple-bg {
+  background: #f3e8ff;
+  border: none;
+}
+
+.card-pink-bg {
+  background: #fce7f3;
+  border: none;
+}
+
+.card-gradient-1 {
+  background: linear-gradient(135deg, #fff 0%, #f3e8ff 100%);
+}
+
+.search-input-soft {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  height: 48px;
+  padding-left: 16px;
+  width: 100%;
+}
+
+.btn-purple-soft {
+  background: #8b5cf6;
+  color: white;
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .accounting-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kpi-row-soft {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .accounting-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-row-soft {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Stacked 2x2 on mobile */
+  .soft-ui-wrapper {
+    padding: 16px;
+  }
+}
