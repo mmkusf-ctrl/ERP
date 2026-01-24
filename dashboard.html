@@ -113,7 +113,7 @@
       <h2 style="font-size:16px; margin:0 0 20px 0; color:var(--text-main);">Live Operations</h2>
 
 
-      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px;" id="inv-grid">
+      <div class="grid-4" id="inv-grid">
         <!-- Revenue Card (Live) -->
         <div class="stat-card green clickable-stat-card" onclick="window.location.href='accounting.html'"
           style="background:#f0fdf4; border:1px solid #dcfce7; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
@@ -165,25 +165,6 @@
             style="background:#fecaca; color:#991b1b; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Restock</button>
         </div>
       </div>
-
-      <!-- Mobile Layout Adjustment Style -->
-      <style>
-        @media(max-width: 1000px) {
-          #inv-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
-
-        @media(max-width: 600px) {
-          #inv-grid {
-            grid-template-columns: 1fr !important;
-          }
-
-          .stat-card {
-            height: 140px !important;
-          }
-        }
-      </style>
     </section>
 
     <!-- Main Content Grid -->
