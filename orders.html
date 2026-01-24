@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Orders | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link active" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="trends.html">Trends</a>
+            </nav>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link active" href="orders.html">Orders</a>
+            <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="trends.html">Trends</a>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Order Management</h1>
+            <p class="page-desc">Track and validate customer orders.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <!-- Stats -->
+        <section class="grid grid-4" style="margin-bottom:32px;">
+            <article class="card card-premium clickable-kpi active" onclick="setFilter('')" id="kAll">
+                <div class="card-header">
+                    <div class="card-title">All Orders</div>
+                </div>
+                <div class="stat-value" id="cAll">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('Validated')" id="kVal">
+                <div class="card-header">
+                    <div class="card-title">Validated</div>
+                    <div class="badge badge-green">Ready</div>
+                </div>
+                <div class="stat-value" id="cVal">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('On Hold')" id="kHold">
+                <div class="card-header">
+                    <div class="card-title">On Hold</div>
+                    <div class="badge badge-red">Alert</div>
+                </div>
+                <div class="stat-value" id="cHold">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('Processing')" id="kProc">
+                <div class="card-header">
+                    <div class="card-title">Processing</div>
+                </div>
+                <div class="stat-value" id="cProc">0</div>
+            </article>
+        </section>
+
+        <!-- Table -->
+        <section class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h2 style="font-size:18px; margin:0;" id="listTitle">All Orders</h2>
+                <button class="btn btn-primary" onclick="generateDemoOrders()">Reset Demo Data</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        const KEY_ORD = "stark_erp_orders_v1";
+        const URL_PARAMS = new URLSearchParams(window.location.search);
+        let CURRENT_FILTER = URL_PARAMS.get("filter") || "";
+
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+        function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+        function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
+
+        function init() {
+            let orders = load(KEY_ORD, []);
+            if (orders.length === 0) {
+                orders = generateDemoOrders(true);
+            }
+            render();
+
+            // Set initial filter visual state
+            if (CURRENT_FILTER) {
+                const map = { "Validated": "kVal", "On Hold": "kHold", "Processing": "kProc" };
+                const id = map[CURRENT_FILTER];
+                if (id) {
+                    document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+                    document.getElementById(id).classList.add("active");
+                }
+            }
+        }
+
+        function generateDemoOrders(ret) {
+            const arr = [
+                { id: "ORD-1001", cust: "Asha Retail", date: "2026-01-20", total: 1200, status: "Validated" },
+                { id: "ORD-1002", cust: "Blue Harbor", date: "2026-01-21", total: 850, status: "Processing" },
+                { id: "ORD-1003", cust: "Citrine Luxe", date: "2026-01-22", total: 3200, status: "On Hold" },
+                { id: "ORD-1004", cust: "Desert Pearl", date: "2026-01-22", total: 450, status: "Validated" },
+                { id: "ORD-1005", cust: "Emerald Lane", date: "2026-01-23", total: 2100, status: "Validated" },
+                { id: "ORD-1006", cust: "Asha Retail", date: "2026-01-23", total: 1500, status: "On Hold" }
+            ];
+            save(KEY_ORD, arr);
+            if (ret) return arr;
+            render();
+        }
+
+        function setFilter(f) {
+            CURRENT_FILTER = f;
+
+            // Visuals
+            document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+            const map = { "": "kAll", "Validated": "kVal", "On Hold": "kHold", "Processing": "kProc" };
+            const id = map[f] || "kAll";
+            document.getElementById(id).classList.add("active");
+
+            render();
+
+            // Update URL without reload
+            const url = new URL(window.location);
+            if (f) url.searchParams.set("filter", f);
+            else url.searchParams.delete("filter");
+            window.history.pushState({}, "", url);
+        }
+
+        function render() {
+            const orders = load(KEY_ORD, []);
+
+            // Stats
+            document.getElementById("cAll").textContent = orders.length;
+            document.getElementById("cVal").textContent = orders.filter(x => x.status === "Validated").length;
+            document.getElementById("cHold").textContent = orders.filter(x => x.status === "On Hold").length;
+            document.getElementById("cProc").textContent = orders.filter(x => x.status === "Processing").length;
+
+            // Filter
+            const shown = orders.filter(x => CURRENT_FILTER ? x.status === CURRENT_FILTER : true);
+
+            document.getElementById("listTitle").textContent = CURRENT_FILTER ? `${CURRENT_FILTER} Orders` : "All Orders";
+
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
+            if (!shown.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No orders found.</td></tr>`;
+                return;
+            }
+
+            shown.forEach(o => {
+                let badge = "badge-green";
+                if (o.status === "On Hold") badge = "badge-red";
+                if (o.status === "Processing") badge = "badge-yellow";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td><strong>${o.id}</strong></td>
+                <td>${o.cust}</td>
+                <td>${o.date}</td>
+                <td>${money(o.total)}</td>
+                <td><span class="badge ${badge}">${o.status}</span></td>
+                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;">View</button></td>
+              `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
