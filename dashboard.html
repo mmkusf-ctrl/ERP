@@ -33,6 +33,7 @@
         <a class="nav-link" href="orders.html">Orders</a>
         <a class="nav-link" href="logistics.html">Logistics</a>
         <a class="nav-link" href="reports.html">Reports</a>
+        <a class="nav-link" href="events.html">Events</a>
       </nav>
 
       <div style="display:flex; align-items:center; gap:12px;">
@@ -66,6 +67,7 @@
       <a class="mobile-link" href="orders.html">Orders</a>
       <a class="mobile-link" href="logistics.html">Logistics</a>
       <a class="mobile-link" href="reports.html">Reports</a>
+      <a class="mobile-link" href="events.html">Events</a>
     </div>
   </div>
 
@@ -200,6 +202,53 @@
             <button class="btn btn-secondary" onclick="window.location.href='logistics.html'">Track Shipments</button>
             <button class="btn btn-secondary" onclick="window.location.href='accounting.html'">Accounting
               Overview</button>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Upcoming Events</span>
+          </div>
+          <div style="display:grid; gap:12px;">
+            <div style="display:flex; gap:10px; align-items:start;">
+              <div
+                style="background:var(--primary-light); color:var(--primary); padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
+                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
+                <div style="font-size:16px; font-weight:700;">10</div>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Quarterly Review</div>
+                <div style="font-size:12px; color:var(--text-muted);">2:00 PM • Board Boom</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:start;">
+              <div
+                style="background:#fef3c7; color:#d97706; padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
+                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
+                <div style="font-size:16px; font-weight:700;">15</div>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Tax Deadline</div>
+                <div style="font-size:12px; color:var(--text-muted);">Submit VAT Returns</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:start;">
+              <div
+                style="background:#f1f5f9; color:#64748b; padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
+                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
+                <div style="font-size:16px; font-weight:700;">18</div>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Vendor Audit</div>
+                <div style="font-size:12px; color:var(--text-muted);">Stark Mfg Facility</div>
+              </div>
+            </div>
+
+            <button class="btn btn-secondary" style="width:100%; margin-top:4px;"
+              onclick="alert('Calendar View Coming Soon')">View Calendar</button>
           </div>
         </div>
 
