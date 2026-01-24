@@ -261,3 +261,54 @@ window.formatDate = (dateStr) => {
   if (!dateStr) return "-";
   return new Date(dateStr).toLocaleDateString();
 };
+
+/* --- Live System Simulation --- */
+function startLiveSimulation() {
+  // Only run if we are on the dashboard or have KPIs
+  const revenueNode = document.getElementById('kpi-revenue-val');
+  const orderNode = document.getElementById('kpi-orders-val');
+
+  // 1. Random Toasts (Every 15-45 seconds)
+  function scheduleNextToast() {
+    const delay = Math.random() * 30000 + 15000;
+    setTimeout(() => {
+      const events = [
+        { title: "New Order", msg: "Order #PO-" + Math.floor(Math.random() * 9000 + 1000) + " received from online store.", type: "success" },
+        { title: "Inventory Alert", msg: "Low stock warning for Item SK-" + Math.floor(Math.random() * 500), type: "error" },
+        { title: "Payment Received", msg: "Payment of " + formatMoney(Math.random() * 500 + 50) + " processed.", type: "success" },
+        { title: "System Info", msg: "Data sync completed successfully.", type: "info" }
+      ];
+      const event = events[Math.floor(Math.random() * events.length)];
+      toast(event.title, event.msg, event.type);
+      scheduleNextToast();
+    }, delay);
+  }
+
+  // 2. Real-time KPI Ticks
+  if (revenueNode && orderNode) {
+    setInterval(() => {
+      // 30% chance to update revenue
+      if (Math.random() > 0.7) {
+        let currentRev = parseFloat(revenueNode.innerText.replace(/[^0-9.-]+/g, "")) || 0;
+        currentRev += Math.random() * 200;
+        revenueNode.innerText = formatMoney(currentRev);
+        // Flash effect
+        revenueNode.style.color = "var(--success)";
+        setTimeout(() => revenueNode.style.color = "", 500);
+      }
+      // 20% chance to update orders
+      if (Math.random() > 0.8) {
+        let currentOrders = parseInt(orderNode.innerText) || 0;
+        orderNode.innerText = currentOrders + 1;
+      }
+    }, 5000);
+  }
+
+  scheduleNextToast();
+}
+
+// Start simulation on load
+document.addEventListener("DOMContentLoaded", () => {
+  // Slight delay to not interfere with init
+  setTimeout(startLiveSimulation, 2000);
+});
