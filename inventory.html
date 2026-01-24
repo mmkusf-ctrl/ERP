@@ -1,421 +1,866 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Inventory | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stark Premium ERP • Inventory</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="erp.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="erp.css" />
+
+  <style>
+    /* Minimal additions to match your premium theme */
+    .hero-right{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .btn.sm{ height: 36px; border-radius: 12px; padding: 0 12px; font-size: 13px; }
+    .select.sm{ height: 36px; border-radius: 12px; font-size: 13px; }
+    .pill.sm{ padding: 7px 10px; font-size: 13px; }
+    .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .stack{ display:grid; gap: 12px; }
+    .subtle{ color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 7px 10px; border-radius: 999px;
+      border: 1px solid rgba(11,18,32,0.12);
+      background: rgba(11,18,32,0.06);
+      font-size: 12px; font-weight: 900; color: rgba(11,18,32,0.78);
+      white-space: nowrap;
+    }
+    .badge.good{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
+    .badge.bad{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
+    .badge.warn{ border-color: rgba(177,98,13,0.25); background: rgba(177,98,13,0.10); color: rgba(177,98,13,0.95); }
+
+    .cardline{
+      border: 1px solid rgba(11,18,32,0.10);
+      background: rgba(255,255,255,0.72);
+      border-radius: 16px;
+      padding: 12px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items:flex-start;
+    }
+    .cardline strong{ font-weight: 950; font-size: 13px; }
+    .cardline small{ display:block; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+    .table-wrap{ overflow:auto; }
+    table{ width:100%; border-collapse: collapse; }
+    th, td{ padding: 12px 12px; border-bottom: 1px solid rgba(11,18,32,0.08); text-align:left; white-space: nowrap; }
+    th{ font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: rgba(11,18,32,0.62); }
+    td strong{ font-weight: 900; }
+
+    .mini-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+    .divider{ height: 1px; background: rgba(11,18,32,0.08); margin: 10px 0; }
+
+    @media (max-width: 980px){ .grid-2, .grid-3{ grid-template-columns: 1fr; } .hero-right{ justify-content:flex-start; } }
+  </style>
 </head>
 
 <body>
+  <!-- ===== Topbar ===== -->
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo"><img src="images/stark-logo.png" alt="Stark Premium" /></div>
+      <div class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium" />
+      </div>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
+      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNavSafe()">
         <span></span><span></span><span></span>
       </button>
 
       <nav class="nav" aria-label="ERP Navigation">
-        <a href="dashboard.html">Home</a>
-        <a href="account.html">Account</a>
-        <a href="crm.html">CRM</a>
-        <a href="inventory.html" class="active">Inventory</a>
-        <a href="orders.html">Orders</a>
-        <a href="logistics.html">Logistics</a>
-        <a href="trends.html">Trends</a>
+        <a href="dashboard.html" data-key="home">Home</a>
+        <a href="account.html" data-key="account">Account</a>
+        <a href="crm.html" data-key="crm">CRM</a>
+        <a href="inventory.html" data-key="inventory">Inventory</a>
+        <a href="orders.html" data-key="orders">Orders</a>
+        <a href="logistics.html" data-key="logistics">Logistics</a>
+        <a href="trends.html" data-key="trends">Trends</a>
       </nav>
 
-      <div class="top-actions">
-        <div class="pill"><span class="dot"></span>Online</div>
-        <button class="btn secondary" onclick="window.location.href='trends.html'">Trends</button>
-        <button class="btn" onclick="openPOModal()">Create PO</button>
+      <div class="actions">
+        <div class="pill sm"><span class="dot"></span>Online</div>
+        <select id="userSelect" class="select sm" title="Current user">
+          <option value="A">User A</option>
+          <option value="B">User B</option>
+          <option value="C">User C</option>
+          <option value="D">User D</option>
+        </select>
+        <button class="btn secondary sm" onclick="erpSignOutSafe()">Sign out</button>
       </div>
     </div>
   </header>
 
-  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav" id="mobileNav">
     <div class="mobile-card">
       <div class="mobile-head">
         <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
+        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNavSafe()">×</button>
       </div>
       <div class="mobile-links">
-        <a href="dashboard.html">Home</a>
-        <a href="account.html">Account</a>
-        <a href="crm.html">CRM</a>
-        <a class="active" href="inventory.html">Inventory</a>
-        <a href="orders.html">Orders</a>
-        <a href="logistics.html">Logistics</a>
-        <a href="trends.html">Trends</a>
+        <a href="dashboard.html" data-key="home">Home</a>
+        <a href="account.html" data-key="account">Account</a>
+        <a href="crm.html" data-key="crm">CRM</a>
+        <a href="inventory.html" data-key="inventory">Inventory</a>
+        <a href="orders.html" data-key="orders">Orders</a>
+        <a href="logistics.html" data-key="logistics">Logistics</a>
+        <a href="trends.html" data-key="trends">Trends</a>
       </div>
     </div>
   </div>
 
-  <main class="wrap">
+  <div class="container">
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <!-- ===== Hero ===== -->
     <div class="hero">
-      <h1 class="h-title">Inventory</h1>
-      <p class="h-sub">Manage SKU master data, reorder control, stock visibility, and purchase orders — modern & premium.</p>
-      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn secondary" onclick="loadDemoItems()">Load Demo Data</button>
-        <button class="btn" onclick="openItemModal()">Add Item</button>
+      <div>
+        <h1>Inventory</h1>
+        <p>Receive stock, adjust stock, track dead stock, and manage PO/invoice lookup — streamlined.</p>
       </div>
-      <div class="toast-wrap" id="toastWrap"></div>
+
+      <div class="hero-right">
+        <button class="btn secondary sm" type="button" onclick="loadDemoPOs()">Load Demo POs</button>
+        <button class="btn sm" type="button" onclick="clearInventoryModule()">Clear Module Data</button>
+      </div>
     </div>
 
-    <section class="kpis">
-      <div class="card">
-        <div class="card-top"><div class="label">Trends</div><div class="chip good">Reactive</div></div>
-        <div class="value" id="kTrends">—</div>
-        <div class="sub">Track SKU performance in Trends</div>
+    <!-- ===== PO Window + Lookups ===== -->
+    <div class="panel">
+      <h2>PO Window</h2>
+      <div class="subtle">
+        Incoming inventory is calculated from POs in this window. Receiving updates on-hand and PO status.
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Low stock</div><div class="chip warn">Reorder</div></div>
-        <div class="value" id="kLow">0</div>
-        <div class="sub">At / below reorder point</div>
+      <div class="divider"></div>
+
+      <div class="grid-3">
+        <div class="mini">
+          <strong>Window</strong>
+          <span class="subtle">Filter POs by expected date</span>
+        </div>
+        <div>
+          <label class="subtle" for="poStart">Start</label>
+          <input id="poStart" class="input" type="date" />
+        </div>
+        <div>
+          <label class="subtle" for="poEnd">End</label>
+          <input id="poEnd" class="input" type="date" />
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Out of stock</div><div class="chip bad">Urgent</div></div>
-        <div class="value" id="kOOS">0</div>
-        <div class="sub">Immediate replenishment needed</div>
+      <div class="divider"></div>
+
+      <div class="grid-2">
+        <div class="stack">
+          <h2 style="margin:0">PO Lookup</h2>
+          <div class="controls">
+            <input id="poLookupInput" class="input" placeholder="Enter PO number (e.g., PO-1002)..." />
+            <button class="btn sm" type="button" onclick="poLookup()">Lookup</button>
+          </div>
+          <div id="poLookupResult"></div>
+        </div>
+
+        <div class="stack">
+          <h2 style="margin:0">Invoice Lookup by PO</h2>
+          <div class="controls">
+            <input id="invoiceLookupInput" class="input" placeholder="Enter PO number to find invoice..." />
+            <button class="btn sm" type="button" onclick="invoiceLookup()">Lookup</button>
+          </div>
+          <div id="invoiceLookupResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Incoming Inventory (based on PO window) ===== -->
+    <div class="panel" style="margin-top:16px;">
+      <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0">Incoming Inventory</h2>
+          <div class="subtle">Only POs within the date window contribute to this view.</div>
+        </div>
+        <div class="mini-actions">
+          <span class="badge" id="incomingCountBadge">0 POs</span>
+          <span class="badge warn" id="incomingUnitsBadge">0 units incoming</span>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-top"><div class="label">Inventory value</div><div class="chip good">Cost basis</div></div>
-        <div class="value" id="kValue">$0.00</div>
-        <div class="sub">On-hand × unit cost</div>
-      </div>
-    </section>
+      <div class="divider"></div>
 
-    <section class="section">
-      <h2>Item Master</h2>
-      <div class="goldline"></div>
-
-      <div class="controls">
-        <input id="q" class="input" placeholder="Search SKU / item / supplier..." oninput="renderItems()">
-        <select id="catF" onchange="renderItems()"></select>
-        <select id="whF" onchange="renderItems()"></select>
-        <select id="supF" onchange="renderItems()"></select>
-      </div>
-
-      <div class="table-wrap" style="margin-top:12px;">
-        <table>
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Item</th>
-              <th>Category</th>
-              <th>Warehouse</th>
-              <th>Supplier</th>
-              <th>On hand</th>
-              <th>ROP</th>
-              <th>Unit cost</th>
-              <th>Value</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="itemBody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section" id="po">
-      <h2>Vendor Purchase Orders</h2>
-      <div class="goldline"></div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>PO</th>
-              <th>Vendor</th>
-              <th>Warehouse</th>
-              <th>Lines</th>
+              <th>Supplier</th>
+              <th>Expected</th>
+              <th>SKU</th>
+              <th>Item</th>
+              <th>Ordered</th>
+              <th>Received</th>
+              <th>Remaining</th>
               <th>Status</th>
-              <th>ETA</th>
             </tr>
           </thead>
-          <tbody id="poBody"></tbody>
+          <tbody id="incomingTable"></tbody>
         </table>
       </div>
-    </section>
-  </main>
+    </div>
 
-  <!-- Add Item Modal -->
-  <div class="modal" id="itemModal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Add Inventory Item</h3>
-        <button class="x" onclick="closeItemModal()">×</button>
+    <!-- ===== Receive + Adjust ===== -->
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="panel">
+        <h2>Receive Inventory</h2>
+        <div class="subtle">Receive against a PO line. Updates PO received qty and increases on-hand.</div>
+        <div class="divider"></div>
+
+        <div class="stack">
+          <div class="controls">
+            <input id="recvPo" class="input" placeholder="PO number (e.g., PO-1002)" />
+            <input id="recvSku" class="input" placeholder="SKU (e.g., NK-1001)" />
+            <input id="recvQty" class="input" type="number" min="1" placeholder="Qty to receive" />
+          </div>
+          <div class="controls">
+            <input id="recvInvoice" class="input" placeholder="Invoice # (optional, e.g., INV-8891)" />
+            <button class="btn sm" type="button" onclick="receiveInventory()">Receive</button>
+          </div>
+          <div class="subtle">Tip: Use the Incoming table to confirm SKU/remaining quantity.</div>
+        </div>
       </div>
-      <div class="modal-body">
-        <div class="controls">
-          <input id="iSku" class="input" placeholder="SKU (required)" />
-          <input id="iName" class="input" placeholder="Item name (required)" />
-          <input id="iCat" class="input" placeholder="Category (e.g., Packaging)" />
-          <input id="iWh" class="input" placeholder="Warehouse (e.g., WH-A)" />
-        </div>
-        <div class="controls" style="margin-top:10px;">
-          <input id="iSup" class="input" placeholder="Supplier (e.g., PackPro)" />
-          <input id="iOn" class="input" placeholder="On-hand" type="number" />
-          <input id="iRop" class="input" placeholder="Reorder point" type="number" />
-          <input id="iCost" class="input" placeholder="Unit cost" type="number" step="0.01" />
+
+      <div class="panel">
+        <h2>Adjust Inventory</h2>
+        <div class="subtle">Manual corrections (cycle count, damage, shrink, etc.).</div>
+        <div class="divider"></div>
+
+        <div class="stack">
+          <div class="controls">
+            <input id="adjSku" class="input" placeholder="SKU (e.g., NK-1001)" />
+            <input id="adjQty" class="input" type="number" placeholder="Adjustment (+/-)" />
+            <select id="adjReason" class="input">
+              <option value="Cycle Count">Cycle Count</option>
+              <option value="Damage">Damage</option>
+              <option value="Shrink">Shrink</option>
+              <option value="Found Stock">Found Stock</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="controls">
+            <input id="adjNote" class="input" placeholder="Note (optional)" />
+            <button class="btn sm" type="button" onclick="adjustInventory()">Apply Adjustment</button>
+          </div>
         </div>
       </div>
-      <div class="modal-head" style="border-top:1px solid rgba(11,18,32,0.10);">
-        <div style="color:#667085;font-size:12px;">Saved to localStorage</div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn secondary" onclick="closeItemModal()">Cancel</button>
-          <button class="btn" onclick="addItem()">Save</button>
+    </div>
+
+    <!-- ===== Dead Stock ===== -->
+    <div class="panel" style="margin-top:16px;">
+      <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0">Dead Stock</h2>
+          <div class="subtle">Flag items as dead stock (obsolete / no movement). Does not change on-hand automatically.</div>
         </div>
+        <div class="mini-actions">
+          <button class="btn secondary sm" type="button" onclick="openDeadStockModal()">Flag SKU</button>
+          <span class="badge bad" id="deadCountBadge">0 flagged</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Item</th>
+              <th>Flagged On</th>
+              <th>Reason</th>
+              <th>Notes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="deadTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Activity Log (minimal + relevant) ===== -->
+    <div class="panel" style="margin-top:16px;">
+      <h2>Inventory Activity</h2>
+      <div class="subtle">Only logs: receiving + adjustments + dead stock flags.</div>
+      <div class="divider"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Type</th>
+              <th>Reference</th>
+              <th>SKU</th>
+              <th>Qty</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="logTable"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Create PO Modal -->
-  <div class="modal" id="poModal">
+  <!-- ===== Dead Stock Modal ===== -->
+  <div class="modal" id="deadModal" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-head">
-        <h3>Create Purchase Order</h3>
-        <button class="x" onclick="closePOModal()">×</button>
+        <h3>Flag Dead Stock</h3>
+        <button class="x" onclick="closeDeadStockModal()" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
-        <div class="controls">
-          <input id="pVendor" class="input" placeholder="Vendor (required)" />
-          <input id="pWh" class="input" placeholder="Warehouse (e.g., WH-A)" />
-          <input id="pEta" class="input" type="date" />
-          <select id="pStatus">
-            <option>Open</option>
-            <option>Awaiting approval</option>
-            <option>Confirmed</option>
-            <option>Delayed</option>
+        <div class="modal-grid">
+          <input id="deadSku" class="input" placeholder="SKU (e.g., NK-1001)" />
+          <input id="deadItem" class="input" placeholder="Item name (optional)" />
+          <select id="deadReason" class="input">
+            <option value="Obsolete">Obsolete</option>
+            <option value="No movement">No movement</option>
+            <option value="Seasonal end">Seasonal end</option>
+            <option value="Damaged / unsellable">Damaged / unsellable</option>
+            <option value="Other">Other</option>
           </select>
-        </div>
-        <div style="margin-top:10px;">
-          <textarea id="pLines" placeholder="PO lines (one per line): SKU,Qty   Example: BX-9001,100"></textarea>
+          <input id="deadNote" class="input" placeholder="Notes (optional)" />
         </div>
       </div>
-      <div class="modal-head" style="border-top:1px solid rgba(11,18,32,0.10);">
-        <div style="color:#667085;font-size:12px;">Saved to localStorage</div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn secondary" onclick="closePOModal()">Cancel</button>
-          <button class="btn" onclick="createPO()">Create</button>
-        </div>
+      <div class="modal-footer">
+        <button class="btn secondary sm" onclick="closeDeadStockModal()">Cancel</button>
+        <button class="btn sm" onclick="saveDeadStock()">Flag</button>
       </div>
     </div>
   </div>
 
+  <!-- Optional shared ERP JS -->
   <script src="erp.js"></script>
+
   <script>
-    requireAuth();
-    setActiveNav("inventory.html");
+    /* =========================================================
+       Inventory (reduced scope): PO window -> incoming -> receive,
+       plus adjustments, dead stock, and lookups.
+       ========================================================= */
 
-    const ITEM_KEY = "stark_erp_items_v2";
-    const PO_KEY   = "stark_erp_pos_v1";
+    /* ---------- Keys ---------- */
+    const KEYS = {
+      PO:   (window.ERP && ERP.PO)   || "stark_erp_po_v1",
+      INV:  (window.ERP && ERP.INV)  || "stark_erp_invoices_v1",
+      OH:   (window.ERP && ERP.OH)   || "stark_erp_onhand_v1",     // map: SKU -> onHand qty
+      DEAD: (window.ERP && ERP.DEAD) || "stark_erp_deadstock_v1",  // list
+      LOG:  (window.ERP && ERP.LOG)  || "stark_erp_invlog_v1",     // list
+      USER: (window.ERP && ERP.USER) || "stark_erp_current_user_v1",
+      AUTH: (window.ERP && ERP.AUTH) || "stark_erp_auth_v1",
+    };
 
-    function load(key, fallback){
+    /* ---------- Helpers ---------- */
+    function loadJSON(key, fallback){
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
     }
-    function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
-    function money(n){
-      const v = Number(n||0);
-      return v.toLocaleString(undefined,{style:"currency",currency:"USD"});
+    function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
+    function esc(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+    function nowISO(){ return new Date().toISOString(); }
+
+    function toast(title, msg){
+      if (window.erpToast) return window.erpToast(title, msg);
+      const wrap = document.getElementById("toastWrap");
+      if(!wrap) return alert(title + "\n" + msg);
+      const el = document.createElement("div");
+      el.className = "toast";
+      el.innerHTML = `<div><strong>${esc(title)}</strong><span>${esc(msg)}</span></div><button class="close">×</button>`;
+      el.querySelector(".close").onclick = ()=> el.remove();
+      wrap.prepend(el);
+      setTimeout(()=> el.remove(), 8000);
     }
 
-    function openItemModal(){ document.getElementById("itemModal").classList.add("open"); }
-    function closeItemModal(){ document.getElementById("itemModal").classList.remove("open"); }
-    function openPOModal(){ document.getElementById("poModal").classList.add("open"); }
-    function closePOModal(){ document.getElementById("poModal").classList.remove("open"); }
-
-    function loadDemoItems(){
-      const demo = [
-        { sku:"BX-9001", name:"Premium Gift Box", cat:"Packaging", wh:"WH-A", sup:"PackPro", on:140, rop:50, cost:1.60 },
-        { sku:"LB-3001", name:"Luxury Label Set", cat:"Packaging", wh:"WH-A", sup:"PackPro", on:18, rop:25, cost:0.75 },
-        { sku:"NK-1001", name:"Necklace — Aurora", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:62, rop:30, cost:42.00 },
-        { sku:"RG-2001", name:"Ring — Obsidian", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:0, rop:18, cost:38.00 },
-        { sku:"ER-4040", name:"Earrings — Halo", cat:"Finished Goods", wh:"WH-B", sup:"Stark Mfg", on:24, rop:20, cost:16.50 }
-      ];
-      save(ITEM_KEY, demo);
-      toast("Loaded demo", "Inventory demo items loaded.");
-      renderItems(); renderKpis();
+    /* ---------- Safe fallbacks ---------- */
+    function erpSignOutSafe(){
+      if (window.erpSignOut) return window.erpSignOut();
+      localStorage.removeItem(KEYS.AUTH);
+      window.location.href = "index.html";
+    }
+    function requireAuthSafe(){
+      if (window.erpRequireAuth) return window.erpRequireAuth();
+      const a = loadJSON(KEYS.AUTH, null);
+      if (!a || !a.ok) window.location.href = "index.html";
+    }
+    function markActiveSafe(){
+      if (window.erpMarkActive) return window.erpMarkActive("inventory");
+      document.querySelectorAll('[data-key="inventory"]').forEach(a=> a.classList.add("active"));
+      document.querySelectorAll('.mobile-links [data-key="inventory"]').forEach(a=> a.classList.add("active"));
+    }
+    function openMobileNavSafe(){
+      if (window.openMobileNav) return window.openMobileNav();
+      document.getElementById("mobileNav")?.classList.add("open");
+    }
+    function closeMobileNavSafe(){
+      if (window.closeMobileNav) return window.closeMobileNav();
+      document.getElementById("mobileNav")?.classList.remove("open");
+    }
+    function initUserSelectSafe(){
+      const sel = document.getElementById("userSelect");
+      if (!sel) return;
+      const u = localStorage.getItem(KEYS.USER) || "A";
+      sel.value = u;
+      sel.onchange = () => localStorage.setItem(KEYS.USER, sel.value);
     }
 
-    function addItem(){
-      const sku = (document.getElementById("iSku").value||"").trim();
-      const name = (document.getElementById("iName").value||"").trim();
-      if(!sku || !name) return toast("Missing fields", "SKU and Item name are required.");
+    /* ---------- Data access ---------- */
+    function getPOs(){ return loadJSON(KEYS.PO, []); }
+    function getInvoices(){ return loadJSON(KEYS.INV, []); }
+    function getOnHand(){ return loadJSON(KEYS.OH, {}); }
+    function getDead(){ return loadJSON(KEYS.DEAD, []); }
+    function getLog(){ return loadJSON(KEYS.LOG, []); }
 
-      const item = {
+    function addLog(entry){
+      const log = getLog();
+      log.unshift(entry);
+      saveJSON(KEYS.LOG, log.slice(0, 300));
+    }
+
+    /* ---------- Module clear ---------- */
+    function clearInventoryModule(){
+      if (!confirm("Clear Inventory module data? (POs, invoices, on-hand, dead stock, logs)")) return;
+      localStorage.removeItem(KEYS.PO);
+      localStorage.removeItem(KEYS.INV);
+      localStorage.removeItem(KEYS.OH);
+      localStorage.removeItem(KEYS.DEAD);
+      localStorage.removeItem(KEYS.LOG);
+      toast("Cleared", "Inventory module data removed.");
+      renderAll();
+    }
+
+    /* ---------- PO Window ---------- */
+    function parseDate(d){ return d ? new Date(d + "T00:00:00") : null; }
+    function inRange(dateISO, start, end){
+      const dt = new Date(dateISO);
+      if (start && dt < start) return false;
+      if (end && dt > end) return false;
+      return true;
+    }
+
+    function poStatus(po){
+      // po.lines: [{sku,item,qtyOrdered,qtyReceived}]
+      const totalOrdered = po.lines.reduce((s,l)=> s + (Number(l.qtyOrdered)||0), 0);
+      const totalReceived = po.lines.reduce((s,l)=> s + (Number(l.qtyReceived)||0), 0);
+      if (totalReceived <= 0) return "Open";
+      if (totalReceived >= totalOrdered) return "Closed";
+      return "Partial";
+    }
+
+    function renderIncoming(){
+      const tbody = document.getElementById("incomingTable");
+      tbody.innerHTML = "";
+
+      const start = parseDate(document.getElementById("poStart").value);
+      const end = parseDate(document.getElementById("poEnd").value);
+
+      const pos = getPOs().filter(po => inRange(po.expectedDate, start, end));
+
+      let poCount = pos.length;
+      let incomingUnits = 0;
+
+      pos
+        .slice()
+        .sort((a,b)=> new Date(a.expectedDate) - new Date(b.expectedDate))
+        .forEach(po=>{
+          const status = poStatus(po);
+          po.lines.forEach(line=>{
+            const ordered = Number(line.qtyOrdered || 0);
+            const received = Number(line.qtyReceived || 0);
+            const remaining = Math.max(0, ordered - received);
+            incomingUnits += remaining;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td><strong class="mono">${esc(po.poNumber)}</strong></td>
+              <td>${esc(po.supplier || "—")}</td>
+              <td>${esc(new Date(po.expectedDate).toLocaleDateString())}</td>
+              <td class="mono">${esc(line.sku)}</td>
+              <td>${esc(line.item || "—")}</td>
+              <td>${ordered.toLocaleString()}</td>
+              <td>${received.toLocaleString()}</td>
+              <td><strong>${remaining.toLocaleString()}</strong></td>
+              <td>
+                <span class="badge ${status==="Closed" ? "good" : status==="Partial" ? "warn" : ""}">
+                  ${esc(status)}
+                </span>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+
+      document.getElementById("incomingCountBadge").textContent = `${poCount} POs`;
+      document.getElementById("incomingUnitsBadge").textContent = `${incomingUnits.toLocaleString()} units incoming`;
+    }
+
+    /* ---------- PO Lookup ---------- */
+    function poLookup(){
+      const q = (document.getElementById("poLookupInput").value || "").trim().toUpperCase();
+      const out = document.getElementById("poLookupResult");
+      out.innerHTML = "";
+      if (!q){ toast("Missing", "Enter a PO number."); return; }
+
+      const po = getPOs().find(p => String(p.poNumber||"").toUpperCase() === q);
+      if (!po){
+        out.innerHTML = `<div class="cardline"><div><strong>Not found</strong><small>No PO matches <span class="mono">${esc(q)}</span>.</small></div><span class="badge bad">Missing</span></div>`;
+        return;
+      }
+
+      const status = poStatus(po);
+      const totalOrdered = po.lines.reduce((s,l)=> s + (Number(l.qtyOrdered)||0), 0);
+      const totalReceived = po.lines.reduce((s,l)=> s + (Number(l.qtyReceived)||0), 0);
+
+      const linesHtml = po.lines.map(l=>{
+        const ordered = Number(l.qtyOrdered||0);
+        const received = Number(l.qtyReceived||0);
+        const remaining = Math.max(0, ordered - received);
+        return `
+          <div class="cardline">
+            <div>
+              <strong class="mono">${esc(l.sku)}</strong>
+              <small>${esc(l.item || "—")} • Ordered ${ordered} • Received ${received} • Remaining ${remaining}</small>
+            </div>
+            <span class="badge ${remaining===0 ? "good" : "warn"}">${remaining===0 ? "Complete" : "Pending"}</span>
+          </div>
+        `;
+      }).join("");
+
+      out.innerHTML = `
+        <div class="cardline">
+          <div>
+            <strong class="mono">${esc(po.poNumber)}</strong>
+            <small>${esc(po.supplier || "—")} • Expected ${esc(new Date(po.expectedDate).toLocaleDateString())}</small>
+            <small>Total Ordered: ${totalOrdered} • Total Received: ${totalReceived}</small>
+          </div>
+          <span class="badge ${status==="Closed" ? "good" : status==="Partial" ? "warn" : ""}">${esc(status)}</span>
+        </div>
+        <div class="stack" style="margin-top:10px;">
+          ${linesHtml}
+        </div>
+      `;
+    }
+
+    /* ---------- Invoice Lookup by PO ---------- */
+    function invoiceLookup(){
+      const q = (document.getElementById("invoiceLookupInput").value || "").trim().toUpperCase();
+      const out = document.getElementById("invoiceLookupResult");
+      out.innerHTML = "";
+      if (!q){ toast("Missing", "Enter a PO number."); return; }
+
+      const invs = getInvoices().filter(i => String(i.poNumber||"").toUpperCase() === q);
+      if (invs.length === 0){
+        out.innerHTML = `<div class="cardline"><div><strong>No invoice found</strong><small>No invoices linked to <span class="mono">${esc(q)}</span>.</small></div><span class="badge warn">None</span></div>`;
+        return;
+      }
+
+      out.innerHTML = invs
+        .slice()
+        .sort((a,b)=> new Date(b.date||0) - new Date(a.date||0))
+        .map(i => `
+          <div class="cardline">
+            <div>
+              <strong class="mono">${esc(i.invoiceNumber || "INV")}</strong>
+              <small>PO: <span class="mono">${esc(i.poNumber)}</span> • Date: ${esc(new Date(i.date).toLocaleDateString())}</small>
+              <small>Total: $${Number(i.total||0).toFixed(2)}</small>
+            </div>
+            <span class="badge good">Invoice</span>
+          </div>
+        `).join("");
+    }
+
+    /* ---------- Receive Inventory ---------- */
+    function receiveInventory(){
+      const poNumber = (document.getElementById("recvPo").value || "").trim().toUpperCase();
+      const sku = (document.getElementById("recvSku").value || "").trim().toUpperCase();
+      const qty = Number(document.getElementById("recvQty").value || 0);
+      const invoiceNumber = (document.getElementById("recvInvoice").value || "").trim();
+
+      if (!poNumber || !sku || qty <= 0){
+        toast("Missing fields", "PO, SKU and a valid Qty are required.");
+        return;
+      }
+
+      const pos = getPOs();
+      const po = pos.find(p => String(p.poNumber||"").toUpperCase() === poNumber);
+      if (!po){ toast("PO not found", `No PO matches ${poNumber}.`); return; }
+
+      const line = po.lines.find(l => String(l.sku||"").toUpperCase() === sku);
+      if (!line){ toast("SKU not found", `SKU ${sku} is not on ${poNumber}.`); return; }
+
+      const ordered = Number(line.qtyOrdered||0);
+      const received = Number(line.qtyReceived||0);
+      const remaining = Math.max(0, ordered - received);
+      if (qty > remaining){
+        toast("Qty too high", `Remaining on PO line is ${remaining}.`);
+        return;
+      }
+
+      // Update PO line
+      line.qtyReceived = received + qty;
+      saveJSON(KEYS.PO, pos);
+
+      // Update on-hand
+      const oh = getOnHand();
+      oh[sku] = Number(oh[sku] || 0) + qty;
+      saveJSON(KEYS.OH, oh);
+
+      // Optional invoice linkage
+      if (invoiceNumber){
+        const invs = getInvoices();
+        invs.push({
+          invoiceNumber,
+          poNumber,
+          date: nowISO(),
+          total: 0
+        });
+        saveJSON(KEYS.INV, invs);
+      }
+
+      addLog({
+        time: nowISO(),
+        type: "Receive",
+        reference: poNumber + (invoiceNumber ? ` / ${invoiceNumber}` : ""),
         sku,
-        name,
-        cat: (document.getElementById("iCat").value||"").trim() || "General",
-        wh: (document.getElementById("iWh").value||"").trim() || "WH-A",
-        sup: (document.getElementById("iSup").value||"").trim() || "Vendor",
-        on: Number(document.getElementById("iOn").value||0),
-        rop: Number(document.getElementById("iRop").value||0),
-        cost: Number(document.getElementById("iCost").value||0)
-      };
+        qty,
+        notes: `Received against PO line`
+      });
 
-      const list = load(ITEM_KEY, []);
-      if(list.some(x => (x.sku||"").toUpperCase() === sku.toUpperCase())){
-        return toast("Duplicate SKU", "This SKU already exists.");
-      }
-      list.unshift(item);
-      save(ITEM_KEY, list);
-      closeItemModal();
-      toast("Item added", `${sku} saved.`);
-      renderItems(); renderKpis();
+      toast("Received", `${qty} units received for ${sku} on ${poNumber}.`);
+      document.getElementById("recvQty").value = "";
+      renderAll();
     }
 
-    function createPO(){
-      const vendor = (document.getElementById("pVendor").value||"").trim();
-      if(!vendor) return toast("Missing field", "Vendor is required.");
+    /* ---------- Adjust Inventory ---------- */
+    function adjustInventory(){
+      const sku = (document.getElementById("adjSku").value || "").trim().toUpperCase();
+      const qty = Number(document.getElementById("adjQty").value || 0);
+      const reason = document.getElementById("adjReason").value;
+      const note = (document.getElementById("adjNote").value || "").trim();
 
-      const po = {
-        id: "PO-" + Math.floor(1000 + Math.random()*9000),
-        vendor,
-        wh: (document.getElementById("pWh").value||"").trim() || "WH-A",
-        eta: (document.getElementById("pEta").value||"").trim(),
-        status: document.getElementById("pStatus").value,
-        lines: (document.getElementById("pLines").value||"").trim(),
-        createdAt: Date.now()
-      };
-
-      const list = load(PO_KEY, []);
-      list.unshift(po);
-      save(PO_KEY, list);
-      closePOModal();
-      toast("PO created", `${po.id} saved.`);
-      renderPOs();
-    }
-
-    function renderFilters(items){
-      const cats = Array.from(new Set(items.map(x=>x.cat))).sort();
-      const whs  = Array.from(new Set(items.map(x=>x.wh))).sort();
-      const sups = Array.from(new Set(items.map(x=>x.sup))).sort();
-
-      const catF = document.getElementById("catF");
-      const whF  = document.getElementById("whF");
-      const supF = document.getElementById("supF");
-
-      if(!catF.dataset.init){
-        catF.innerHTML = `<option value="">All categories</option>` + cats.map(c=>`<option>${escapeHtml(c)}</option>`).join("");
-        whF.innerHTML  = `<option value="">All warehouses</option>` + whs.map(w=>`<option>${escapeHtml(w)}</option>`).join("");
-        supF.innerHTML = `<option value="">All suppliers</option>` + sups.map(s=>`<option>${escapeHtml(s)}</option>`).join("");
-        catF.dataset.init="1";
-      }
-    }
-
-    function renderKpis(){
-      const items = load(ITEM_KEY, []);
-      const low = items.filter(i => Number(i.on) <= Number(i.rop) && Number(i.on) > 0).length;
-      const oos = items.filter(i => Number(i.on) <= 0).length;
-      const val = items.reduce((sum,i)=> sum + (Number(i.on)||0)*(Number(i.cost)||0), 0);
-
-      document.getElementById("kLow").textContent = String(low);
-      document.getElementById("kOOS").textContent = String(oos);
-      document.getElementById("kValue").textContent = money(val);
-
-      const skuCount = items.length;
-      document.getElementById("kTrends").textContent = skuCount ? `${skuCount} SKUs` : "—";
-    }
-
-    function renderItems(){
-      const items = load(ITEM_KEY, []);
-      renderFilters(items);
-
-      const q = (document.getElementById("q").value||"").toLowerCase().trim();
-      const cat = document.getElementById("catF").value || "";
-      const wh  = document.getElementById("whF").value || "";
-      const sup = document.getElementById("supF").value || "";
-
-      let list = items.slice();
-      if(q){
-        list = list.filter(i =>
-          (i.sku||"").toLowerCase().includes(q) ||
-          (i.name||"").toLowerCase().includes(q) ||
-          (i.sup||"").toLowerCase().includes(q)
-        );
-      }
-      if(cat) list = list.filter(i => i.cat === cat);
-      if(wh)  list = list.filter(i => i.wh === wh);
-      if(sup) list = list.filter(i => i.sup === sup);
-
-      const tbody = document.getElementById("itemBody");
-      tbody.innerHTML = "";
-
-      if(list.length === 0){
-        tbody.innerHTML = `<tr><td colspan="10" style="color:#667085;">No items found. Load demo data or add items.</td></tr>`;
-        renderKpis();
-        renderPOs();
+      if (!sku || qty === 0){
+        toast("Missing fields", "SKU and non-zero adjustment are required.");
         return;
       }
 
-      for(const i of list){
-        const on = Number(i.on)||0;
-        const rop = Number(i.rop)||0;
-        const cost = Number(i.cost)||0;
-        const value = on*cost;
+      const oh = getOnHand();
+      const before = Number(oh[sku] || 0);
+      const after = before + qty;
+      if (after < 0){
+        toast("Invalid", `On-hand cannot go below 0. Current is ${before}.`);
+        return;
+      }
 
-        let tag = `<span class="pilltag good">Healthy</span>`;
-        if(on <= 0) tag = `<span class="pilltag bad">Out</span>`;
-        else if(on <= rop) tag = `<span class="pilltag warn">Low</span>`;
+      oh[sku] = after;
+      saveJSON(KEYS.OH, oh);
 
+      addLog({
+        time: nowISO(),
+        type: "Adjust",
+        reference: reason,
+        sku,
+        qty,
+        notes: note || ""
+      });
+
+      toast("Adjusted", `${sku}: ${before} → ${after} (${qty > 0 ? "+" : ""}${qty})`);
+      document.getElementById("adjQty").value = "";
+      renderAll();
+    }
+
+    /* ---------- Dead Stock ---------- */
+    function openDeadStockModal(){ document.getElementById("deadModal")?.classList.add("open"); }
+    function closeDeadStockModal(){ document.getElementById("deadModal")?.classList.remove("open"); }
+
+    function saveDeadStock(){
+      const sku = (document.getElementById("deadSku").value || "").trim().toUpperCase();
+      const item = (document.getElementById("deadItem").value || "").trim();
+      const reason = document.getElementById("deadReason").value;
+      const note = (document.getElementById("deadNote").value || "").trim();
+
+      if (!sku){ toast("Missing", "SKU is required."); return; }
+
+      const dead = getDead();
+      if (dead.some(d => String(d.sku||"").toUpperCase() === sku)){
+        toast("Already flagged", `${sku} is already flagged as dead stock.`);
+        closeDeadStockModal();
+        return;
+      }
+
+      dead.unshift({ sku, item, reason, note, flaggedAt: nowISO() });
+      saveJSON(KEYS.DEAD, dead);
+
+      addLog({
+        time: nowISO(),
+        type: "Dead Stock",
+        reference: reason,
+        sku,
+        qty: 0,
+        notes: note || ""
+      });
+
+      toast("Flagged", `${sku} flagged as dead stock.`);
+      closeDeadStockModal();
+      ["deadSku","deadItem","deadNote"].forEach(id => document.getElementById(id).value = "");
+      renderAll();
+    }
+
+    function removeDeadStock(sku){
+      if (!confirm(`Remove dead stock flag for ${sku}?`)) return;
+      const dead = getDead().filter(d => String(d.sku||"").toUpperCase() !== String(sku).toUpperCase());
+      saveJSON(KEYS.DEAD, dead);
+      toast("Updated", `${sku} removed from dead stock list.`);
+      renderAll();
+    }
+
+    function renderDead(){
+      const tbody = document.getElementById("deadTable");
+      tbody.innerHTML = "";
+      const dead = getDead();
+
+      document.getElementById("deadCountBadge").textContent = `${dead.length} flagged`;
+
+      dead.forEach(d=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><strong>${escapeHtml(i.sku)}</strong></td>
-          <td>${escapeHtml(i.name)}</td>
-          <td>${escapeHtml(i.cat)}</td>
-          <td>${escapeHtml(i.wh)}</td>
-          <td>${escapeHtml(i.sup)}</td>
-          <td>${on}</td>
-          <td>${rop}</td>
-          <td>${money(cost)}</td>
-          <td>${money(value)}</td>
-          <td>${tag}</td>
+          <td class="mono"><strong>${esc(d.sku)}</strong></td>
+          <td>${esc(d.item || "—")}</td>
+          <td>${esc(new Date(d.flaggedAt).toLocaleDateString())}</td>
+          <td>${esc(d.reason || "—")}</td>
+          <td>${esc(d.note || "")}</td>
+          <td><button class="btn secondary sm" type="button" onclick="removeDeadStock('${esc(d.sku)}')">Remove</button></td>
         `;
         tbody.appendChild(tr);
-      }
+      });
 
-      renderKpis();
-      renderPOs();
-    }
-
-    function renderPOs(){
-      const pos = load(PO_KEY, []);
-      const tbody = document.getElementById("poBody");
-      tbody.innerHTML = "";
-
-      if(pos.length === 0){
-        tbody.innerHTML = `<tr><td colspan="6" style="color:#667085;">No purchase orders yet. Use “Create PO”.</td></tr>`;
-        return;
-      }
-
-      for(const p of pos){
-        const st = p.status || "Open";
-        const chip = st.includes("Delayed") ? "bad" : (st.includes("Awaiting") ? "warn" : "good");
-        const linesCount = (p.lines||"").trim() ? (p.lines.split("\n").filter(Boolean).length) : 0;
-        const eta = p.eta ? new Date(p.eta).toLocaleDateString() : "—";
-
+      if (dead.length === 0){
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${escapeHtml(p.id)}</strong></td>
-          <td>${escapeHtml(p.vendor)}</td>
-          <td>${escapeHtml(p.wh)}</td>
-          <td>${linesCount}</td>
-          <td><span class="pilltag ${chip}">${escapeHtml(st)}</span></td>
-          <td>${escapeHtml(eta)}</td>
-        `;
+        tr.innerHTML = `<td colspan="6" class="subtle">No dead stock flagged.</td>`;
         tbody.appendChild(tr);
       }
     }
 
-    renderItems();
+    function renderLog(){
+      const tbody = document.getElementById("logTable");
+      tbody.innerHTML = "";
+      const log = getLog();
+
+      log.slice(0, 200).forEach(e=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${esc(new Date(e.time).toLocaleString())}</td>
+          <td><strong>${esc(e.type)}</strong></td>
+          <td class="mono">${esc(e.reference || "—")}</td>
+          <td class="mono">${esc(e.sku || "—")}</td>
+          <td>${Number(e.qty||0)}</td>
+          <td>${esc(e.notes || "")}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (log.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="6" class="subtle">No inventory activity yet.</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    /* ---------- Demo Data ---------- */
+    function loadDemoPOs(){
+      const existing = getPOs();
+      if (existing.length > 0){
+        toast("POs already exist", "Demo not loaded because PO data already exists.");
+        renderAll();
+        return;
+      }
+
+      const today = new Date();
+      const plus = (days)=> new Date(today.getTime() + days*86400000).toISOString().slice(0,10);
+
+      const demoPOs = [
+        {
+          poNumber: "PO-1001",
+          supplier: "Aurora Metals",
+          expectedDate: plus(3),
+          lines: [
+            { sku:"NK-1001", item:"Premium Necklace", qtyOrdered: 120, qtyReceived: 0 },
+            { sku:"ER-4040", item:"Gold Earrings", qtyOrdered: 80, qtyReceived: 0 },
+          ]
+        },
+        {
+          poNumber: "PO-1002",
+          supplier: "Citrine Components",
+          expectedDate: plus(8),
+          lines: [
+            { sku:"BR-1101", item:"Bracelet Set", qtyOrdered: 60, qtyReceived: 10 },
+            { sku:"RG-2001", item:"Ring Collection", qtyOrdered: 40, qtyReceived: 0 },
+          ]
+        },
+        {
+          poNumber: "PO-1003",
+          supplier: "NorthBay Wholesale",
+          expectedDate: plus(14),
+          lines: [
+            { sku:"NK-2210", item:"Pearl Necklace", qtyOrdered: 90, qtyReceived: 0 },
+          ]
+        }
+      ];
+
+      saveJSON(KEYS.PO, demoPOs);
+      saveJSON(KEYS.OH, { "BR-1101": 25, "NK-1001": 10, "ER-4040": 5 });
+
+      toast("Demo loaded", "POs + on-hand seeded for testing.");
+      renderAll();
+    }
+
+    /* ---------- Render All ---------- */
+    function defaultWindow(){
+      const start = document.getElementById("poStart");
+      const end = document.getElementById("poEnd");
+      if (!start.value || !end.value){
+        const today = new Date();
+        const s = new Date(today.getTime() - 7*86400000);
+        const e = new Date(today.getTime() + 21*86400000);
+        start.value = s.toISOString().slice(0,10);
+        end.value = e.toISOString().slice(0,10);
+      }
+    }
+
+    function renderAll(){
+      defaultWindow();
+      renderIncoming();
+      renderDead();
+      renderLog();
+    }
+
+    /* ---------- Events ---------- */
+    document.addEventListener("click", ()=> document.getElementById("actionsMenu")?.classList.remove("open"));
+    document.getElementById("deadModal")?.addEventListener("click", (e)=>{
+      if (e.target && e.target.id === "deadModal") closeDeadStockModal();
+    });
+
+    document.getElementById("poStart")?.addEventListener("change", renderIncoming);
+    document.getElementById("poEnd")?.addEventListener("change", renderIncoming);
+
+    /* ---------- Init ---------- */
+    (function init(){
+      requireAuthSafe();
+      markActiveSafe();
+      initUserSelectSafe();
+      defaultWindow();
+      renderAll();
+    })();
   </script>
 </body>
 </html>
