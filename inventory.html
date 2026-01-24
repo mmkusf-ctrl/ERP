@@ -1,583 +1,566 @@
-<!-- ========================= inventory.html =========================
-PO-Centric Inventory (Stark Premium ERP)
-- Focus only on:
-  1) Receive Inventory (by PO)
-  2) Adjust Inventory
-  3) Dead Stock
-  4) Incoming Inventory (from PO window)
-  5) Invoice Lookup by PO
-  6) PO Lookup
-- Requires: erp.css (your theme), erp.js (auth/nav only), inventory.js (below)
-
-Place this file at: /ERP/inventory.html
-==================================================================== -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <title>Inventory | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stark Premium ERP • Inventory</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="erp.css" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    /* ===== Inventory: PO-centric refinements ===== */
-    .hero-right{
-      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
-    }
-    .btn.sm{ height:36px; border-radius:12px; padding:0 12px; font-size:13px; }
-    .select.sm{ height:36px; border-radius:12px; font-size:13px; }
-    .pill.sm{ padding:7px 10px; font-size:13px; }
-
-    .inv-grid{
-      display:grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap:16px;
-      margin-top:16px;
-      align-items:start;
-    }
-
-    .kpis.inv{ display:grid; gap:14px; grid-template-columns: repeat(4, minmax(220px, 1fr)); margin-top:16px; }
-    .card.kpi-compact{ min-height: 118px; padding: 16px 16px 14px; }
-    .card.kpi-compact .value{ margin-top: 12px; font-size: 28px; }
-    .card.kpi-compact .sub{ margin-top: 4px; }
-
-    .two-col{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 10px;
-    }
-
-    .mini-list{
-      margin-top:10px;
-      display:grid;
-      gap: 8px;
-      max-height: 260px;
-      overflow:auto;
-      padding-right: 6px;
-    }
-
-    .mini-row{
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(255,255,255,0.70);
-      border-radius: 14px;
-      padding: 10px 10px;
-      display:flex;
+    .action-card {
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items:flex-start;
-      gap: 10px;
+      height: 200px;
     }
 
-    .mini-row strong{ font-size: 13px; font-weight: 900; display:block; }
-    .mini-row small{ display:block; margin-top: 2px; color: var(--muted); line-height: 1.45; }
-    .mini-row .tag{
-      font-size: 12px;
-      font-weight: 900;
-      padding: 6px 10px;
-      border-radius: 999px;
-      white-space: nowrap;
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(11,18,32,0.06);
-      color: rgba(11,18,32,0.78);
+    .action-card:hover .action-icon {
+      transform: scale(1.1) rotate(5deg);
+      opacity: 0.2;
     }
-    .mini-row.red{ border-color: rgba(180,35,24,0.20); background: rgba(180,35,24,0.06); }
-    .mini-row.red .tag{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
-    .mini-row.green{ border-color: rgba(15,118,110,0.20); background: rgba(15,118,110,0.06); }
-    .mini-row.green .tag{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
 
-    .tabs{
-      display:flex;
-      gap: 8px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    .tab{
-      height: 36px;
-      padding: 0 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,18,32,0.12);
-      background: rgba(255,255,255,0.70);
-      font-weight: 900;
-      font-size: 13px;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-      user-select:none;
-    }
-    .tab.active{
-      border-color: rgba(31,86,216,0.24);
-      background: rgba(31,86,216,0.10);
-      color: rgba(11,18,32,0.88);
-    }
-    .tab .dot{
-      width:8px; height:8px; border-radius:999px; background: rgba(11,18,32,0.25);
-    }
-    .tab.active .dot{ background: rgba(31,86,216,0.65); }
-
-    .section{ display:none; }
-    .section.active{ display:block; }
-
-    /* Modals */
-    .modal{ display:none; }
-    .modal.open{ display:flex; }
-
-    /* Responsive */
-    @media (max-width: 1100px){
-      .kpis.inv{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-      .inv-grid{ grid-template-columns: 1fr; }
-    }
-    @media (max-width: 700px){
-      .kpis.inv{ grid-template-columns: 1fr; }
-      .hero-right{ justify-content:flex-start; }
-      .two-col{ grid-template-columns: 1fr; }
+    .action-icon {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      font-size: 140px;
+      opacity: 0.1;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-family: serif;
+      /* Just to make it distinct if using text icons */
+      line-height: 1;
+      color: var(--text-main);
     }
   </style>
 </head>
 
 <body>
-  <!-- ===== Topbar ===== -->
+  <!-- Top Navigation -->
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo">
-        <img src="images/stark-logo.png" alt="Stark Premium" />
-      </div>
+      <a href="dashboard.html" class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium">
+        <span class="logo-text">Stark ERP</span>
+      </a>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="nav" aria-label="ERP Navigation">
-        <a href="dashboard.html" data-key="home">Home</a>
-        <a href="account.html" data-key="account">Account</a>
-        <a href="crm.html" data-key="crm">CRM</a>
-        <a href="inventory.html" data-key="inventory">Inventory</a>
-        <a href="orders.html" data-key="orders">Orders</a>
-        <a href="logistics.html" data-key="logistics">Logistics</a>
-        <a href="trends.html" data-key="trends">Trends</a>
+      <nav class="nav">
+        <a class="nav-link" href="dashboard.html">Overview</a>
+        <a class="nav-link" href="crm.html">CRM</a>
+        <a class="nav-link" href="vendor.html">Vendor</a>
+        <a class="nav-link" href="purchasing.html">Purchasing</a>
+        <a class="nav-link active" href="inventory.html">Inventory</a>
+        <a class="nav-link" href="orders.html">Orders</a>
+        <a class="nav-link" href="logistics.html">Logistics</a>
+        <a class="nav-link" href="trends.html">Trends</a>
       </nav>
 
-      <div class="actions">
-        <div class="pill sm"><span class="dot"></span>Online</div>
-        <select id="userSelect" class="select sm" title="Current user">
-          <option value="A">User A</option>
-          <option value="B">User B</option>
-          <option value="C">User C</option>
-          <option value="D">User D</option>
-        </select>
-        <button class="btn secondary sm" onclick="erpSignOutSafe()">Sign out</button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+          Online
+        </div>
+        <button class="hamburger" onclick="openMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile nav overlay -->
+  <!-- Mobile Drawer -->
   <div class="mobile-nav" id="mobileNav">
-    <div class="mobile-card">
-      <div class="mobile-head">
-        <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <strong style="font-size:16px;">Navigation</strong>
+        <button onclick="closeMobileNav()"
+          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
       </div>
-      <div class="mobile-links">
-        <a href="dashboard.html" data-key="home">Home</a>
-        <a href="account.html" data-key="account">Account</a>
-        <a href="crm.html" data-key="crm">CRM</a>
-        <a href="inventory.html" data-key="inventory">Inventory</a>
-        <a href="orders.html" data-key="orders">Orders</a>
-        <a href="logistics.html" data-key="logistics">Logistics</a>
-        <a href="trends.html" data-key="trends">Trends</a>
-      </div>
+      <a class="mobile-link" href="dashboard.html">Overview</a>
+      <a class="mobile-link" href="crm.html">CRM</a>
+      <a class="mobile-link" href="vendor.html">Vendor</a>
+      <a class="mobile-link" href="purchasing.html">Purchasing</a>
+      <a class="mobile-link active" href="inventory.html">Inventory</a>
+      <a class="mobile-link" href="orders.html">Orders</a>
+      <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link" href="trends.html">Trends</a>
     </div>
   </div>
 
-  <div class="container">
-    <div class="toast-wrap" id="toastWrap"></div>
-
-    <!-- ===== Hero ===== -->
-    <div class="hero">
-      <div>
-        <h1>Inventory</h1>
-        <p>
-          PO-centric receiving, adjustments, dead stock tracking, and lookup tools — streamlined and premium.
-        </p>
-      </div>
-
-      <div class="hero-right">
-        <button class="btn secondary sm" type="button" onclick="invLoadDemo()">Load Demo Data</button>
-        <button class="btn sm" type="button" onclick="invOpenCreatePO()">Create PO</button>
-      </div>
+  <main class="container">
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Inventory Operations</h1>
+      <p class="page-desc">Manage stock levels, process inbound shipments, and maintain accuracy.</p>
+      <div class="gold-line"></div>
     </div>
 
-    <!-- ===== KPI Cards (Reactive) ===== -->
-    <div class="kpis inv">
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Incoming inventory (open POs)</div>
-          <div class="chip">Inbound</div>
+    <!-- Operations Grid -->
+    <section class="grid grid-4" style="margin-bottom:40px;">
+
+      <!-- Receive Inventory -->
+      <article class="card card-premium action-card" onclick="openReceiveModal()">
+        <div>
+          <div class="card-title">Inbound</div>
+          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Receive Inventory</h3>
+          <p style="font-size:13px; color:var(--text-muted);">Process specific items or full POs arrival.</p>
         </div>
-        <div class="value" id="kpiIncomingQty">0</div>
-        <div class="sub" id="kpiIncomingSub">—</div>
-      </div>
-
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Receiving today</div>
-          <div class="chip good">Receiving</div>
+        <div style="margin-top:auto;">
+          <span class="btn btn-primary" style="height:36px; padding:0 16px; font-size:13px;">Start Reception
+            &rarr;</span>
         </div>
-        <div class="value" id="kpiReceivedToday">0</div>
-        <div class="sub" id="kpiReceivedTodaySub">—</div>
-      </div>
+        <div class="action-icon">📦</div>
+      </article>
 
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Dead stock (aged / inactive)</div>
-          <div class="chip bad">Aged</div>
+      <!-- Adjust Inventory -->
+      <article class="card card-premium action-card" onclick="openAdjustModal()">
+        <div>
+          <div class="card-title">Corrections</div>
+          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Adjust Stock</h3>
+          <p style="font-size:13px; color:var(--text-muted);">Manual adjustments for damage, loss, or extras.</p>
         </div>
-        <div class="value" id="kpiDeadStock">0</div>
-        <div class="sub" id="kpiDeadStockSub">—</div>
-      </div>
-
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Inventory adjustments (30d)</div>
-          <div class="chip">Adjust</div>
+        <div style="margin-top:auto;">
+          <span class="btn btn-secondary" style="height:36px; padding:0 16px; font-size:13px;">Adjust &rarr;</span>
         </div>
-        <div class="value" id="kpiAdjust30">0</div>
-        <div class="sub" id="kpiAdjust30Sub">—</div>
-      </div>
-    </div>
+        <div class="action-icon">🔧</div>
+      </article>
 
-    <!-- ===== Tabs ===== -->
-    <div class="panel" style="margin-top:16px;">
-      <h2>Operations</h2>
-
-      <div class="tabs" role="tablist" aria-label="Inventory tabs">
-        <button class="tab active" data-tab="receive" type="button"><span class="dot"></span>Receive</button>
-        <button class="tab" data-tab="adjust" type="button"><span class="dot"></span>Adjust</button>
-        <button class="tab" data-tab="dead" type="button"><span class="dot"></span>Dead Stock</button>
-        <button class="tab" data-tab="incoming" type="button"><span class="dot"></span>Incoming (PO)</button>
-        <button class="tab" data-tab="lookup" type="button"><span class="dot"></span>Lookups</button>
-      </div>
-
-      <div class="goldline"></div>
-
-      <!-- ===== RECEIVE ===== -->
-      <section class="section active" id="sec-receive">
-        <div class="two-col">
-          <div class="mini">
-            <strong>Quick receive by PO</strong>
-            <span>Select an open PO and receive line items to increase on-hand.</span>
-          </div>
-          <div class="mini">
-            <strong>Tip</strong>
-            <span>Use partial receipts for split shipments. You can invoice later.</span>
-          </div>
+      <!-- Cycle Count -->
+      <article class="card card-premium action-card" onclick="openCountModal()">
+        <div>
+          <div class="card-title">Audit</div>
+          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Cycle Count</h3>
+          <p style="font-size:13px; color:var(--text-muted);">Verify physical stock accuracy by zone.</p>
         </div>
+        <div style="margin-top:auto;">
+          <span class="btn btn-secondary" style="height:36px; padding:0 16px; font-size:13px;">Start Count &rarr;</span>
+        </div>
+        <div class="action-icon">✅</div>
+      </article>
 
-        <div class="controls" style="margin-top:12px;">
-          <input id="recvSearch" class="input" placeholder="Search PO / supplier / SKU..." />
-          <select id="recvStatus" class="input">
-            <option value="OPEN" selected>Open POs</option>
-            <option value="ALL">All POs</option>
-          </select>
-          <button class="btn secondary sm" type="button" onclick="invExportPOs()">Export POs CSV</button>
+      <!-- Add Item Quick Link -->
+      <article class="card action-card" onclick="openItemModal()"
+        style="background:var(--bg-body); border-style:dashed;">
+        <div>
+          <div class="card-title">Catalog</div>
+          <h3 style="font-size:24px; font-weight:700; margin:8px 0; color:var(--text-muted);">+ New Item</h3>
+          <p style="font-size:13px; color:var(--text-muted);">Register a new SKU in the master data.</p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Context Grid -->
+    <div class="grid grid-2">
+
+      <!-- Upcoming Deliveries -->
+      <section class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h2 style="font-size:18px; margin:0;">Upcoming Deliveries</h2>
+          <span class="badge badge-green">Based on PO ETA</span>
         </div>
 
-        <div class="table-wrap" style="margin-top:10px;">
+        <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>PO</th>
-                <th>Supplier</th>
                 <th>ETA</th>
+                <th>PO #</th>
+                <th>Vendor</th>
+                <th>Items</th>
                 <th>Status</th>
-                <th>Open Qty</th>
-                <th style="width:160px;">Action</th>
+                <th></th>
               </tr>
             </thead>
-            <tbody id="poReceiveTable"></tbody>
+            <tbody id="delBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- ===== ADJUST ===== -->
-      <section class="section" id="sec-adjust">
-        <div class="two-col">
-          <div class="mini">
-            <strong>Inventory adjustment</strong>
-            <span>Use for cycle counts, damage, shrink, or corrections.</span>
-          </div>
-          <div class="mini">
-            <strong>Audit trail</strong>
-            <span>All adjustments are saved with reason + timestamp.</span>
-          </div>
+      <!-- Current Stock (Mini View) -->
+      <aside class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h2 style="font-size:18px; margin:0;">Quick Stock View</h2>
         </div>
-
-        <div class="controls" style="margin-top:12px;">
-          <input id="adjSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-          <input id="adjWh" class="input" placeholder="Warehouse (e.g., Tampa)" />
-          <input id="adjDelta" class="input" type="number" placeholder="Qty change (+ / -)" />
-          <select id="adjReason" class="input">
-            <option value="Cycle count">Cycle count</option>
-            <option value="Damage">Damage</option>
-            <option value="Shrink">Shrink</option>
-            <option value="Correction" selected>Correction</option>
-            <option value="Other">Other</option>
-          </select>
-          <button class="btn sm" type="button" onclick="invSaveAdjustment()">Save adjustment</button>
+        <input id="q" class="input" placeholder="Search SKU..." oninput="renderStock()" style="margin-bottom:16px;" />
+        <div style="max-height:400px; overflow-y:auto;" id="stockList">
+          <!-- Filled by JS -->
         </div>
+      </aside>
 
-        <div class="goldline"></div>
-
-        <h2 style="margin-top:0;">Recent adjustments</h2>
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>SKU</th>
-                <th>Warehouse</th>
-                <th>Delta</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
-            <tbody id="adjustTable"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ===== DEAD STOCK ===== -->
-      <section class="section" id="sec-dead">
-        <div class="controls" style="margin-top:12px;">
-          <select id="deadAge" class="input">
-            <option value="60">Aged ≥ 60 days</option>
-            <option value="90" selected>Aged ≥ 90 days</option>
-            <option value="120">Aged ≥ 120 days</option>
-            <option value="180">Aged ≥ 180 days</option>
-          </select>
-          <input id="deadSearch" class="input" placeholder="Search SKU / warehouse..." />
-          <button class="btn secondary sm" type="button" onclick="invExportDeadStock()">Export dead stock CSV</button>
-        </div>
-
-        <div class="mini-list" id="deadList"></div>
-      </section>
-
-      <!-- ===== INCOMING ===== -->
-      <section class="section" id="sec-incoming">
-        <div class="controls" style="margin-top:12px;">
-          <input id="incSearch" class="input" placeholder="Search PO / supplier / SKU..." />
-          <select id="incWindow" class="input">
-            <option value="7">ETA window: next 7 days</option>
-            <option value="14" selected>ETA window: next 14 days</option>
-            <option value="30">ETA window: next 30 days</option>
-            <option value="9999">ETA window: all</option>
-          </select>
-        </div>
-
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead>
-              <tr>
-                <th>PO</th>
-                <th>Supplier</th>
-                <th>ETA</th>
-                <th>SKU</th>
-                <th>Ordered</th>
-                <th>Received</th>
-                <th>Open</th>
-              </tr>
-            </thead>
-            <tbody id="incomingTable"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ===== LOOKUPS ===== -->
-      <section class="section" id="sec-lookup">
-        <div class="two-col">
-          <div class="panel" style="padding:14px;">
-            <h2 style="margin:0;">PO Lookup</h2>
-            <div class="sub" style="margin-top:6px;">Find PO header + line status.</div>
-            <div class="controls" style="margin-top:10px;">
-              <input id="lookupPo" class="input" placeholder="Enter PO number (e.g., PO-1007)" />
-              <button class="btn sm" type="button" onclick="invLookupPO()">Lookup</button>
-            </div>
-            <div class="goldline"></div>
-            <div id="poLookupResult" class="mini" style="margin-top:10px;">
-              <strong>—</strong><span>Enter a PO number to view details.</span>
-            </div>
-          </div>
-
-          <div class="panel" style="padding:14px;">
-            <h2 style="margin:0;">Invoice Lookup (by PO)</h2>
-            <div class="sub" style="margin-top:6px;">Find invoice(s) recorded against a PO.</div>
-            <div class="controls" style="margin-top:10px;">
-              <input id="lookupInvPo" class="input" placeholder="Enter PO number (e.g., PO-1007)" />
-              <button class="btn sm" type="button" onclick="invLookupInvoicesByPO()">Lookup</button>
-            </div>
-            <div class="goldline"></div>
-            <div id="invoiceLookupResult" class="mini" style="margin-top:10px;">
-              <strong>—</strong><span>Enter a PO number to view invoices.</span>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <!-- ===== Right side: Summary ===== -->
-    <div class="inv-grid">
-      <div class="panel">
-        <h2>Receiving Log</h2>
-        <div class="sub" style="margin-top:-6px;">Latest receipts (across all POs). Used for KPIs.</div>
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>PO</th>
-                <th>SKU</th>
-                <th>Qty</th>
-                <th>Warehouse</th>
-              </tr>
-            </thead>
-            <tbody id="receiveLogTable"></tbody>
-          </table>
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+      &copy; 2026 Stark Premium ERP. secure. fast. reliable.
+    </div>
+
+  </main>
+
+  <!-- Receive Modal -->
+  <div class="mobile-nav" id="receiveModal" style="z-index:900;">
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="margin:0;">Receive Inventory</h3>
+        <button onclick="closeReceiveModal()"
+          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <div style="display:grid; gap:16px;">
+        <select id="rPo" class="input">
+          <option value="">Select Purchase Order...</option>
+        </select>
+        <div
+          style="text-align:center; padding:10px; background:#f8fafc; border-radius:8px; color:var(--text-muted); font-size:13px;">
+          OR
         </div>
+        <select id="rMetaItem" class="input">
+          <!-- Filled by items -->
+        </select>
+        <input id="rQty" type="number" class="input" placeholder="Quantity Received" />
+
+        <button class="btn btn-primary" onclick="doReceive()">Process Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adjust Modal -->
+  <div class="mobile-nav" id="adjustModal" style="z-index:900;">
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="margin:0;">Adjust Stock</h3>
+        <button onclick="closeAdjustModal()"
+          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <div style="display:grid; gap:16px;">
+        <select id="aItem" class="input"></select>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <input id="aQty" type="number" class="input" placeholder="Qty Change (+/-)" />
+          <select id="aReason" class="input">
+            <option>Damaged</option>
+            <option>Lost/Stolen</option>
+            <option>Found</option>
+            <option>Correction</option>
+          </select>
+        </div>
+        <button class="btn btn-warning" style="background:var(--warning); color:white; border:none;"
+          onclick="doAdjust()">Apply Adjustment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cycle Count Modal -->
+  <div class="mobile-nav" id="countModal" style="z-index:900;">
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:80vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="margin:0;">Cycle Count Session</h3>
+        <button onclick="closeCountModal()"
+          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted);">Please verify physical counts for the following randomly
+        selected items:</p>
+
+      <div id="countList" style="display:grid; gap:12px; margin-bottom:16px;"></div>
+
+      <button class="btn btn-primary" onclick="doCycleCount()">Submit Counts</button>
+    </div>
+  </div>
+
+  <!-- Add Item Modal (Simplified) -->
+  <div class="mobile-nav" id="itemModal" style="z-index:900;">
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <h3 style="margin:0;">Add Inventory Item</h3>
+        <button onclick="closeItemModal()"
+          style="border:none; bg:transparent; font-size:24px; cursor:pointer;">&times;</button>
       </div>
 
-      <div class="side">
-        <div class="panel">
-          <h2>Executive Snapshot</h2>
-          <div class="mini" style="margin-top:10px;">
-            <strong id="execInvHeadline">—</strong>
-            <span id="execInvBody">—</span>
+      <div style="display:grid; gap:16px;">
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+          <input id="iSku" class="input" placeholder="SKU (e.g. A-101)" />
+          <input id="iName" class="input" placeholder="Item Name" />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <input id="iCat" class="input" placeholder="Category" />
+          <input id="iWh" class="input" placeholder="Warehouse" />
+        </div>
+
+        <input id="iSup" class="input" placeholder="Supplier" />
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On
+              Hand</label>
+            <input id="iOn" class="input" type="number" />
           </div>
-          <div class="goldline"></div>
-          <div class="mini">
-            <strong>Priority actions</strong>
-            <span id="execInvActions">—</span>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Reorder
+              Pt</label>
+            <input id="iRop" class="input" type="number" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Unit Cost
+              ($)</label>
+            <input id="iCost" class="input" type="number" step="0.01" />
           </div>
         </div>
 
-        <div class="panel">
-          <h2>System</h2>
-          <div class="sub" style="margin-top:-6px;">
-            Data is stored in <strong>localStorage</strong>. No backend required for GitHub Pages.
-          </div>
-          <div class="goldline"></div>
-          <div class="mini">
-            <strong>Data status</strong>
-            <span id="dataStatus">—</span>
-          </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+          <button class="btn btn-secondary" onclick="closeItemModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="addItem()">Save Item</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== Receive Modal ===== -->
-  <div class="modal" id="receiveModal" aria-hidden="true">
-    <div class="modal-card" style="max-width: 760px;">
-      <div class="modal-head">
-        <h3>Receive Inventory</h3>
-        <button class="x" onclick="invCloseReceive()" aria-label="Close">×</button>
-      </div>
-
-      <div class="modal-body">
-        <div class="mini">
-          <strong id="recvModalTitle">—</strong>
-          <span id="recvModalSub">—</span>
-        </div>
-
-        <div class="goldline"></div>
-
-        <div class="controls">
-          <input id="recvWarehouse" class="input" placeholder="Warehouse (e.g., Tampa)" />
-          <input id="recvInvoiceNo" class="input" placeholder="Invoice # (optional)" />
-          <input id="recvInvoiceAmount" class="input" type="number" step="0.01" placeholder="Invoice total (optional)" />
-        </div>
-
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Description</th>
-                <th>Ordered</th>
-                <th>Received</th>
-                <th>Open</th>
-                <th style="width:160px;">Receive now</th>
-              </tr>
-            </thead>
-            <tbody id="recvLinesTable"></tbody>
-          </table>
-        </div>
-
-        <div class="sub" style="margin-top:10px;">
-          Tip: enter partial quantities; status updates automatically.
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn secondary sm" onclick="invCloseReceive()">Cancel</button>
-        <button class="btn sm" onclick="invCommitReceive()">Post receipt</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Create PO Modal ===== -->
-  <div class="modal" id="createPoModal" aria-hidden="true">
-    <div class="modal-card" style="max-width: 820px;">
-      <div class="modal-head">
-        <h3>Create PO</h3>
-        <button class="x" onclick="invCloseCreatePO()" aria-label="Close">×</button>
-      </div>
-
-      <div class="modal-body">
-        <div class="controls">
-          <input id="poNumber" class="input" placeholder="PO number (auto if blank)" />
-          <input id="poSupplier" class="input" placeholder="Supplier name" />
-          <input id="poEta" class="input" type="date" />
-        </div>
-
-        <div class="goldline"></div>
-
-        <h2 style="margin-top:0;">Line items</h2>
-        <div class="controls">
-          <input id="poSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-          <input id="poDesc" class="input" placeholder="Description (optional)" />
-          <input id="poQty" class="input" type="number" placeholder="Qty" />
-          <input id="poUnitCost" class="input" type="number" step="0.01" placeholder="Unit cost (optional)" />
-          <button class="btn secondary sm" type="button" onclick="invAddPOLine()">Add line</button>
-        </div>
-
-        <div class="table-wrap" style="margin-top:10px;">
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Unit cost</th>
-                <th style="width:120px;">Remove</th>
-              </tr>
-            </thead>
-            <tbody id="poLinesDraftTable"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn secondary sm" onclick="invCloseCreatePO()">Cancel</button>
-        <button class="btn sm" onclick="invSavePO()">Save PO</button>
-      </div>
-    </div>
-  </div>
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
   <script src="erp.js"></script>
-  <script src="inventory.js"></script>
+  <script>
+    const ITEM_KEY = "stark_erp_items_v2";
+    const PO_KEY = "stark_erp_pos_v1";
+
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+      catch { return fallback; }
+    }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
+
+    // --- Modal Logic ---
+    function openReceiveModal() {
+      populateSelects();
+      document.getElementById("receiveModal").classList.add("open");
+    }
+    function closeReceiveModal() { document.getElementById("receiveModal").classList.remove("open"); }
+
+    function openAdjustModal() {
+      populateSelects();
+      document.getElementById("adjustModal").classList.add("open");
+    }
+    function closeAdjustModal() { document.getElementById("adjustModal").classList.remove("open"); }
+
+    function openCountModal() {
+      generateCountList();
+      document.getElementById("countModal").classList.add("open");
+    }
+    function closeCountModal() { document.getElementById("countModal").classList.remove("open"); }
+
+    function openItemModal() { document.getElementById("itemModal").classList.add("open"); }
+    function closeItemModal() { document.getElementById("itemModal").classList.remove("open"); }
+
+    // --- Core Logic ---
+
+    function populateSelects() {
+      const items = load(ITEM_KEY, []);
+      const pos = load(PO_KEY, []);
+
+      // Populate Items (Adjust & Receive)
+      const itemOpts = `<option value="">Select Item...</option>` + items.map(i => `<option value="${i.sku}">${i.sku} - ${i.name} (Cur: ${i.on})</option>`).join("");
+      document.getElementById("aItem").innerHTML = itemOpts;
+      document.getElementById("rMetaItem").innerHTML = itemOpts;
+
+      // Populate POs (Receive)
+      const poOpts = `<option value="">Select Purchase Order...</option>` + pos.filter(p => p.status !== "Completed").map(p => `<option value="${p.id}">${p.id} - ${p.vendor} (ETA: ${p.eta})</option>`).join("");
+      document.getElementById("rPo").innerHTML = poOpts;
+    }
+
+    // Workflow: Receive
+    function doReceive() {
+      const poId = document.getElementById("rPo").value;
+      const sku = document.getElementById("rMetaItem").value;
+      const qty = Number(document.getElementById("rQty").value);
+
+      if (!qty || qty <= 0) return toast("Error", "Valid quantity required.");
+
+      const list = load(ITEM_KEY, []);
+
+      if (poId) {
+        // Receive against PO (Simplified: Mark PO done, add to first item on list as demo)
+        // Real logic would parse lines, but for this demo trigger:
+        const pos = load(PO_KEY, []);
+        const p = pos.find(x => x.id === poId);
+        if (p) {
+          p.status = "Completed"; // Close PO
+          save(PO_KEY, pos);
+
+          // Demo: Add to random item if lines not parsed
+          if (list.length) {
+            list[0].on += qty;
+            save(ITEM_KEY, list);
+            toast("Success", `Received ${qty} units against ${poId}. PO Closed.`);
+          } else {
+            toast("Success", `PO ${poId} marked received.`);
+          }
+        }
+      } else if (sku) {
+        // Ad-hoc receipt
+        const item = list.find(x => x.sku === sku);
+        if (item) {
+          item.on += qty;
+          save(ITEM_KEY, list);
+          toast("Success", `Received ${qty} units of ${sku}.`);
+        }
+      } else {
+        return toast("Error", "Select PO or Item.");
+      }
+      closeReceiveModal();
+      renderAll();
+    }
+
+    // Workflow: Adjust
+    function doAdjust() {
+      const sku = document.getElementById("aItem").value;
+      const qty = Number(document.getElementById("aQty").value);
+      const reason = document.getElementById("aReason").value;
+
+      if (!sku || !qty) return toast("Error", "Item and Quantity required.");
+
+      const list = load(ITEM_KEY, []);
+      const item = list.find(x => x.sku === sku);
+      if (item) {
+        item.on += qty; // Can be negative
+        save(ITEM_KEY, list);
+        toast("Adjustment Recorded", `${sku} adjusted by ${qty} (${reason}).`);
+        closeAdjustModal();
+        renderAll();
+      }
+    }
+
+    // Workflow: Cycle Count (Simulated)
+    function generateCountList() {
+      const items = load(ITEM_KEY, []);
+      if (!items.length) return document.getElementById("countList").innerHTML = "No items to count.";
+
+      // Pick 3 random
+      const subset = items.sort(() => 0.5 - Math.random()).slice(0, 3);
+      const html = subset.map(i => `
+            <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">
+                 <div style="font-weight:600; font-size:13px;">${i.sku} - ${i.name}</div>
+                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                     <span style="font-size:12px; color:var(--text-muted);">System: ${i.on}</span>
+                     <input class="input" style="width:100px; height:32px;" placeholder="Actual" type="number" />
+                 </div>
+            </div>
+        `).join("");
+      document.getElementById("countList").innerHTML = html;
+    }
+
+    function doCycleCount() {
+      // Just simulate success
+      toast("Audit Complete", "Cycle count adjustments pending approval.");
+      closeCountModal();
+    }
+
+    // Add Item (Legacy support)
+    function addItem() {
+      const sku = (document.getElementById("iSku").value || "").trim();
+      const name = (document.getElementById("iName").value || "").trim();
+      if (!sku || !name) return toast("Error", "SKU and Name are required.");
+
+      const item = {
+        sku, name,
+        cat: (document.getElementById("iCat").value || "").trim() || "General",
+        wh: (document.getElementById("iWh").value || "").trim() || "WH-A",
+        sup: (document.getElementById("iSup").value || "").trim() || "Vendor",
+        on: Number(document.getElementById("iOn").value || 0),
+        rop: Number(document.getElementById("iRop").value || 0),
+        cost: Number(document.getElementById("iCost").value || 0)
+      };
+
+      const list = load(ITEM_KEY, []);
+      if (list.some(x => x.sku.toUpperCase() === sku.toUpperCase())) return toast("Error", "SKU already exists.");
+      list.unshift(item);
+      save(ITEM_KEY, list);
+      closeItemModal();
+      toast("Success", "Item added.");
+      renderAll();
+    }
+
+    // Views
+    function renderStock() {
+      const q = (document.getElementById("q").value || "").toLowerCase();
+      const items = load(ITEM_KEY, []);
+      const filtered = items.filter(i => q ? (i.sku + i.name).toLowerCase().includes(q) : true);
+
+      const html = filtered.map(i => `
+            <div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+                <div>
+                    <div style="font-weight:600; font-size:13px;">${i.sku}</div>
+                    <div style="font-size:12px; color:var(--text-muted);">${i.name}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:700; color:${i.on <= i.rop ? 'var(--danger)' : 'var(--text-main)'};">${i.on}</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Using ${i.wh}</div>
+                </div>
+            </div>
+        `).join("");
+
+      document.getElementById("stockList").innerHTML = html || `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">No items found.</div>`;
+    }
+
+    function renderDeliveries() {
+      const pos = load(PO_KEY, []);
+      // Simulate upcoming: Open pos sorted by ETA
+      const active = pos.filter(p => p.status !== "Completed" && p.status !== "Delivered");
+      active.sort((a, b) => new Date(a.eta) - new Date(b.eta));
+
+      const tbody = document.getElementById("delBody");
+      tbody.innerHTML = "";
+
+      if (!active.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No upcoming deliveries.</td></tr>`;
+        return;
+      }
+
+      active.forEach(p => {
+        const tr = document.createElement("tr");
+        // Add a "Receive" button directly in row
+        tr.innerHTML = `
+                <td>${p.eta || "—"}</td>
+                <td><strong>${p.id}</strong></td>
+                <td>${p.vendor}</td>
+                <td>${(p.lines || "").split("\n").filter(Boolean).length} lines</td>
+                <td><span class="badge badge-yellow">${p.status}</span></td>
+                <td><button class="btn btn-secondary" style="height:32px; padding:0 12px; font-size:12px;" onclick="document.getElementById('receiveModal').classList.add('open')">Receive</button></td>
+             `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderAll() {
+      renderStock();
+      renderDeliveries();
+    }
+
+    // Init
+    if (load(ITEM_KEY, []).length === 0) {
+      // Auto-seed if empty
+      const demo = [
+        { sku: "BX-9001", name: "Premium Gift Box", cat: "Packaging", wh: "WH-A", sup: "PackPro", on: 140, rop: 50, cost: 1.60 },
+        { sku: "NK-1001", name: "Necklace — Aurora", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 62, rop: 30, cost: 42.00 }
+      ];
+      save(ITEM_KEY, demo);
+    }
+    if (load(PO_KEY, []).length === 0) {
+      const demoPO = [
+        { id: "PO-4421", vendor: "PackPro", wh: "WH-A", eta: "2026-02-15", status: "Open", lines: "BX-9001, 500" },
+        { id: "PO-4425", vendor: "Stark Mfg", wh: "WH-A", eta: "2026-02-18", status: "Confirmed", lines: "NK-1001, 20" }
+      ];
+      save(PO_KEY, demoPO);
+    }
+
+    renderAll();
+  </script>
 </body>
+
 </html>
