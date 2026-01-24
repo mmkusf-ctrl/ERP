@@ -341,7 +341,73 @@ textarea {
   grid-template-columns: 2.2fr 1fr;
 }
 
-/* More space for main content */
+/* --- Compact KPI Grid --- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.card-kpi {
+  padding: 16px 20px;
+  /* Reduced from 32px */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 110px;
+  /* Enforce compact height */
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.card-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light);
+}
+
+.card-kpi.active {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px var(--primary-fade);
+}
+
+.card-kpi .card-header {
+  margin-bottom: 8px;
+  /* Tighter spacing */
+}
+
+.card-kpi .card-title {
+  font-size: 11px;
+  /* Smaller label */
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.card-kpi .stat-value {
+  font-size: 28px;
+  /* Reduced from 42px */
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.1;
+}
+
+.card-kpi .stat-trend {
+  font-size: 11px;
+  padding: 2px 8px;
+  height: auto;
+}
+
+.card-kpi .badge {
+  padding: 3px 8px;
+  font-size: 10px;
+}
 
 /* --- Responsive & Media Queries --- */
 @media (max-width: 1200px) {
