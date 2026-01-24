@@ -621,6 +621,69 @@ textarea {
   box-shadow: 0 0 0 4px var(--primary-fade);
 }
 
+/* --- Mobile Navigation Bar (Bottom) --- */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  /* Increased from 60px for better touch targets */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 999;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+}
+
+.bottom-nav-item span {
+  font-size: 20px;
+  margin-bottom: 1px;
+}
+
+/* Hide Hamburger on very small screens if we decide to go full bottom nav, 
+   BUT we still need drawer for full menu. Keeping both. */
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+  }
+
+  /* Add padding to body so content isn't hidden behind nav */
+  body {
+    padding-bottom: 80px;
+  }
+
+  /* Refine Card Mobile Styling */
+  .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+  }
+}
+
 /* --- Tables --- */
 .table-container {
   overflow-x: auto;
