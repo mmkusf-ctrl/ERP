@@ -1,1134 +1,485 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <title>CRM | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stark Premium ERP • CRM</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <!-- Shared premium theme -->
-  <link rel="stylesheet" href="erp.css" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    /* ========== CRM Premium Layout Refinements (mobile-first) ========== */
-    .hero-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-    }
-    .btn.sm{ height: 36px; border-radius: 12px; padding: 0 12px; font-size: 13px; }
-    .pill.sm{ padding: 7px 10px; font-size: 13px; }
-    .select.sm{ height: 36px; border-radius: 12px; font-size: 13px; }
-
-    .kpis.crm{ display:grid; gap: 14px; grid-template-columns: repeat(4, minmax(220px, 1fr)); }
-    .card.kpi-compact{ min-height: 118px; padding: 16px 16px 14px; }
-    .card.kpi-compact .value{ margin-top: 12px; font-size: 28px; }
-    .card.kpi-compact .sub{ margin-top: 4px; }
-
-    .crm-grid{
-      display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 16px;
-      margin-top: 16px;
-      align-items:start;
-    }
-
-    .mini-list{
-      margin-top: 10px;
-      display:grid;
-      gap: 8px;
-      max-height: 240px;
-      overflow:auto;
-      padding-right: 6px;
-    }
-    .mini-row{
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(255,255,255,0.70);
-      border-radius: 14px;
-      padding: 10px 10px;
-      display:flex;
-      justify-content: space-between;
-      align-items:flex-start;
-      gap: 10px;
-    }
-    .mini-row strong{ font-size: 13px; font-weight: 900; display:block; }
-    .mini-row small{ display:block; margin-top: 2px; color: var(--muted); line-height: 1.45; }
-    .mini-row .tag{
-      font-size: 12px;
-      font-weight: 900;
-      padding: 6px 10px;
-      border-radius: 999px;
-      white-space: nowrap;
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(11,18,32,0.06);
-      color: rgba(11,18,32,0.78);
-    }
-    .mini-row.red{ border-color: rgba(180,35,24,0.20); background: rgba(180,35,24,0.06); }
-    .mini-row.red .tag{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
-    .mini-row.green{ border-color: rgba(15,118,110,0.20); background: rgba(15,118,110,0.06); }
-    .mini-row.green .tag{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
-
-    /* Actions dropdown */
-    .dropdown{ position: relative; display:inline-flex; align-items:center; gap: 8px; }
-    .menu{
-      position:absolute;
-      right: 0;
-      top: calc(100% + 10px);
-      width: 270px;
-      background: rgba(255,255,255,0.94);
-      border: 1px solid rgba(11,18,32,0.12);
-      border-radius: 16px;
-      box-shadow: 0 24px 70px rgba(2,6,23,0.25);
-      backdrop-filter: blur(12px);
-      overflow:hidden;
-      display:none;
-      z-index: 99;
-    }
-    .menu.open{ display:block; }
-    .menu button{
-      width: 100%;
-      text-align:left;
-      padding: 11px 12px;
-      background: transparent;
-      border: none;
-      cursor:pointer;
-      font-weight: 850;
-      font-size: 13px;
-      color: rgba(11,18,32,0.86);
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .menu button:hover{ background: rgba(31,86,216,0.06); }
-    .menu .sep{ height: 1px; background: rgba(11,18,32,0.08); }
-    .menu .hint{ font-size: 12px; color: var(--muted); font-weight: 650; }
-
-    /* Executive toggle */
-    .toggle{
-      height: 36px;
-      border-radius: 999px;
-      padding: 0 10px;
-      border: 1px solid rgba(11,18,32,0.12);
-      background: rgba(255,255,255,0.85);
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      box-shadow: 0 10px 22px rgba(2,6,23,0.06);
-      user-select: none;
-    }
-    .toggle span{
-      font-size: 12px;
-      font-weight: 900;
-      color: rgba(11,18,32,0.78);
-      white-space: nowrap;
-    }
-    .switch{
-      width: 44px;
-      height: 24px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,18,32,0.14);
-      background: rgba(11,18,32,0.10);
-      position: relative;
-      cursor:pointer;
-      flex:0 0 auto;
-      outline: none;
-    }
-    .knob{
-      width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.95);
-      position:absolute;
-      top: 1px;
-      left: 1px;
-      box-shadow: 0 10px 22px rgba(2,6,23,0.18);
-      transition: left 160ms ease, background 160ms ease;
-    }
-    body.exec .switch{
-      background: rgba(31,86,216,0.22);
-      border-color: rgba(31,86,216,0.25);
-    }
-    body.exec .knob{ left: 21px; }
-
-    /* Mini chart */
-    .chart-wrap{
-      margin-top: 12px;
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.72);
-      overflow:hidden;
-    }
-    .chart-head{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 12px;
-      border-bottom: 1px solid rgba(11,18,32,0.08);
-    }
-    .chart-head strong{ font-size: 13px; font-weight: 900; }
-    .chart-head small{ color: var(--muted); font-size: 12px; line-height: 1.4; }
-    .chart-canvas{
-      width: 100%;
-      height: 220px;
-      display:block;
-    }
-
-    /* Executive mode layout rules */
-    body.exec .container{ padding-top: 16px; }
-    body.exec .hero h1{ font-size: 22px; }
-    body.exec .hero p{ font-size: 13px; }
-    body.exec .panel{ padding: 14px; }
-    body.exec .card.kpi-compact{ min-height: 104px; padding: 14px 14px 12px; }
-    body.exec .card.kpi-compact .value{ font-size: 26px; margin-top: 10px; }
-    body.exec .crm-grid{ grid-template-columns: 1fr; }
-    body.exec #heavyTables{ display:none; }
-
-    /* Responsive */
-    @media (max-width: 1100px){
-      .kpis.crm{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-      .crm-grid{ grid-template-columns: 1fr; }
-      .hero-right{ justify-content:flex-start; }
-    }
-    @media (max-width: 700px){
-      .kpis.crm{ grid-template-columns: 1fr; }
-      .chart-canvas{ height: 200px; }
+    .kpi-num {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 
 <body>
-  <!-- ===== Topbar ===== -->
+  <!-- Top Navigation -->
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo">
-        <img src="images/stark-logo.png" alt="Stark Premium" />
-      </div>
+      <a href="dashboard.html" class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium">
+        <span class="logo-text">Stark ERP</span>
+      </a>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNavSafe()">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="nav" aria-label="ERP Navigation">
-        <a href="dashboard.html" data-key="home">Home</a>
-        <a href="account.html" data-key="account">Account</a>
-        <a href="crm.html" data-key="crm">CRM</a>
-        <a href="inventory.html" data-key="inventory">Inventory</a>
-        <a href="orders.html" data-key="orders">Orders</a>
-        <a href="logistics.html" data-key="logistics">Logistics</a>
-        <a href="trends.html" data-key="trends">Trends</a>
+      <nav class="nav">
+        <a class="nav-link" href="dashboard.html">Overview</a>
+        <a class="nav-link active" href="crm.html">CRM</a>
+        <a class="nav-link" href="vendor.html">Vendor</a>
+        <a class="nav-link" href="purchasing.html">Purchasing</a>
+        <a class="nav-link" href="inventory.html">Inventory</a>
+        <a class="nav-link" href="orders.html">Orders</a>
+        <a class="nav-link" href="logistics.html">Logistics</a>
+        <a class="nav-link" href="trends.html">Trends</a>
       </nav>
 
-      <div class="actions">
-        <div class="pill sm"><span class="dot"></span>Online</div>
-        <select id="userSelect" class="select sm" title="Current user">
-          <option value="A">User A</option>
-          <option value="B">User B</option>
-          <option value="C">User C</option>
-          <option value="D">User D</option>
-        </select>
-        <button class="btn secondary sm" onclick="erpSignOutSafe()">Sign out</button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn btn-primary" onclick="openCustomerModal()">
+          + Customer
+        </button>
+        <button class="hamburger" onclick="openMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile nav overlay -->
   <div class="mobile-nav" id="mobileNav">
-    <div class="mobile-card">
-      <div class="mobile-head">
-        <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNavSafe()">×</button>
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <strong style="font-size:16px;">Navigation</strong>
+        <button onclick="closeMobileNav()"
+          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
       </div>
-      <div class="mobile-links">
-        <a href="dashboard.html" data-key="home">Home</a>
-        <a href="account.html" data-key="account">Account</a>
-        <a href="crm.html" data-key="crm">CRM</a>
-        <a href="inventory.html" data-key="inventory">Inventory</a>
-        <a href="orders.html" data-key="orders">Orders</a>
-        <a href="logistics.html" data-key="logistics">Logistics</a>
-        <a href="trends.html" data-key="trends">Trends</a>
-      </div>
+      <a class="mobile-link" href="dashboard.html">Overview</a>
+      <a class="mobile-link active" href="crm.html">CRM</a>
+      <a class="mobile-link" href="inventory.html">Inventory</a>
+      <a class="mobile-link" href="orders.html">Orders</a>
+      <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link" href="trends.html">Trends</a>
     </div>
   </div>
 
-  <div class="container">
-    <div class="toast-wrap" id="toastWrap"></div>
+  <main class="container">
 
-    <!-- ===== Hero ===== -->
-    <div class="hero">
-      <div>
-        <h1>CRM</h1>
-        <p>
-          Customer directory, monthly order activity, retention signal, and SKU insights —
-          streamlined for premium operational review.
-        </p>
-      </div>
-
-      <div class="hero-right">
-        <div class="toggle" title="Executive mode condenses the view and hides heavy tables">
-          <span>Executive</span>
-          <div class="switch" id="execSwitch" role="switch" aria-checked="false" tabindex="0">
-            <div class="knob"></div>
-          </div>
-        </div>
-
-        <div class="dropdown">
-          <button class="btn secondary sm" id="actionsBtn" type="button">Actions ▾</button>
-          <div class="menu" id="actionsMenu" aria-label="CRM actions">
-            <button type="button" onclick="loadDemoCustomers()">Load demo customers <span class="hint">directory</span></button>
-            <button type="button" onclick="loadDemoSales()">Load demo sales <span class="hint">orders</span></button>
-            <div class="sep"></div>
-            <button type="button" onclick="exportCustomersCSV()">Export customers <span class="hint">CSV</span></button>
-            <button type="button" onclick="exportSalesCSV()">Export sales <span class="hint">CSV</span></button>
-            <div class="sep"></div>
-            <button type="button" onclick="clearCRMData()">Clear CRM data <span class="hint">local</span></button>
-          </div>
-        </div>
-
-        <button class="btn sm" type="button" onclick="openAddCustomer()">Add Customer</button>
-      </div>
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Customer Relationship Management</h1>
+      <p class="page-desc">Manage customer directory, view order activity, and analyze retention signals.</p>
+      <div class="gold-line"></div>
     </div>
 
-    <!-- ===== Controls ===== -->
-    <div class="panel">
-      <h2>Customer Controls</h2>
-      <div class="controls">
-        <input id="searchInput" class="input" placeholder="Search customer / location / contact..." />
-        <select id="customerFilter" class="input"></select>
-        <input id="monthPick" class="input" type="month" />
-        <select id="windowPick" class="input">
-          <option value="3">Consistency: last 3 months</option>
-          <option value="6" selected>Consistency: last 6 months</option>
-          <option value="12">Consistency: last 12 months</option>
+    <!-- Controls -->
+    <section class="card" style="margin-bottom:24px;">
+      <h2 style="font-size:16px; margin:0 0 16px;">Filters & Controls</h2>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+        <input id="search" class="input" placeholder="Search customer, location..." oninput="render()" />
+        <select id="customerFilter" class="input" onchange="onCustomerFilterChange()">
+          <!-- Filled by JS -->
         </select>
+        <select id="monthSelect" class="input" onchange="render()"></select>
       </div>
+    </section>
 
-      <div class="goldline"></div>
-
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-        <div class="mini">
-          <strong>Retention (Month-over-Month)</strong>
-          <span id="retentionText">—</span>
+    <!-- KPI Grid -->
+    <section class="grid grid-4" style="margin-bottom:24px;">
+      <article class="card card-premium clickable-kpi active" onclick="setFilter('all')" id="kAll">
+        <div class="card-header">
+          <div class="card-title">All Customers</div>
+          <div class="badge badge-green">Total</div>
         </div>
-        <div class="mini">
-          <strong>Data source</strong>
-          <span id="dataText">—</span>
-        </div>
-      </div>
+        <div class="stat-value" id="kpiTotal">0</div>
+      </article>
 
-      <div class="chart-wrap">
-        <div class="chart-head">
-          <div>
-            <strong>Orders by Month</strong>
-            <small id="chartSub">Selected window</small>
+      <article class="card card-premium clickable-kpi" onclick="setFilter('active')" id="kActive">
+        <div class="card-header">
+          <div class="card-title">Active Customers</div>
+          <div class="badge badge-green">Engaged</div>
+        </div>
+        <div class="stat-value" id="kpiActive">0</div>
+        <div class="stat-trend neutral">≥ 1 sale this month</div>
+      </article>
+
+      <article class="card card-premium clickable-kpi" onclick="setFilter('nosales')" id="kZero">
+        <div class="card-header">
+          <div class="card-title">Zero Sales</div>
+          <div class="badge badge-red">At Risk</div>
+        </div>
+        <div class="stat-value" id="kpiZero">0</div>
+        <div class="stat-trend down">No activity this month</div>
+      </article>
+
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Monthly Revenue</div>
+          <div class="badge badge-green">Income</div>
+        </div>
+        <div class="stat-value" id="kpiRev">$0.00</div>
+        <div class="stat-trend neutral">This month</div>
+      </article>
+    </section>
+
+    <div class="grid grid-2">
+      <!-- Directory -->
+      <section class="card" style="overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h2 style="font-size:18px; margin:0;" id="dirTitle">Directory</h2>
+          <span style="font-size:12px; color:var(--text-muted);">Click row to view details</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Location</th>
+                <th>Orders (Mo)</th>
+                <th>Total Spend</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="custBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Details Sidebar -->
+      <aside style="display:grid; gap:24px; align-content:start;">
+        <div class="card">
+          <h2 style="font-size:16px; margin:0 0 16px;">Customer Insights</h2>
+
+          <div id="detailPlaceholder"
+            style="padding:40px 0; text-align:center; color:var(--text-muted); font-size:13px;">
+            Select a customer to view details.
           </div>
-          <small id="chartNote">Bars represent order count</small>
+
+          <div id="detailContent" style="display:none;">
+            <div
+              style="background:var(--bg-body); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:16px;">
+              <strong style="display:block; font-size:18px; margin-bottom:4px;" id="dName">Name</strong>
+              <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" id="dLoc">Location</div>
+
+              <div style="display:grid; gap:8px; font-size:13px;">
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <span style="color:var(--text-muted); width:20px;">👤</span> <span id="dContact">Contact</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <span style="color:var(--text-muted); width:20px;">📧</span> <span id="dEmail">Email</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <span style="color:var(--text-muted); width:20px;">📞</span> <span id="dPhone">Phone</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="background:#f8fafc; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;">
+              <strong style="display:block; font-size:13px; margin-bottom:6px;">Order History (Last 6 Months)</strong>
+              <div id="monthlyLine"
+                style="font-size:13px; color:var(--primary); font-family:monospace; letter-spacing:2px;">—</div>
+            </div>
+
+            <div
+              style="background:#f8fafc; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <strong style="display:block; font-size:13px; margin-bottom:4px;">Top SKU (Lifetime)</strong>
+              <div id="skuLine" style="font-size:14px; font-weight:600;">—</div>
+            </div>
+          </div>
         </div>
-        <canvas id="ordersChart" class="chart-canvas"></canvas>
-      </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Quick Actions</span></div>
+          <button class="btn btn-secondary" style="width:100%;" onclick="seedCustomers()">Reload Demo Data</button>
+        </div>
+      </aside>
     </div>
 
-    <!-- ===== KPI Cards ===== -->
-    <div class="kpis crm" style="margin-top:16px;">
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Orders in selected month</div>
-          <div class="chip">Orders</div>
-        </div>
-        <div class="value" id="kpiOrders">0</div>
-        <div class="sub" id="kpiOrdersSub">—</div>
-      </div>
-
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Active customers this month</div>
-          <div class="chip good">Engaged</div>
-        </div>
-        <div class="value" id="kpiActive">0</div>
-        <div class="sub" id="kpiActiveSub">—</div>
-      </div>
-
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Customers with no sales this month</div>
-          <div class="chip bad">Attention</div>
-        </div>
-        <div class="value" id="kpiNoSales">0</div>
-        <div class="sub" id="kpiNoSalesSub">—</div>
-      </div>
-
-      <div class="card kpi-compact">
-        <div class="card-top">
-          <div class="label">Customers ordering every month</div>
-          <div class="chip good">Consistent</div>
-        </div>
-        <div class="value" id="kpiEveryMonth">0</div>
-        <div class="sub" id="kpiEveryMonthSub">—</div>
-      </div>
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+      &copy; 2026 Stark Premium ERP.
     </div>
+  </main>
 
-    <!-- ===== Main content ===== -->
-    <div class="crm-grid">
-      <div class="panel">
-        <h2>Signals</h2>
-        <div class="goldline"></div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-          <div>
-            <strong style="font-weight:900;font-size:13px;">No Sales This Month</strong>
-            <div class="sub" style="margin-top:4px;">Customers with 0 orders in selected month</div>
-            <div class="mini-list" id="noSalesList"></div>
-          </div>
-          <div>
-            <strong style="font-weight:900;font-size:13px;">Orders Every Month</strong>
-            <div class="sub" style="margin-top:4px;">Customers consistent in selected window</div>
-            <div class="mini-list" id="everyMonthList"></div>
-          </div>
-        </div>
-
-        <div id="heavyTables">
-          <div class="goldline"></div>
-
-          <h2>Customer Directory</h2>
-          <div class="table-wrap" style="margin-top:10px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Location</th>
-                  <th>Type</th>
-                  <th>Contact</th>
-                  <th>Orders (Month)</th>
-                  <th>Top SKU (Window)</th>
-                </tr>
-              </thead>
-              <tbody id="custTable"></tbody>
-            </table>
-          </div>
-
-          <div class="goldline"></div>
-
-          <h2>Most Ordered SKU by Customer (Selected Window)</h2>
-          <div class="table-wrap" style="margin-top:10px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Top SKU</th>
-                  <th>Qty</th>
-                  <th>Last order</th>
-                </tr>
-              </thead>
-              <tbody id="topSkuTable"></tbody>
-            </table>
-          </div>
-        </div>
+  <!-- Add Customer Modal -->
+  <div class="mobile-nav" id="customerModal" style="z-index:900;">
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <h3 style="margin:0;">Add Customer</h3>
+        <button onclick="closeCustomerModal()"
+          style="border:none; bg:transparent; font-size:24px; cursor:pointer;">&times;</button>
       </div>
 
-      <div class="side">
-        <div class="panel">
-          <h2>Executive Summary</h2>
-          <div class="mini" style="margin-top:10px;">
-            <strong id="execHeadline">—</strong>
-            <span id="execBody">—</span>
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Company Name</label>
+          <input id="cName" class="input" placeholder="e.g. Acme Corp" />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Location</label>
+            <input id="cLocation" class="input" placeholder="City, State" />
           </div>
-          <div class="goldline"></div>
-          <div class="mini">
-            <strong>Priority actions</strong>
-            <span id="execActions">—</span>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Type</label>
+            <input id="cType" class="input" placeholder="Retailer" />
           </div>
         </div>
 
-        <div class="panel">
-          <h2>Notes</h2>
-          <div class="sub" style="margin-top:-6px;">
-            Executive mode keeps the interface clean by hiding heavy tables while preserving KPIs, signals, and the mini chart.
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Contact Person</label>
+            <input id="cContact" class="input" placeholder="Full Name" />
           </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Phone</label>
+            <input id="cPhone" class="input" placeholder="(555) 000-0000" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Email Address</label>
+          <input id="cEmail" class="input" placeholder="name@company.com" />
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button class="btn btn-secondary" onclick="closeCustomerModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="addCustomer()">Save Profile</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== Add Customer Modal ===== -->
-  <div class="modal" id="addCustomerModal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Add Customer</h3>
-        <button class="x" onclick="closeAddCustomer()" aria-label="Close">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-grid">
-          <input id="cName" class="input" placeholder="Customer name" />
-          <input id="cLocation" class="input" placeholder="Location (City, State)" />
-          <select id="cType" class="input">
-            <option value="Retailer">Retailer</option>
-            <option value="Distributor">Distributor</option>
-            <option value="Direct">Direct</option>
-          </select>
-          <input id="cContact" class="input" placeholder="Contact person" />
-          <input id="cEmail" class="input" placeholder="Email" />
-          <input id="cPhone" class="input" placeholder="Phone" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn secondary sm" onclick="closeAddCustomer()">Cancel</button>
-        <button class="btn sm" onclick="saveCustomer()">Save Customer</button>
-      </div>
-    </div>
-  </div>
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
-  <!-- Shared ERP JS (optional) -->
   <script src="erp.js"></script>
-
   <script>
-    /* =========================================================
-       SAFE FALLBACKS + CRM LOGIC (single script, no duplicates)
-       ========================================================= */
+    const KEY_CUST = "stark_erp_customers_v1";
+    const KEY_SALES = "stark_erp_sales_v1";
+    let CURRENT_FILTER = "all"; // all, active, nosales
 
-    /* ---------- Keys ---------- */
-    const KEYS = {
-      CUST: (window.ERP && ERP.CUST) || "stark_erp_crm_customers_v1",
-      SALES: (window.ERP && ERP.SALES) || "stark_erp_sales_v1",
-      USER: (window.ERP && ERP.USER) || "stark_erp_current_user_v1",
-      AUTH: (window.ERP && ERP.AUTH) || "stark_erp_auth_v1",
-      EXEC: "stark_erp_crm_exec_v1"
-    };
+    // Setup Month Dropdown
+    const monthSelect = document.getElementById("monthSelect");
+    const today = new Date();
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const lab = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+      const opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = lab;
+      monthSelect.appendChild(opt);
+    }
+    monthSelect.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
 
-    /* ---------- Helpers ---------- */
-    function loadJSON(key, fallback){
+    function load(key, fallback) {
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
     }
-    function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
-    function uid(prefix){ return `${prefix}-${Math.random().toString(16).slice(2,8).toUpperCase()}${Date.now().toString(16).slice(-4).toUpperCase()}`; }
-    function esc(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
-
-    function toast(title, msg){
-      if (window.erpToast) return window.erpToast(title, msg);
-      const wrap = document.getElementById("toastWrap");
-      if(!wrap) return alert(title + "\n" + msg);
-      const el = document.createElement("div");
-      el.className = "toast";
-      el.innerHTML = `<div><strong>${esc(title)}</strong><span>${esc(msg)}</span></div><button class="close">×</button>`;
-      el.querySelector(".close").onclick = ()=> el.remove();
-      wrap.prepend(el);
-      setTimeout(()=> el.remove(), 8000);
-    }
-
-    /* ---------- Auth + nav fallbacks ---------- */
-    function erpSignOutSafe(){
-      if (window.erpSignOut) return window.erpSignOut();
-      localStorage.removeItem(KEYS.AUTH);
-      window.location.href = "index.html";
-    }
-    function requireAuthSafe(){
-      if (window.erpRequireAuth) return window.erpRequireAuth();
-      const a = loadJSON(KEYS.AUTH, null);
-      if (!a || !a.ok) window.location.href = "index.html";
-    }
-    function markActiveSafe(){
-      if (window.erpMarkActive) return window.erpMarkActive("crm");
-      document.querySelectorAll('[data-key="crm"]').forEach(a=> a.classList.add("active"));
-      document.querySelectorAll('.mobile-links [data-key="crm"]').forEach(a=> a.classList.add("active"));
-    }
-
-    function openMobileNavSafe(){
-      if (window.openMobileNav) return window.openMobileNav();
-      document.getElementById("mobileNav")?.classList.add("open");
-    }
-    function closeMobileNavSafe(){
-      if (window.closeMobileNav) return window.closeMobileNav();
-      document.getElementById("mobileNav")?.classList.remove("open");
-    }
-
-    function initUserSelectSafe(){
-      const sel = document.getElementById("userSelect");
-      if (!sel) return;
-      const u = localStorage.getItem(KEYS.USER) || "A";
-      sel.value = u;
-      sel.onchange = () => {
-        localStorage.setItem(KEYS.USER, sel.value);
-        render();
-      };
-    }
-
-    /* ---------- Executive Mode ---------- */
-    function setExec(on){
-      document.body.classList.toggle("exec", !!on);
-      localStorage.setItem(KEYS.EXEC, on ? "1" : "0");
-      const sw = document.getElementById("execSwitch");
-      if (sw) sw.setAttribute("aria-checked", on ? "true" : "false");
-    }
-    function getExec(){ return localStorage.getItem(KEYS.EXEC) === "1"; }
-
-    /* ---------- Date helpers ---------- */
-    function monthMinus(yyyymm, n){
-      const [y,m] = yyyymm.split("-").map(Number);
-      const dt = new Date(y, m-1, 1);
-      dt.setMonth(dt.getMonth() - n);
-      const yy = dt.getFullYear();
-      const mm = String(dt.getMonth()+1).padStart(2,"0");
-      return `${yy}-${mm}`;
-    }
-    function monthLabel(yyyymm){
-      const [y,m] = yyyymm.split("-");
-      const date = new Date(Number(y), Number(m)-1, 1);
-      return date.toLocaleString(undefined, { month:"short", year:"numeric" });
-    }
-    function todayMonthKey(){
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,"0");
-      return `${y}-${m}`;
-    }
-
-    /* ---------- Data ---------- */
-    function getCustomers(){ return loadJSON(KEYS.CUST, []); }
-    function getSales(){ return loadJSON(KEYS.SALES, []); }
-
-    function normalizeSales(){
-      const sales = getSales();
-      return sales.map(s => ({
-        id: s.id || uid("S"),
-        customerId: s.customerId || "",
-        customerName: s.customerName || "",
-        date: s.date || new Date().toISOString(),
-        sku: s.sku || "SKU",
-        qty: Number(s.qty || 1),
-        amount: Number(s.amount || 0),
-        location: s.location || ""
-      }));
-    }
-
-    function buildCustomerFilterOptions(customers){
-      const sel = document.getElementById("customerFilter");
-      if (!sel) return;
-      const current = sel.value || "ALL";
-
-      sel.innerHTML = "";
-      const optAll = document.createElement("option");
-      optAll.value = "ALL";
-      optAll.textContent = "All customers";
-      sel.appendChild(optAll);
-
-      customers
-        .slice()
-        .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
-        .forEach(c => {
-          const o = document.createElement("option");
-          o.value = c.id;
-          o.textContent = c.name;
-          sel.appendChild(o);
-        });
-
-      if ([...sel.options].some(o=>o.value===current)) sel.value = current;
-    }
-
-    function salesInMonth(sales, yyyymm){
-      return sales.filter(s => (s.date || "").slice(0,7) === yyyymm);
-    }
-    function salesInWindow(sales, endMonth, windowSize){
-      const months = [];
-      for (let i=0; i<windowSize; i++) months.push(monthMinus(endMonth, i));
-      return { months, rows: sales.filter(s => months.includes((s.date||"").slice(0,7))) };
-    }
-
-    function computeKPIs(customers, sales, selectedMonth, windowSize, customerIdFilter, query){
-      const q = (query || "").trim().toLowerCase();
-
-      const custFiltered = customers.filter(c => {
-        const blob = `${c.name||""} ${c.location||""} ${c.contact||""} ${c.email||""} ${c.phone||""}`.toLowerCase();
-        const matchesSearch = q ? blob.includes(q) : true;
-        const matchesCustomer = (customerIdFilter === "ALL") ? true : (c.id === customerIdFilter);
-        return matchesSearch && matchesCustomer;
-      });
-
-      const custSet = new Set(custFiltered.map(c=>c.id));
-
-      const monthRowsAll = salesInMonth(sales, selectedMonth);
-      const monthRowsScoped = monthRowsAll.filter(r => custSet.has(r.customerId));
-
-      const monthOrdersByCust = new Map();
-      monthRowsAll.forEach(r => {
-        if (!r.customerId) return;
-        monthOrdersByCust.set(r.customerId, (monthOrdersByCust.get(r.customerId) || 0) + 1);
-      });
-
-      const ordersInMonth = monthRowsScoped.length;
-      const activeCustomers = new Set(monthRowsScoped.map(r=>r.customerId)).size;
-      const noSalesCustomers = custFiltered.filter(c => !monthOrdersByCust.get(c.id));
-
-      const window = salesInWindow(sales, selectedMonth, windowSize);
-      const months = window.months;
-      const rowsScoped = window.rows.filter(r => custSet.has(r.customerId));
-
-      const custMonthMap = new Map();
-      rowsScoped.forEach(r=>{
-        const mk = (r.date||"").slice(0,7);
-        if(!mk) return;
-        if(!custMonthMap.has(r.customerId)) custMonthMap.set(r.customerId, new Set());
-        custMonthMap.get(r.customerId).add(mk);
-      });
-
-      const everyMonthCustomers = custFiltered.filter(c => {
-        const s = custMonthMap.get(c.id);
-        if (!s) return false;
-        return months.every(m => s.has(m));
-      });
-
-      const prevMonth = monthMinus(selectedMonth, 1);
-      const prevRowsScoped = salesInMonth(sales, prevMonth).filter(r => custSet.has(r.customerId));
-      const prevActive = new Set(prevRowsScoped.map(r=>r.customerId));
-      const currActive = new Set(monthRowsScoped.map(r=>r.customerId));
-
-      let retentionText = "—";
-      if (prevActive.size === 0){
-        retentionText = `No baseline customers in ${monthLabel(prevMonth)} to calculate retention.`;
-      } else {
-        let retained = 0;
-        prevActive.forEach(id => { if (currActive.has(id)) retained++; });
-        const pct = Math.round((retained / prevActive.size) * 100);
-        retentionText = `${pct}% retention — ${retained}/${prevActive.size} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(selectedMonth)}.`;
-      }
-
-      const skuAgg = new Map();
-      const lastOrder = new Map();
-      rowsScoped.forEach(r=>{
-        if (!skuAgg.has(r.customerId)) skuAgg.set(r.customerId, new Map());
-        const map = skuAgg.get(r.customerId);
-        map.set(r.sku, (map.get(r.sku) || 0) + (Number(r.qty)||1));
-        if (!lastOrder.get(r.customerId) || r.date > lastOrder.get(r.customerId)) lastOrder.set(r.customerId, r.date);
-      });
-
-      const topSkuByCust = custFiltered.map(c=>{
-        const map = skuAgg.get(c.id);
-        if (!map) return { customerId:c.id, customerName:c.name, sku:"—", qty:0, last:"—" };
-        let bestSku = "—", bestQty = 0;
-        map.forEach((qty, sku)=>{ if (qty > bestQty){ bestQty = qty; bestSku = sku; } });
-        return { customerId:c.id, customerName:c.name, sku: bestSku, qty: bestQty, last: lastOrder.get(c.id) || "—" };
-      });
-
-      const ordersByMonth = new Map(months.map(m => [m, 0]));
-      rowsScoped.forEach(r=>{
-        const mk = (r.date||"").slice(0,7);
-        if (!ordersByMonth.has(mk)) ordersByMonth.set(mk, 0);
-        ordersByMonth.set(mk, ordersByMonth.get(mk) + 1);
-      });
-
-      return {
-        custFiltered,
-        ordersInMonth,
-        activeCustomers,
-        noSalesCustomers,
-        everyMonthCustomers,
-        retentionText,
-        months,
-        monthOrdersByCust,
-        topSkuByCust,
-        ordersByMonth
-      };
-    }
-
-    /* ---------- Mini chart ---------- */
-    function drawOrdersChart(monthsDesc, ordersByMonth, label){
-      const canvas = document.getElementById("ordersChart");
-      if (!canvas) return;
-
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-      canvas.width = Math.floor(rect.width * dpr);
-      canvas.height = Math.floor(rect.height * dpr);
-
-      const ctx = canvas.getContext("2d");
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const w = rect.width;
-      const h = rect.height;
-      ctx.clearRect(0,0,w,h);
-
-      const months = monthsDesc.slice().reverse();
-      const vals = months.map(m => ordersByMonth.get(m) || 0);
-      const max = Math.max(1, ...vals);
-
-      const padL = 14, padR = 14, padT = 14, padB = 30;
-      const plotW = w - padL - padR;
-      const plotH = h - padT - padB;
-
-      ctx.strokeStyle = "rgba(11,18,32,0.08)";
-      ctx.lineWidth = 1;
-      const gridCount = 3;
-      for (let i=0; i<=gridCount; i++){
-        const y = padT + (plotH * i / gridCount);
-        ctx.beginPath();
-        ctx.moveTo(padL, y);
-        ctx.lineTo(padL + plotW, y);
-        ctx.stroke();
-      }
-
-      const gap = 10;
-      const barW = Math.max(10, (plotW - gap*(months.length-1)) / months.length);
-
-      for (let i=0; i<months.length; i++){
-        const v = vals[i];
-        const barH = (v / max) * (plotH - 8);
-        const x = padL + i*(barW + gap);
-        const y = padT + (plotH - barH);
-
-        ctx.fillStyle = "rgba(31,86,216,0.18)";
-        ctx.fillRect(x, y, barW, barH);
-
-        ctx.fillStyle = "rgba(31,86,216,0.28)";
-        ctx.fillRect(x, y, barW, Math.min(8, barH));
-
-        ctx.fillStyle = "rgba(11,18,32,0.62)";
-        ctx.font = "800 11px Inter, system-ui, sans-serif";
-        const ml = monthLabel(months[i]);
-        const tx = x + barW/2 - ctx.measureText(ml).width/2;
-        ctx.fillText(ml, tx, h - 10);
-      }
-
-      const sub = document.getElementById("chartSub");
-      if (sub) sub.textContent = label;
-    }
-
-    function renderExecSummary(k, selectedMonth, windowSize){
-      const headline = document.getElementById("execHeadline");
-      const body = document.getElementById("execBody");
-      const actions = document.getElementById("execActions");
-
-      const noSales = k.noSalesCustomers.length;
-      const consistent = k.everyMonthCustomers.length;
-
-      headline.textContent = `${monthLabel(selectedMonth)} • ${k.ordersInMonth} orders • ${k.activeCustomers} active customers`;
-      body.textContent = `Window: last ${windowSize} months. ${consistent} consistent; ${noSales} no-sales this month.`;
-
-      const actionText = [];
-      if (noSales > 0) actionText.push(`Review ${noSales} no-sales accounts and trigger outreach.`);
-      if (consistent > 0) actionText.push(`Protect ${consistent} consistent customers with service-level priority.`);
-      if (actionText.length === 0) actionText.push("No immediate exceptions detected. Monitor trend + retention.");
-      actions.textContent = actionText.join(" ");
-    }
-
-    /* ---------- Render ---------- */
-    function render(){
-      const customers = getCustomers();
-      const sales = normalizeSales();
-
-      const monthPick = document.getElementById("monthPick");
-      if (!monthPick.value) monthPick.value = todayMonthKey();
-
-      buildCustomerFilterOptions(customers);
-
-      const q = document.getElementById("searchInput").value || "";
-      const selectedMonth = monthPick.value;
-      const windowSize = Number(document.getElementById("windowPick").value || 6);
-      const custId = document.getElementById("customerFilter").value || "ALL";
-
-      const k = computeKPIs(customers, sales, selectedMonth, windowSize, custId, q);
-
-      // KPIs
-      document.getElementById("kpiOrders").textContent = k.ordersInMonth.toLocaleString();
-      document.getElementById("kpiOrdersSub").textContent = `${monthLabel(selectedMonth)} • scoped to filters`;
-
-      document.getElementById("kpiActive").textContent = k.activeCustomers.toLocaleString();
-      document.getElementById("kpiActiveSub").textContent = `Customers with ≥1 order in ${monthLabel(selectedMonth)}`;
-
-      document.getElementById("kpiNoSales").textContent = k.noSalesCustomers.length.toLocaleString();
-      document.getElementById("kpiNoSalesSub").textContent = `Customers with 0 orders in ${monthLabel(selectedMonth)}`;
-
-      document.getElementById("kpiEveryMonth").textContent = k.everyMonthCustomers.length.toLocaleString();
-      document.getElementById("kpiEveryMonthSub").textContent = `Consistent across last ${windowSize} months`;
-
-      // Retention + data
-      document.getElementById("retentionText").textContent = k.retentionText;
-      document.getElementById("dataText").textContent =
-        `Customers: ${customers.length} • Sales records: ${sales.length} (localStorage)`;
-
-      // Chart
-      drawOrdersChart(k.months, k.ordersByMonth, `Last ${windowSize} months • scoped to current filters`);
-
-      // Executive summary
-      renderExecSummary(k, selectedMonth, windowSize);
-
-      // Lists
-      const noSalesList = document.getElementById("noSalesList");
-      noSalesList.innerHTML = "";
-      if (k.noSalesCustomers.length === 0){
-        noSalesList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
-          <span>None — all customers have orders in ${monthLabel(selectedMonth)}.</span>
-        </div>`;
-      } else {
-        k.noSalesCustomers.slice(0, 30).forEach(c=>{
-          const row = document.createElement("div");
-          row.className = "mini-row red";
-          row.innerHTML = `
-            <div>
-              <strong>${esc(c.name)}</strong>
-              <small>${esc(c.location || "—")} • ${esc(c.contact || "—")}</small>
-            </div>
-            <div class="tag">0 orders</div>
-          `;
-          noSalesList.appendChild(row);
-        });
-      }
-
-      const everyList = document.getElementById("everyMonthList");
-      everyList.innerHTML = "";
-      if (k.everyMonthCustomers.length === 0){
-        everyList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
-          <span>No consistent customers found in this window.</span>
-        </div>`;
-      } else {
-        k.everyMonthCustomers.slice(0, 30).forEach(c=>{
-          const row = document.createElement("div");
-          row.className = "mini-row green";
-          row.innerHTML = `
-            <div>
-              <strong>${esc(c.name)}</strong>
-              <small>${esc(c.location || "—")} • window: ${k.months.length} months</small>
-            </div>
-            <div class="tag">Consistent</div>
-          `;
-          everyList.appendChild(row);
-        });
-      }
-
-      // Tables
-      const tbody = document.getElementById("custTable");
-      if (tbody){
-        tbody.innerHTML = "";
-        k.custFiltered
-          .slice()
-          .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
-          .forEach(c=>{
-            const ordersMonth = (k.monthOrdersByCust.get(c.id) || 0);
-            const top = k.topSkuByCust.find(x=>x.customerId===c.id) || { sku:"—", qty:0 };
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td><strong>${esc(c.name)}</strong></td>
-              <td>${esc(c.location || "—")}</td>
-              <td><span class="pilltag">${esc(c.type || "—")}</span></td>
-              <td>
-                <div><strong>${esc(c.contact || "—")}</strong></div>
-                <div style="color:var(--muted);font-size:12px;line-height:1.45">
-                  ${esc(c.email || "")}${c.phone ? " • " + esc(c.phone) : ""}
-                </div>
-              </td>
-              <td><span class="pilltag ${ordersMonth===0 ? "bad" : "good"}">${ordersMonth} orders</span></td>
-              <td>${esc(top.sku)} <span style="color:var(--muted);font-size:12px">(${top.qty})</span></td>
-            `;
-            tbody.appendChild(tr);
-          });
-      }
-
-      const topT = document.getElementById("topSkuTable");
-      if (topT){
-        topT.innerHTML = "";
-        k.topSkuByCust
-          .slice()
-          .sort((a,b)=> (b.qty||0) - (a.qty||0))
-          .forEach(r=>{
-            const tr = document.createElement("tr");
-            const last = (r.last && r.last !== "—") ? new Date(r.last).toLocaleDateString() : "—";
-            tr.innerHTML = `
-              <td><strong>${esc(r.customerName)}</strong></td>
-              <td>${esc(r.sku)}</td>
-              <td>${Number(r.qty||0).toLocaleString()}</td>
-              <td>${esc(last)}</td>
-            `;
-            topT.appendChild(tr);
-          });
-      }
-    }
-
-    /* ---------- Actions dropdown ---------- */
-    function toggleActionsMenu(){
-      document.getElementById("actionsMenu")?.classList.toggle("open");
-    }
-
-    /* ---------- Demo / Export / Clear ---------- */
-    function loadDemoCustomers(){
-      const existing = getCustomers();
-      if (existing.length >= 4){
-        toast("Customers already present", "Your directory already has customers.");
-        render();
-        return;
-      }
-      const demo = [
-        { id: uid("CUST"), name:"Asha Retail", location:"Austin, TX", type:"Retailer", contact:"Asha K.", email:"asha@asharetail.com", phone:"+1 512-555-0123", createdAt: Date.now() },
-        { id: uid("CUST"), name:"Citrine Luxe", location:"New York, NY", type:"Distributor", contact:"Noah C.", email:"ops@citrineluxe.com", phone:"+1 212-555-0144", createdAt: Date.now() },
-        { id: uid("CUST"), name:"Emerald Lane", location:"Seattle, WA", type:"Retailer", contact:"Eva L.", email:"purchasing@emeraldlane.com", phone:"+1 206-555-0177", createdAt: Date.now() },
-        { id: uid("CUST"), name:"Harborline Supply", location:"Los Angeles, CA", type:"Distributor", contact:"Hank S.", email:"supply@harborline.com", phone:"+1 213-555-0162", createdAt: Date.now() },
-        { id: uid("CUST"), name:"Golden Thread", location:"Miami, FL", type:"Retailer", contact:"Gina T.", email:"orders@goldenthread.com", phone:"+1 305-555-0190", createdAt: Date.now() },
-        { id: uid("CUST"), name:"NorthBay Wholesale", location:"Chicago, IL", type:"Distributor", contact:"Nolan B.", email:"wholesale@northbay.com", phone:"+1 312-555-0108", createdAt: Date.now() },
-      ];
-      saveJSON(KEYS.CUST, [...existing, ...demo]);
-      toast("Demo customers loaded", "Directory has been populated.");
-      buildCustomerFilterOptions(getCustomers());
-      render();
-    }
-
-    function loadDemoSales(){
-      const customers = getCustomers();
-      if (customers.length === 0){
-        toast("Add customers first", "Load demo customers before adding demo sales.");
-        return;
-      }
-      const monthsBack = 10;
-      const skus = ["NK-1001","RG-2001","BR-1101","ER-4040","NK-2210","RG-9022"];
-      const sales = [];
-      const now = new Date();
-
-      for (let i=0; i<700; i++){
-        const cust = customers[Math.floor(Math.random()*customers.length)];
-        const back = Math.floor(Math.random() * monthsBack);
-        const dt = new Date(now.getFullYear(), now.getMonth() - back, 1 + Math.floor(Math.random()*26));
-        const sku = skus[Math.floor(Math.random()*skus.length)];
-        const qty = 1 + Math.floor(Math.random()*8);
-        const amount = qty * (20 + Math.floor(Math.random()*120));
-        sales.push({
-          id: uid("S"),
-          customerId: cust.id,
-          customerName: cust.name,
-          location: cust.location || "",
-          date: dt.toISOString(),
-          sku,
-          qty,
-          amount
-        });
-      }
-
-      saveJSON(KEYS.SALES, sales);
-      toast("Demo sales loaded", "CRM KPIs are now reactive with order history.");
-      render();
-    }
-
-    function downloadFile(filename, content){
-      const blob = new Blob([content], { type:"text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function exportCustomersCSV(){
-      const rows = getCustomers();
-      if (rows.length === 0){ toast("Nothing to export", "No customers in CRM."); return; }
-      const header = ["id","name","location","type","contact","email","phone","createdAt"];
-      const csv = [header.join(",")]
-        .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
-        .join("\n");
-      downloadFile("customers.csv", csv);
-      toast("Export ready", "customers.csv downloaded.");
-    }
-
-    function exportSalesCSV(){
-      const rows = getSales();
-      if (rows.length === 0){ toast("Nothing to export", "No sales records in CRM."); return; }
-      const header = ["id","customerId","customerName","location","date","sku","qty","amount"];
-      const csv = [header.join(",")]
-        .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
-        .join("\n");
-      downloadFile("sales.csv", csv);
-      toast("Export ready", "sales.csv downloaded.");
-    }
-
-    function clearCRMData(){
-      if (!confirm("Clear CRM customers + sales data from this browser?")) return;
-      localStorage.removeItem(KEYS.CUST);
-      localStorage.removeItem(KEYS.SALES);
-      toast("CRM cleared", "Local CRM data removed.");
-      buildCustomerFilterOptions(getCustomers());
-      render();
-    }
-
-    /* ---------- Add Customer modal ---------- */
-    function openAddCustomer(){ document.getElementById("addCustomerModal")?.classList.add("open"); }
-    function closeAddCustomer(){ document.getElementById("addCustomerModal")?.classList.remove("open"); }
-
-    function saveCustomer(){
-      const name = document.getElementById("cName").value.trim();
-      if (!name){ toast("Missing field", "Customer name is required."); return; }
-
-      const customer = {
-        id: uid("CUST"),
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
+
+    function openCustomerModal() { document.getElementById("customerModal").classList.add("open"); }
+    function closeCustomerModal() { document.getElementById("customerModal").classList.remove("open"); }
+
+    function addCustomer() {
+      const name = (document.getElementById("cName").value || "").trim();
+      const loc = (document.getElementById("cLocation").value || "").trim();
+      if (!name) return toast("Required", "Company Name is missing.");
+
+      const c = {
+        id: "C-" + Date.now(),
         name,
-        location: document.getElementById("cLocation").value.trim(),
+        location: loc || "Unknown",
         type: document.getElementById("cType").value,
-        contact: document.getElementById("cContact").value.trim(),
-        email: document.getElementById("cEmail").value.trim(),
-        phone: document.getElementById("cPhone").value.trim(),
-        createdAt: Date.now()
+        contact: document.getElementById("cContact").value,
+        email: document.getElementById("cEmail").value,
+        phone: document.getElementById("cPhone").value,
+        joined: new Date().toISOString()
       };
 
-      const customers = getCustomers();
-      customers.push(customer);
-      saveJSON(KEYS.CUST, customers);
+      const list = load(KEY_CUST, []);
+      list.push(c);
+      save(KEY_CUST, list);
 
-      ["cName","cLocation","cContact","cEmail","cPhone"].forEach(id=> document.getElementById(id).value = "");
-      closeAddCustomer();
-      toast("Customer added", `${customer.name} added to CRM.`);
-      buildCustomerFilterOptions(getCustomers());
+      closeCustomerModal();
+      toast("Success", "Customer profile created.");
       render();
     }
 
-    /* ---------- Wire events ---------- */
-    function wireEvents(){
-      document.getElementById("searchInput")?.addEventListener("input", render);
-      document.getElementById("customerFilter")?.addEventListener("change", render);
-      document.getElementById("monthPick")?.addEventListener("change", render);
-      document.getElementById("windowPick")?.addEventListener("change", render);
+    function setFilter(f) {
+      CURRENT_FILTER = f;
+      document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+      if (f === 'all') document.getElementById("kAll").classList.add("active");
+      if (f === 'active') document.getElementById("kActive").classList.add("active");
+      if (f === 'nosales') document.getElementById("kZero").classList.add("active");
+      render();
+    }
 
-      // Actions dropdown
-      document.getElementById("actionsBtn")?.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        toggleActionsMenu();
-      });
-      document.addEventListener("click", ()=>{
-        document.getElementById("actionsMenu")?.classList.remove("open");
-      });
+    function render() {
+      const customers = load(KEY_CUST, []);
+      const sales = load(KEY_SALES, []);
+      const search = (document.getElementById("search").value || "").toLowerCase();
+      const selMonth = document.getElementById("monthSelect").value; // "YYYY-MM"
+      const singleCust = document.getElementById("customerFilter").value;
 
-      // Executive toggle
-      const execSwitch = document.getElementById("execSwitch");
-      execSwitch?.addEventListener("click", ()=> setExec(!getExec()));
-      execSwitch?.addEventListener("keydown", (e)=>{
-        if (e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          setExec(!getExec());
+      // Stats aggregation first
+      const custStats = {};
+      sales.forEach(s => {
+        const ym = s.date.slice(0, 7);
+        if (!custStats[s.customer]) custStats[s.customer] = { monthOrders: 0, monthRev: 0, lifeRev: 0, skus: {}, months: new Set() };
+        const st = custStats[s.customer];
+        st.lifeRev += (Number(s.unitPrice) * Number(s.qty));
+        st.skus[s.sku] = (st.skus[s.sku] || 0) + Number(s.qty);
+        st.months.add(ym);
+
+        if (ym === selMonth) {
+          st.monthOrders++;
+          st.monthRev += (Number(s.unitPrice) * Number(s.qty));
         }
       });
 
-      // Modal outside click
-      document.getElementById("addCustomerModal")?.addEventListener("click", (e)=>{
-        if (e.target && e.target.id === "addCustomerModal") closeAddCustomer();
+      // Update KPIs
+      let totalRev = 0;
+      let activeCount = 0;
+      let zeroCount = 0;
+
+      customers.forEach(c => {
+        const st = custStats[c.name];
+        if (st && st.monthOrders > 0) {
+          activeCount++;
+          totalRev += st.monthRev;
+        } else {
+          zeroCount++;
+        }
       });
 
-      // Redraw chart on resize
-      window.addEventListener("resize", ()=> render());
+      document.getElementById("kpiTotal").textContent = customers.length;
+      document.getElementById("kpiActive").textContent = activeCount;
+      document.getElementById("kpiZero").textContent = zeroCount;
+      document.getElementById("kpiRev").textContent = money(totalRev);
+
+      // Filtering List
+      let shown = customers.filter(c => {
+        const txt = (c.name + " " + c.location + " " + (c.contact || "")).toLowerCase();
+        if (search && !txt.includes(search)) return false;
+        if (singleCust && c.name !== singleCust) return false;
+
+        const st = custStats[c.name] || { monthOrders: 0 };
+        const isActive = st.monthOrders > 0;
+
+        if (CURRENT_FILTER === 'active' && !isActive) return false;
+        if (CURRENT_FILTER === 'nosales' && isActive) return false;
+
+        return true;
+      });
+
+      // Build Table
+      const tbody = document.getElementById("custBody");
+      tbody.innerHTML = "";
+
+      document.getElementById("dirTitle").textContent =
+        CURRENT_FILTER === 'active' ? "Active Customers" :
+          (CURRENT_FILTER === 'nosales' ? "Inactive Customers" : "Customer Directory");
+
+      if (shown.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:24px;">No customers found.</td></tr>`;
+      }
+
+      shown.forEach(c => {
+        const st = custStats[c.name] || { monthOrders: 0, lifeRev: 0 };
+        const isActive = st.monthOrders > 0;
+
+        const tr = document.createElement("tr");
+        tr.style.cursor = "pointer";
+        tr.onclick = () => showDetail(c, st, selMonth);
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:600; color:var(--text-main);">${escapeHtml(c.name)}</div>
+            <div style="font-size:12px; color:var(--text-muted);">${escapeHtml(c.type || "Standard")}</div>
+          </td>
+          <td>${escapeHtml(c.location)}</td>
+          <td>${st.monthOrders}</td>
+          <td>${money(st.lifeRev)}</td>
+          <td>${isActive ? `<span class="badge badge-green">Active</span>` : `<span class="badge badge-yellow">Quiet</span>`}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Customer Filter Init
+      const cf = document.getElementById("customerFilter");
+      if (cf.options.length <= 1) {
+        cf.innerHTML = `<option value="">Filter by Company Name</option>`;
+        customers.map(c => c.name).sort().forEach(n => {
+          const opt = document.createElement("option");
+          opt.value = n; opt.textContent = n;
+          cf.appendChild(opt);
+        });
+      }
     }
 
-    /* ---------- Init ---------- */
-    (function init(){
-      requireAuthSafe();
-      markActiveSafe();
-      initUserSelectSafe();
+    function showDetail(c, stats, selMonth) {
+      document.getElementById("detailPlaceholder").style.display = "none";
+      document.getElementById("detailContent").style.display = "block";
 
-      const monthPick = document.getElementById("monthPick");
-      if (monthPick) monthPick.value = todayMonthKey();
+      document.getElementById("dName").textContent = c.name;
+      document.getElementById("dLoc").textContent = c.location;
+      document.getElementById("dContact").textContent = c.contact || "—";
+      document.getElementById("dEmail").textContent = c.email || "—";
+      document.getElementById("dPhone").textContent = c.phone || "—";
 
-      setExec(getExec());
-      buildCustomerFilterOptions(getCustomers());
-      wireEvents();
+      // Monthly Line
+      const h = [];
+      if (stats && stats.months) {
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+          const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+          const has = stats.months.has(ym) ? "●" : "○";
+          h.push(has);
+        }
+      } else {
+        for (let i = 0; i < 6; i++) h.push("○");
+      }
+      document.getElementById("monthlyLine").textContent = h.join("  ");
+
+      // SKU
+      let topSku = "None"; let max = 0;
+      if (stats && stats.skus) {
+        for (const [k, v] of Object.entries(stats.skus)) {
+          if (v > max) { max = v; topSku = k; }
+        }
+      }
+      document.getElementById("skuLine").textContent = topSku + (max ? ` (${max} units)` : "");
+    }
+
+    function onCustomerFilterChange() { render(); }
+
+    /* Demo Data Loading */
+    function seedCustomers() {
+      const demo = [
+        { id: "C1", name: "Asha Retail", location: "Austin, TX", type: "Retailer", contact: "Sarah L", email: "sarah@asharetail.com", phone: "(512) 555-0101" },
+        { id: "C2", name: "Blue Harbor", location: "Miami, FL", type: "Wholesale", contact: "Jim B", email: "jim@blueharbor.com", phone: "(305) 555-0123" },
+        { id: "C3", name: "Citrine Luxe", location: "New York, NY", type: "Boutique", contact: "Elena R", email: "elena@citrine.com", phone: "(212) 555-0199" },
+        { id: "C4", name: "Desert Pearl", location: "Phoenix, AZ", type: "Retailer", contact: "Marc D", email: "marc@desertp.com", phone: "(602) 555-0144" },
+        { id: "C5", name: "Emerald Lane", location: "Seattle, WA", type: "Boutique", contact: "Lisa T", email: "lisa@emerald.com", phone: "(206) 555-0188" }
+      ];
+      save(KEY_CUST, demo);
+      toast("Data Loaded", "Demo Customers loaded.");
       render();
-    })();
+    }
+
+    // Init
+    if (load(KEY_CUST, []).length === 0) seedCustomers();
+    render();
+
   </script>
 </body>
+
 </html>
