@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Your shared premium theme -->
+  <!-- Shared premium theme -->
   <link rel="stylesheet" href="erp.css" />
 
   <style>
@@ -72,15 +72,6 @@
     .mini-row.red .tag{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
     .mini-row.green{ border-color: rgba(15,118,110,0.20); background: rgba(15,118,110,0.06); }
     .mini-row.green .tag{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
-
-    /* ========== Hero actions: clean + aligned ========== */
-    .hero-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
 
     /* Actions dropdown */
     .dropdown{ position: relative; display:inline-flex; align-items:center; gap: 8px; }
@@ -196,17 +187,16 @@
     body.exec .card.kpi-compact{ min-height: 104px; padding: 14px 14px 12px; }
     body.exec .card.kpi-compact .value{ font-size: 26px; margin-top: 10px; }
     body.exec .crm-grid{ grid-template-columns: 1fr; }
-    body.exec #heavyTables{ display:none; } /* hides tables, keeps KPIs/lists/chart */
+    body.exec #heavyTables{ display:none; }
 
     /* Responsive */
     @media (max-width: 1100px){
       .kpis.crm{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
       .crm-grid{ grid-template-columns: 1fr; }
-      .hero-actions{ justify-content:flex-start; }
+      .hero-right{ justify-content:flex-start; }
     }
     @media (max-width: 700px){
       .kpis.crm{ grid-template-columns: 1fr; }
-      .hero-right{ justify-content:flex-start; }
       .chart-canvas{ height: 200px; }
     }
   </style>
@@ -220,7 +210,7 @@
         <img src="images/stark-logo.png" alt="Stark Premium" />
       </div>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
+      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNavSafe()">
         <span></span><span></span><span></span>
       </button>
 
@@ -252,7 +242,7 @@
     <div class="mobile-card">
       <div class="mobile-head">
         <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
+        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNavSafe()">×</button>
       </div>
       <div class="mobile-links">
         <a href="dashboard.html" data-key="home">Home</a>
@@ -331,7 +321,6 @@
         </div>
       </div>
 
-      <!-- Mini chart -->
       <div class="chart-wrap">
         <div class="chart-head">
           <div>
@@ -370,7 +359,7 @@
           <div class="chip bad">Attention</div>
         </div>
         <div class="value" id="kpiNoSales">0</div>
-        <div class="sub" id="kpiNoSalesSub">Shown in red list</div>
+        <div class="sub" id="kpiNoSalesSub">—</div>
       </div>
 
       <div class="card kpi-compact">
@@ -379,13 +368,12 @@
           <div class="chip good">Consistent</div>
         </div>
         <div class="value" id="kpiEveryMonth">0</div>
-        <div class="sub" id="kpiEveryMonthSub">Within selected window</div>
+        <div class="sub" id="kpiEveryMonthSub">—</div>
       </div>
     </div>
 
     <!-- ===== Main content ===== -->
     <div class="crm-grid">
-      <!-- Left -->
       <div class="panel">
         <h2>Signals</h2>
         <div class="goldline"></div>
@@ -442,7 +430,6 @@
         </div>
       </div>
 
-      <!-- Right -->
       <div class="side">
         <div class="panel">
           <h2>Executive Summary</h2>
@@ -499,7 +486,11 @@
   <script src="erp.js"></script>
 
   <script>
-    /* ========= Safe helpers if erp.js is incomplete ========= */
+    /* =========================================================
+       SAFE FALLBACKS + CRM LOGIC (single script, no duplicates)
+       ========================================================= */
+
+    /* ---------- Keys ---------- */
     const KEYS = {
       CUST: (window.ERP && ERP.CUST) || "stark_erp_crm_customers_v1",
       SALES: (window.ERP && ERP.SALES) || "stark_erp_sales_v1",
@@ -508,13 +499,14 @@
       EXEC: "stark_erp_crm_exec_v1"
     };
 
+    /* ---------- Helpers ---------- */
     function loadJSON(key, fallback){
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
     }
     function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
     function uid(prefix){ return `${prefix}-${Math.random().toString(16).slice(2,8).toUpperCase()}${Date.now().toString(16).slice(-4).toUpperCase()}`; }
-    function esc(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+    function esc(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
 
     function toast(title, msg){
       if (window.erpToast) return window.erpToast(title, msg);
@@ -528,22 +520,30 @@
       setTimeout(()=> el.remove(), 8000);
     }
 
+    /* ---------- Auth + nav fallbacks ---------- */
     function erpSignOutSafe(){
       if (window.erpSignOut) return window.erpSignOut();
       localStorage.removeItem(KEYS.AUTH);
       window.location.href = "index.html";
     }
-
     function requireAuthSafe(){
       if (window.erpRequireAuth) return window.erpRequireAuth();
       const a = loadJSON(KEYS.AUTH, null);
       if (!a || !a.ok) window.location.href = "index.html";
     }
-
     function markActiveSafe(){
       if (window.erpMarkActive) return window.erpMarkActive("crm");
       document.querySelectorAll('[data-key="crm"]').forEach(a=> a.classList.add("active"));
       document.querySelectorAll('.mobile-links [data-key="crm"]').forEach(a=> a.classList.add("active"));
+    }
+
+    function openMobileNavSafe(){
+      if (window.openMobileNav) return window.openMobileNav();
+      document.getElementById("mobileNav")?.classList.add("open");
+    }
+    function closeMobileNavSafe(){
+      if (window.closeMobileNav) return window.closeMobileNav();
+      document.getElementById("mobileNav")?.classList.remove("open");
     }
 
     function initUserSelectSafe(){
@@ -557,18 +557,16 @@
       };
     }
 
-    /* ========= Executive mode ========= */
+    /* ---------- Executive Mode ---------- */
     function setExec(on){
       document.body.classList.toggle("exec", !!on);
       localStorage.setItem(KEYS.EXEC, on ? "1" : "0");
       const sw = document.getElementById("execSwitch");
       if (sw) sw.setAttribute("aria-checked", on ? "true" : "false");
     }
-    function getExec(){
-      return localStorage.getItem(KEYS.EXEC) === "1";
-    }
+    function getExec(){ return localStorage.getItem(KEYS.EXEC) === "1"; }
 
-    /* ========= CRM logic ========= */
+    /* ---------- Date helpers ---------- */
     function monthMinus(yyyymm, n){
       const [y,m] = yyyymm.split("-").map(Number);
       const dt = new Date(y, m-1, 1);
@@ -589,6 +587,7 @@
       return `${y}-${m}`;
     }
 
+    /* ---------- Data ---------- */
     function getCustomers(){ return loadJSON(KEYS.CUST, []); }
     function getSales(){ return loadJSON(KEYS.SALES, []); }
 
@@ -610,6 +609,7 @@
       const sel = document.getElementById("customerFilter");
       if (!sel) return;
       const current = sel.value || "ALL";
+
       sel.innerHTML = "";
       const optAll = document.createElement("option");
       optAll.value = "ALL";
@@ -626,7 +626,6 @@
           sel.appendChild(o);
         });
 
-      // restore selection if possible
       if ([...sel.options].some(o=>o.value===current)) sel.value = current;
     }
 
@@ -642,7 +641,7 @@
     function computeKPIs(customers, sales, selectedMonth, windowSize, customerIdFilter, query){
       const q = (query || "").trim().toLowerCase();
 
-      let custFiltered = customers.filter(c => {
+      const custFiltered = customers.filter(c => {
         const blob = `${c.name||""} ${c.location||""} ${c.contact||""} ${c.email||""} ${c.phone||""}`.toLowerCase();
         const matchesSearch = q ? blob.includes(q) : true;
         const matchesCustomer = (customerIdFilter === "ALL") ? true : (c.id === customerIdFilter);
@@ -697,7 +696,6 @@
         retentionText = `${pct}% retention — ${retained}/${prevActive.size} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(selectedMonth)}.`;
       }
 
-      // Top SKU per customer (by qty) over window
       const skuAgg = new Map();
       const lastOrder = new Map();
       rowsScoped.forEach(r=>{
@@ -715,7 +713,6 @@
         return { customerId:c.id, customerName:c.name, sku: bestSku, qty: bestQty, last: lastOrder.get(c.id) || "—" };
       });
 
-      // Chart data: orders per month in window
       const ordersByMonth = new Map(months.map(m => [m, 0]));
       rowsScoped.forEach(r=>{
         const mk = (r.date||"").slice(0,7);
@@ -737,7 +734,7 @@
       };
     }
 
-    /* ========= Mini Chart (Canvas) ========= */
+    /* ---------- Mini chart ---------- */
     function drawOrdersChart(monthsDesc, ordersByMonth, label){
       const canvas = document.getElementById("ordersChart");
       if (!canvas) return;
@@ -754,7 +751,7 @@
       const h = rect.height;
       ctx.clearRect(0,0,w,h);
 
-      const months = monthsDesc.slice().reverse(); // oldest -> newest
+      const months = monthsDesc.slice().reverse();
       const vals = months.map(m => ordersByMonth.get(m) || 0);
       const max = Math.max(1, ...vals);
 
@@ -762,7 +759,6 @@
       const plotW = w - padL - padR;
       const plotH = h - padT - padB;
 
-      // grid
       ctx.strokeStyle = "rgba(11,18,32,0.08)";
       ctx.lineWidth = 1;
       const gridCount = 3;
@@ -818,6 +814,7 @@
       actions.textContent = actionText.join(" ");
     }
 
+    /* ---------- Render ---------- */
     function render(){
       const customers = getCustomers();
       const sales = normalizeSales();
@@ -834,7 +831,7 @@
 
       const k = computeKPIs(customers, sales, selectedMonth, windowSize, custId, q);
 
-      // KPI render
+      // KPIs
       document.getElementById("kpiOrders").textContent = k.ordersInMonth.toLocaleString();
       document.getElementById("kpiOrdersSub").textContent = `${monthLabel(selectedMonth)} • scoped to filters`;
 
@@ -889,4 +886,249 @@
       } else {
         k.everyMonthCustomers.slice(0, 30).forEach(c=>{
           const row = document.createElement("div");
-          row
+          row.className = "mini-row green";
+          row.innerHTML = `
+            <div>
+              <strong>${esc(c.name)}</strong>
+              <small>${esc(c.location || "—")} • window: ${k.months.length} months</small>
+            </div>
+            <div class="tag">Consistent</div>
+          `;
+          everyList.appendChild(row);
+        });
+      }
+
+      // Tables
+      const tbody = document.getElementById("custTable");
+      if (tbody){
+        tbody.innerHTML = "";
+        k.custFiltered
+          .slice()
+          .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
+          .forEach(c=>{
+            const ordersMonth = (k.monthOrdersByCust.get(c.id) || 0);
+            const top = k.topSkuByCust.find(x=>x.customerId===c.id) || { sku:"—", qty:0 };
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td><strong>${esc(c.name)}</strong></td>
+              <td>${esc(c.location || "—")}</td>
+              <td><span class="pilltag">${esc(c.type || "—")}</span></td>
+              <td>
+                <div><strong>${esc(c.contact || "—")}</strong></div>
+                <div style="color:var(--muted);font-size:12px;line-height:1.45">
+                  ${esc(c.email || "")}${c.phone ? " • " + esc(c.phone) : ""}
+                </div>
+              </td>
+              <td><span class="pilltag ${ordersMonth===0 ? "bad" : "good"}">${ordersMonth} orders</span></td>
+              <td>${esc(top.sku)} <span style="color:var(--muted);font-size:12px">(${top.qty})</span></td>
+            `;
+            tbody.appendChild(tr);
+          });
+      }
+
+      const topT = document.getElementById("topSkuTable");
+      if (topT){
+        topT.innerHTML = "";
+        k.topSkuByCust
+          .slice()
+          .sort((a,b)=> (b.qty||0) - (a.qty||0))
+          .forEach(r=>{
+            const tr = document.createElement("tr");
+            const last = (r.last && r.last !== "—") ? new Date(r.last).toLocaleDateString() : "—";
+            tr.innerHTML = `
+              <td><strong>${esc(r.customerName)}</strong></td>
+              <td>${esc(r.sku)}</td>
+              <td>${Number(r.qty||0).toLocaleString()}</td>
+              <td>${esc(last)}</td>
+            `;
+            topT.appendChild(tr);
+          });
+      }
+    }
+
+    /* ---------- Actions dropdown ---------- */
+    function toggleActionsMenu(){
+      document.getElementById("actionsMenu")?.classList.toggle("open");
+    }
+
+    /* ---------- Demo / Export / Clear ---------- */
+    function loadDemoCustomers(){
+      const existing = getCustomers();
+      if (existing.length >= 4){
+        toast("Customers already present", "Your directory already has customers.");
+        render();
+        return;
+      }
+      const demo = [
+        { id: uid("CUST"), name:"Asha Retail", location:"Austin, TX", type:"Retailer", contact:"Asha K.", email:"asha@asharetail.com", phone:"+1 512-555-0123", createdAt: Date.now() },
+        { id: uid("CUST"), name:"Citrine Luxe", location:"New York, NY", type:"Distributor", contact:"Noah C.", email:"ops@citrineluxe.com", phone:"+1 212-555-0144", createdAt: Date.now() },
+        { id: uid("CUST"), name:"Emerald Lane", location:"Seattle, WA", type:"Retailer", contact:"Eva L.", email:"purchasing@emeraldlane.com", phone:"+1 206-555-0177", createdAt: Date.now() },
+        { id: uid("CUST"), name:"Harborline Supply", location:"Los Angeles, CA", type:"Distributor", contact:"Hank S.", email:"supply@harborline.com", phone:"+1 213-555-0162", createdAt: Date.now() },
+        { id: uid("CUST"), name:"Golden Thread", location:"Miami, FL", type:"Retailer", contact:"Gina T.", email:"orders@goldenthread.com", phone:"+1 305-555-0190", createdAt: Date.now() },
+        { id: uid("CUST"), name:"NorthBay Wholesale", location:"Chicago, IL", type:"Distributor", contact:"Nolan B.", email:"wholesale@northbay.com", phone:"+1 312-555-0108", createdAt: Date.now() },
+      ];
+      saveJSON(KEYS.CUST, [...existing, ...demo]);
+      toast("Demo customers loaded", "Directory has been populated.");
+      buildCustomerFilterOptions(getCustomers());
+      render();
+    }
+
+    function loadDemoSales(){
+      const customers = getCustomers();
+      if (customers.length === 0){
+        toast("Add customers first", "Load demo customers before adding demo sales.");
+        return;
+      }
+      const monthsBack = 10;
+      const skus = ["NK-1001","RG-2001","BR-1101","ER-4040","NK-2210","RG-9022"];
+      const sales = [];
+      const now = new Date();
+
+      for (let i=0; i<700; i++){
+        const cust = customers[Math.floor(Math.random()*customers.length)];
+        const back = Math.floor(Math.random() * monthsBack);
+        const dt = new Date(now.getFullYear(), now.getMonth() - back, 1 + Math.floor(Math.random()*26));
+        const sku = skus[Math.floor(Math.random()*skus.length)];
+        const qty = 1 + Math.floor(Math.random()*8);
+        const amount = qty * (20 + Math.floor(Math.random()*120));
+        sales.push({
+          id: uid("S"),
+          customerId: cust.id,
+          customerName: cust.name,
+          location: cust.location || "",
+          date: dt.toISOString(),
+          sku,
+          qty,
+          amount
+        });
+      }
+
+      saveJSON(KEYS.SALES, sales);
+      toast("Demo sales loaded", "CRM KPIs are now reactive with order history.");
+      render();
+    }
+
+    function downloadFile(filename, content){
+      const blob = new Blob([content], { type:"text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportCustomersCSV(){
+      const rows = getCustomers();
+      if (rows.length === 0){ toast("Nothing to export", "No customers in CRM."); return; }
+      const header = ["id","name","location","type","contact","email","phone","createdAt"];
+      const csv = [header.join(",")]
+        .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
+        .join("\n");
+      downloadFile("customers.csv", csv);
+      toast("Export ready", "customers.csv downloaded.");
+    }
+
+    function exportSalesCSV(){
+      const rows = getSales();
+      if (rows.length === 0){ toast("Nothing to export", "No sales records in CRM."); return; }
+      const header = ["id","customerId","customerName","location","date","sku","qty","amount"];
+      const csv = [header.join(",")]
+        .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
+        .join("\n");
+      downloadFile("sales.csv", csv);
+      toast("Export ready", "sales.csv downloaded.");
+    }
+
+    function clearCRMData(){
+      if (!confirm("Clear CRM customers + sales data from this browser?")) return;
+      localStorage.removeItem(KEYS.CUST);
+      localStorage.removeItem(KEYS.SALES);
+      toast("CRM cleared", "Local CRM data removed.");
+      buildCustomerFilterOptions(getCustomers());
+      render();
+    }
+
+    /* ---------- Add Customer modal ---------- */
+    function openAddCustomer(){ document.getElementById("addCustomerModal")?.classList.add("open"); }
+    function closeAddCustomer(){ document.getElementById("addCustomerModal")?.classList.remove("open"); }
+
+    function saveCustomer(){
+      const name = document.getElementById("cName").value.trim();
+      if (!name){ toast("Missing field", "Customer name is required."); return; }
+
+      const customer = {
+        id: uid("CUST"),
+        name,
+        location: document.getElementById("cLocation").value.trim(),
+        type: document.getElementById("cType").value,
+        contact: document.getElementById("cContact").value.trim(),
+        email: document.getElementById("cEmail").value.trim(),
+        phone: document.getElementById("cPhone").value.trim(),
+        createdAt: Date.now()
+      };
+
+      const customers = getCustomers();
+      customers.push(customer);
+      saveJSON(KEYS.CUST, customers);
+
+      ["cName","cLocation","cContact","cEmail","cPhone"].forEach(id=> document.getElementById(id).value = "");
+      closeAddCustomer();
+      toast("Customer added", `${customer.name} added to CRM.`);
+      buildCustomerFilterOptions(getCustomers());
+      render();
+    }
+
+    /* ---------- Wire events ---------- */
+    function wireEvents(){
+      document.getElementById("searchInput")?.addEventListener("input", render);
+      document.getElementById("customerFilter")?.addEventListener("change", render);
+      document.getElementById("monthPick")?.addEventListener("change", render);
+      document.getElementById("windowPick")?.addEventListener("change", render);
+
+      // Actions dropdown
+      document.getElementById("actionsBtn")?.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        toggleActionsMenu();
+      });
+      document.addEventListener("click", ()=>{
+        document.getElementById("actionsMenu")?.classList.remove("open");
+      });
+
+      // Executive toggle
+      const execSwitch = document.getElementById("execSwitch");
+      execSwitch?.addEventListener("click", ()=> setExec(!getExec()));
+      execSwitch?.addEventListener("keydown", (e)=>{
+        if (e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          setExec(!getExec());
+        }
+      });
+
+      // Modal outside click
+      document.getElementById("addCustomerModal")?.addEventListener("click", (e)=>{
+        if (e.target && e.target.id === "addCustomerModal") closeAddCustomer();
+      });
+
+      // Redraw chart on resize
+      window.addEventListener("resize", ()=> render());
+    }
+
+    /* ---------- Init ---------- */
+    (function init(){
+      requireAuthSafe();
+      markActiveSafe();
+      initUserSelectSafe();
+
+      const monthPick = document.getElementById("monthPick");
+      if (monthPick) monthPick.value = todayMonthKey();
+
+      setExec(getExec());
+      buildCustomerFilterOptions(getCustomers());
+      wireEvents();
+      render();
+    })();
+  </script>
+</body>
+</html>
