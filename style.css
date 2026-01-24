@@ -1045,3 +1045,30 @@ tr:hover td {
   background: var(--bg-surface);
   box-shadow: 0 0 0 3px var(--primary-fade);
 }
+
+/* --- Interactive Cards --- */
+.clickable-stat-card {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.clickable-stat-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-xl), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: rgba(79, 70, 229, 0.3);
+  /* Premium border highlight */
+  z-index: 10;
+}
+
+.clickable-stat-card:active {
+  transform: translateY(-1px) scale(0.99);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Ensure inner buttons don't block card click but still look good */
+.clickable-stat-card button {
+  pointer-events: none;
+  /* Let the card handle the click */
+}
