@@ -89,8 +89,8 @@
     </section>
 
     <!-- KPI Grid -->
-    <section class="grid grid-4" style="margin-bottom:24px;">
-      <article class="card card-premium clickable-kpi active" onclick="setFilter('all')" id="kAll">
+    <section class="kpi-grid" style="margin-bottom:24px;">
+      <article class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kAll">
         <div class="card-header">
           <div class="card-title">All Customers</div>
           <div class="badge badge-green">Total</div>
@@ -98,7 +98,7 @@
         <div class="stat-value" id="kpiTotal">0</div>
       </article>
 
-      <article class="card card-premium clickable-kpi" onclick="setFilter('active')" id="kActive">
+      <article class="card-kpi clickable-kpi" onclick="setFilter('active')" id="kActive">
         <div class="card-header">
           <div class="card-title">Active Customers</div>
           <div class="badge badge-green">Engaged</div>
@@ -107,7 +107,7 @@
         <div class="stat-trend neutral">≥ 1 sale this month</div>
       </article>
 
-      <article class="card card-premium clickable-kpi" onclick="setFilter('nosales')" id="kZero">
+      <article class="card-kpi clickable-kpi" onclick="setFilter('nosales')" id="kZero">
         <div class="card-header">
           <div class="card-title">Zero Sales</div>
           <div class="badge badge-red">At Risk</div>
@@ -116,7 +116,7 @@
         <div class="stat-trend down">No activity this month</div>
       </article>
 
-      <article class="card card-premium">
+      <article class="card-kpi">
         <div class="card-header">
           <div class="card-title">Monthly Revenue</div>
           <div class="badge badge-green">Income</div>
