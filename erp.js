@@ -83,7 +83,7 @@ function escapeHtml(str) {
 
     const path = window.location.pathname;
     const isHome = path.includes('dashboard') || path.endsWith('/');
-    const isItems = path.includes('item_');
+    const isItems = path.includes('master');
     const isCRM = path.includes('crm');
     const isOrders = path.includes('orders');
 
@@ -92,7 +92,7 @@ function escapeHtml(str) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             <span style="font-size:10px; margin-top:2px;">Overview</span>
         </a>
-        <a href="item_master.html" class="bottom-nav-item ${isItems ? 'active' : ''}">
+        <a href="master.html" class="bottom-nav-item ${isItems ? 'active' : ''}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             <span style="font-size:10px; margin-top:2px;">Items</span>
         </a>
