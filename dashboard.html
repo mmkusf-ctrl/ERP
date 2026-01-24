@@ -93,55 +93,60 @@
     <!-- KPI Grid -->
     <section class="kpi-grid" style="margin-bottom:32px;">
 
-      <div class="card-kpi clickable-kpi" onclick="window.location.href='dashboard.html#tasks'">
+      <div class="card-kpi">
         <div class="card-header">
-          <span class="card-title">Pending Tasks</span>
+          <span class="card-title"
+            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Pending
+            Tasks</span>
           <span class="badge badge-yellow">Action</span>
         </div>
-        <div class="stat-value" id="kpiTasks">0</div>
-        <div class="stat-trend neutral">Needs Review</div>
+        <div class="stat-value" id="kpiTasks">4</div>
+        <div class="stat-trend neutral"
+          style="background:#fff7ed; color:#c2410c; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
+          Needs Review</div>
       </div>
 
-      <div class="card-kpi clickable-kpi" onclick="window.location.href='purchasing.html?filter=Open'">
+      <div class="card-kpi">
         <div class="card-header">
-          <span class="card-title">Open POs</span>
+          <span class="card-title"
+            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Open POs</span>
           <span class="badge badge-yellow">Waiting</span>
         </div>
         <div class="stat-value" id="kpiOpenPO">18</div>
-        <div class="stat-trend neutral">Awaiting Approval</div>
+        <div class="stat-trend neutral"
+          style="background:#fffbeb; color:#b45309; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
+          Awaiting Approval</div>
       </div>
 
-      <div class="card-kpi clickable-kpi" onclick="window.location.href='orders.html?filter=Validated'">
+      <div class="card-kpi">
         <div class="card-header">
-          <span class="card-title">Validated Orders</span>
+          <span class="card-title"
+            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Validated
+            Orders</span>
           <span class="badge badge-green">Healthy</span>
         </div>
         <div class="stat-value" id="kpiValid">124</div>
-        <div class="stat-trend up">Ready to Ship</div>
+        <div class="stat-trend up"
+          style="background:#ecfdf5; color:#047857; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
+          Ready to Ship</div>
       </div>
 
-      <div class="card-kpi clickable-kpi" onclick="window.location.href='orders.html?filter=On Hold'">
+      <div class="card-kpi">
         <div class="card-header">
-          <span class="card-title">On Hold</span>
+          <span class="card-title"
+            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On Hold</span>
           <span class="badge badge-red">Alert</span>
         </div>
         <div class="stat-value" id="kpiNonValid">9</div>
-        <div class="stat-trend down">Payment Issues</div>
-      </div>
-
-      <div class="card-kpi clickable-kpi" onclick="window.location.href='logistics.html?filter=In Transit'">
-        <div class="card-header">
-          <span class="card-title">Active Shipments</span>
-          <span class="badge badge-yellow">Logistics</span>
-        </div>
-        <div class="stat-value" id="kpiShip">4</div>
-        <div class="stat-trend up">In Transit</div>
+        <div class="stat-trend down"
+          style="background:#fef2f2; color:#b91c1c; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
+          Payment Issues</div>
       </div>
 
     </section>
 
     <!-- Main Content Grid -->
-    <div class="grid grid-2">
+    <div class="grid" style="display:grid; grid-template-columns: 2.5fr 1fr; gap:24px; align-items:start;">
 
       <!-- Task Manager Panel -->
       <section class="card">
@@ -166,21 +171,24 @@
               <option>Medium</option>
               <option>Low</option>
             </select>
+            <button class="btn btn-secondary"
+              style="height:36px; width:36px; padding:0; display:flex; align-items:center; justify-content:center;">
+              🔍
+            </button>
           </div>
         </div>
-
-        <input class="input" id="search" placeholder="Search tasks..." oninput="render()" style="margin-bottom:16px;" />
 
         <div class="table-container">
           <table id="taskTable">
             <thead>
-              <tr>
-                <th>Task</th>
-                <th>Category</th>
-                <th>Priority</th>
-                <th>Due</th>
-                <th>Status</th>
-                <th>Actions</th>
+              <tr
+                style="background:#f8fafc; border-bottom:1px solid var(--border); text-transform:uppercase; font-size:11px; letter-spacing:0.5px; color:var(--text-muted);">
+                <th style="padding:12px 16px;">Task</th>
+                <th style="padding:12px 16px;">Category</th>
+                <th style="padding:12px 16px;">Priority</th>
+                <th style="padding:12px 16px;">Due</th>
+                <th style="padding:12px 16px;">Status</th>
+                <th style="padding:12px 16px;">Action</th>
               </tr>
             </thead>
             <tbody id="tbody"></tbody>
@@ -190,74 +198,41 @@
 
       <!-- Quick Actions / Sidebar -->
       <aside style="display:grid; gap:24px; align-content:start;">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Quick Jumps</span>
-          </div>
-          <div style="display:grid; gap:10px;">
-            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'">Review Low Stock</button>
-            <button class="btn btn-secondary" onclick="window.location.href='orders.html'">Validate Orders</button>
-            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'">Review Low Stock</button>
-            <button class="btn btn-secondary" onclick="window.location.href='orders.html'">Validate Orders</button>
-            <button class="btn btn-secondary" onclick="window.location.href='logistics.html'">Track Shipments</button>
-            <button class="btn btn-secondary" onclick="window.location.href='accounting.html'">Accounting
-              Overview</button>
-          </div>
-        </div>
+        <div class="card" style="padding:24px;">
+          <div
+            style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:16px; letter-spacing:0.5px;">
+            Quick Jumps</div>
 
-        <!-- Upcoming Events -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Upcoming Events</span>
-          </div>
           <div style="display:grid; gap:12px;">
-            <div style="display:flex; gap:10px; align-items:start;">
-              <div
-                style="background:var(--primary-light); color:var(--primary); padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
-                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
-                <div style="font-size:16px; font-weight:700;">10</div>
-              </div>
-              <div>
-                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Quarterly Review</div>
-                <div style="font-size:12px; color:var(--text-muted);">2:00 PM • Board Boom</div>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:10px; align-items:start;">
-              <div
-                style="background:#fef3c7; color:#d97706; padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
-                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
-                <div style="font-size:16px; font-weight:700;">15</div>
-              </div>
-              <div>
-                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Tax Deadline</div>
-                <div style="font-size:12px; color:var(--text-muted);">Submit VAT Returns</div>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:10px; align-items:start;">
-              <div
-                style="background:#f1f5f9; color:#64748b; padding:6px 10px; border-radius:6px; text-align:center; min-width:50px;">
-                <div style="font-size:10px; font-weight:700; text-transform:uppercase;">Feb</div>
-                <div style="font-size:16px; font-weight:700;">18</div>
-              </div>
-              <div>
-                <div style="font-size:13px; font-weight:600; color:var(--text-main);">Vendor Audit</div>
-                <div style="font-size:12px; color:var(--text-muted);">Stark Mfg Facility</div>
-              </div>
-            </div>
-
-            <button class="btn btn-secondary" style="width:100%; margin-top:4px;"
-              onclick="alert('Calendar View Coming Soon')">View Calendar</button>
+            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'"
+              style="justify-content:flex-start; height:44px; background:white; border:1px solid var(--border);">
+              <span style="margin-right:8px;">📦</span> Review Low Stock
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='orders.html'"
+              style="justify-content:flex-start; height:44px; background:white; border:1px solid var(--border);">
+              <span style="margin-right:8px;">📋</span> Validate Orders
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='logistics.html'"
+              style="justify-content:flex-start; height:44px; background:white; border:1px solid var(--border);">
+              <span style="margin-right:8px;">🚚</span> Track Shipments
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='accounting.html'"
+              style="justify-content:flex-start; height:44px; background:white; border:1px solid var(--border);">
+              <span style="margin-right:8px;">🧾</span> Accounting Overview
+            </button>
           </div>
-        </div>
 
-        <div class="card"
-          style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color:white;">
-          <div style="margin-bottom:12px; font-weight:600;">Pro Tip</div>
-          <p style="font-size:13px; opacity:0.9; margin:0;">
-            Use the "Trends" tab to analyze monthly purchasing volume and optimize your vendor negotiations.
-          </p>
+          <button class="btn btn-secondary" onclick="window.location.href='events.html'"
+            style="width:100%; margin-top:24px; height:44px; font-weight:600;">View Calendar</button>
+
+          <!-- Skeleton Loader Visual -->
+          <div style="margin-top:24px; opacity:0.3;">
+            <div style="height:4px; background:var(--text-muted); width:40%; margin-bottom:8px; border-radius:2px;">
+            </div>
+            <div style="height:4px; background:var(--text-muted); width:80%; margin-bottom:6px; border-radius:2px;">
+            </div>
+            <div style="height:4px; background:var(--text-muted); width:60%; border-radius:2px;"></div>
+          </div>
         </div>
       </aside>
 
@@ -271,14 +246,13 @@
 
   <!-- Add Task Modal -->
   <div class="mobile-nav" id="taskModal" style="z-index:900;">
-    <!-- Reusing mobile-nav overlay logic for modal backdrop, but customized inner -->
     <div class="card"
       style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
       <div
         style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
         <h3 style="margin:0;">Add Task</h3>
         <button onclick="closeTaskModal()"
-          style="border:none; bg:transparent; font-size:24px; cursor:pointer;">&times;</button>
+          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
       </div>
 
       <div style="display:grid; gap:16px;">
@@ -295,9 +269,9 @@
             <select id="tCat" class="input">
               <option>Vendor</option>
               <option>Purchasing</option>
-              <option>Inventory</option>
               <option>Orders</option>
               <option>Logistics</option>
+              <option>Inventory</option>
             </select>
           </div>
           <div>
@@ -351,6 +325,9 @@
       localStorage.removeItem(AUTH_KEY);
       window.location.href = "index.html";
     }
+
+    function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
+    function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
 
     function loadTasks() {
       try { return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); } catch { return []; }
@@ -411,55 +388,55 @@
 
     function render() {
       const list = loadTasks();
-      const search = (document.getElementById("search").value || "").toLowerCase();
-      const catFilter = document.getElementById("cat").value;
-      const priFilter = document.getElementById("priority").value;
+      // Search disabled for static demo unless implemented
+      // const search = (document.getElementById("search").value || "").toLowerCase();
+      // const catFilter = document.getElementById("cat").value;
 
       // KPI Update
       const pending = list.filter(t => t.status !== "Completed");
       document.getElementById("kpiTasks").textContent = pending.length;
 
-      // Filter
-      const shown = list.filter(t => {
-        if (catFilter && t.cat !== catFilter) return false;
-        if (priFilter && t.pri !== priFilter) return false;
-        if (search && !t.title.toLowerCase().includes(search)) return false;
-        return true;
-      });
-
       // Table
       const tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
 
-      if (shown.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No tasks found.</td></tr>`;
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No tasks found. Click "Load Demo Data" to verify.</td></tr>`;
         return;
       }
 
-      shown.forEach(t => {
+      list.forEach(t => {
         const tr = document.createElement("tr");
         const isDone = t.status === "Completed";
-        const badgeClass = t.pri === "High" ? "badge-red" : (t.pri === "Medium" ? "badge-yellow" : "badge-green");
-        const statusBadge = isDone ? `<span class="badge badge-green">Done</span>` : `<span class="badge badge-yellow">Open</span>`;
+
+        let priBadgeClass = "badge-gray";
+        if (t.pri === "High") priBadgeClass = "badge-red";
+        if (t.pri === "Medium") priBadgeClass = "badge-yellow";
+        if (t.pri === "Low") priBadgeClass = "badge-green";
+
+        const statusBadge = isDone ? `<span class="badge badge-green" style="background:#dcfce7; color:#166534;">Done</span>` : `<span class="badge badge-yellow" style="background:#fef9c3; color:#854d0e;">OPEN</span>`;
         const opacity = isDone ? "0.6" : "1";
 
         tr.style.opacity = opacity;
+        tr.style.borderBottom = "1px solid var(--border)";
         tr.innerHTML = `
-           <td>
-             <div style="font-weight:600; color:var(--text-main);">${escapeHtml(t.title)}</div>
-             <div style="font-size:12px; color:var(--text-muted);">${t.assignees.join(", ") || "No assignee"}</div>
+           <td style="padding:16px;">
+             <div style="font-weight:600; color:var(--text-main); font-size:14px;">${escapeHtml(t.title)}</div>
+             <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${t.assignees.join(", ") || "Unassigned"}</div>
            </td>
-           <td>${escapeHtml(t.cat)}</td>
-           <td><span class="badge ${badgeClass}">${escapeHtml(t.pri)}</span></td>
-           <td>${t.due || "—"}</td>
-           <td>${statusBadge}</td>
-           <td>
-             <button class="btn btn-secondary" style="height:32px; padding:0 10px; font-size:12px;" onclick="toggleDone('${t.id}')">
-               ${isDone ? "Undo" : "Done"}
-             </button>
-             <button class="btn btn-secondary" style="height:32px; padding:0 10px; font-size:12px; color:var(--danger);" onclick="removeTask('${t.id}')">
-               Del
-             </button>
+           <td style="padding:16px; color:var(--text-main);">${escapeHtml(t.cat)}</td>
+           <td style="padding:16px;"><span class="badge ${priBadgeClass}">${escapeHtml(t.pri.toUpperCase())}</span></td>
+           <td style="padding:16px; font-variant-numeric: tabular-nums;">${t.due || "—"}</td>
+           <td style="padding:16px;">${statusBadge}</td>
+           <td style="padding:16px;">
+             <div style="display:flex; gap:6px;">
+                 <button class="btn btn-secondary" style="height:28px; padding:0 12px; font-size:12px; font-weight:600;" onclick="toggleDone('${t.id}')">
+                   ${isDone ? "Undo" : "Done"}
+                 </button>
+                 <button class="btn btn-secondary" style="height:28px; padding:0 8px; font-size:12px; color:var(--danger); border-color:var(--danger-light); background:#fff1f2;" onclick="removeTask('${t.id}')">
+                   Del
+                 </button>
+             </div>
            </td>
          `;
         tbody.appendChild(tr);
@@ -472,9 +449,10 @@
       if (list.length > 0 && !confirm("Add demo tasks to existing list?")) return;
 
       const demo = [
-        { id: uid(), title: "Approve Vendor PO #9921", cat: "Purchasing", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" },
-        { id: uid(), title: "Inventory Count: Zone A", cat: "Inventory", pri: "Medium", due: "2026-02-12", assignees: ["B", "C"], status: "Open" },
-        { id: uid(), title: "Validate Order #SO-5512", cat: "Orders", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" }
+        { id: uid(), title: "Approve PO #PO-1042 (Vendor: Delta Supplies)", cat: "Purchasing", pri: "High", due: "2026-01-23", assignees: ["A", "B"], status: "Open" },
+        { id: uid(), title: "Validate Order #SO-8891 (payment pending)", cat: "Orders", pri: "High", due: "2026-01-23", assignees: ["A", "C"], status: "Open" },
+        { id: uid(), title: "Follow up on delayed shipment (Carrier: Xpress)", cat: "Logistics", pri: "Medium", due: "—", assignees: [], status: "Open" },
+        { id: uid(), title: "Cycle count: Warehouse A (Zone 3)", cat: "Inventory", pri: "Low", due: "—", assignees: ["A"], status: "Open" }
       ];
       saveTasks([...demo, ...list]);
       toast("Demo Data", "Loaded demo tasks.");
