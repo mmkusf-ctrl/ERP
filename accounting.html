@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Accounting | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Reuse KPI and Card styles from other pages */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .clickable-kpi {
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .clickable-kpi:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .action-card {
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 180px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .action-icon {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 120px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link active" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="trends.html">Trends</a>
+            </nav>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link active" href="accounting.html">Accounting</a>
+            <a class="mobile-link" href="orders.html">Orders</a>
+            <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="trends.html">Trends</a>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Accounting & Finance</h1>
+            <p class="page-desc">Track revenue, expenses, and overall financial health.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <!-- KPI Grid -->
+        <section class="kpi-grid" style="margin-bottom:32px;">
+            <article class="card-kpi clickable-kpi">
+                <div class="card-header">
+                    <div class="card-title">Total Revenue</div>
+                    <div class="badge badge-green">YTD</div>
+                </div>
+                <div class="stat-value">$1,250,420</div>
+                <div class="stat-trend up">+12.5% vs Prev</div>
+            </article>
+
+            <article class="card-kpi clickable-kpi">
+                <div class="card-header">
+                    <div class="card-title">Total Expenses</div>
+                    <div class="badge badge-red">YTD</div>
+                </div>
+                <div class="stat-value">$840,200</div>
+                <div class="stat-trend neutral">On Budget</div>
+            </article>
+
+            <article class="card-kpi clickable-kpi">
+                <div class="card-header">
+                    <div class="card-title">Net Profit</div>
+                    <div class="badge badge-green">Healthy</div>
+                </div>
+                <div class="stat-value">$410,220</div>
+                <div class="stat-trend up">32.8% Margin</div>
+            </article>
+
+            <article class="card-kpi clickable-kpi">
+                <div class="card-header">
+                    <div class="card-title">Outstanding</div>
+                    <div class="badge badge-yellow">Receivables</div>
+                </div>
+                <div class="stat-value">$42,500</div>
+                <div class="stat-trend down">15 Accounts</div>
+            </article>
+        </section>
+
+        <!-- Operations Grid -->
+        <section class="kpi-grid" style="margin-bottom:40px;">
+            <!-- Create Invoice -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Create Invoice')"
+                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+                <div>
+                    <div class="card-title" style="color:var(--primary);">Receivables</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Create Invoice
+                    </h3>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Bill customers for goods and
+                        services.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-primary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        New Invoice <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">📄</div>
+            </article>
+
+            <!-- Record Expense -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Record Expense')"
+                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+                <div>
+                    <div class="card-title" style="color:var(--warning);">Payables</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Record Expense
+                    </h3>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Log vendor bills and
+                        operational costs.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        Add Expense <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">💸</div>
+            </article>
+
+            <!-- Reports -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Financial Reports')"
+                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+                <div>
+                    <div class="card-title" style="color:var(--text-muted);">Analysis</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Financial Reports
+                    </h3>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">P&L, Balance Sheet, and Cash
+                        Flow.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        View Reports <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">📊</div>
+            </article>
+
+            <!-- Payroll -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Payroll')"
+                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+                <div>
+                    <div class="card-title" style="color:var(--text-muted);">HR</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Payroll</h3>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Manage employee salaries and
+                        benefits.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        Manage Payroll <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">👥</div>
+            </article>
+
+        </section>
+
+        <!-- Recent Transactions -->
+        <section class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size:18px; margin:0;">Recent Transactions</h2>
+                <button class="btn btn-secondary" style="font-size:12px;">View All</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2026-01-23</td>
+                            <td>Invoice #INV-2024-001 - Acme Corp</td>
+                            <td>Sales</td>
+                            <td style="color:var(--success);">+$12,500.00</td>
+                            <td><span class="badge badge-green">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>2026-01-22</td>
+                            <td>Office Supplies - Staples</td>
+                            <td>Operations</td>
+                            <td style="color:var(--danger);">-$245.50</td>
+                            <td><span class="badge badge-green">Cleared</span></td>
+                        </tr>
+                        <tr>
+                            <td>2026-01-21</td>
+                            <td>Vendor Payment - Stark Mfg</td>
+                            <td>COGS</td>
+                            <td style="color:var(--danger);">-$4,200.00</td>
+                            <td><span class="badge badge-yellow">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP. secure. fast. reliable.
+        </div>
+
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        // Auth Check
+        const AUTH_KEY = "stark_erp_auth_v1";
+        (function () {
+            try {
+                const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+                if (!auth || !auth.user) window.location.href = "index.html";
+            } catch { window.location.href = "index.html"; }
+        })();
+
+        // Mobile Nav Logic
+        function openMobileNav() {
+            document.getElementById("mobileNav").classList.add("open");
+        }
+        function closeMobileNav() {
+            document.getElementById("mobileNav").classList.remove("open");
+        }
+    </script>
+</body>
+
+</html>
