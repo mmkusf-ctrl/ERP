@@ -107,4 +107,39 @@ function escapeHtml(str) {
      `;
     document.body.appendChild(nav);
   }
+  /* --- Dynamic UI: Animations & Skeletons --- */
+  function animatePageElements() {
+    // Animate Cards
+    document.querySelectorAll('.card, .card-kpi').forEach((el, i) => {
+      el.classList.add('animate-enter');
+      // Stagger delay based on index (cap at 10 to avoid long waits)
+      if (i < 10) el.classList.add(`stagger-${Math.min(i + 1, 5)}`);
+    });
+
+    // Animate Table Rows
+    document.querySelectorAll('tbody tr').forEach((el, i) => {
+      el.classList.add('animate-enter');
+      if (i < 10) el.classList.add(`stagger-${Math.min(i + 1, 5)}`);
+    });
+  }
+
+  // Simple Skeleton Render
+  function renderSkeletonRows(count = 5, cols = 4) {
+    let html = "";
+    for (let i = 0; i < count; i++) {
+      let tds = "";
+      for (let j = 0; j < cols; j++) {
+        tds += `<td><div class="skeleton" style="height:20px; width:${Math.floor(Math.random() * 50 + 50)}%;"></div></td>`;
+      }
+      html += `<tr>${tds}</tr>`;
+    }
+    return html;
+  }
+
+  // Auto-run animations on load
+  document.addEventListener("DOMContentLoaded", () => {
+    // Small delay to ensure render happens first if sync
+    setTimeout(animatePageElements, 50);
+  });
+
 })();
