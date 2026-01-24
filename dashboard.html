@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard | Stark Premium ERP</title>
@@ -7,143 +8,164 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="erp.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <!-- Top Navigation -->
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo"><img src="images/stark-logo.png" alt="Stark Premium" /></div>
+      <a href="dashboard.html" class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium">
+        <span class="logo-text">Stark ERP</span>
+      </a>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="nav" aria-label="ERP Navigation">
-        <a class="active" href="dashboard.html">Home</a>
-        <a href="account.html">Account</a>
-        <a href="crm.html">CRM</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="orders.html">Orders</a>
-        <a href="logistics.html">Logistics</a>
-        <a href="trends.html">Trends</a>
+      <!-- Desktop Nav -->
+      <nav class="nav">
+        <a class="nav-link active" href="dashboard.html">Overview</a>
+        <a class="nav-link" href="crm.html">CRM</a>
+        <a class="nav-link" href="vendor.html">Vendor</a>
+        <a class="nav-link" href="purchasing.html">Purchasing</a>
+        <a class="nav-link" href="inventory.html">Inventory</a>
+        <a class="nav-link" href="orders.html">Orders</a>
+        <a class="nav-link" href="logistics.html">Logistics</a>
+        <a class="nav-link" href="trends.html">Trends</a>
       </nav>
 
-      <div class="top-actions">
-        <div class="pill"><span class="dot"></span>Online</div>
-        <button class="btn secondary" onclick="logout()">Logout</button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+          Online
+        </div>
+        <button class="btn btn-secondary" style="height:36px; padding:0 12px; font-size:13px;" onclick="logout()">
+          Sign Out
+        </button>
+        <button class="hamburger" onclick="openMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <div class="mobile-card">
-      <div class="mobile-head">
-        <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <strong style="font-size:16px;">Navigation</strong>
+        <button onclick="closeMobileNav()"
+          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
       </div>
-      <div class="mobile-links">
-        <a class="active" href="dashboard.html">Home</a>
-        <a href="account.html">Account</a>
-        <a href="crm.html">CRM</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="orders.html">Orders</a>
-        <a href="logistics.html">Logistics</a>
-        <a href="trends.html">Trends</a>
-      </div>
+      <a class="mobile-link active" href="dashboard.html">Overview</a>
+      <a class="mobile-link" href="crm.html">CRM</a>
+      <a class="mobile-link" href="vendor.html">Vendor</a>
+      <a class="mobile-link" href="purchasing.html">Purchasing</a>
+      <a class="mobile-link" href="inventory.html">Inventory</a>
+      <a class="mobile-link" href="orders.html">Orders</a>
+      <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link" href="trends.html">Trends</a>
     </div>
   </div>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="hrow">
-        <div>
-          <h1>Welcome to Stark Premium ERP</h1>
-          <p>Premium operations overview: tasks, vendor POs, order validation, and execution cadence — optimized for speed and clarity.</p>
+  <main class="container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Operational Overview</h1>
+      <p class="page-desc">Real-time insights across purchasing, inventory, and logistics.</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div style="display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="openTaskModal()">
+        + New Task
+      </button>
+      <button class="btn btn-secondary" onclick="loadDemoTasks()">
+        Load Demo Data
+      </button>
+    </div>
+
+    <!-- KPI Grid -->
+    <section class="grid grid-4" style="margin-bottom:32px;">
+
+      <div class="card card-premium">
+        <div class="card-header">
+          <span class="card-title">Pending Tasks</span>
+          <span class="badge badge-yellow">Action</span>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn secondary" onclick="loadDemoTasks()">Load Demo Tasks</button>
-          <button class="btn" onclick="openTaskModal()">Add Task</button>
-        </div>
+        <div class="stat-value" id="kpiTasks">0</div>
+        <div class="stat-trend neutral">Needs Review</div>
       </div>
+
+      <div class="card card-premium">
+        <div class="card-header">
+          <span class="card-title">Open POs</span>
+          <span class="badge badge-yellow">Waiting</span>
+        </div>
+        <div class="stat-value" id="kpiOpenPO">18</div>
+        <div class="stat-trend neutral">Awaiting Approval</div>
+      </div>
+
+      <div class="card card-premium">
+        <div class="card-header">
+          <span class="card-title">Validated Orders</span>
+          <span class="badge badge-green">Healthy</span>
+        </div>
+        <div class="stat-value" id="kpiValid">124</div>
+        <div class="stat-trend up">Ready to Ship</div>
+      </div>
+
+      <div class="card card-premium">
+        <div class="card-header">
+          <span class="card-title">On Hold</span>
+          <span class="badge badge-red">Alert</span>
+        </div>
+        <div class="stat-value" id="kpiNonValid">9</div>
+        <div class="stat-trend down">Payment Issues</div>
+      </div>
+
     </section>
 
-    <section class="kpis">
-      <div class="card kpi">
-        <div class="kpiTop">
-          <div class="label">My pending tasks</div>
-          <div class="chip warn">Review</div>
-        </div>
-        <div class="value" id="kpiTasks">0</div>
-        <div class="sub" id="kpiTasksSub">—</div>
-      </div>
+    <!-- Main Content Grid -->
+    <div class="grid grid-2">
 
-      <div class="card kpi">
-        <div class="kpiTop">
-          <div class="label">Open vendor POs</div>
-          <div class="chip warn">In progress</div>
-        </div>
-        <div class="value" id="kpiOpenPO">18</div>
-        <div class="sub">Awaiting confirmation / approvals</div>
-      </div>
+      <!-- Task Manager Panel -->
+      <section class="card">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <h2 style="margin:0; font-size:18px;">Task Manager</h2>
 
-      <div class="card kpi">
-        <div class="kpiTop">
-          <div class="label">Validated orders</div>
-          <div class="chip good">Healthy</div>
-        </div>
-        <div class="value" id="kpiValid">124</div>
-        <div class="sub">Ready for picking & dispatch</div>
-      </div>
-
-      <div class="card kpi">
-        <div class="kpiTop">
-          <div class="label">Non-validated orders</div>
-          <div class="chip bad">Attention</div>
-        </div>
-        <div class="value" id="kpiNonValid">9</div>
-        <div class="sub">Missing payment / address / stock</div>
-      </div>
-    </section>
-
-    <div class="grid2">
-      <section class="panel">
-        <h2>Task Manager</h2>
-        <div class="goldline"></div>
-
-        <div class="controls">
-          <input class="input" id="search" placeholder="Search task / assignees..." oninput="render()" />
-          <select id="cat" onchange="render()">
-            <option value="">All categories</option>
-            <option>Purchasing</option>
-            <option>Inventory</option>
-            <option>Orders</option>
-            <option>Logistics</option>
-          </select>
-          <select id="priority" onchange="render()">
-            <option value="">All priority</option>
-            <option>High</option>
-            <option>Medium</option>
-            <option>Low</option>
-          </select>
-          <select id="due" onchange="render()">
-            <option value="">All due dates</option>
-            <option value="today">Due today</option>
-            <option value="overdue">Overdue</option>
-            <option value="upcoming">Upcoming</option>
-          </select>
+          <div style="display:flex; gap:8px;">
+            <select id="cat" class="input" style="width:auto; height:36px; padding:0 10px; font-size:13px;"
+              onchange="render()">
+              <option value="">All Categories</option>
+              <option>Vendor</option>
+              <option>Purchasing</option>
+              <option>Inventory</option>
+              <option>Orders</option>
+              <option>Logistics</option>
+            </select>
+            <select id="priority" class="input" style="width:auto; height:36px; padding:0 10px; font-size:13px;"
+              onchange="render()">
+              <option value="">All Priority</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+          </div>
         </div>
 
-        <div class="table-wrap" style="margin-top:12px;">
-          <table>
+        <input class="input" id="search" placeholder="Search tasks..." oninput="render()" style="margin-bottom:16px;" />
+
+        <div class="table-container">
+          <table id="taskTable">
             <thead>
               <tr>
                 <th>Task</th>
                 <th>Category</th>
                 <th>Priority</th>
                 <th>Due</th>
-                <th>Assignees (A/B/C/D)</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -151,243 +173,247 @@
             <tbody id="tbody"></tbody>
           </table>
         </div>
-
-        <div class="note" style="margin-top:12px;">
-          Notes: This version stores tasks in <strong>localStorage</strong> (single device). Multi-user shared tasks requires Firebase/DB later.
-        </div>
       </section>
 
-      <aside class="panel">
-        <h2>Quick Actions</h2>
-        <div class="goldline"></div>
+      <!-- Quick Actions / Sidebar -->
+      <aside style="display:grid; gap:24px; align-content:start;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Quick Jumps</span>
+          </div>
+          <div style="display:grid; gap:10px;">
+            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'">Review Low Stock</button>
+            <button class="btn btn-secondary" onclick="window.location.href='orders.html'">Validate Orders</button>
+            <button class="btn btn-secondary" onclick="window.location.href='logistics.html'">Track Shipments</button>
+          </div>
+        </div>
 
-        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='inventory.html'">
-          Review low stock items
-        </button>
-        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='orders.html'">
-          Validate pending orders
-        </button>
-        <button class="btn secondary" style="width:100%; margin-bottom:10px;" onclick="window.location.href='logistics.html'">
-          Track shipments
-        </button>
-        <button class="btn" style="width:100%;" onclick="openTaskModal()">
-          Add Task
-        </button>
+        <div class="card"
+          style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color:white;">
+          <div style="margin-bottom:12px; font-weight:600;">Pro Tip</div>
+          <p style="font-size:13px; opacity:0.9; margin:0;">
+            Use the "Trends" tab to analyze monthly purchasing volume and optimize your vendor negotiations.
+          </p>
+        </div>
       </aside>
+
     </div>
 
-    <div class="footer">© 2026 Stark Premium. All rights reserved.</div>
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+      &copy; 2026 Stark Premium ERP. secure. fast. reliable.
+    </div>
+
   </main>
 
-  <div class="modal" id="taskModal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Add Task</h3>
-        <button class="x" onclick="closeTaskModal()">×</button>
+  <!-- Add Task Modal -->
+  <div class="mobile-nav" id="taskModal" style="z-index:900;">
+    <!-- Reusing mobile-nav overlay logic for modal backdrop, but customized inner -->
+    <div class="card"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <h3 style="margin:0;">Add Task</h3>
+        <button onclick="closeTaskModal()"
+          style="border:none; bg:transparent; font-size:24px; cursor:pointer;">&times;</button>
       </div>
-      <div class="modal-body">
-        <div class="modal-grid">
-          <input id="tTitle" class="input" placeholder="Task title (required)" />
-          <select id="tCat">
-            <option>Purchasing</option>
-            <option>Inventory</option>
-            <option>Orders</option>
-            <option>Logistics</option>
-          </select>
-          <select id="tPri">
-            <option>High</option>
-            <option selected>Medium</option>
-            <option>Low</option>
-          </select>
 
-          <input id="tDue" class="input" type="date" />
-          <input id="tTime" class="input" type="time" />
-          <input id="tAssign" class="input" placeholder="Assignees (A,B,C,D). Example: A,B" />
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label
+            style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted);">Title</label>
+          <input id="tTitle" class="input" placeholder="e.g. Verify shipment details" />
         </div>
-      </div>
-      <div class="modal-footer">
-        <span class="note">Reminders: stored locally. For real reminders to other users, use Firebase later.</span>
-        <div style="display:flex; gap:10px;">
-          <button class="btn secondary" onclick="closeTaskModal()">Cancel</button>
-          <button class="btn" onclick="addTask()">Save Task</button>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div>
+            <label
+              style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted);">Category</label>
+            <select id="tCat" class="input">
+              <option>Vendor</option>
+              <option>Purchasing</option>
+              <option>Inventory</option>
+              <option>Orders</option>
+              <option>Logistics</option>
+            </select>
+          </div>
+          <div>
+            <label
+              style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted);">Priority</label>
+            <select id="tPri" class="input">
+              <option>High</option>
+              <option selected>Medium</option>
+              <option>Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div>
+            <label style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted);">Due
+              Date</label>
+            <input id="tDue" class="input" type="date" />
+          </div>
+          <div>
+            <label
+              style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-muted);">Assignees</label>
+            <input id="tAssign" class="input" placeholder="e.g. A, B" />
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+          <button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="addTask()">Save Task</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="toast-wrap" id="toastWrap"></div>
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
   <script src="erp.js"></script>
   <script>
     const AUTH_KEY = "stark_erp_auth_v1";
     const TASK_KEY = "stark_erp_tasks_v2";
 
-    function requireAuth(){
-      try{
+    // Auth Check
+    (function () {
+      try {
         const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
         if (!auth || !auth.user) window.location.href = "index.html";
-      }catch{ window.location.href = "index.html"; }
-    }
-    requireAuth();
+      } catch { window.location.href = "index.html"; }
+    })();
 
-    function logout(){
-      localStorage.removeItem(AUTH_KEY);
-      window.location.href = "index.html";
+    function loadTasks() {
+      try { return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); } catch { return []; }
     }
+    function saveTasks(list) { localStorage.setItem(TASK_KEY, JSON.stringify(list)); }
+    function uid() { return "T-" + Math.random().toString(16).slice(2, 8).toUpperCase(); }
 
-    function loadTasks(){
-      try{ return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); }catch{ return []; }
-    }
-    function saveTasks(list){ localStorage.setItem(TASK_KEY, JSON.stringify(list)); }
-
-    function uid(){
-      return "T-" + Math.random().toString(16).slice(2,8).toUpperCase() + "-" + Date.now().toString(16).slice(-4).toUpperCase();
-    }
-
-    function openTaskModal(){
+    // Modal Logic
+    function openTaskModal() {
       document.getElementById("tTitle").value = "";
-      document.getElementById("tAssign").value = "A";
+      document.getElementById("tAssign").value = "";
       document.getElementById("tDue").value = "";
-      document.getElementById("tTime").value = "";
       document.getElementById("taskModal").classList.add("open");
     }
-    function closeTaskModal(){ document.getElementById("taskModal").classList.remove("open"); }
+    function closeTaskModal() {
+      document.getElementById("taskModal").classList.remove("open");
+    }
 
-    function addTask(){
+    function addTask() {
       const title = (document.getElementById("tTitle").value || "").trim();
       const cat = document.getElementById("tCat").value;
       const pri = document.getElementById("tPri").value;
-      const due = document.getElementById("tDue").value; // yyyy-mm-dd
-      const time = document.getElementById("tTime").value; // hh:mm
-      const assignRaw = (document.getElementById("tAssign").value || "").toUpperCase();
-      const assignees = assignRaw.split(",").map(s=>s.trim()).filter(Boolean);
+      const due = document.getElementById("tDue").value;
+      const assign = (document.getElementById("tAssign").value || "").toUpperCase().split(",").map(s => s.trim()).filter(Boolean);
 
-      if (!title) return toast("Missing field", "Task title is required.");
+      if (!title) return toast("Missing Info", "Please enter a task title.");
 
       const list = loadTasks();
       list.unshift({
         id: uid(),
-        title, cat, pri,
-        due: due || "",
-        time: time || "",
-        assignees,
+        title, cat, pri, due,
+        assignees: assign,
         status: "Open",
         createdAt: Date.now()
       });
       saveTasks(list);
       closeTaskModal();
-      toast("Task added", "Task saved to your dashboard.");
+      toast("Success", "Task created.");
       render();
     }
 
-    function toggleDone(id){
+    function toggleDone(id) {
       const list = loadTasks();
-      const t = list.find(x=>x.id===id);
-      if (!t) return;
-      t.status = (t.status === "Completed") ? "Open" : "Completed";
+      const t = list.find(x => x.id === id);
+      if (t) {
+        t.status = (t.status === "Completed") ? "Open" : "Completed";
+        saveTasks(list);
+        render();
+      }
+    }
+
+    function removeTask(id) {
+      if (!confirm("Delete this task?")) return;
+      const list = loadTasks().filter(x => x.id !== id);
       saveTasks(list);
       render();
     }
 
-    function removeTask(id){
-      const list = loadTasks().filter(x=>x.id!==id);
-      saveTasks(list);
-      render();
-    }
-
-    function loadDemoTasks(){
+    function render() {
       const list = loadTasks();
-      if (list.length && !confirm("This will add demo tasks. Continue?")) return;
-
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth()+1).padStart(2,"0");
-      const dd = String(today.getDate()).padStart(2,"0");
-      const d0 = `${yyyy}-${mm}-${dd}`;
-
-      const demo = [
-        { title:"Approve PO #PO-1042 (Vendor: Delta Supplies)", cat:"Purchasing", pri:"High", due:d0, time:"14:00", assignees:["A","B"], status:"Open" },
-        { title:"Validate Order #SO-8891 (payment pending)", cat:"Orders", pri:"High", due:d0, time:"16:00", assignees:["A","C"], status:"Open" },
-        { title:"Follow up on delayed shipment (Carrier: Xpress)", cat:"Logistics", pri:"Medium", due:"", time:"", assignees:["B","D"], status:"Open" },
-        { title:"Cycle count: Warehouse A (Zone 3)", cat:"Inventory", pri:"Low", due:"", time:"", assignees:["A"], status:"Open" }
-      ];
-
-      const merged = demo.map(x=>({ id: uid(), createdAt: Date.now(), ...x })).concat(list);
-      saveTasks(merged);
-      toast("Demo loaded", "Demo tasks added.");
-      render();
-    }
-
-    function dueBucket(due){
-      if (!due) return "upcoming";
-      const d = new Date(due + "T00:00:00");
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      if (d.getTime() === today.getTime()) return "today";
-      if (d.getTime() < today.getTime()) return "overdue";
-      return "upcoming";
-    }
-
-    function render(){
       const search = (document.getElementById("search").value || "").toLowerCase();
-      const cat = document.getElementById("cat").value;
-      const pri = document.getElementById("priority").value;
-      const due = document.getElementById("due").value;
+      const catFilter = document.getElementById("cat").value;
+      const priFilter = document.getElementById("priority").value;
 
-      const list = loadTasks();
+      // KPI Update
+      const pending = list.filter(t => t.status !== "Completed");
+      document.getElementById("kpiTasks").textContent = pending.length;
 
-      const filtered = list.filter(t=>{
-        if (cat && t.cat !== cat) return false;
-        if (pri && t.pri !== pri) return false;
-        if (due && dueBucket(t.due) !== due) return false;
-
-        if (search){
-          const blob = `${t.title} ${t.cat} ${t.pri} ${(t.assignees||[]).join(",")}`.toLowerCase();
-          if (!blob.includes(search)) return false;
-        }
+      // Filter
+      const shown = list.filter(t => {
+        if (catFilter && t.cat !== catFilter) return false;
+        if (priFilter && t.pri !== priFilter) return false;
+        if (search && !t.title.toLowerCase().includes(search)) return false;
         return true;
       });
 
-      // KPI
-      const pending = list.filter(t=>t.status!=="Completed").length;
-      const dueToday = list.filter(t=>t.status!=="Completed" && dueBucket(t.due)==="today").length;
-      const high = list.filter(t=>t.status!=="Completed" && t.pri==="High").length;
-
-      document.getElementById("kpiTasks").textContent = String(pending);
-      document.getElementById("kpiTasksSub").textContent =
-        `${high} high priority · ${dueToday} due today`;
-
+      // Table
       const tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
 
-      if (!filtered.length){
-        tbody.innerHTML = `<tr><td colspan="7" class="note">No tasks match your filters.</td></tr>`;
+      if (shown.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No tasks found.</td></tr>`;
         return;
       }
 
-      for (const t of filtered){
-        const priTag = t.pri==="High" ? "bad" : (t.pri==="Medium" ? "warn" : "good");
-        const dueText = t.due ? t.due : "—";
-        const statusTag = t.status==="Completed" ? `<span class="pilltag good">Completed</span>` : `<span class="pilltag warn">Open</span>`;
-
+      shown.forEach(t => {
         const tr = document.createElement("tr");
+        const isDone = t.status === "Completed";
+        const badgeClass = t.pri === "High" ? "badge-red" : (t.pri === "Medium" ? "badge-yellow" : "badge-green");
+        const statusBadge = isDone ? `<span class="badge badge-green">Done</span>` : `<span class="badge badge-yellow">Open</span>`;
+        const opacity = isDone ? "0.6" : "1";
+
+        tr.style.opacity = opacity;
         tr.innerHTML = `
-          <td><strong>${escapeHtml(t.title)}</strong><div class="note">Created: ${new Date(t.createdAt).toLocaleString()}</div></td>
-          <td>${escapeHtml(t.cat)}</td>
-          <td><span class="pilltag ${priTag}">${escapeHtml(t.pri)}</span></td>
-          <td>${escapeHtml(dueText)} ${t.time ? `<span class="pilltag" style="margin-left:6px;">${escapeHtml(t.time)}</span>` : ""}</td>
-          <td>${escapeHtml((t.assignees||[]).join(", ") || "—")}</td>
-          <td>${statusTag}</td>
-          <td>
-            <button class="btn secondary" onclick="toggleDone('${t.id}')">${t.status==="Completed" ? "Reopen" : "Complete"}</button>
-            <button class="btn secondary" onclick="removeTask('${t.id}')" style="margin-left:8px;">Delete</button>
-          </td>
-        `;
+           <td>
+             <div style="font-weight:600; color:var(--text-main);">${escapeHtml(t.title)}</div>
+             <div style="font-size:12px; color:var(--text-muted);">${t.assignees.join(", ") || "No assignee"}</div>
+           </td>
+           <td>${escapeHtml(t.cat)}</td>
+           <td><span class="badge ${badgeClass}">${escapeHtml(t.pri)}</span></td>
+           <td>${t.due || "—"}</td>
+           <td>${statusBadge}</td>
+           <td>
+             <button class="btn btn-secondary" style="height:32px; padding:0 10px; font-size:12px;" onclick="toggleDone('${t.id}')">
+               ${isDone ? "Undo" : "Done"}
+             </button>
+             <button class="btn btn-secondary" style="height:32px; padding:0 10px; font-size:12px; color:var(--danger);" onclick="removeTask('${t.id}')">
+               Del
+             </button>
+           </td>
+         `;
         tbody.appendChild(tr);
-      }
+      });
+    }
+
+    // Quick Demo Loader
+    function loadDemoTasks() {
+      const list = loadTasks();
+      if (list.length > 0 && !confirm("Add demo tasks to existing list?")) return;
+
+      const demo = [
+        { id: uid(), title: "Approve Vendor PO #9921", cat: "Purchasing", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" },
+        { id: uid(), title: "Inventory Count: Zone A", cat: "Inventory", pri: "Medium", due: "2026-02-12", assignees: ["B", "C"], status: "Open" },
+        { id: uid(), title: "Validate Order #SO-5512", cat: "Orders", pri: "High", due: "2026-02-10", assignees: ["A"], status: "Open" }
+      ];
+      saveTasks([...demo, ...list]);
+      toast("Demo Data", "Loaded demo tasks.");
+      render();
     }
 
     render();
   </script>
 </body>
+
 </html>
