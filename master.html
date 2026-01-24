@@ -66,7 +66,7 @@
             </a>
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="item_master.html">Items</a>
+                <a class="nav-link active" href="master.html">Master</a>
                 <a class="nav-link" href="inventory.html">Inventory</a>
                 <a class="nav-link" href="orders.html">Orders</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -79,8 +79,7 @@
             </nav>
             <div style="display:flex; align-items:center; gap:12px;">
                 <div class="badge badge-green">Online</div>
-                <button class="hamburger"
-                    onclick="document.getElementById('mobileNav').classList.add('open')">☰</button>
+                <button class="hamburger" onclick="openMobileNav()">☰</button>
             </div>
         </div>
     </header>
@@ -90,11 +89,11 @@
         <div class="mobile-drawer">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                 <strong style="font-size:16px;">Navigation</strong>
-                <button onclick="document.getElementById('mobileNav').classList.remove('open')"
+                <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px;">&times;</button>
             </div>
             <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link active" href="item_master.html">Item Master</a>
+            <a class="mobile-link active" href="master.html">Master</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
         </div>
     </div>
@@ -102,16 +101,17 @@
     <main class="container">
 
         <div class="page-header">
-            <h1 class="page-title">Item Master</h1>
+            <h1 class="page-title">Master</h1>
             <p class="page-desc">Centralized catalog for all product SKUs, status, and attributes.</p>
             <div class="gold-line"></div>
         </div>
 
         <!-- Controls -->
         <div class="card" style="margin-bottom:24px;">
-            <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:end;">
+            <div class="grid-4"
+                style="gap:16px; align-items:end; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
 
-                <div style="flex:1; min-width:200px;">
+                <div style="grid-column: span 2;">
                     <label
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Search</label>
                     <div style="position:relative;">
@@ -122,7 +122,7 @@
                     </div>
                 </div>
 
-                <div style="width:160px;">
+                <div>
                     <label
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Status</label>
                     <select id="qStatus" class="input" onchange="render()">
@@ -136,7 +136,7 @@
                     </select>
                 </div>
 
-                <div style="width:160px;">
+                <div>
                     <label
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Brand</label>
                     <select id="qBrand" class="input" onchange="render()">
@@ -147,8 +147,10 @@
                     </select>
                 </div>
 
-                <button class="btn btn-primary" onclick="openAddModal()">+ New Item</button>
-                <button class="btn btn-secondary" onclick="exportData()">Export</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="openAddModal()">+ New</button>
+                    <button class="btn btn-secondary" style="flex:1;" onclick="exportData()">Export</button>
+                </div>
 
             </div>
         </div>
@@ -157,19 +159,18 @@
         <div class="card table-container">
             <table id="itemTable">
                 <thead>
-                    <tr
-                        style="background:#f8fafc; border-bottom:1px solid var(--border); font-size:11px; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px;">
-                        <th style="padding:16px;">Product</th>
-                        <th style="padding:16px;">Model #</th>
-                        <th style="padding:16px;">Brand</th>
-                        <th style="padding:16px;">Vendor</th>
-                        <th style="padding:16px;">Stark ETA</th>
-                        <th style="padding:16px;">Brand ETA</th>
-                        <th style="padding:16px;">Status</th>
-                        <th style="padding:16px; text-align:right;">On Hand</th>
-                        <th style="padding:16px; text-align:right;">Hold</th>
-                        <th style="padding:16px;">Open PO</th>
-                        <th style="padding:16px;">Actions</th>
+                    <tr>
+                        <th>Product</th>
+                        <th>Model #</th>
+                        <th>Brand</th>
+                        <th>Vendor</th>
+                        <th>Stark ETA</th>
+                        <th>Brand ETA</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">On Hand</th>
+                        <th style="text-align:right;">Hold</th>
+                        <th>Open PO</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
