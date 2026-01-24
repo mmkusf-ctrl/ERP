@@ -108,91 +108,82 @@
       </button>
     </div>
 
-    <!-- KPI Grid -->
-    <section class="kpi-grid" style="margin-bottom:32px;">
+    <!-- Inventory Overview Widget (User Request) -->
+    <section class="card" style="margin-bottom:32px; padding:24px;">
+      <h2 style="font-size:16px; margin:0 0 20px 0; color:var(--text-main);">Live Operations</h2>
 
-      <div class="card-kpi click-action" onclick="filterDashboard('Pending', this)" style="cursor:pointer;">
-        <div class="card-header">
-          <span class="card-title"
-            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Pending
-            Tasks</span>
-          <span class="badge badge-yellow">Action</span>
+
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px;" id="inv-grid">
+        <!-- Revenue Card (Live) -->
+        <div class="stat-card green"
+          style="background:#f0fdf4; border:1px solid #dcfce7; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:12px;">
+              Today's Revenue</div>
+            <div id="kpi-revenue-val" style="font-size:32px; font-weight:700; color:#14532d; transition: color 0.3s;">
+              $42,593.00</div>
+          </div>
+          <button onclick="window.location.href='accounting.html'" class="btn-sm ripple"
+            style="background:#bbf7d0; color:#166534; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">View
+            Details</button>
         </div>
-        <div class="stat-value" id="kpiTasks">4</div>
-        <div class="stat-trend neutral"
-          style="background:#fff7ed; color:#c2410c; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
-          Needs Review</div>
+
+        <!-- Orders Card (Live) -->
+        <div class="stat-card blue"
+          style="background:#eff6ff; border:1px solid #dbeafe; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:#1e40af; text-transform:uppercase; margin-bottom:12px;">
+              Live Orders</div>
+            <div id="kpi-orders-val" style="font-size:32px; font-weight:700; color:#1e3a8a;">142</div>
+          </div>
+          <button onclick="window.location.href='orders.html'" class="btn-sm ripple"
+            style="background:#bfdbfe; color:#1e40af; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Manage
+            Orders</button>
+        </div>
+
+        <!-- Active Tasks Card (Linked to Data) -->
+        <div class="stat-card orange"
+          style="background:#fff7ed; border:1px solid #ffedd5; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:#9a3412; text-transform:uppercase; margin-bottom:12px;">
+              Pending Tasks</div>
+            <div id="kpiTasks" style="font-size:32px; font-weight:700; color:#7c2d12;">--</div>
+          </div>
+          <button onclick="document.querySelector('.input').focus()" class="btn-sm ripple"
+            style="background:#fed7aa; color:#9a3412; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Prioritize</button>
+        </div>
+
+        <!-- Low Stock Card (Static/Important) -->
+        <div class="stat-card red"
+          style="background:#fef2f2; border:1px solid #fee2e2; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:#991b1b; text-transform:uppercase; margin-bottom:12px;">
+              Low Stock Items</div>
+            <div style="font-size:32px; font-weight:700; color:#7f1d1d;">3</div>
+          </div>
+          <button onclick="window.location.href='inventory.html'" class="btn-sm ripple"
+            style="background:#fecaca; color:#991b1b; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Restock</button>
+        </div>
       </div>
 
-      <div class="card-kpi">
-        <div class="card-header">
-          <span class="card-title" style="color:#6366f1;">Total Revenue</span>
-          <span class="material-icons" style="color:#6366f1; opacity:0.8;">payments</span>
-        </div>
-        <div class="kpi-value" id="kpi-revenue-val">$1,240,500</div>
-        <div class="kpi-trend trend-up">
-          <span class="material-icons">trending_up</span>
-        </div>
-        <!-- Micro Chart -->
-        <div class="chart-container">
-          <div class="chart-bar" style="height:40%"></div>
-          <div class="chart-bar" style="height:60%"></div>
-          <div class="chart-bar" style="height:35%"></div>
-          <div class="chart-bar" style="height:85%"></div>
-          <div class="chart-bar" style="height:70%"></div>
-          <div class="chart-bar" style="height:50%"></div>
-          <div class="chart-bar" style="height:90%; background:var(--success); opacity:0.8;"></div>
-        </div>
-      </div>
+      <!-- Mobile Layout Adjustment Style -->
+      <style>
+        @media(max-width: 1000px) {
+          #inv-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
 
-      <div class="card-kpi">
-        <div class="card-header">
-          <span class="card-title" style="color:#3b82f6;">Pending Orders</span>
-          <span class="material-icons" style="color:#3b82f6; opacity:0.8;">shopping_cart</span>
-        </div>
-        <div class="kpi-value" id="kpi-orders-val">45</div>
-        <div class="kpi-trend trend-down">
-          <span class="material-icons">trending_down</span>
-        </div>
-      </div>
+        @media(max-width: 600px) {
+          #inv-grid {
+            grid-template-columns: 1fr !important;
+          }
 
-      <div class="card-kpi click-action" onclick="filterDashboard('Purchasing', this)" style="cursor:pointer;">
-        <div class="card-header">
-          <span class="card-title"
-            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Open POs</span>
-          <span class="badge badge-yellow">Waiting</span>
-        </div>
-        <div class="stat-value" id="kpiOpenPO">18</div>
-        <div class="stat-trend neutral"
-          style="background:#fffbeb; color:#b45309; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
-          Awaiting Approval</div>
-      </div>
-
-      <div class="card-kpi click-action" onclick="filterDashboard('Orders', this)" style="cursor:pointer;">
-        <div class="card-header">
-          <span class="card-title"
-            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Validated
-            Orders</span>
-          <span class="badge badge-green">Healthy</span>
-        </div>
-        <div class="stat-value" id="kpiValid">124</div>
-        <div class="stat-trend up"
-          style="background:#ecfdf5; color:#047857; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
-          Ready to Ship</div>
-      </div>
-
-      <div class="card-kpi click-action" onclick="filterDashboard('High', this)" style="cursor:pointer;">
-        <div class="card-header">
-          <span class="card-title"
-            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On Hold</span>
-          <span class="badge badge-red">Alert</span>
-        </div>
-        <div class="stat-value" id="kpiNonValid">9</div>
-        <div class="stat-trend down"
-          style="background:#fef2f2; color:#b91c1c; padding:4px 8px; border-radius:4px; display:inline-block; font-size:11px; margin-top:8px;">
-          Payment Issues</div>
-      </div>
-
+          .stat-card {
+            height: 140px !important;
+          }
+        }
+      </style>
     </section>
 
     <!-- Main Content Grid -->
@@ -462,12 +453,14 @@
       const catFilter = document.getElementById("cat").value;
       const priFilter = document.getElementById("priority").value;
 
-      // KPI Update
+      // KPI Update (Safe)
+      const safeText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
       const pending = list.filter(t => t.status !== "Completed");
-      document.getElementById("kpiTasks").textContent = pending.length;
-      document.getElementById("kpiOpenPO").textContent = list.filter(t => t.cat === 'Purchasing' && t.status !== 'Completed').length;
-      document.getElementById("kpiValid").textContent = list.filter(t => t.cat === 'Orders' && t.status !== 'Completed').length;
-      document.getElementById("kpiNonValid").textContent = list.filter(t => t.pri === 'High' && t.status !== 'Completed').length;
+
+      safeText("kpiTasks", pending.length);
+      safeText("kpiOpenPO", list.filter(t => t.cat === 'Purchasing' && t.status !== 'Completed').length);
+      safeText("kpiValid", list.filter(t => t.cat === 'Orders' && t.status !== 'Completed').length);
+      safeText("kpiNonValid", list.filter(t => t.pri === 'High' && t.status !== 'Completed').length);
 
 
       // Filter
