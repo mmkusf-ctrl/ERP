@@ -310,5 +310,5 @@ function startLiveSimulation() {
 // Start simulation on load
 document.addEventListener("DOMContentLoaded", () => {
   // Slight delay to not interfere with init
-  setTimeout(startLiveSimulation, 2000);
+  // setTimeout(startLiveSimulation, 2000);
 });
