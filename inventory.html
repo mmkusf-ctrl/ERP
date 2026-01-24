@@ -12,6 +12,36 @@
   <link rel="stylesheet" href="style.css">
   <style>
     /* Card Hover & Icon Effects */
+    /* KPI Horizontal Fix */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      /* Tighter gap */
+    }
+
+    @media (max-width: 768px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .card-compact {
+      padding: 16px !important;
+      /* Smaller padding */
+    }
+
+    .card-compact .stat-value {
+      font-size: 28px;
+      /* Smaller font */
+      margin-bottom: 4px;
+    }
+
+    .card-compact .card-header {
+      margin-bottom: 12px;
+    }
+
+    /* Action Card Adjustment */
     .action-card {
       text-align: left;
       cursor: pointer;
@@ -20,9 +50,9 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 220px;
-      /* Slight increase for breathing room */
-      padding: 24px;
+      height: 180px;
+      /* Reduced height from 220px */
+      padding: 20px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border);
     }
@@ -42,7 +72,8 @@
       position: absolute;
       bottom: -20px;
       right: -20px;
-      font-size: 140px;
+      font-size: 120px;
+      /* Slightly smaller icon */
       opacity: 0.08;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       line-height: 1;
@@ -137,8 +168,8 @@
     </div>
 
     <!-- KPIs (Restored & Interactive) -->
-    <section class="grid grid-4" style="margin-bottom:32px;">
-      <article class="card card-premium clickable-kpi" onclick="setFilter('all')" id="kpiAll">
+    <section class="kpi-grid" style="margin-bottom:32px;">
+      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('all')" id="kpiAll">
         <div class="card-header">
           <div class="card-title">Total SKUs</div>
           <div class="badge badge-green">Catalog</div>
@@ -147,7 +178,7 @@
         <div class="stat-trend neutral">View All</div>
       </article>
 
-      <article class="card card-premium clickable-kpi" onclick="setFilter('low')" id="kpiLow">
+      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('low')" id="kpiLow">
         <div class="card-header">
           <div class="card-title">Low Stock</div>
           <div class="badge badge-yellow">Alert</div>
@@ -156,7 +187,7 @@
         <div class="stat-trend neutral">Reorder Soon</div>
       </article>
 
-      <article class="card card-premium clickable-kpi" onclick="setFilter('oos')" id="kpiOOS">
+      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('oos')" id="kpiOOS">
         <div class="card-header">
           <div class="card-title">Out of Stock</div>
           <div class="badge badge-red">Critical</div>
@@ -165,7 +196,7 @@
         <div class="stat-trend down">Restock Now</div>
       </article>
 
-      <article class="card card-premium">
+      <article class="card card-premium card-compact">
         <div class="card-header">
           <div class="card-title">Valuation</div>
           <div class="badge badge-green">Asset</div>
@@ -176,7 +207,7 @@
     </section>
 
     <!-- Operations Grid -->
-    <section class="grid grid-4" style="margin-bottom:40px;">
+    <section class="kpi-grid" style="margin-bottom:40px;">
 
       <!-- Receive Inventory -->
       <article class="card action-card" onclick="openReceiveModal()"
