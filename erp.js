@@ -140,6 +140,79 @@ function escapeHtml(str) {
   document.addEventListener("DOMContentLoaded", () => {
     // Small delay to ensure render happens first if sync
     setTimeout(animatePageElements, 50);
+    initRipples();
+    initPullToRefresh();
   });
+
+  function initRipples() {
+    document.addEventListener('click', function (e) {
+      const target = e.target.closest('.btn, .bottom-nav-item, .clickable-kpi');
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const circle = document.createElement('span');
+      const diameter = Math.max(rect.width, rect.height);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${x - radius}px`;
+      circle.style.top = `${y - radius}px`;
+      circle.classList.add('ripple');
+
+      // Remove existing ripple to prevent buildup
+      const existing = target.getElementsByClassName('ripple')[0];
+      if (existing) existing.remove();
+
+      target.appendChild(circle);
+    });
+  }
+
+  function initPullToRefresh() {
+    if (window.innerWidth > 768) return; // Mobile only via Touch events usually
+
+    let startY = 0;
+    let ptr = document.createElement('div');
+    ptr.className = 'ptr-element';
+    ptr.innerHTML = `<div class="ptr-icon">⬇️</div>`;
+    document.body.prepend(ptr);
+
+    let isPulling = false;
+
+    window.addEventListener('touchstart', e => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        isPulling = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+      if (!isPulling) return;
+      const currentY = e.touches[0].clientY;
+      const diff = currentY - startY;
+      if (diff > 0 && window.scrollY === 0) {
+        // Visualize pull
+        ptr.style.height = `${Math.min(diff / 2, 80)}px`;
+        ptr.querySelector('.ptr-icon').style.transform = `rotate(${Math.min(diff, 180)}deg)`;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', e => {
+      if (!isPulling) return;
+      isPulling = false;
+      if (parseInt(ptr.style.height) > 60) {
+        // Trigger Refresh
+        ptr.style.height = '60px';
+        ptr.innerHTML = `<div class="ptr-loading">↻</div><div style="font-size:12px; margin-left:8px;">Refreshing...</div>`;
+        setTimeout(() => {
+          location.reload();
+        }, 800);
+      } else {
+        ptr.style.height = '0px';
+      }
+    }, { passive: true });
+  }
 
 })();
