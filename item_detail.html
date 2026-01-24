@@ -10,44 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            overflow-x: auto;
-        }
 
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-muted);
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .tab:hover {
-            color: var(--primary);
-            background: rgba(79, 70, 229, 0.04);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .view-section {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-    </style>
 </head>
 
 <body>
@@ -60,7 +23,7 @@
             </a>
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="item_master.html">Items</a>
+                <a class="nav-link active" href="master.html">Items</a>
                 <a class="nav-link" href="inventory.html">Inventory</a>
                 <a class="nav-link" href="orders.html">Orders</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -86,7 +49,7 @@
                     style="background:none; border:none; font-size:24px;">&times;</button>
             </div>
             <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link active" href="item_master.html">Item Master</a>
+            <a class="mobile-link active" href="master.html">Item Master</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
         </div>
     </div>
@@ -94,7 +57,7 @@
     <main class="container">
 
         <!-- Breadcrumb / Back -->
-        <a href="item_master.html"
+        <a href="master.html"
             style="display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:13px; font-weight:600; margin-bottom:16px;">
             &larr; Back to Item Master
         </a>
@@ -228,7 +191,7 @@
         function render() {
             if (!SKU) {
                 alert("No SKU specified");
-                window.location.href = "item_master.html";
+                window.location.href = "master.html";
                 return;
             }
 
