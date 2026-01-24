@@ -460,10 +460,15 @@ textarea {
 
   /* Grids */
   .grid-4,
-  .grid-2,
-  .kpi-grid {
+  .grid-2 {
     grid-template-columns: 1fr !important;
     gap: 16px;
+  }
+
+  /* KPI Grid: 2 columns on mobile for better density */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
   }
 
   /* Cards */
@@ -527,6 +532,25 @@ textarea {
     height: 44px;
     font-size: 14px;
   }
+
+  /* --- Mobile Specific Components --- */
+
+  /* Stack flex containers on mobile (Controls, Filters) */
+  .card>div[style*="flex"] {
+    flex-wrap: wrap;
+  }
+
+  .card>div>div[style*="width:160px"] {
+    width: 48% !important;
+    /* Allow side-by-side filters */
+    min-width: 140px;
+  }
+
+  .card>div>div[style*="min-width:200px"] {
+    min-width: 100% !important;
+    /* Search bar full width */
+  }
+
 }
 
 /* --- Components --- */
