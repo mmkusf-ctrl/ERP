@@ -344,7 +344,8 @@ textarea {
 /* --- Compact KPI Grid --- */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  /* 5 columns now */
   gap: 16px;
   width: 100%;
 }
@@ -437,7 +438,16 @@ textarea {
 
   /* Layout */
   .container {
-    padding: 20px 16px;
+    padding: 20px 12px;
+    /* Slightly tighter padding for mobile */
+  }
+
+  /* Prevent iOS Zoom */
+  input,
+  select,
+  textarea,
+  .input {
+    font-size: 16px !important;
   }
 
   .page-header {
