@@ -70,6 +70,18 @@
             align-items: center;
             gap: 8px;
         }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-3 {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
     </style>
 </head>
 
@@ -245,7 +257,7 @@
 
         <!-- Other Operations Grid -->
         <h2 style="font-size:18px; margin-bottom:16px;">General Operations</h2>
-        <section class="kpi-grid" style="margin-bottom:32px;">
+        <section class="grid-3" style="margin-bottom:32px;">
             <!-- Record Expense -->
             <article class="card action-card" onclick="alert('Feature coming soon: Record Expense')"
                 style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
@@ -306,7 +318,7 @@
 
         <!-- Data Imports Section -->
         <h2 style="font-size:18px; margin-bottom:16px;">Data Imports</h2>
-        <section class="kpi-grid" style="margin-bottom:40px; grid-template-columns: repeat(3, 1fr);">
+        <section class="grid-3" style="margin-bottom:40px;">
             <!-- Import AP Invoices -->
             <article class="card action-card" onclick="alert('Triggering AP Invoice Import...')"
                 style="height:140px; background:#f8fafc;">
