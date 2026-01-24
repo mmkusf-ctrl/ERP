@@ -68,306 +68,235 @@
         </div>
     </div>
 
-    <main class="container">
-        <!-- Header -->
-        <div class="page-header">
-            <h1 class="page-title">Accounting & Finance</h1>
-            <p class="page-desc">Track revenue, expenses, and overall financial health.</p>
-            <div class="gold-line"></div>
+    <main class="container soft-ui-wrapper">
+
+        <!-- Header (Hidden visually but kept for structure if needed, or we just use the Cards) -->
+        <!-- We'll make a nice header area inside the wrapper -->
+        <div style="margin-bottom:32px;">
+            <!-- KPI Row -->
+            <div class="kpi-row-soft">
+                <div class="kpi-card-soft">
+                    <div class="label">Total Revenue <span class="badge badge-green"
+                            style="background:#dcfce7; color:#166534;">YTD</span></div>
+                    <div class="val">$1,250,420</div>
+                    <div
+                        style="color:#16a34a; font-size:12px; font-weight:600; background:#dcfce7; padding:4px 8px; border-radius:12px; display:inline-block;">
+                        +12.5% vs Prev</div>
+                </div>
+                <div class="kpi-card-soft">
+                    <div class="label">Total Expenses <span class="badge badge-red"
+                            style="background:#fee2e2; color:#991b1b;">YTD</span></div>
+                    <div class="val">$840,200</div>
+                    <div
+                        style="color:#d97706; font-size:12px; font-weight:600; background:#ffedd5; padding:4px 8px; border-radius:12px; display:inline-block;">
+                        On Budget</div>
+                </div>
+                <div class="kpi-card-soft">
+                    <div class="label">Net Profit <span class="badge badge-green"
+                            style="background:#dcfce7; color:#166534;">Healthy</span></div>
+                    <div class="val">$410,220</div>
+                    <div
+                        style="color:#4f46e5; font-size:12px; font-weight:600; background:#e0e7ff; padding:4px 8px; border-radius:12px; display:inline-block;">
+                        32.8% Margin</div>
+                </div>
+                <div class="kpi-card-soft">
+                    <div class="label">Outstanding <span class="badge badge-yellow"
+                            style="background:#fef3c7; color:#92400e;">Receivables</span></div>
+                    <div class="val">$42,500</div>
+                    <div
+                        style="color:#be185d; font-size:12px; font-weight:600; background:#fce7f3; padding:4px 8px; border-radius:12px; display:inline-block;">
+                        15 Accounts</div>
+                </div>
+            </div>
         </div>
 
-        <!-- KPI Grid -->
-        <section class="kpi-grid" style="margin-bottom:32px;">
-            <article class="card-kpi clickable-kpi" onclick="window.location.href='reports.html'">
-                <div class="card-header">
-                    <div class="card-title">Total Revenue</div>
-                    <div class="badge badge-green">YTD</div>
-                </div>
-                <div class="stat-value">$1,250,420</div>
-                <div class="stat-trend up">+12.5% vs Prev</div>
-            </article>
+        <div class="accounting-grid">
 
-            <article class="card-kpi clickable-kpi" onclick="window.location.href='reports.html'">
-                <div class="card-header">
-                    <div class="card-title">Total Expenses</div>
-                    <div class="badge badge-red">YTD</div>
-                </div>
-                <div class="stat-value">$840,200</div>
-                <div class="stat-trend neutral">On Budget</div>
-            </article>
+            <!-- Col 1: AP & EDI -->
+            <div style="display:grid; gap:24px; align-content:start;">
+                <h3 style="font-size:16px; color:var(--text-purple-dark); margin:0;">Accounts Payable & EDI</h3>
 
-            <article class="card-kpi clickable-kpi" onclick="window.location.href='reports.html'">
-                <div class="card-header">
-                    <div class="card-title">Net Profit</div>
-                    <div class="badge badge-green">Healthy</div>
-                </div>
-                <div class="stat-value">$410,220</div>
-                <div class="stat-trend up">32.8% Margin</div>
-            </article>
-
-            <article class="card-kpi clickable-kpi" onclick="window.location.href='crm.html'">
-                <div class="card-header">
-                    <div class="card-title">Outstanding</div>
-                    <div class="badge badge-yellow">Receivables</div>
-                </div>
-                <div class="stat-value">$42,500</div>
-                <div class="stat-trend down">15 Accounts</div>
-            </article>
-        </section>
-
-        <!-- Accounts Payable & EDI Section -->
-        <h2 style="font-size:18px; margin-bottom:16px;">Accounts Payable & EDI</h2>
-        <section class="kpi-grid" style="margin-bottom:32px;">
-
-            <!-- AP Invoice Lookup -->
-            <article class="card action-card" style="background:#fff; height:auto; min-height:180px;">
-                <div>
-                    <div class="card-title" style="color:var(--primary);">Search</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">AP Invoice Lookup
-                    </h3>
-                    <div style="display:flex; gap:8px; margin-top:12px;">
-                        <input class="input" placeholder="Invoice # or Vendor..."
-                            style="height:36px; font-size:13px;" />
-                        <button class="btn btn-primary" style="height:36px; padding:0 12px;">🔍</button>
+                <!-- Search Card -->
+                <div class="card-soft card-gradient-1">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#7c3aed; margin-bottom:8px; text-transform:uppercase;">
+                        Search</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:16px;">AP Invoice
+                        Lookup</div>
+                    <div style="display:flex; gap:8px;">
+                        <input class="search-input-soft" placeholder="Invoice # or Vendor..." />
+                        <button class="btn-purple-soft">🔍</button>
                     </div>
                 </div>
-                <div class="action-icon" style="opacity:0.05;">🔍</div>
-            </article>
 
-            <!-- EDI AP Issues -->
-            <article class="card action-card" onclick="alert('Viewing EDI Issues...')"
-                style="background: linear-gradient(to bottom right, #fff, #fff1f2); border-color:var(--danger-bg);">
-                <div>
-                    <div class="card-title" style="color:var(--danger);">Attention Needed</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">EDI AP Issues
-                    </h3>
-                    <p style="font-size:13px; color:var(--text-muted);">3 invoices failed validation.</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px; color:var(--danger); border-color:var(--danger-bg);">
+                <!-- EDI Issues -->
+                <div class="card-soft" style="background:#fff1f2; border:1px solid #fecdd3;">
+                    <div style="font-size:16px; font-weight:700; color:#be123c; margin-bottom:4px;">EDI AP Issues</div>
+                    <p style="font-size:13px; color:#881337; margin-bottom:16px;">3 invoices failed validation.</p>
+                    <button class="btn btn-secondary"
+                        style="width:100%; border:none; background:rgba(255,255,255,0.6); color:#be123c; justify-content:space-between;">
                         Resolve Issues <span>&rarr;</span>
-                    </span>
+                    </button>
                 </div>
-                <div class="action-icon" style="color:var(--danger);">⚠️</div>
-            </article>
 
-            <!-- Customer EDI Payments -->
-            <article class="card action-card" onclick="alert('Opening EDI Payments...')" style="background:#fff;">
-                <div>
-                    <div class="card-title" style="color:var(--success);">Receivables</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">EDI Payments</h3>
-                    <p style="font-size:13px; color:var(--text-muted);">Monitor incoming digital payments.</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        View Payments <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">💳</div>
-            </article>
-
-            <!-- Create Invoice (Legacy) -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Create Invoice')">
-                <div>
-                    <div class="card-title" style="color:var(--text-muted);">Quick Action</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">New Manual
-                        Invoice</h3>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        Create <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">📝</div>
-            </article>
-
-        </section>
-
-        <!-- Other Operations Grid -->
-        <h2 style="font-size:18px; margin-bottom:16px;">General Operations</h2>
-        <section class="grid-4" style="margin-bottom:32px;">
-            <!-- Record Expense -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Record Expense')"
-                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
-                <div>
-                    <div class="card-title" style="color:var(--warning);">Payables</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Record Expense
-                    </h3>
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Log vendor bills and
-                        operational costs.</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                <!-- New Invoice -->
+                <div class="card-soft card-gradient-1">
+                    <div style="font-size:16px; font-weight:700; color:var(--text-main); margin-bottom:4px;">New Manual
+                        Invoice</div>
+                    <div
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:16px;">
+                        Quick Action</div>
+                    <button class="btn btn-secondary"
+                        style="width:100%; border:1px solid #ddd; justify-content:space-between;">
                         Add Expense <span>&rarr;</span>
-                    </span>
+                    </button>
                 </div>
-                <div class="action-icon">💸</div>
-            </article>
+            </div>
 
-            <!-- Reports -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Financial Reports')"
-                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
-                <div>
-                    <div class="card-title" style="color:var(--text-muted);">Analysis</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Financial Reports
-                    </h3>
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">P&L, Balance Sheet, and Cash
+            <!-- Col 2: Operations -->
+            <div style="display:grid; gap:24px; align-content:start;">
+                <h3 style="font-size:16px; color:var(--text-purple-dark); margin:0;">General Operations</h3>
+
+                <!-- Expense -->
+                <div class="card-soft" style="background:#fff7ed; border:1px solid #ffedd5;">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#c2410c; text-transform:uppercase; margin-bottom:8px;">
+                        Payables</div>
+                    <div style="font-size:18px; font-weight:700; color:#7c2d12; margin-bottom:8px;">Record Expense</div>
+                    <p style="font-size:13px; color:#9a3412; margin-bottom:16px;">Log vendor bills and operational
+                        costs.</p>
+                    <button class="btn"
+                        style="width:100%; background:rgba(255,255,255,0.6); color:#c2410c; border:none; justify-content:space-between;">Add
+                        Expense <span>&rarr;</span></button>
+                </div>
+
+                <!-- Reports -->
+                <div class="card-soft card-gradient-1">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#6b21a8; text-transform:uppercase; margin-bottom:8px;">
+                        Analysis</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:8px;">Financial
+                        Reports</div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">P&L, Balance Sheet, and Cash
                         Flow.</p>
+                    <button class="btn btn-secondary" style="width:100%; justify-content:space-between;">View Reports
+                        <span>&rarr;</span></button>
                 </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        View Reports <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">📊</div>
-            </article>
 
-            <!-- Payroll -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Payroll')"
-                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
-                <div>
-                    <div class="card-title" style="color:var(--text-muted);">HR</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Payroll</h3>
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Manage employee salaries and
-                        benefits.</p>
+                <!-- Bank -->
+                <div class="card-soft card-gradient-1">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#4f46e5; text-transform:uppercase; margin-bottom:8px;">
+                        Banking</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:8px;">Bank
+                        Accounts</div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Manage connected cards.</p>
                 </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        Manage Payroll <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">👥</div>
-            </article>
+            </div>
 
-            <!-- Bank Accounts (New 4th Item) -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Bank Connections')"
-                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
-                <div>
-                    <div class="card-title" style="color:var(--primary);">Banking</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Bank Accounts
-                    </h3>
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Manage connected cards and
-                        accounts.</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        Manage Cards <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">🏛️</div>
-            </article>
+            <!-- Col 3: Imports/Exports -->
+            <div style="display:grid; gap:24px; align-content:start;">
+                <h3 style="font-size:16px; color:var(--text-purple-dark); margin:0;">Data Imports & Exports</h3>
 
-        </section>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <!-- Split Imports -->
+                    <div class="card-soft" style="padding:16px; background:#f8fafc;">
+                        <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Import AP Invoices</div>
+                        <div style="font-size:11px; color:#64748b; margin-bottom:12px;">CSV / Excel / XML</div>
+                        <button class="btn btn-sm btn-secondary" style="width:100%; font-size:12px;">Upload</button>
+                    </div>
+                    <div class="card-soft" style="padding:16px; background:#f8fafc;">
+                        <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Data Imports</div>
+                        <div style="font-size:11px; color:#64748b; margin-bottom:12px;">CSV / Excel / XML</div>
+                        <button class="btn btn-sm btn-secondary" style="width:100%; font-size:12px;">Upload</button>
+                    </div>
+                </div>
 
-        <!-- Data Imports Section -->
-        <h2 style="font-size:18px; margin-bottom:16px;">Data Imports & Exports</h2>
-        <section class="kpi-grid" style="margin-bottom:40px;">
-            <!-- Import AP Invoices -->
-            <article class="card action-card" onclick="alert('Triggering AP Invoice Import...')"
-                style="height:140px; background:#f8fafc;">
-                <div>
-                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import AP Invoices</h3>
-                    <p style="font-size:12px; color:var(--text-muted);">CSV / Excel / XML</p>
+                <!-- Payroll -->
+                <div class="card-soft" style="background:#f3e8ff; border:1px solid #d8b4fe;">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#6b21a8; text-transform:uppercase; margin-bottom:8px;">
+                        HR</div>
+                    <div style="font-size:18px; font-weight:700; color:#581c87; margin-bottom:8px;">Payroll</div>
+                    <p style="font-size:13px; color:#7e22ce; margin-bottom:16px;">Manage employee salaries.</p>
+                    <button class="btn"
+                        style="width:100%; background:rgba(255,255,255,0.6); color:#6b21a8; border:none; justify-content:space-between;">Manage
+                        Payroll <span>&rarr;</span></button>
                 </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
-                </div>
-            </article>
 
-            <!-- Import Customer Payments -->
-            <article class="card action-card" onclick="alert('Triggering Cust Payment Import...')"
-                style="height:140px; background:#f8fafc;">
-                <div>
-                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import Cust. Payments</h3>
-                    <p style="font-size:12px; color:var(--text-muted);">Bank Files / Remittance</p>
+                <!-- Export -->
+                <div class="card-soft" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+                    <div style="font-size:16px; font-weight:700; color:#15803d; margin-bottom:4px;">Export Archive</div>
+                    <p style="font-size:13px; color:#166534; margin-bottom:16px;">Download full history.</p>
+                    <button class="btn"
+                        style="width:100%; background:rgba(255,255,255,0.6); color:#15803d; border:none; justify-content:space-between;">Export
+                        All</button>
                 </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
-                </div>
-            </article>
+            </div>
 
-            <!-- Import Vendor Payments -->
-            <article class="card action-card" onclick="alert('Triggering Vendor Payment Import...')"
-                style="height:140px; background:#f8fafc;">
-                <div>
-                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import Vendor Payments</h3>
-                    <p style="font-size:12px; color:var(--text-muted);">Confirmation Files</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
-                </div>
-            </article>
-
-            <!-- Export Data (New 4th Item) -->
-            <article class="card action-card" onclick="alert('Triggering Data Export...')"
-                style="height:140px; background:#fff; border-style:dashed;">
-                <div>
-                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Export Archive</h3>
-                    <p style="font-size:12px; color:var(--text-muted);">Download full history</p>
-                </div>
-                <div class="card-actions">
-                    <span class="btn btn-secondary"
-                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Export All</span>
-                </div>
-            </article>
-        </section>
+        </div>
 
         <!-- Recent Transactions -->
-        <section class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="font-size:18px; margin:0;">Recent Transactions</h2>
-                <button class="btn btn-secondary" style="font-size:12px;">View All</button>
+        <div class="card-soft" style="margin-top:32px; padding:0; overflow:hidden;">
+            <div
+                style="padding:20px; display:flex; justify-content:space-between; align-items:center; background:#f5f3ff; border-bottom:1px solid #ede9fe;">
+                <h3 style="margin:0; font-size:16px; color:#4c1d95;">Recent Transactions</h3>
+                <button class="btn btn-sm" style="background:white; border:1px solid #ddd;">View All</button>
             </div>
+
             <div class="table-container">
-                <table>
-                    <thead>
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead style="background:#fafafa; border-bottom:1px solid #eee;">
                         <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Status</th>
+                            <th
+                                style="padding:16px; text-transform:uppercase; font-size:11px; letter-spacing:1px; color:#888;">
+                                Date</th>
+                            <th
+                                style="padding:16px; text-transform:uppercase; font-size:11px; letter-spacing:1px; color:#888;">
+                                Description</th>
+                            <th
+                                style="padding:16px; text-transform:uppercase; font-size:11px; letter-spacing:1px; color:#888;">
+                                Category</th>
+                            <th
+                                style="padding:16px; text-transform:uppercase; font-size:11px; letter-spacing:1px; color:#888;">
+                                Amount</th>
+                            <th
+                                style="padding:16px; text-transform:uppercase; font-size:11px; letter-spacing:1px; color:#888;">
+                                Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>2026-01-23</td>
-                            <td>Invoice #INV-2024-001 - Acme Corp</td>
-                            <td>Sales</td>
-                            <td style="color:var(--success);">+$12,500.00</td>
-                            <td><span class="badge badge-green">Paid</span></td>
+                        <tr style="border-bottom:1px solid #f9fafb;">
+                            <td style="padding:16px; color:#444;">2026-01-23</td>
+                            <td style="padding:16px; color:#111; font-weight:500;">Invoice #INV-2024-001 - Acme Corp
+                            </td>
+                            <td style="padding:16px; color:#666;">Sales</td>
+                            <td style="padding:16px; color:#10b981; font-weight:600;">+$12,500.00</td>
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#dcfce7; color:#166534; border-radius:4px; padding:4px 8px; font-size:11px; font-weight:700;">PAID</span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f9fafb;">
+                            <td style="padding:16px; color:#444;">2026-01-22</td>
+                            <td style="padding:16px; color:#111; font-weight:500;">Office Supplies - Staples</td>
+                            <td style="padding:16px; color:#666;">Operations</td>
+                            <td style="padding:16px; color:#ef4444; font-weight:600;">-$245.50</td>
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#ffedd5; color:#9a3412; border-radius:4px; padding:4px 8px; font-size:11px; font-weight:700;">CLEARED</span>
+                            </td>
                         </tr>
                         <tr>
-                            <td>2026-01-22</td>
-                            <td>Office Supplies - Staples</td>
-                            <td>Operations</td>
-                            <td style="color:var(--danger);">-$245.50</td>
-                            <td><span class="badge badge-green">Cleared</span></td>
-                        </tr>
-                        <tr>
-                            <td>2026-01-21</td>
-                            <td>Vendor Payment - Stark Mfg</td>
-                            <td>COGS</td>
-                            <td style="color:var(--danger);">-$4,200.00</td>
-                            <td><span class="badge badge-yellow">Pending</span></td>
+                            <td style="padding:16px; color:#444;">2026-01-21</td>
+                            <td style="padding:16px; color:#111; font-weight:500;">Vendor Payment - Stark Mfg</td>
+                            <td style="padding:16px; color:#666;">COGS</td>
+                            <td style="padding:16px; color:#ef4444; font-weight:600;">-$4,200.00</td>
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#fef9c3; color:#854d0e; border-radius:4px; padding:4px 8px; font-size:11px; font-weight:700;">PENDING</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </section>
-
-        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-            &copy; 2026 Stark Premium ERP. secure. fast. reliable.
         </div>
 
     </main>
