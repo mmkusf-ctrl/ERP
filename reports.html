@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Reports | Stark Premium ERP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium">
+        <span class="logo-text">Stark ERP</span>
+      </a>
+
+      <nav class="nav">
+        <a class="nav-link" href="dashboard.html">Overview</a>
+        <a class="nav-link" href="crm.html">CRM</a>
+        <a class="nav-link" href="inventory.html">Inventory</a>
+        <a class="nav-link" href="accounting.html">Accounting</a>
+        <a class="nav-link" href="orders.html">Orders</a>
+        <a class="nav-link" href="logistics.html">Logistics</a>
+        <a class="nav-link active" href="reports.html">Reports</a>
+      </nav>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn btn-secondary" style="height:36px;" onclick="seedSales()">
+          Load Demo Sales
+        </button>
+        <button class="hamburger" onclick="openMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <strong style="font-size:16px;">Navigation</strong>
+        <button onclick="closeMobileNav()"
+          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <a class="mobile-link" href="dashboard.html">Overview</a>
+      <a class="mobile-link" href="crm.html">CRM</a>
+      <a class="mobile-link" href="inventory.html">Inventory</a>
+      <a class="mobile-link" href="orders.html">Orders</a>
+      <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link active" href="reports.html">Reports</a>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="page-header"
+      style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;">
+      <div>
+        <h1 class="page-title">Sales Reports & Forecasting</h1>
+        <p class="page-desc">Analyze SKU performance, revenue streams, and demand forecasting.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-secondary" onclick="clearSales()">Clear Data</button>
+        <button class="btn btn-primary" onclick="window.location.href='inventory.html'">Manage Items</button>
+      </div>
+    </div>
+    <div class="gold-line" style="margin-top:-10px;"></div>
+
+    <!-- Controls -->
+    <section class="card" style="margin-bottom:24px;">
+      <h2 style="font-size:16px; margin:0 0 16px;">Analysis Controls</h2>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+        <select id="skuSelect" class="input" onchange="render()"></select>
+        <select id="rangeSelect" class="input" onchange="render()">
+          <option value="7">Last 7 Days</option>
+          <option value="30" selected>Last 30 Days</option>
+          <option value="90">Last 90 Days</option>
+        </select>
+        <select id="locationSelect" class="input" onchange="render()"></select>
+        <input id="customerSearch" class="input" placeholder="Filter by Customer..." oninput="render()" />
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="grid grid-4" style="margin-bottom:32px;">
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Number of Sales</div>
+          <div class="badge badge-green">Count</div>
+        </div>
+        <div class="stat-value" id="kpiSales">0</div>
+        <div class="stat-trend neutral" id="kpiSalesSub">—</div>
+      </article>
+
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Units Sold</div>
+          <div class="badge badge-green">Volume</div>
+        </div>
+        <div class="stat-value" id="kpiUnits">0</div>
+        <div class="stat-trend neutral">Total in Range</div>
+      </article>
+
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Revenue</div>
+          <div class="badge badge-green">Gross</div>
+        </div>
+        <div class="stat-value" id="kpiRevenue">$0</div>
+        <div class="stat-trend neutral">Total Sales Amount</div>
+      </article>
+
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Forecast (30d)</div>
+          <div class="badge badge-yellow">Prediction</div>
+        </div>
+        <div class="stat-value" id="kpiForecast">0</div>
+        <div class="stat-trend neutral">Based on Daily Avg</div>
+      </article>
+    </section>
+
+    <div class="grid grid-2">
+      <!-- Table -->
+      <section class="card">
+        <h2 style="font-size:18px; margin:0 0 16px;">Sales Detail</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Location</th>
+                <th>Order ID</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="salesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Insights Sidebar -->
+      <aside style="display:grid; gap:24px; align-content:start;">
+        <div class="card">
+          <h2 style="font-size:16px; margin:0 0 16px;">Key Insights</h2>
+
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
+            id="insight1">
+            <!-- Filled by JS -->
+          </div>
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
+            id="insight2">
+            <!-- Filled by JS -->
+          </div>
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);"
+            id="insight3">
+            <!-- Filled by JS -->
+          </div>
+
+          <div class="gold-line"></div>
+          <p style="font-size:13px; color:var(--text-muted);">
+            Forecasting model uses simple moving average. Seasonal adjustment module pending.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+      &copy; 2026 Stark Premium ERP.
+    </div>
+  </main>
+
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+  <script src="erp.js"></script>
+  <script>
+    const KEY_ITEMS = "stark_erp_items_v2"; // updated key from inventory.html
+    const KEY_SALES = "stark_erp_sales_v1";
+
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+      catch { return fallback; }
+    }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
+
+    // Data init
+    let items = load(KEY_ITEMS, []);
+    let sales = load(KEY_SALES, []);
+
+    function unique(arr) { return Array.from(new Set(arr)).filter(Boolean).sort(); }
+
+    function initControls() {
+      const skuSelect = document.getElementById("skuSelect");
+      const locSelect = document.getElementById("locationSelect");
+
+      // Populate SKU
+      const skus = items.length ? items.map(i => i.sku) : unique(sales.map(s => s.sku));
+      skuSelect.innerHTML = skus.length
+        ? `<option value="">All SKUs</option>` + skus.map(s => `<option value="${s}">${s}</option>`).join("")
+        : `<option value="">No SKUs Found</option>`;
+
+      // Populate Locations
+      const locs = unique(sales.map(s => s.location));
+      locSelect.innerHTML = `<option value="">All Locations</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join("");
+    }
+
+    function render() {
+      // Reload newest data
+      items = load(KEY_ITEMS, []);
+      sales = load(KEY_SALES, []);
+
+      const skuVal = document.getElementById("skuSelect").value;
+      const rangeVal = Number(document.getElementById("rangeSelect").value);
+      const locVal = document.getElementById("locationSelect").value;
+      const custSearch = (document.getElementById("customerSearch").value || "").toLowerCase();
+
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - rangeVal);
+      const cutoffTime = cutoff.getTime();
+
+      let filtered = sales.filter(s => {
+        if (new Date(s.date).getTime() < cutoffTime) return false;
+        if (skuVal && s.sku !== skuVal) return false;
+        if (locVal && s.location !== locVal) return false;
+        if (custSearch && !s.customer.toLowerCase().includes(custSearch)) return false;
+        return true;
+      });
+
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // Calculate KPIs
+      const totalUnits = filtered.reduce((acc, s) => acc + Number(s.qty), 0);
+      const totalRev = filtered.reduce((acc, s) => acc + (Number(s.qty) * Number(s.unitPrice)), 0);
+      const dailyAvg = totalUnits / Math.max(1, rangeVal);
+      const forecast = Math.round(dailyAvg * 30);
+
+      document.getElementById("kpiSales").textContent = filtered.length;
+      document.getElementById("kpiSalesSub").textContent = skuVal || "All SKUs";
+      document.getElementById("kpiUnits").textContent = totalUnits;
+      document.getElementById("kpiRevenue").textContent = money(totalRev);
+      document.getElementById("kpiForecast").textContent = forecast;
+
+      // Render Table
+      const tbody = document.getElementById("salesBody");
+      tbody.innerHTML = "";
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No sales data in this range.</td></tr>`;
+      } else {
+        filtered.slice(0, 100).forEach(s => {
+          const tr = document.createElement("tr");
+          const total = Number(s.qty) * Number(s.unitPrice);
+          tr.innerHTML = `
+               <td>${new Date(s.date).toLocaleDateString()}</td>
+               <td>${s.customer}</td>
+               <td><span class="badge badge-green">${s.location}</span></td>
+               <td>${s.orderId}</td>
+               <td>${s.qty}</td>
+               <td>${money(total)}</td>
+             `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Insights
+      const bestCust = getTop(filtered, s => s.customer);
+      const bestLoc = getTop(filtered, s => s.location);
+      const bestDay = getTopDay(filtered);
+
+      document.getElementById("insight1").innerHTML = `
+          <strong style="display:block; font-size:13px;">Top Customer</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestCust || "—"}</span>
+       `;
+      document.getElementById("insight2").innerHTML = `
+          <strong style="display:block; font-size:13px;">Top Region</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestLoc || "—"}</span>
+       `;
+      document.getElementById("insight3").innerHTML = `
+          <strong style="display:block; font-size:13px;">Peak Sales Day</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestDay || "—"}</span>
+       `;
+    }
+
+    function getTop(list, keyFn) {
+      const m = {};
+      list.forEach(item => {
+        const k = keyFn(item);
+        m[k] = (m[k] || 0) + Number(item.qty);
+      });
+      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
+      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
+    }
+
+    function getTopDay(list) {
+      const m = {};
+      list.forEach(item => {
+        const d = new Date(item.date).toLocaleDateString();
+        m[d] = (m[d] || 0) + Number(item.qty);
+      });
+      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
+      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
+    }
+
+    // Demo Data
+    function seedSales() {
+      // Generate random sales for last 6 months
+      const newSales = [];
+      const customers = [
+        { name: "Asha Retail", loc: "Austin, TX" },
+        { name: "Blue Harbor", loc: "Miami, FL" },
+        { name: "Citrine Luxe", loc: "New York, NY" },
+        { name: "Desert Pearl", loc: "Phoenix, AZ" },
+        { name: "Emerald Lane", loc: "Seattle, WA" }
+      ];
+      const skus = items.length ? items.map(i => i.sku) : ["A-101", "B-202", "C-303"]; // fallback
+
+      for (let i = 0; i < 150; i++) {
+        const daysAgo = Math.floor(Math.random() * 90);
+        const d = new Date(); d.setDate(d.getDate() - daysAgo);
+        const c = customers[Math.floor(Math.random() * customers.length)];
+        const sku = skus[Math.floor(Math.random() * skus.length)];
+
+        newSales.push({
+          date: d.toISOString(),
+          customer: c.name,
+          location: c.loc,
+          sku: sku,
+          qty: Math.floor(Math.random() * 15) + 1,
+          unitPrice: 50 + Math.floor(Math.random() * 150),
+          orderId: "ORD-" + Math.floor(Math.random() * 90000)
+        });
+      }
+
+      sales = sales.concat(newSales);
+      save(KEY_SALES, sales);
+      toast("Success", "Loaded 150 demo sales records.");
+      initControls();
+      render();
+    }
+
+    function clearSales() {
+      if (confirm("Delete all sales history?")) {
+        save(KEY_SALES, []);
+        render();
+        toast("Cleared", "Sales history deleted.");
+      }
+    }
+
+    // Init
+    initControls();
+    render();
+  </script>
+</body>
+
+</html>
