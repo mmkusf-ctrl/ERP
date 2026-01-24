@@ -172,27 +172,80 @@
             </article>
         </section>
 
-        <!-- Operations Grid -->
-        <section class="kpi-grid" style="margin-bottom:40px;">
-            <!-- Create Invoice -->
-            <article class="card action-card" onclick="alert('Feature coming soon: Create Invoice')"
-                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+        <!-- Accounts Payable & EDI Section -->
+        <h2 style="font-size:18px; margin-bottom:16px;">Accounts Payable & EDI</h2>
+        <section class="kpi-grid" style="margin-bottom:32px;">
+
+            <!-- AP Invoice Lookup -->
+            <article class="card action-card" style="background:#fff; height:auto; min-height:180px;">
                 <div>
-                    <div class="card-title" style="color:var(--primary);">Receivables</div>
-                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Create Invoice
+                    <div class="card-title" style="color:var(--primary);">Search</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">AP Invoice Lookup
                     </h3>
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Bill customers for goods and
-                        services.</p>
+                    <div style="display:flex; gap:8px; margin-top:12px;">
+                        <input class="input" placeholder="Invoice # or Vendor..."
+                            style="height:36px; font-size:13px;" />
+                        <button class="btn btn-primary" style="height:36px; padding:0 12px;">🔍</button>
+                    </div>
                 </div>
-                <div class="card-actions">
-                    <span class="btn btn-primary"
-                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
-                        New Invoice <span>&rarr;</span>
-                    </span>
-                </div>
-                <div class="action-icon">📄</div>
+                <div class="action-icon" style="opacity:0.05;">🔍</div>
             </article>
 
+            <!-- EDI AP Issues -->
+            <article class="card action-card" onclick="alert('Viewing EDI Issues...')"
+                style="background: linear-gradient(to bottom right, #fff, #fff1f2); border-color:var(--danger-bg);">
+                <div>
+                    <div class="card-title" style="color:var(--danger);">Attention Needed</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">EDI AP Issues
+                    </h3>
+                    <p style="font-size:13px; color:var(--text-muted);">3 invoices failed validation.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px; color:var(--danger); border-color:var(--danger-bg);">
+                        Resolve Issues <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon" style="color:var(--danger);">⚠️</div>
+            </article>
+
+            <!-- Customer EDI Payments -->
+            <article class="card action-card" onclick="alert('Opening EDI Payments...')" style="background:#fff;">
+                <div>
+                    <div class="card-title" style="color:var(--success);">Receivables</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">EDI Payments</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">Monitor incoming digital payments.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        View Payments <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">💳</div>
+            </article>
+
+            <!-- Create Invoice (Legacy) -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Create Invoice')">
+                <div>
+                    <div class="card-title" style="color:var(--text-muted);">Quick Action</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">New Manual
+                        Invoice</h3>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        Create <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">📝</div>
+            </article>
+
+        </section>
+
+        <!-- Other Operations Grid -->
+        <h2 style="font-size:18px; margin-bottom:16px;">General Operations</h2>
+        <section class="kpi-grid" style="margin-bottom:32px;">
             <!-- Record Expense -->
             <article class="card action-card" onclick="alert('Feature coming soon: Record Expense')"
                 style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
@@ -249,6 +302,49 @@
                 <div class="action-icon">👥</div>
             </article>
 
+        </section>
+
+        <!-- Data Imports Section -->
+        <h2 style="font-size:18px; margin-bottom:16px;">Data Imports</h2>
+        <section class="kpi-grid" style="margin-bottom:40px; grid-template-columns: repeat(3, 1fr);">
+            <!-- Import AP Invoices -->
+            <article class="card action-card" onclick="alert('Triggering AP Invoice Import...')"
+                style="height:140px; background:#f8fafc;">
+                <div>
+                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import AP Invoices</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">CSV / Excel / XML</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
+                </div>
+            </article>
+
+            <!-- Import Customer Payments -->
+            <article class="card action-card" onclick="alert('Triggering Cust Payment Import...')"
+                style="height:140px; background:#f8fafc;">
+                <div>
+                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import Cust. Payments</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">Bank Files / Remittance</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
+                </div>
+            </article>
+
+            <!-- Import Vendor Payments -->
+            <article class="card action-card" onclick="alert('Triggering Vendor Payment Import...')"
+                style="height:140px; background:#f8fafc;">
+                <div>
+                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Import Vendor Payments</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">Confirmation Files</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
+                </div>
+            </article>
         </section>
 
         <!-- Recent Transactions -->
