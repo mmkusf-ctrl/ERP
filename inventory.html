@@ -11,6 +11,7 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Card Hover & Icon Effects */
     .action-card {
       text-align: left;
       cursor: pointer;
@@ -19,12 +20,22 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 200px;
+      height: 220px;
+      /* Slight increase for breathing room */
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border);
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-light);
     }
 
     .action-card:hover .action-icon {
-      transform: scale(1.1) rotate(5deg);
-      opacity: 0.2;
+      transform: scale(1.15) rotate(8deg);
+      opacity: 0.15;
     }
 
     .action-icon {
@@ -32,12 +43,37 @@
       bottom: -20px;
       right: -20px;
       font-size: 140px;
-      opacity: 0.1;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      font-family: serif;
-      /* Just to make it distinct if using text icons */
+      opacity: 0.08;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       line-height: 1;
       color: var(--text-main);
+      pointer-events: none;
+    }
+
+    /* Button Placement in Cards */
+    .card-actions {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* KPI Clickable Styles */
+    .clickable-kpi {
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .clickable-kpi:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .clickable-kpi.active {
+      border-color: var(--primary);
+      background: var(--bg-surface);
+      box-shadow: 0 0 0 2px var(--primary-fade);
     }
   </style>
 </head>
@@ -100,56 +136,108 @@
       <div class="gold-line"></div>
     </div>
 
+    <!-- KPIs (Restored & Interactive) -->
+    <section class="grid grid-4" style="margin-bottom:32px;">
+      <article class="card card-premium clickable-kpi" onclick="setFilter('all')" id="kpiAll">
+        <div class="card-header">
+          <div class="card-title">Total SKUs</div>
+          <div class="badge badge-green">Catalog</div>
+        </div>
+        <div class="stat-value" id="kTotal">—</div>
+        <div class="stat-trend neutral">View All</div>
+      </article>
+
+      <article class="card card-premium clickable-kpi" onclick="setFilter('low')" id="kpiLow">
+        <div class="card-header">
+          <div class="card-title">Low Stock</div>
+          <div class="badge badge-yellow">Alert</div>
+        </div>
+        <div class="stat-value" id="kLow">0</div>
+        <div class="stat-trend neutral">Reorder Soon</div>
+      </article>
+
+      <article class="card card-premium clickable-kpi" onclick="setFilter('oos')" id="kpiOOS">
+        <div class="card-header">
+          <div class="card-title">Out of Stock</div>
+          <div class="badge badge-red">Critical</div>
+        </div>
+        <div class="stat-value" id="kOOS">0</div>
+        <div class="stat-trend down">Restock Now</div>
+      </article>
+
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Valuation</div>
+          <div class="badge badge-green">Asset</div>
+        </div>
+        <div class="stat-value" id="kValue">$0.00</div>
+        <div class="stat-trend up">Total Cost Basis</div>
+      </article>
+    </section>
+
     <!-- Operations Grid -->
     <section class="grid grid-4" style="margin-bottom:40px;">
 
       <!-- Receive Inventory -->
-      <article class="card card-premium action-card" onclick="openReceiveModal()">
+      <article class="card action-card" onclick="openReceiveModal()"
+        style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
         <div>
-          <div class="card-title">Inbound</div>
-          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Receive Inventory</h3>
-          <p style="font-size:13px; color:var(--text-muted);">Process specific items or full POs arrival.</p>
+          <div class="card-title" style="color:var(--primary);">Inbound</div>
+          <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Receive Inventory</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Process specific items or full POs
+            arrival.</p>
         </div>
-        <div style="margin-top:auto;">
-          <span class="btn btn-primary" style="height:36px; padding:0 16px; font-size:13px;">Start Reception
-            &rarr;</span>
+        <div class="card-actions">
+          <span class="btn btn-primary" style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+            Start Reception <span>&rarr;</span>
+          </span>
         </div>
         <div class="action-icon">📦</div>
       </article>
 
       <!-- Adjust Inventory -->
-      <article class="card card-premium action-card" onclick="openAdjustModal()">
+      <article class="card action-card" onclick="openAdjustModal()"
+        style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
         <div>
-          <div class="card-title">Corrections</div>
-          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Adjust Stock</h3>
-          <p style="font-size:13px; color:var(--text-muted);">Manual adjustments for damage, loss, or extras.</p>
+          <div class="card-title" style="color:var(--warning);">Corrections</div>
+          <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Adjust Stock</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Manual adjustments for damage, loss, or
+            extras.</p>
         </div>
-        <div style="margin-top:auto;">
-          <span class="btn btn-secondary" style="height:36px; padding:0 16px; font-size:13px;">Adjust &rarr;</span>
+        <div class="card-actions">
+          <span class="btn btn-secondary"
+            style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+            Adjust <span>&rarr;</span>
+          </span>
         </div>
         <div class="action-icon">🔧</div>
       </article>
 
       <!-- Cycle Count -->
-      <article class="card card-premium action-card" onclick="openCountModal()">
+      <article class="card action-card" onclick="openCountModal()"
+        style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
         <div>
-          <div class="card-title">Audit</div>
-          <h3 style="font-size:24px; font-weight:700; margin:8px 0;">Cycle Count</h3>
-          <p style="font-size:13px; color:var(--text-muted);">Verify physical stock accuracy by zone.</p>
+          <div class="card-title" style="color:var(--success);">Audit</div>
+          <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Cycle Count</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Verify physical stock accuracy by zone.
+          </p>
         </div>
-        <div style="margin-top:auto;">
-          <span class="btn btn-secondary" style="height:36px; padding:0 16px; font-size:13px;">Start Count &rarr;</span>
+        <div class="card-actions">
+          <span class="btn btn-secondary"
+            style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+            Start Count <span>&rarr;</span>
+          </span>
         </div>
         <div class="action-icon">✅</div>
       </article>
 
       <!-- Add Item Quick Link -->
       <article class="card action-card" onclick="openItemModal()"
-        style="background:var(--bg-body); border-style:dashed;">
-        <div>
-          <div class="card-title">Catalog</div>
-          <h3 style="font-size:24px; font-weight:700; margin:8px 0; color:var(--text-muted);">+ New Item</h3>
-          <p style="font-size:13px; color:var(--text-muted);">Register a new SKU in the master data.</p>
+        style="background:var(--bg-body); border:2px dashed var(--border);">
+        <div style="display:flex; flex-direction:column; justify-content:center; height:100%;">
+          <div class="card-title" style="margin-bottom:8px;">Catalog</div>
+          <h3 style="font-size:20px; font-weight:700; color:var(--text-muted); margin:0;">+ New Item</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Register a new SKU.</p>
         </div>
       </article>
 
@@ -183,9 +271,11 @@
       </section>
 
       <!-- Current Stock (Mini View) -->
-      <aside class="card">
+      <aside class="card" id="stockCard">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:18px; margin:0;">Quick Stock View</h2>
+          <h2 style="font-size:18px; margin:0;" id="stockTitle">Quick Stock View</h2>
+          <span class="badge" id="stockBadge"
+            style="display:none; background:var(--primary); color:white;">Filtered</span>
         </div>
         <input id="q" class="input" placeholder="Search SKU..." oninput="renderStock()" style="margin-bottom:16px;" />
         <div style="max-height:400px; overflow-y:auto;" id="stockList">
@@ -201,7 +291,7 @@
 
   </main>
 
-  <!-- Receive Modal -->
+  <!-- Modals (Same as before) -->
   <div class="mobile-nav" id="receiveModal" style="z-index:900;">
     <div class="card"
       style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
@@ -218,8 +308,7 @@
           style="text-align:center; padding:10px; background:#f8fafc; border-radius:8px; color:var(--text-muted); font-size:13px;">
           OR
         </div>
-        <select id="rMetaItem" class="input">
-          <!-- Filled by items -->
+        <select id="rMetaItem" class="input"> <!-- Filled by items -->
         </select>
         <input id="rQty" type="number" class="input" placeholder="Quantity Received" />
 
@@ -228,7 +317,6 @@
     </div>
   </div>
 
-  <!-- Adjust Modal -->
   <div class="mobile-nav" id="adjustModal" style="z-index:900;">
     <div class="card"
       style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
@@ -254,7 +342,6 @@
     </div>
   </div>
 
-  <!-- Cycle Count Modal -->
   <div class="mobile-nav" id="countModal" style="z-index:900;">
     <div class="card"
       style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:80vh; overflow-y:auto; box-shadow:var(--shadow-card);">
@@ -265,14 +352,11 @@
       </div>
       <p style="font-size:13px; color:var(--text-muted);">Please verify physical counts for the following randomly
         selected items:</p>
-
       <div id="countList" style="display:grid; gap:12px; margin-bottom:16px;"></div>
-
       <button class="btn btn-primary" onclick="doCycleCount()">Submit Counts</button>
     </div>
   </div>
 
-  <!-- Add Item Modal (Simplified) -->
   <div class="mobile-nav" id="itemModal" style="z-index:900;">
     <div class="card"
       style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
@@ -282,20 +366,16 @@
         <button onclick="closeItemModal()"
           style="border:none; bg:transparent; font-size:24px; cursor:pointer;">&times;</button>
       </div>
-
       <div style="display:grid; gap:16px;">
         <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
           <input id="iSku" class="input" placeholder="SKU (e.g. A-101)" />
           <input id="iName" class="input" placeholder="Item Name" />
         </div>
-
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
           <input id="iCat" class="input" placeholder="Category" />
           <input id="iWh" class="input" placeholder="Warehouse" />
         </div>
-
         <input id="iSup" class="input" placeholder="Supplier" />
-
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
           <div>
             <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On
@@ -308,12 +388,11 @@
             <input id="iRop" class="input" type="number" />
           </div>
           <div>
-            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Unit Cost
-              ($)</label>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Unit
+              Cost</label>
             <input id="iCost" class="input" type="number" step="0.01" />
           </div>
         </div>
-
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button class="btn btn-secondary" onclick="closeItemModal()">Cancel</button>
           <button class="btn btn-primary" onclick="addItem()">Save Item</button>
@@ -328,6 +407,7 @@
   <script>
     const ITEM_KEY = "stark_erp_items_v2";
     const PO_KEY = "stark_erp_pos_v1";
+    let CURRENT_FILTER = "all"; // all, low, oos
 
     function load(key, fallback) {
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
@@ -337,111 +417,64 @@
     function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
 
     // --- Modal Logic ---
-    function openReceiveModal() {
-      populateSelects();
-      document.getElementById("receiveModal").classList.add("open");
-    }
+    function openReceiveModal() { populateSelects(); document.getElementById("receiveModal").classList.add("open"); }
     function closeReceiveModal() { document.getElementById("receiveModal").classList.remove("open"); }
-
-    function openAdjustModal() {
-      populateSelects();
-      document.getElementById("adjustModal").classList.add("open");
-    }
+    function openAdjustModal() { populateSelects(); document.getElementById("adjustModal").classList.add("open"); }
     function closeAdjustModal() { document.getElementById("adjustModal").classList.remove("open"); }
-
-    function openCountModal() {
-      generateCountList();
-      document.getElementById("countModal").classList.add("open");
-    }
+    function openCountModal() { generateCountList(); document.getElementById("countModal").classList.add("open"); }
     function closeCountModal() { document.getElementById("countModal").classList.remove("open"); }
-
     function openItemModal() { document.getElementById("itemModal").classList.add("open"); }
     function closeItemModal() { document.getElementById("itemModal").classList.remove("open"); }
 
     // --- Core Logic ---
-
     function populateSelects() {
       const items = load(ITEM_KEY, []);
       const pos = load(PO_KEY, []);
-
-      // Populate Items (Adjust & Receive)
       const itemOpts = `<option value="">Select Item...</option>` + items.map(i => `<option value="${i.sku}">${i.sku} - ${i.name} (Cur: ${i.on})</option>`).join("");
       document.getElementById("aItem").innerHTML = itemOpts;
       document.getElementById("rMetaItem").innerHTML = itemOpts;
-
-      // Populate POs (Receive)
       const poOpts = `<option value="">Select Purchase Order...</option>` + pos.filter(p => p.status !== "Completed").map(p => `<option value="${p.id}">${p.id} - ${p.vendor} (ETA: ${p.eta})</option>`).join("");
       document.getElementById("rPo").innerHTML = poOpts;
     }
 
-    // Workflow: Receive
     function doReceive() {
       const poId = document.getElementById("rPo").value;
       const sku = document.getElementById("rMetaItem").value;
       const qty = Number(document.getElementById("rQty").value);
-
       if (!qty || qty <= 0) return toast("Error", "Valid quantity required.");
-
       const list = load(ITEM_KEY, []);
-
       if (poId) {
-        // Receive against PO (Simplified: Mark PO done, add to first item on list as demo)
-        // Real logic would parse lines, but for this demo trigger:
         const pos = load(PO_KEY, []);
         const p = pos.find(x => x.id === poId);
         if (p) {
-          p.status = "Completed"; // Close PO
-          save(PO_KEY, pos);
-
-          // Demo: Add to random item if lines not parsed
-          if (list.length) {
-            list[0].on += qty;
-            save(ITEM_KEY, list);
-            toast("Success", `Received ${qty} units against ${poId}. PO Closed.`);
-          } else {
-            toast("Success", `PO ${poId} marked received.`);
-          }
+          p.status = "Completed"; save(PO_KEY, pos);
+          if (list.length) { list[0].on += qty; save(ITEM_KEY, list); }
+          toast("Success", `Received against ${poId}.`);
         }
       } else if (sku) {
-        // Ad-hoc receipt
         const item = list.find(x => x.sku === sku);
-        if (item) {
-          item.on += qty;
-          save(ITEM_KEY, list);
-          toast("Success", `Received ${qty} units of ${sku}.`);
-        }
-      } else {
-        return toast("Error", "Select PO or Item.");
+        if (item) { item.on += qty; save(ITEM_KEY, list); toast("Success", `Received ${sku}.`); }
       }
-      closeReceiveModal();
-      renderAll();
+      closeReceiveModal(); renderAll();
     }
 
-    // Workflow: Adjust
     function doAdjust() {
       const sku = document.getElementById("aItem").value;
       const qty = Number(document.getElementById("aQty").value);
       const reason = document.getElementById("aReason").value;
-
-      if (!sku || !qty) return toast("Error", "Item and Quantity required.");
-
+      if (!sku || !qty) return toast("Error", "Required fields missing.");
       const list = load(ITEM_KEY, []);
       const item = list.find(x => x.sku === sku);
       if (item) {
-        item.on += qty; // Can be negative
-        save(ITEM_KEY, list);
-        toast("Adjustment Recorded", `${sku} adjusted by ${qty} (${reason}).`);
-        closeAdjustModal();
-        renderAll();
+        item.on += qty; save(ITEM_KEY, list);
+        toast("Success", "Stock adjusted.");
+        closeAdjustModal(); renderAll();
       }
     }
 
-    // Workflow: Cycle Count (Simulated)
     function generateCountList() {
       const items = load(ITEM_KEY, []);
-      if (!items.length) return document.getElementById("countList").innerHTML = "No items to count.";
-
-      // Pick 3 random
+      if (!items.length) return document.getElementById("countList").innerHTML = "No items.";
       const subset = items.sort(() => 0.5 - Math.random()).slice(0, 3);
       const html = subset.map(i => `
             <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">
@@ -450,23 +483,16 @@
                      <span style="font-size:12px; color:var(--text-muted);">System: ${i.on}</span>
                      <input class="input" style="width:100px; height:32px;" placeholder="Actual" type="number" />
                  </div>
-            </div>
-        `).join("");
+            </div>`).join("");
       document.getElementById("countList").innerHTML = html;
     }
 
-    function doCycleCount() {
-      // Just simulate success
-      toast("Audit Complete", "Cycle count adjustments pending approval.");
-      closeCountModal();
-    }
+    function doCycleCount() { toast("Success", "Counts submitted."); closeCountModal(); }
 
-    // Add Item (Legacy support)
     function addItem() {
       const sku = (document.getElementById("iSku").value || "").trim();
       const name = (document.getElementById("iName").value || "").trim();
-      if (!sku || !name) return toast("Error", "SKU and Name are required.");
-
+      if (!sku || !name) return toast("Error", "SKU/Name required.");
       const item = {
         sku, name,
         cat: (document.getElementById("iCat").value || "").trim() || "General",
@@ -476,55 +502,74 @@
         rop: Number(document.getElementById("iRop").value || 0),
         cost: Number(document.getElementById("iCost").value || 0)
       };
-
       const list = load(ITEM_KEY, []);
-      if (list.some(x => x.sku.toUpperCase() === sku.toUpperCase())) return toast("Error", "SKU already exists.");
-      list.unshift(item);
-      save(ITEM_KEY, list);
-      closeItemModal();
-      toast("Success", "Item added.");
-      renderAll();
+      list.unshift(item); save(ITEM_KEY, list);
+      closeItemModal(); toast("Success", "Item added."); renderAll();
     }
 
-    // Views
+    // --- Views ---
+    function setFilter(type) {
+      CURRENT_FILTER = type;
+      // visual state
+      document.querySelectorAll(".clickable-kpi").forEach(el => el.classList.remove("active"));
+      if (type !== 'all') {
+        const el = document.getElementById("kpi" + type.charAt(0).toUpperCase() + type.slice(1));
+        if (el) el.classList.add("active");
+        document.getElementById("stockBadge").style.display = "inline-flex";
+        document.getElementById("stockBadge").textContent = (type === 'low' ? 'Low Stock' : 'Out of Stock');
+      } else {
+        document.getElementById("stockBadge").style.display = "none";
+      }
+      renderStock();
+    }
+
     function renderStock() {
       const q = (document.getElementById("q").value || "").toLowerCase();
       const items = load(ITEM_KEY, []);
-      const filtered = items.filter(i => q ? (i.sku + i.name).toLowerCase().includes(q) : true);
+
+      // Update KPIs
+      const low = items.filter(i => i.on <= i.rop && i.on > 0).length;
+      const oos = items.filter(i => i.on <= 0).length;
+      const val = items.reduce((acc, i) => acc + (i.on * i.cost), 0);
+      document.getElementById("kTotal").textContent = items.length;
+      document.getElementById("kLow").textContent = low;
+      document.getElementById("kOOS").textContent = oos;
+      document.getElementById("kValue").textContent = money(val);
+
+      // Filter Logic
+      const filtered = items.filter(i => {
+        if (q && !(i.sku + i.name).toLowerCase().includes(q)) return false;
+        if (CURRENT_FILTER === 'low' && (i.on > i.rop || i.on <= 0)) return false;
+        if (CURRENT_FILTER === 'oos' && i.on > 0) return false;
+        return true;
+      });
 
       const html = filtered.map(i => `
-            <div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+            <div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <div style="font-weight:600; font-size:13px;">${i.sku}</div>
                     <div style="font-size:12px; color:var(--text-muted);">${i.name}</div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-weight:700; color:${i.on <= i.rop ? 'var(--danger)' : 'var(--text-main)'};">${i.on}</div>
-                    <div style="font-size:11px; color:var(--text-muted);">Using ${i.wh}</div>
+                    <div style="font-weight:700; color:${i.on <= 0 ? 'var(--danger)' : (i.on <= i.rop ? 'var(--warning)' : 'var(--text-main)')};">${i.on}</div>
+                    <div style="font-size:11px; color:var(--text-muted);">${i.wh}</div>
                 </div>
             </div>
         `).join("");
 
-      document.getElementById("stockList").innerHTML = html || `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">No items found.</div>`;
+      document.getElementById("stockList").innerHTML = html || `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">No items match filter.</div>`;
     }
 
     function renderDeliveries() {
       const pos = load(PO_KEY, []);
-      // Simulate upcoming: Open pos sorted by ETA
       const active = pos.filter(p => p.status !== "Completed" && p.status !== "Delivered");
       active.sort((a, b) => new Date(a.eta) - new Date(b.eta));
-
       const tbody = document.getElementById("delBody");
       tbody.innerHTML = "";
-
-      if (!active.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No upcoming deliveries.</td></tr>`;
-        return;
-      }
+      if (!active.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No upcoming deliveries.</td></tr>`;
 
       active.forEach(p => {
         const tr = document.createElement("tr");
-        // Add a "Receive" button directly in row
         tr.innerHTML = `
                 <td>${p.eta || "—"}</td>
                 <td><strong>${p.id}</strong></td>
@@ -542,21 +587,14 @@
       renderDeliveries();
     }
 
-    // Init
+    // Auto-seed
     if (load(ITEM_KEY, []).length === 0) {
-      // Auto-seed if empty
       const demo = [
         { sku: "BX-9001", name: "Premium Gift Box", cat: "Packaging", wh: "WH-A", sup: "PackPro", on: 140, rop: 50, cost: 1.60 },
-        { sku: "NK-1001", name: "Necklace — Aurora", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 62, rop: 30, cost: 42.00 }
+        { sku: "NK-1001", name: "Necklace — Aurora", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 62, rop: 30, cost: 42.00 },
+        { sku: "RG-2001", name: "Ring — Obsidian", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 0, rop: 18, cost: 38.00 }
       ];
       save(ITEM_KEY, demo);
-    }
-    if (load(PO_KEY, []).length === 0) {
-      const demoPO = [
-        { id: "PO-4421", vendor: "PackPro", wh: "WH-A", eta: "2026-02-15", status: "Open", lines: "BX-9001, 500" },
-        { id: "PO-4425", vendor: "Stark Mfg", wh: "WH-A", eta: "2026-02-18", status: "Confirmed", lines: "NK-1001, 20" }
-      ];
-      save(PO_KEY, demoPO);
     }
 
     renderAll();
