@@ -283,6 +283,11 @@
       } catch { window.location.href = "index.html"; }
     })();
 
+    function logout() {
+      localStorage.removeItem(AUTH_KEY);
+      window.location.href = "index.html";
+    }
+
     function loadTasks() {
       try { return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); } catch { return []; }
     }
