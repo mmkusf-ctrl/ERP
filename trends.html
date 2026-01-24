@@ -1,563 +1,368 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Trends | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg1:#f6f8fc; --bg2:#ffffff; --text:#0b1220; --muted:#667085;
-      --border:rgba(11,18,32,0.10); --shadow2: 0 10px 24px rgba(2,6,23,0.08); --radius:18px;
-      --primary:#0f3d9e; --primary2:#1f56d8; --accent:#c9b37e;
-      --good:#0f766e; --warn:#b45309; --bad:#b42318;
-      --glass: rgba(255,255,255,0.72); --chipBg: rgba(11,18,32,0.06);
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text);
-      background:
-        radial-gradient(900px 500px at 25% 15%, rgba(201,179,126,0.14) 0%, rgba(201,179,126,0.00) 55%),
-        radial-gradient(900px 500px at 80% 20%, rgba(31,86,216,0.14) 0%, rgba(31,86,216,0.00) 55%),
-        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
-    }
-
-    .topbar{
-      position: sticky; top:0; z-index:20;
-      background: var(--glass); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(11,18,32,0.08);
-    }
-    .topbar-inner{
-      max-width: 1240px; margin:0 auto; padding:14px 18px;
-      display:grid; grid-template-columns:150px 1fr 260px; align-items:center; gap:14px;
-    }
-    .logo img{ width:125px; height:auto; display:block; }
-
-    .nav{
-      display:grid; grid-template-columns: repeat(7, 1fr); gap:10px; align-items:center;
-    }
-    .nav a{
-      text-decoration:none; color: rgba(11,18,32,0.82); text-align:center;
-      padding: 10px 8px; border-radius: 12px; font-size: 13px; font-weight: 500;
-      transition: background 160ms ease, transform 160ms ease;
-    }
-    .nav a:hover{ background: rgba(11,18,32,0.06); transform: translateY(-1px); }
-    .nav a.active{
-      background: linear-gradient(180deg, rgba(31,86,216,0.16) 0%, rgba(31,86,216,0.08) 100%);
-      color: var(--primary); font-weight: 600; border: 1px solid rgba(31,86,216,0.18);
-    }
-
-    .right{ display:flex; justify-content:flex-end; align-items:center; gap:10px; }
-    .pill{
-      padding: 8px 12px; border-radius: 999px;
-      background: rgba(255,255,255,0.7);
-      border: 1px solid rgba(11,18,32,0.10);
-      box-shadow: 0 8px 20px rgba(2,6,23,0.06);
-      display:flex; align-items:center; gap:8px; font-size:13px; color: rgba(11,18,32,0.80);
-    }
-    .dot{ width:8px; height:8px; border-radius:999px; background: var(--good); }
-
-    .btn{
-      height: 38px; border:none; border-radius: 12px;
-      background: linear-gradient(180deg, var(--primary2) 0%, var(--primary) 100%);
-      color:#fff; font-weight: 800; font-size: 13px; cursor:pointer; padding: 0 12px;
-      box-shadow: 0 10px 22px rgba(31,86,216,0.22);
-      transition: transform 120ms ease, box-shadow 120ms ease; white-space: nowrap;
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,86,216,0.28); }
-    .btn.secondary{
-      background: rgba(255,255,255,0.85); color: rgba(11,18,32,0.84);
-      border: 1px solid rgba(11,18,32,0.12); box-shadow:none;
-    }
-    .btn.secondary:hover{ background: rgba(11,18,32,0.06); box-shadow:none; }
-
-    .wrap{ max-width:1240px; margin:0 auto; padding: 24px 18px 56px; }
-
-    .headline{ display:flex; align-items:flex-end; justify-content: space-between; gap: 12px; }
-    .headline h1{ margin:0; font-size: 26px; letter-spacing: -0.6px; }
-    .headline p{ margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 860px; }
-
-    .panel{
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
-      padding: 18px;
-      backdrop-filter: blur(8px);
-      margin-top: 16px;
-    }
-    .panel h2{ margin:0 0 10px; font-size:15px; font-weight:800; letter-spacing: -0.2px; }
-    .goldline{
-      height: 1px;
-      background: linear-gradient(90deg, rgba(201,179,126,0.0), rgba(201,179,126,0.75), rgba(201,179,126,0.0));
-      margin: 14px 0;
-    }
-
-    .controls{
-      display:grid;
-      grid-template-columns: 1.0fr 0.6fr 0.6fr 0.8fr;
-      gap: 10px;
-    }
-    .input, select{
-      width:100%;
-      height: 42px;
-      border-radius: 12px;
-      border: 1px solid rgba(11,18,32,0.12);
-      padding: 0 12px;
-      outline:none;
-      background: rgba(255,255,255,0.85);
-      font-size: 13px;
-      color: var(--text);
-    }
-    .input:focus, select:focus{
-      border-color: rgba(31,86,216,0.45);
-      box-shadow: 0 0 0 4px rgba(31,86,216,0.10);
-    }
-
-    .kpis{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 14px;
-    }
-    .card{
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow2);
-      padding: 18px 18px 16px;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(8px);
-    }
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      border-radius: var(--radius);
-      pointer-events:none;
-      background: linear-gradient(135deg,
-        rgba(201,179,126,0.18) 0%,
-        rgba(31,86,216,0.14) 40%,
-        rgba(255,255,255,0.00) 75%
-      );
-      opacity: 0.9;
-      mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-      -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-      padding: 1px;
-      box-sizing: border-box;
-    }
-    .card-top{ display:flex; justify-content: space-between; align-items:center; gap:12px; position:relative; z-index:1; }
-    .label{ font-size: 12px; font-weight: 800; letter-spacing: 0.5px; color: rgba(11,18,32,0.72); text-transform: uppercase; }
-    .chip{
-      font-size: 12px; padding: 6px 10px; border-radius: 999px;
-      background: var(--chipBg); border: 1px solid rgba(11,18,32,0.10);
-      color: rgba(11,18,32,0.78); white-space: nowrap;
-    }
-    .chip.good{ color: var(--good); border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); }
-    .chip.warn{ color: var(--warn); border-color: rgba(180,83,9,0.25); background: rgba(180,83,9,0.08); }
-
-    .value{ margin-top: 14px; font-size: 30px; font-weight: 800; letter-spacing: -0.7px; position: relative; z-index: 1; }
-    .sub{ margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.5; position: relative; z-index: 1; }
-
-    .grid2{
-      display:grid;
-      grid-template-columns: 1.45fr 0.55fr;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .table-wrap{
-      border: 1px solid rgba(11,18,32,0.10);
-      border-radius: 16px;
-      overflow:hidden;
-      background: rgba(255,255,255,0.78);
-    }
-    table{ width:100%; border-collapse: collapse; font-size: 13px; }
-    thead th{
-      text-align:left; padding:12px;
-      color: rgba(11,18,32,0.72);
-      font-size: 12px; letter-spacing: 0.4px;
-      text-transform: uppercase;
-      background: rgba(11,18,32,0.03);
-      border-bottom: 1px solid rgba(11,18,32,0.08);
-    }
-    tbody td{ padding: 12px; border-bottom: 1px solid rgba(11,18,32,0.06); vertical-align: top; }
-    tbody tr:hover{ background: rgba(31,86,216,0.04); }
-
-    .muted{ color: var(--muted); font-size: 12px; }
-    .pilltag{
-      display:inline-block; padding: 6px 10px; border-radius: 999px;
-      border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(11,18,32,0.05);
-      font-size: 12px; font-weight: 700; color: rgba(11,18,32,0.78);
-      white-space: nowrap;
-    }
-
-    .mini{
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(11,18,32,0.08);
-      background: rgba(255,255,255,0.72);
-    }
-    .mini strong{ font-size: 13px; display:block; }
-    .mini span{ color: var(--muted); font-size: 12px; display:block; margin-top: 4px; }
-
-    @media (max-width: 1100px){
-      .topbar-inner{ grid-template-columns:150px 1fr; }
-      .right{ display:none; }
-      .controls{ grid-template-columns: 1fr; }
-      .kpis{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-      .grid2{ grid-template-columns: 1fr; }
-    }
-    @media (max-width: 700px){
-      .nav{ grid-template-columns: repeat(3, 1fr); }
-      .kpis{ grid-template-columns: 1fr; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="logo">
-      <img src="images/stark-logo.png" alt="Stark Premium" />
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="dashboard.html" class="logo">
+        <img src="images/stark-logo.png" alt="Stark Premium">
+        <span class="logo-text">Stark ERP</span>
+      </a>
+
+      <nav class="nav">
+        <a class="nav-link" href="dashboard.html">Overview</a>
+        <a class="nav-link" href="crm.html">CRM</a>
+        <a class="nav-link" href="inventory.html">Inventory</a>
+        <a class="nav-link" href="accounting.html">Accounting</a>
+        <a class="nav-link" href="orders.html">Orders</a>
+        <a class="nav-link" href="logistics.html">Logistics</a>
+        <a class="nav-link active" href="trends.html">Trends</a>
+      </nav>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn btn-secondary" style="height:36px;" onclick="seedSales()">
+          Load Demo Sales
+        </button>
+        <button class="hamburger" onclick="openMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <nav class="nav" aria-label="ERP Navigation">
-      <a href="dashboard.html">Home</a>
-      <a href="account.html">Account</a>
-      <a href="crm.html">CRM</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="orders.html">Orders</a>
-      <a href="logistics.html">Logistics</a>
-      <a class="active" href="trends.html">Trends</a>
-    </nav>
-
-    <div class="right">
-      <div class="pill"><span class="dot"></span>Online</div>
-      <button class="btn secondary" onclick="seedSales()">Load Demo Sales</button>
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <strong style="font-size:16px;">Navigation</strong>
+        <button onclick="closeMobileNav()"
+          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <a class="mobile-link" href="dashboard.html">Overview</a>
+      <a class="mobile-link" href="crm.html">CRM</a>
+      <a class="mobile-link" href="inventory.html">Inventory</a>
+      <a class="mobile-link" href="orders.html">Orders</a>
+      <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link active" href="trends.html">Trends</a>
     </div>
   </div>
-</header>
 
-<main class="wrap">
-  <div class="headline">
-    <div>
-      <h1>Trends</h1>
-      <p>Analyze SKU performance across sales, customer location, and demand forecasting—designed for operational decision-making.</p>
+  <main class="container">
+    <div class="page-header"
+      style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;">
+      <div>
+        <h1 class="page-title">Sales Trends & Forecasting</h1>
+        <p class="page-desc">Analyze SKU performance, revenue streams, and demand forecasting.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-secondary" onclick="clearSales()">Clear Data</button>
+        <button class="btn btn-primary" onclick="window.location.href='inventory.html'">Manage Items</button>
+      </div>
     </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-      <button class="btn secondary" onclick="clearSales()">Clear Sales</button>
-      <a class="btn" href="inventory.html">Back to Inventory</a>
-    </div>
-  </div>
+    <div class="gold-line" style="margin-top:-10px;"></div>
 
-  <section class="panel">
-    <h2>SKU Performance Controls</h2>
-    <div class="goldline"></div>
-
-    <div class="controls">
-      <select id="skuSelect" onchange="render()"></select>
-      <select id="rangeSelect" onchange="render()">
-        <option value="7">Last 7 days</option>
-        <option value="30" selected>Last 30 days</option>
-        <option value="90">Last 90 days</option>
-      </select>
-      <select id="locationSelect" onchange="render()"></select>
-      <input id="customerSearch" class="input" placeholder="Filter customer name..." oninput="render()">
-    </div>
-
-    <div class="kpis" aria-label="Trend KPIs">
-      <article class="card">
-        <div class="card-top">
-          <div class="label">No. of Sales</div>
-          <div class="chip good">Orders count</div>
-        </div>
-        <div class="value" id="kpiSales">0</div>
-        <div class="sub" id="kpiSalesSub">—</div>
-      </article>
-
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Units Sold</div>
-          <div class="chip good">Volume</div>
-        </div>
-        <div class="value" id="kpiUnits">0</div>
-        <div class="sub">Total units sold in range</div>
-      </article>
-
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Revenue</div>
-          <div class="chip good">Gross</div>
-        </div>
-        <div class="value" id="kpiRevenue">$0</div>
-        <div class="sub">Sales amount by SKU</div>
-      </article>
-
-      <article class="card">
-        <div class="card-top">
-          <div class="label">Forecast (next 30d)</div>
-          <div class="chip warn">Simple model</div>
-        </div>
-        <div class="value" id="kpiForecast">0</div>
-        <div class="sub">Avg daily units × 30</div>
-      </article>
-    </div>
-  </section>
-
-  <div class="grid2">
-    <section class="panel">
-      <h2>Sales Detail</h2>
-      <div class="goldline"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Location</th>
-              <th>Order ID</th>
-              <th>Qty</th>
-              <th>Unit Price</th>
-              <th>Line Total</th>
-            </tr>
-          </thead>
-          <tbody id="salesBody"></tbody>
-        </table>
+    <!-- Controls -->
+    <section class="card" style="margin-bottom:24px;">
+      <h2 style="font-size:16px; margin:0 0 16px;">Analysis Controls</h2>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+        <select id="skuSelect" class="input" onchange="render()"></select>
+        <select id="rangeSelect" class="input" onchange="render()">
+          <option value="7">Last 7 Days</option>
+          <option value="30" selected>Last 30 Days</option>
+          <option value="90">Last 90 Days</option>
+        </select>
+        <select id="locationSelect" class="input" onchange="render()"></select>
+        <input id="customerSearch" class="input" placeholder="Filter by Customer..." oninput="render()" />
       </div>
     </section>
 
-    <aside class="panel">
-      <h2>Insights</h2>
-      <div class="goldline"></div>
+    <!-- KPIs -->
+    <section class="grid grid-4" style="margin-bottom:32px;">
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Number of Sales</div>
+          <div class="badge badge-green">Count</div>
+        </div>
+        <div class="stat-value" id="kpiSales">0</div>
+        <div class="stat-trend neutral" id="kpiSalesSub">—</div>
+      </article>
 
-      <div class="mini" id="insight1"></div>
-      <div style="height:10px;"></div>
-      <div class="mini" id="insight2"></div>
-      <div style="height:10px;"></div>
-      <div class="mini" id="insight3"></div>
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Units Sold</div>
+          <div class="badge badge-green">Volume</div>
+        </div>
+        <div class="stat-value" id="kpiUnits">0</div>
+        <div class="stat-trend neutral">Total in Range</div>
+      </article>
 
-      <div class="goldline"></div>
-      <div class="muted">
-        Forecasting is a simple baseline (average daily units). Later we can upgrade to seasonal forecasting and safety stock logic.
-      </div>
-    </aside>
-  </div>
-</main>
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Revenue</div>
+          <div class="badge badge-green">Gross</div>
+        </div>
+        <div class="stat-value" id="kpiRevenue">$0</div>
+        <div class="stat-trend neutral">Total Sales Amount</div>
+      </article>
 
-<script>
-  /***********************
-   * Data model (localStorage)
-   ***********************/
-  const KEY_ITEMS = "stark_erp_items_v1";           // from inventory.html
-  const KEY_SALES = "stark_erp_sales_v1";           // new sales store
+      <article class="card card-premium">
+        <div class="card-header">
+          <div class="card-title">Forecast (30d)</div>
+          <div class="badge badge-yellow">Prediction</div>
+        </div>
+        <div class="stat-value" id="kpiForecast">0</div>
+        <div class="stat-trend neutral">Based on Daily Avg</div>
+      </article>
+    </section>
 
-  function load(key, fallback){
-    try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-    catch { return fallback; }
-  }
-  function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
+    <div class="grid grid-2">
+      <!-- Table -->
+      <section class="card">
+        <h2 style="font-size:18px; margin:0 0 16px;">Sales Detail</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Location</th>
+                <th>Order ID</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="salesBody"></tbody>
+          </table>
+        </div>
+      </section>
 
-  function money(n){
-    const v = Number(n || 0);
-    return v.toLocaleString(undefined, { style: "currency", currency: "USD" });
-  }
+      <!-- Insights Sidebar -->
+      <aside style="display:grid; gap:24px; align-content:start;">
+        <div class="card">
+          <h2 style="font-size:16px; margin:0 0 16px;">Key Insights</h2>
 
-  function escapeHtml(str){
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
+            id="insight1">
+            <!-- Filled by JS -->
+          </div>
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
+            id="insight2">
+            <!-- Filled by JS -->
+          </div>
+          <div
+            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);"
+            id="insight3">
+            <!-- Filled by JS -->
+          </div>
 
-  // Items drive SKU list
-  let items = load(KEY_ITEMS, []);
-  let sales = load(KEY_SALES, []);
+          <div class="gold-line"></div>
+          <p style="font-size:13px; color:var(--text-muted);">
+            Forecasting model uses simple moving average. Seasonal adjustment module pending.
+          </p>
+        </div>
+      </aside>
+    </div>
 
-  function unique(list){
-    return Array.from(new Set(list.filter(Boolean))).sort();
-  }
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+      &copy; 2026 Stark Premium ERP.
+    </div>
+  </main>
 
-  function todayMinus(days){
-    const d = new Date();
-    d.setDate(d.getDate() - days);
-    d.setHours(0,0,0,0);
-    return d.getTime();
-  }
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
-  function initControls(){
-    const skuSelect = document.getElementById("skuSelect");
-    const locSelect = document.getElementById("locationSelect");
+  <script src="erp.js"></script>
+  <script>
+    const KEY_ITEMS = "stark_erp_items_v2"; // updated key from inventory.html
+    const KEY_SALES = "stark_erp_sales_v1";
 
-    // If no items, still allow sales demo
-    const skus = items.length ? items.map(i => i.sku) : unique(sales.map(s => s.sku));
-    skuSelect.innerHTML = skus.length
-      ? skus.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("")
-      : `<option value="">No SKUs found</option>`;
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+      catch { return fallback; }
+    }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
 
-    // Preselect SKU from query string (from Inventory -> Trends click)
-    const params = new URLSearchParams(location.search);
-    const skuFromUrl = params.get("sku");
-    if (skuFromUrl && skus.includes(skuFromUrl)) skuSelect.value = skuFromUrl;
+    // Data init
+    let items = load(KEY_ITEMS, []);
+    let sales = load(KEY_SALES, []);
 
-    const locs = unique(sales.map(s => s.location));
-    locSelect.innerHTML =
-      `<option value="">All locations</option>` +
-      locs.map(l => `<option value="${escapeHtml(l)}">${escapeHtml(l)}</option>`).join("");
-  }
+    function unique(arr) { return Array.from(new Set(arr)).filter(Boolean).sort(); }
 
-  function render(){
-    items = load(KEY_ITEMS, []);
-    sales = load(KEY_SALES, []);
+    function initControls() {
+      const skuSelect = document.getElementById("skuSelect");
+      const locSelect = document.getElementById("locationSelect");
+
+      // Populate SKU
+      const skus = items.length ? items.map(i => i.sku) : unique(sales.map(s => s.sku));
+      skuSelect.innerHTML = skus.length
+        ? `<option value="">All SKUs</option>` + skus.map(s => `<option value="${s}">${s}</option>`).join("")
+        : `<option value="">No SKUs Found</option>`;
+
+      // Populate Locations
+      const locs = unique(sales.map(s => s.location));
+      locSelect.innerHTML = `<option value="">All Locations</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join("");
+    }
+
+    function render() {
+      // Reload newest data
+      items = load(KEY_ITEMS, []);
+      sales = load(KEY_SALES, []);
+
+      const skuVal = document.getElementById("skuSelect").value;
+      const rangeVal = Number(document.getElementById("rangeSelect").value);
+      const locVal = document.getElementById("locationSelect").value;
+      const custSearch = (document.getElementById("customerSearch").value || "").toLowerCase();
+
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - rangeVal);
+      const cutoffTime = cutoff.getTime();
+
+      let filtered = sales.filter(s => {
+        if (new Date(s.date).getTime() < cutoffTime) return false;
+        if (skuVal && s.sku !== skuVal) return false;
+        if (locVal && s.location !== locVal) return false;
+        if (custSearch && !s.customer.toLowerCase().includes(custSearch)) return false;
+        return true;
+      });
+
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // Calculate KPIs
+      const totalUnits = filtered.reduce((acc, s) => acc + Number(s.qty), 0);
+      const totalRev = filtered.reduce((acc, s) => acc + (Number(s.qty) * Number(s.unitPrice)), 0);
+      const dailyAvg = totalUnits / Math.max(1, rangeVal);
+      const forecast = Math.round(dailyAvg * 30);
+
+      document.getElementById("kpiSales").textContent = filtered.length;
+      document.getElementById("kpiSalesSub").textContent = skuVal || "All SKUs";
+      document.getElementById("kpiUnits").textContent = totalUnits;
+      document.getElementById("kpiRevenue").textContent = money(totalRev);
+      document.getElementById("kpiForecast").textContent = forecast;
+
+      // Render Table
+      const tbody = document.getElementById("salesBody");
+      tbody.innerHTML = "";
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No sales data in this range.</td></tr>`;
+      } else {
+        filtered.slice(0, 100).forEach(s => {
+          const tr = document.createElement("tr");
+          const total = Number(s.qty) * Number(s.unitPrice);
+          tr.innerHTML = `
+               <td>${new Date(s.date).toLocaleDateString()}</td>
+               <td>${s.customer}</td>
+               <td><span class="badge badge-green">${s.location}</span></td>
+               <td>${s.orderId}</td>
+               <td>${s.qty}</td>
+               <td>${money(total)}</td>
+             `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Insights
+      const bestCust = getTop(filtered, s => s.customer);
+      const bestLoc = getTop(filtered, s => s.location);
+      const bestDay = getTopDay(filtered);
+
+      document.getElementById("insight1").innerHTML = `
+          <strong style="display:block; font-size:13px;">Top Customer</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestCust || "—"}</span>
+       `;
+      document.getElementById("insight2").innerHTML = `
+          <strong style="display:block; font-size:13px;">Top Region</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestLoc || "—"}</span>
+       `;
+      document.getElementById("insight3").innerHTML = `
+          <strong style="display:block; font-size:13px;">Peak Sales Day</strong>
+          <span style="font-size:14px; margin-top:4px;">${bestDay || "—"}</span>
+       `;
+    }
+
+    function getTop(list, keyFn) {
+      const m = {};
+      list.forEach(item => {
+        const k = keyFn(item);
+        m[k] = (m[k] || 0) + Number(item.qty);
+      });
+      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
+      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
+    }
+
+    function getTopDay(list) {
+      const m = {};
+      list.forEach(item => {
+        const d = new Date(item.date).toLocaleDateString();
+        m[d] = (m[d] || 0) + Number(item.qty);
+      });
+      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
+      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
+    }
+
+    // Demo Data
+    function seedSales() {
+      // Generate random sales for last 6 months
+      const newSales = [];
+      const customers = [
+        { name: "Asha Retail", loc: "Austin, TX" },
+        { name: "Blue Harbor", loc: "Miami, FL" },
+        { name: "Citrine Luxe", loc: "New York, NY" },
+        { name: "Desert Pearl", loc: "Phoenix, AZ" },
+        { name: "Emerald Lane", loc: "Seattle, WA" }
+      ];
+      const skus = items.length ? items.map(i => i.sku) : ["A-101", "B-202", "C-303"]; // fallback
+
+      for (let i = 0; i < 150; i++) {
+        const daysAgo = Math.floor(Math.random() * 90);
+        const d = new Date(); d.setDate(d.getDate() - daysAgo);
+        const c = customers[Math.floor(Math.random() * customers.length)];
+        const sku = skus[Math.floor(Math.random() * skus.length)];
+
+        newSales.push({
+          date: d.toISOString(),
+          customer: c.name,
+          location: c.loc,
+          sku: sku,
+          qty: Math.floor(Math.random() * 15) + 1,
+          unitPrice: 50 + Math.floor(Math.random() * 150),
+          orderId: "ORD-" + Math.floor(Math.random() * 90000)
+        });
+      }
+
+      sales = sales.concat(newSales);
+      save(KEY_SALES, sales);
+      toast("Success", "Loaded 150 demo sales records.");
+      initControls();
+      render();
+    }
+
+    function clearSales() {
+      if (confirm("Delete all sales history?")) {
+        save(KEY_SALES, []);
+        render();
+        toast("Cleared", "Sales history deleted.");
+      }
+    }
+
+    // Init
     initControls();
-
-    const sku = document.getElementById("skuSelect").value;
-    const rangeDays = Number(document.getElementById("rangeSelect").value || 30);
-    const loc = document.getElementById("locationSelect").value;
-    const custQ = (document.getElementById("customerSearch").value || "").trim().toLowerCase();
-
-    const startMs = todayMinus(rangeDays);
-
-    let filtered = sales.filter(s => (!sku || s.sku === sku) && new Date(s.date).getTime() >= startMs);
-    if (loc) filtered = filtered.filter(s => s.location === loc);
-    if (custQ) filtered = filtered.filter(s => (s.customer || "").toLowerCase().includes(custQ));
-
-    filtered.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-    // KPIs
-    const numSales = filtered.length;
-    const units = filtered.reduce((sum, s) => sum + Number(s.qty || 0), 0);
-    const revenue = filtered.reduce((sum, s) => sum + Number(s.qty || 0) * Number(s.unitPrice || 0), 0);
-
-    const avgDaily = units / Math.max(rangeDays, 1);
-    const forecast = Math.round(avgDaily * 30);
-
-    document.getElementById("kpiSales").textContent = numSales;
-    document.getElementById("kpiSalesSub").textContent = sku ? `SKU: ${sku}` : "Select a SKU";
-    document.getElementById("kpiUnits").textContent = units;
-    document.getElementById("kpiRevenue").textContent = money(revenue);
-    document.getElementById("kpiForecast").textContent = forecast;
-
-    // Table
-    const body = document.getElementById("salesBody");
-    body.innerHTML = "";
-    if (filtered.length === 0){
-      body.innerHTML = `<tr><td colspan="7" class="muted">No sales found for the selected filters. Click “Load Demo Sales” if needed.</td></tr>`;
-    } else {
-      filtered.slice(0, 200).forEach(s=>{
-        const lineTotal = Number(s.qty||0) * Number(s.unitPrice||0);
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${escapeHtml(new Date(s.date).toLocaleDateString())}</td>
-          <td>${escapeHtml(s.customer || "—")}</td>
-          <td><span class="pilltag">${escapeHtml(s.location || "—")}</span></td>
-          <td>${escapeHtml(s.orderId || "—")}</td>
-          <td>${Number(s.qty||0)}</td>
-          <td>${money(s.unitPrice||0)}</td>
-          <td>${money(lineTotal)}</td>
-        `;
-        body.appendChild(tr);
-      });
-    }
-
-    // Insights (simple but useful)
-    const topCustomers = topN(filtered, x => x.customer, 3);
-    const topLocations = topN(filtered, x => x.location, 3);
-
-    document.getElementById("insight1").innerHTML =
-      `<strong>Top customers</strong><span>${topCustomers.length ? topCustomers.map(x=> `${escapeHtml(x.k)} (${x.v})`).join(", ") : "—"}</span>`;
-
-    document.getElementById("insight2").innerHTML =
-      `<strong>Top locations</strong><span>${topLocations.length ? topLocations.map(x=> `${escapeHtml(x.k)} (${x.v})`).join(", ") : "—"}</span>`;
-
-    const bestDay = bestSalesDay(filtered);
-    document.getElementById("insight3").innerHTML =
-      `<strong>Peak day</strong><span>${bestDay ? `${escapeHtml(bestDay.day)} · ${bestDay.units} units` : "—"}</span>`;
-  }
-
-  function topN(list, keyFn, n){
-    const m = new Map();
-    list.forEach(x=>{
-      const k = keyFn(x) || "—";
-      m.set(k, (m.get(k)||0) + 1);
-    });
-    return Array.from(m.entries())
-      .map(([k,v])=>({k,v}))
-      .sort((a,b)=>b.v-a.v)
-      .slice(0,n);
-  }
-
-  function bestSalesDay(list){
-    if (!list.length) return null;
-    const m = new Map();
-    list.forEach(x=>{
-      const day = new Date(x.date).toLocaleDateString();
-      m.set(day, (m.get(day)||0) + Number(x.qty||0));
-    });
-    const arr = Array.from(m.entries()).map(([day,units])=>({day,units}));
-    arr.sort((a,b)=>b.units-a.units);
-    return arr[0] || null;
-  }
-
-  /***********************
-   * Demo sales
-   ***********************/
-  function seedSales(){
-    // create demo if empty or add more
-    const skuList = items.length ? items.map(i=>i.sku) : ["NK-1001","NK-1002","RG-2001","BX-9001","LB-3001"];
-    const customers = [
-      {name:"Asha Retail", loc:"Austin, TX"},
-      {name:"Blue Harbor Boutique", loc:"Miami, FL"},
-      {name:"Citrine Luxe", loc:"New York, NY"},
-      {name:"Desert Pearl", loc:"Phoenix, AZ"},
-      {name:"Emerald Lane", loc:"Seattle, WA"}
-    ];
-
-    const now = Date.now();
-    const add = [];
-    for (let i=0;i<120;i++){
-      const sku = skuList[Math.floor(Math.random()*skuList.length)];
-      const c = customers[Math.floor(Math.random()*customers.length)];
-      const daysAgo = Math.floor(Math.random()*90);
-      const d = new Date(now - daysAgo*24*3600*1000);
-      const qty = 1 + Math.floor(Math.random()*5);
-      const unitPrice = 25 + Math.floor(Math.random()*200);
-
-      add.push({
-        date: d.toISOString(),
-        sku,
-        orderId: "SO-" + (8000 + Math.floor(Math.random()*1500)),
-        customer: c.name,
-        location: c.loc,
-        qty,
-        unitPrice
-      });
-    }
-
-    sales = sales.concat(add);
-    save(KEY_SALES, sales);
     render();
-  }
-
-  function clearSales(){
-    const ok = confirm("Clear all sales data from Trends? (localStorage)");
-    if (!ok) return;
-    save(KEY_SALES, []);
-    render();
-  }
-
-  // init
-  initControls();
-  render();
-</script>
+  </script>
 </body>
+
 </html>
