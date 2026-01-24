@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Item Master | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-live {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-fashion {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+
+        .status-internal {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .status-discontinued {
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: line-through;
+        }
+
+        .status-feeds {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .status-presentation {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Topbar -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link active" href="item_master.html">Items</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="reports.html">Reports</a>
+                <a class="nav-link" href="events.html">Events</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Online</div>
+                <button class="hamburger"
+                    onclick="document.getElementById('mobileNav').classList.add('open')">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="document.getElementById('mobileNav').classList.remove('open')"
+                    style="background:none; border:none; font-size:24px;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link active" href="item_master.html">Item Master</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+        </div>
+    </div>
+
+    <main class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">Item Master</h1>
+            <p class="page-desc">Centralized catalog for all product SKUs, status, and attributes.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="card" style="margin-bottom:24px;">
+            <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:end;">
+
+                <div style="flex:1; min-width:200px;">
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Search</label>
+                    <div style="position:relative;">
+                        <input id="qSearch" class="input" placeholder="Search SKU, Model #, Title..." oninput="render()"
+                            style="padding-left:36px;">
+                        <span
+                            style="position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.5;">🔍</span>
+                    </div>
+                </div>
+
+                <div style="width:160px;">
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Status</label>
+                    <select id="qStatus" class="input" onchange="render()">
+                        <option value="">All Statuses</option>
+                        <option value="Live">Live</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Feeds Only">Feeds Only</option>
+                        <option value="Internal Use">Internal Use</option>
+                        <option value="Discontinued">Discontinued</option>
+                        <option value="Presentation">Presentation</option>
+                    </select>
+                </div>
+
+                <div style="width:160px;">
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Brand</label>
+                    <select id="qBrand" class="input" onchange="render()">
+                        <option value="">All Brands</option>
+                        <option>Stark Mfg</option>
+                        <option>LuxeGold</option>
+                        <option>Urban Wear</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="openAddModal()">+ New Item</button>
+                <button class="btn btn-secondary" onclick="exportData()">Export</button>
+
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card table-container">
+            <table id="itemTable">
+                <thead>
+                    <tr
+                        style="background:#f8fafc; border-bottom:1px solid var(--border); font-size:11px; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px;">
+                        <th style="padding:16px;">Product</th>
+                        <th style="padding:16px;">Model #</th>
+                        <th style="padding:16px;">Brand</th>
+                        <th style="padding:16px;">Vendor</th>
+                        <th style="padding:16px;">Stark ETA</th>
+                        <th style="padding:16px;">Brand ETA</th>
+                        <th style="padding:16px;">Status</th>
+                        <th style="padding:16px; text-align:right;">On Hand</th>
+                        <th style="padding:16px; text-align:right;">Hold</th>
+                        <th style="padding:16px;">Open PO</th>
+                        <th style="padding:16px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+
+        <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP
+        </div>
+
+    </main>
+
+    <!-- Add Item Modal -->
+    <div class="mobile-nav" id="itemModal" style="z-index:900;">
+        <div class="card"
+            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 700px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                <h3 style="margin:0;">Item Details</h3>
+                <button onclick="closeModal()"
+                    style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+
+            <div style="display:grid; gap:16px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">SKU</label>
+                        <input id="iSku" class="input" placeholder="e.g. A-101">
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Model #</label>
+                        <input id="iModel" class="input" placeholder="e.g. M-202X">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Title / Name</label>
+                    <input id="iName" class="input" placeholder="Product Name">
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Brand</label>
+                        <select id="iBrand" class="input">
+                            <option>Stark Mfg</option>
+                            <option>LuxeGold</option>
+                            <option>Urban Wear</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Vendor</label>
+                        <input id="iVendor" class="input" placeholder="e.g. Supplier Corp">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Status</label>
+                        <select id="iStatus" class="input">
+                            <option value="Live">Live</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Feeds Only">Feeds Only</option>
+                            <option value="Internal Use">Internal Use</option>
+                            <option value="Discontinued">Discontinued</option>
+                            <option value="Presentation">Presentation</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Categories</label>
+                        <input id="iCat" class="input" placeholder="e.g. Shoes">
+                    </div>
+                </div>
+
+                <div
+                    style="display:grid; grid-template-columns:1fr 1fr; gap:16px; background:#f8fafc; padding:12px; border-radius:6px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Stark ETA</label>
+                        <input id="iStarkEta" type="date" class="input">
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Brand ETA</label>
+                        <input id="iBrandEta" type="date" class="input">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Cost</label>
+                        <input id="iCost" class="input" type="number" step="0.01">
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">On Hand</label>
+                        <input id="iOn" class="input" type="number" value="0">
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Hold Qty</label>
+                        <input id="iHold" class="input" type="number" value="0">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveItem()" style="margin-top:16px;">Save Item</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+        const PO_KEY = "stark_erp_pos_v1";
+
+        function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
+        function saveItems(list) { localStorage.setItem(ITEM_KEY, JSON.stringify(list)); }
+        function loadPOs() { try { return JSON.parse(localStorage.getItem(PO_KEY) || "[]"); } catch { return []; } }
+
+        // Seed Data if needed
+        (function seed() {
+            const items = loadItems();
+            if (items.length < 5) {
+                const demo = [
+                    { sku: "BX-9001", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60, starkEta: "2026-02-15", brandEta: "2026-02-10" },
+                    { sku: "NK-1001", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00, starkEta: "", brandEta: "" },
+                    { sku: "RG-2001", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00, starkEta: "2026-03-01", brandEta: "2026-02-28" },
+                    { sku: "TS-5544", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50, starkEta: "", brandEta: "" },
+                    { sku: "ZZ-0001", model: "INT-TST", name: "Test Item Placeholder", brand: "Stark Mfg", vendor: "Internal", status: "Internal Use", cat: "Internal", on: 1000, hold: 50, cost: 0.10, starkEta: "", brandEta: "" }
+                ];
+                saveItems([...demo, ...items]);
+            }
+        })();
+
+        function render() {
+            const list = loadItems();
+            const pos = loadPOs();
+
+            const q = (document.getElementById("qSearch").value || "").toLowerCase();
+            const stat = document.getElementById("qStatus").value;
+            const brand = document.getElementById("qBrand").value;
+
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
+
+            const filtered = list.filter(i => {
+                if (stat && i.status !== stat) return false;
+                if (brand && i.brand !== brand) return false;
+                if (q) {
+                    const txt = [i.sku, i.model, i.name, i.vendor].join(" ").toLowerCase();
+                    if (!txt.includes(q)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:32px; color:var(--text-muted);">No items found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(i => {
+                const tr = document.createElement("tr");
+                tr.style.cursor = "pointer";
+                tr.onclick = (e) => {
+                    if (e.target.tagName === 'BUTTON') return;
+                    window.location.href = `item_detail.html?sku=${i.sku}`;
+                };
+
+                // Status Badge
+                let sClass = "status-live";
+                if (i.status === "Fashion") sClass = "status-fashion";
+                if (i.status === "Internal Use") sClass = "status-internal";
+                if (i.status === "Discontinued") sClass = "status-discontinued";
+                if (i.status === "Feeds Only") sClass = "status-feeds";
+                if (i.status === "Presentation") sClass = "status-presentation";
+
+                // Open PO Logic
+                // Check if any PO contains this SKU (assuming simple check or description match for demo)
+                // Real impl would need PO lines. For this demo, we can just randomly say YES if empty to simulate, 
+                // OR strictly check if there's a stored PO with this SKU in lines.
+                // Let's emulate "Yes" if Stark ETA is set, as a proxy for "Incoming".
+                const hasOpenLimit = (i.starkEta || "").length > 0;
+                const openPoBadge = hasOpenLimit ? `<span class="badge badge-green">Yes</span>` : `<span class="badge badge-gray">No</span>`;
+
+                tr.innerHTML = `
+                <td style="padding:16px;">
+                    <div style="font-weight:600; font-size:14px; color:var(--text-main);">${i.sku}</div>
+                    <div style="font-size:12px; color:var(--text-muted);">${i.name}</div>
+                </td>
+                <td style="padding:16px;">${i.model || "—"}</td>
+                <td style="padding:16px;">${i.brand || "—"}</td>
+                <td style="padding:16px;">${i.vendor || "—"}</td>
+                <td style="padding:16px; font-size:12px;">${i.starkEta || "—"}</td>
+                <td style="padding:16px; font-size:12px;">${i.brandEta || "—"}</td>
+                <td style="padding:16px;"><span class="status-badge ${sClass}">${i.status}</span></td>
+                <td style="padding:16px; text-align:right;">${i.on}</td>
+                <td style="padding:16px; text-align:right; color:#f59e0b;">${i.hold || 0}</td>
+                <td style="padding:16px;">${openPoBadge}</td>
+                <td style="padding:16px;">
+                    <button class="btn btn-secondary" style="font-size:12px;" onclick="editItem('${i.sku}')">Edit</button>
+                </td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal Logic
+        function openAddModal() {
+            document.getElementById("iSku").value = "";
+            document.getElementById("iModel").value = "";
+            document.getElementById("iName").value = "";
+            document.getElementById("iVendor").value = "";
+            document.getElementById("iStarkEta").value = "";
+            document.getElementById("iBrandEta").value = "";
+            document.getElementById("iOn").value = "0";
+            document.getElementById("iHold").value = "0";
+            document.getElementById("itemModal").classList.add("open");
+        }
+        function closeModal() { document.getElementById("itemModal").classList.remove("open"); }
+
+        function saveItem() {
+            const sku = document.getElementById("iSku").value.trim();
+            if (!sku) return toast("Error", "SKU Required");
+
+            const list = loadItems();
+            const idx = list.findIndex(x => x.sku === sku);
+
+            const newItem = {
+                sku,
+                model: document.getElementById("iModel").value,
+                name: document.getElementById("iName").value,
+                brand: document.getElementById("iBrand").value,
+                vendor: document.getElementById("iVendor").value,
+                status: document.getElementById("iStatus").value,
+                cat: document.getElementById("iCat").value,
+                starkEta: document.getElementById("iStarkEta").value,
+                brandEta: document.getElementById("iBrandEta").value,
+                on: Number(document.getElementById("iOn").value),
+                hold: Number(document.getElementById("iHold").value),
+                cost: Number(document.getElementById("iCost").value)
+            };
+
+            if (idx >= 0) {
+                list[idx] = { ...list[idx], ...newItem };
+            } else {
+                list.unshift(newItem);
+            }
+
+            saveItems(list);
+            closeModal();
+            render();
+            toast("Success", "Item saved.");
+        }
+
+        function editItem(sku) {
+            const list = loadItems();
+            const i = list.find(x => x.sku === sku);
+            if (i) {
+                document.getElementById("iSku").value = i.sku;
+                document.getElementById("iModel").value = i.model || "";
+                document.getElementById("iName").value = i.name;
+                document.getElementById("iBrand").value = i.brand || "Stark Mfg";
+                document.getElementById("iVendor").value = i.vendor || "";
+                document.getElementById("iStatus").value = i.status || "Live";
+                document.getElementById("iCat").value = i.cat || "";
+                document.getElementById("iStarkEta").value = i.starkEta || "";
+                document.getElementById("iBrandEta").value = i.brandEta || "";
+                document.getElementById("iOn").value = i.on;
+                document.getElementById("iHold").value = i.hold || 0;
+                document.getElementById("iCost").value = i.cost;
+                document.getElementById("itemModal").classList.add("open");
+            }
+        }
+
+        function exportData() {
+            alert("Exporting not implemented yet");
+        }
+
+        render();
+    </script>
+</body>
+
+</html>
+```
