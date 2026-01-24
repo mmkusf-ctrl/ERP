@@ -257,7 +257,7 @@
 
         <!-- Other Operations Grid -->
         <h2 style="font-size:18px; margin-bottom:16px;">General Operations</h2>
-        <section class="grid-3" style="margin-bottom:32px;">
+        <section class="kpi-grid" style="margin-bottom:32px;">
             <!-- Record Expense -->
             <article class="card action-card" onclick="alert('Feature coming soon: Record Expense')"
                 style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
@@ -314,11 +314,30 @@
                 <div class="action-icon">👥</div>
             </article>
 
+            <!-- Bank Accounts (New 4th Item) -->
+            <article class="card action-card" onclick="alert('Feature coming soon: Bank Connections')"
+                style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
+                <div>
+                    <div class="card-title" style="color:var(--primary);">Banking</div>
+                    <h3 style="font-size:20px; font-weight:800; margin:8px 0; color:var(--text-main);">Bank Accounts
+                    </h3>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Manage connected cards and
+                        accounts.</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:42px; justify-content:space-between; padding:0 20px;">
+                        Manage Cards <span>&rarr;</span>
+                    </span>
+                </div>
+                <div class="action-icon">🏛️</div>
+            </article>
+
         </section>
 
         <!-- Data Imports Section -->
-        <h2 style="font-size:18px; margin-bottom:16px;">Data Imports</h2>
-        <section class="grid-3" style="margin-bottom:40px;">
+        <h2 style="font-size:18px; margin-bottom:16px;">Data Imports & Exports</h2>
+        <section class="kpi-grid" style="margin-bottom:40px;">
             <!-- Import AP Invoices -->
             <article class="card action-card" onclick="alert('Triggering AP Invoice Import...')"
                 style="height:140px; background:#f8fafc;">
@@ -355,6 +374,19 @@
                 <div class="card-actions">
                     <span class="btn btn-secondary"
                         style="width:100%; height:32px; font-size:12px; justify-content:center;">Upload</span>
+                </div>
+            </article>
+
+            <!-- Export Data (New 4th Item) -->
+            <article class="card action-card" onclick="alert('Triggering Data Export...')"
+                style="height:140px; background:#fff; border-style:dashed;">
+                <div>
+                    <h3 style="font-size:16px; font-weight:700; margin:0 0 4px 0;">Export Archive</h3>
+                    <p style="font-size:12px; color:var(--text-muted);">Download full history</p>
+                </div>
+                <div class="card-actions">
+                    <span class="btn btn-secondary"
+                        style="width:100%; height:32px; font-size:12px; justify-content:center;">Export All</span>
                 </div>
             </article>
         </section>
