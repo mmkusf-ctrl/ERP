@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Events | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 8px;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #f8fafc;
+        }
+
+        .day-num {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .event-chip {
+            font-size: 11px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            background: var(--primary-light);
+            color: var(--primary);
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .event-chip.urgent {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .event-chip.warning {
+            background: #fffbeb;
+            color: #d97706;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="reports.html">Reports</a>
+                <a class="nav-link active" href="events.html">Events</a>
+            </nav>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link" href="accounting.html">Accounting</a>
+            <a class="mobile-link" href="orders.html">Orders</a>
+            <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="reports.html">Reports</a>
+            <a class="mobile-link active" href="events.html">Events</a>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Corporate Events Calendar</h1>
+            <p class="page-desc">Schedule, track, and manage company-wide events and deadlines.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <!-- KPI Grid -->
+        <section class="kpi-grid" style="margin-bottom:32px;">
+            <article class="card-kpi">
+                <div class="card-header">
+                    <div class="card-title">Upcoming</div>
+                    <div class="badge badge-green">Future</div>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-trend neutral">Next 30 Days</div>
+            </article>
+            <article class="card-kpi">
+                <div class="card-header">
+                    <div class="card-title">This Week</div>
+                    <div class="badge badge-yellow">Action</div>
+                </div>
+                <div class="stat-value">4</div>
+                <div class="stat-trend neutral">Meeting Heavy</div>
+            </article>
+            <article class="card-kpi">
+                <div class="card-header">
+                    <div class="card-title">Invites</div>
+                    <div class="badge badge-green">Pending</div>
+                </div>
+                <div class="stat-value">3</div>
+                <div class="stat-trend up">Need Response</div>
+            </article>
+            <article class="card-kpi click-action" onclick="alert('Feature: New Event Wizard')">
+                <div class="card-header">
+                    <div class="card-title">Quick Add</div>
+                </div>
+                <div style="margin-top:10px; text-align:center;">
+                    <span style="font-size:24px;">📅</span>
+                    <div style="font-size:13px; font-weight:600; color:var(--primary);">+ Schedule Event</div>
+                </div>
+            </article>
+        </section>
+
+        <div class="grid grid-2" style="grid-template-columns: 2fr 1fr;">
+            <!-- Calendar -->
+            <section class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 style="font-size:18px; margin:0;">February 2026</h2>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary" style="height:32px;">&larr;</button>
+                        <button class="btn btn-secondary" style="height:32px;">&rarr;</button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid">
+                    <div class="calendar-header">Sun</div>
+                    <div class="calendar-header">Mon</div>
+                    <div class="calendar-header">Tue</div>
+                    <div class="calendar-header">Wed</div>
+                    <div class="calendar-header">Thu</div>
+                    <div class="calendar-header">Fri</div>
+                    <div class="calendar-header">Sat</div>
+
+                    <!-- Row 1 -->
+                    <div class="calendar-day">
+                        <div class="day-num">1</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">2</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">3</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">4</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">5</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">6</div>
+                        <div class="event-chip">Team Lunch 12pm</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">7</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="calendar-day">
+                        <div class="day-num">8</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">9</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">10</div>
+                        <div class="event-chip urgent">Q1 Review</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">11</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">12</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">13</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">14</div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="calendar-day">
+                        <div class="day-num">15</div>
+                        <div class="event-chip warning">Tax Deadline</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">16</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">17</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">18</div>
+                        <div class="event-chip">Vendor Audit</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">19</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">20</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">21</div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="calendar-day">
+                        <div class="day-num">22</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">23</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">24</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">25</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">26</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">27</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-num">28</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upcoming List -->
+            <aside style="display:grid; gap:24px; align-content:start;">
+                <div class="card">
+                    <h2 style="font-size:16px; margin:0 0 16px;">Agenda</h2>
+                    <div style="display:grid; gap:16px;">
+
+                        <div style="display:flex; gap:12px;">
+                            <div style="text-align:center; min-width:50px;">
+                                <div
+                                    style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Feb</div>
+                                <div style="font-size:20px; font-weight:700; color:var(--text-main);">10</div>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; color:var(--text-main);">Quarterly Business Review</div>
+                                <div style="font-size:12px; color:var(--text-muted);">2:00 PM - 4:00 PM</div>
+                                <div style="font-size:12px; margin-top:4px;"><span
+                                        class="badge badge-red">Mandatory</span></div>
+                            </div>
+                        </div>
+                        <div style="height:1px; background:var(--border);"></div>
+
+                        <div style="display:flex; gap:12px;">
+                            <div style="text-align:center; min-width:50px;">
+                                <div
+                                    style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Feb</div>
+                                <div style="font-size:20px; font-weight:700; color:var(--text-main);">15</div>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; color:var(--text-main);">Tax Submission Deadline</div>
+                                <div style="font-size:12px; color:var(--text-muted);">All Day</div>
+                                <div style="font-size:12px; margin-top:4px;"><span
+                                        class="badge badge-yellow">Finance</span></div>
+                            </div>
+                        </div>
+                        <div style="height:1px; background:var(--border);"></div>
+
+                        <div style="display:flex; gap:12px;">
+                            <div style="text-align:center; min-width:50px;">
+                                <div
+                                    style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Feb</div>
+                                <div style="font-size:20px; font-weight:700; color:var(--text-main);">18</div>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; color:var(--text-main);">Stark Mfg Vendor Audit</div>
+                                <div style="font-size:12px; color:var(--text-muted);">9:00 AM - 12:00 PM</div>
+                                <div style="font-size:12px; margin-top:4px;"><span
+                                        class="badge badge-green">Confirmed</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="btn btn-secondary" style="width:100%; margin-top:20px;">Download Sync File</button>
+                </div>
+            </aside>
+        </div>
+
+        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        // Auth Logic
+        const AUTH_KEY = "stark_erp_auth_v1";
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
+        function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
+        function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
+    </script>
+</body>
+
+</html>
