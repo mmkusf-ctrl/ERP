@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <title>Purchasing | Stark Premium ERP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
@@ -22,7 +21,6 @@
                 <span class="logo-text">Stark ERP</span>
             </a>
 
-            <!-- Desktop Nav -->
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
                 <a class="nav-link" href="crm.html">CRM</a>
@@ -38,10 +36,6 @@
                 <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
                     Online
                 </div>
-                <button class="btn btn-secondary" style="height:36px; padding:0 12px; font-size:13px;"
-                    onclick="window.location.href='index.html'">
-                    Sign Out
-                </button>
                 <button class="hamburger" onclick="openMobileNav()">
                     <span></span><span></span><span></span>
                 </button>
@@ -49,7 +43,6 @@
         </div>
     </header>
 
-    <!-- Mobile Drawer -->
     <div class="mobile-nav" id="mobileNav">
         <div class="mobile-drawer">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -69,31 +62,155 @@
     </div>
 
     <main class="container">
-
-        <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Purchasing</h1>
-            <p class="page-desc">Manage purchsae orders, approvals, and procurement.</p>
+            <p class="page-desc">Manage purchase orders and vendor procurement.</p>
             <div class="gold-line"></div>
         </div>
 
-        <!-- Main Content Grid -->
-        <div class="card">
-            <div style="text-align:center; padding: 40px;">
-                <h2 style="color:var(--text-muted);">Purchasing Module Coming Soon</h2>
-                <p>This module is currently under development.</p>
-                <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Back to
-                    Dashboard</button>
+        <!-- Stats -->
+        <section class="grid grid-4" style="margin-bottom:32px;">
+            <article class="card card-premium clickable-kpi active" onclick="setFilter('')" id="kAll">
+                <div class="card-header">
+                    <div class="card-title">All POs</div>
+                </div>
+                <div class="stat-value" id="cAll">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('Open')" id="kOpen">
+                <div class="card-header">
+                    <div class="card-title">Open</div>
+                    <div class="badge badge-yellow">Active</div>
+                </div>
+                <div class="stat-value" id="cOpen">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('Approved')" id="kApp">
+                <div class="card-header">
+                    <div class="card-title">Approved</div>
+                    <div class="badge badge-green">Sent</div>
+                </div>
+                <div class="stat-value" id="cApp">0</div>
+            </article>
+            <article class="card card-premium clickable-kpi" onclick="setFilter('Delayed')" id="kDel">
+                <div class="card-header">
+                    <div class="card-title">Delayed</div>
+                    <div class="badge badge-red">Alert</div>
+                </div>
+                <div class="stat-value" id="cDel">0</div>
+            </article>
+        </section>
+
+        <!-- Table -->
+        <section class="card">
+            <h2 style="font-size:18px; margin:0 0 20px;" id="listTitle">Purchase Orders</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PO #</th>
+                            <th>Vendor</th>
+                            <th>ETA</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
             </div>
-        </div>
+        </section>
 
         <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-            &copy; 2026 Stark Premium ERP. secure. fast. reliable.
+            &copy; 2026 Stark Premium ERP.
         </div>
-
     </main>
 
     <script src="erp.js"></script>
+    <script>
+        const PO_KEY = "stark_erp_pos_v1";
+        const URL_PARAMS = new URLSearchParams(window.location.search);
+        let CURRENT_FILTER = URL_PARAMS.get("filter") || "";
+
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+        function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+
+        function init() {
+            let pos = load(PO_KEY, []);
+            if (pos.length === 0) {
+                pos = [
+                    { id: "PO-4421", vendor: "PackPro", wh: "WH-A", eta: "2026-02-15", status: "Open", lines: "BX-9001, 500" },
+                    { id: "PO-4425", vendor: "Stark Mfg", wh: "WH-A", eta: "2026-02-18", status: "Approved", lines: "NK-1001, 20" },
+                    { id: "PO-4429", vendor: "Global Logistics", wh: "WH-B", eta: "2026-01-30", status: "Delayed", lines: "Various" }
+                ];
+                save(PO_KEY, pos);
+            }
+            render();
+
+            if (CURRENT_FILTER) {
+                const map = { "Open": "kOpen", "Approved": "kApp", "Delayed": "kDel" };
+                const id = map[CURRENT_FILTER];
+                if (id) {
+                    document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+                    document.getElementById(id).classList.add("active");
+                }
+            }
+        }
+
+        function setFilter(f) {
+            CURRENT_FILTER = f;
+            document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+            const map = { "": "kAll", "Open": "kOpen", "Approved": "kApp", "Delayed": "kDel" };
+            const id = map[f] || "kAll";
+            document.getElementById(id).classList.add("active");
+
+            render();
+            const url = new URL(window.location);
+            if (f) url.searchParams.set("filter", f);
+            else url.searchParams.delete("filter");
+            window.history.pushState({}, "", url);
+        }
+
+        function render() {
+            const pos = load(PO_KEY, []);
+
+            document.getElementById("cAll").textContent = pos.length;
+            document.getElementById("cOpen").textContent = pos.filter(x => x.status === "Open").length;
+            document.getElementById("cApp").textContent = pos.filter(x => x.status === "Approved" || x.status === "Confirmed").length;
+            document.getElementById("cDel").textContent = pos.filter(x => x.status === "Delayed").length;
+
+            let shown = pos.filter(p => {
+                if (!CURRENT_FILTER) return true;
+                // fuzzy match "Approved" with "Confirmed"
+                if (CURRENT_FILTER === "Approved" && (p.status === "Confirmed" || p.status === "Approved")) return true;
+                return p.status === CURRENT_FILTER;
+            });
+
+            document.getElementById("listTitle").textContent = CURRENT_FILTER ? `${CURRENT_FILTER} POs` : "All Purchase Orders";
+
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
+            if (!shown.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">No POs match filter.</td></tr>`;
+                return;
+            }
+
+            shown.forEach(p => {
+                let badge = "badge-green";
+                if (p.status === "Open") badge = "badge-yellow";
+                if (p.status === "Delayed") badge = "badge-red";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td><strong>${p.id}</strong></td>
+                <td>${p.vendor}</td>
+                <td>${p.eta}</td>
+                <td><span class="badge ${badge}">${p.status}</span></td>
+                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;">View</button></td>
+              `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        init();
+    </script>
 </body>
 
 </html>
