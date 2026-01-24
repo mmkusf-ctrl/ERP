@@ -60,121 +60,142 @@
   </div>
 
   <main class="container">
-    <div class="page-header"
-      style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;">
-      <div>
-        <h1 class="page-title">Sales Reports & Forecasting</h1>
-        <p class="page-desc">Analyze SKU performance, revenue streams, and demand forecasting.</p>
-      </div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-secondary" onclick="clearSales()">Clear Data</button>
-        <button class="btn btn-primary" onclick="window.location.href='inventory.html'">Manage Items</button>
-      </div>
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">REPORTS</h1>
+      <div class="gold-line"></div>
     </div>
-    <div class="gold-line" style="margin-top:-10px;"></div>
 
-    <!-- Controls -->
-    <section class="card" style="margin-bottom:24px;">
-      <h2 style="font-size:16px; margin:0 0 16px;">Analysis Controls</h2>
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
-        <select id="skuSelect" class="input" onchange="render()"></select>
-        <select id="rangeSelect" class="input" onchange="render()">
-          <option value="7">Last 7 Days</option>
-          <option value="30" selected>Last 30 Days</option>
-          <option value="90">Last 90 Days</option>
-        </select>
-        <select id="locationSelect" class="input" onchange="render()"></select>
-        <input id="customerSearch" class="input" placeholder="Filter by Customer..." oninput="render()" />
+    <style>
+      .report-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 20px 40px;
+        /* Row gap, Col gap */
+        margin-bottom: 40px;
+      }
+
+      .report-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+        display: block;
+        border-bottom: 1px solid transparent;
+      }
+
+      .report-link:hover {
+        text-decoration: underline;
+        color: var(--primary-dark);
+      }
+
+      @media (max-width: 1400px) {
+        .report-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      @media (max-width: 1000px) {
+        .report-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .report-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .report-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+
+    <div class="card" style="padding: 32px;">
+      <div class="report-grid">
+        <!-- Column 1 -->
+        <div>
+          <a href="#" class="report-link">Backorder Report</a><br>
+          <a href="#" class="report-link">Brand Sales by Sku</a><br>
+          <a href="#" class="report-link">Customer Sales by Brand</a><br>
+          <a href="#" class="report-link">Inventory As Of A Specific Date</a><br>
+          <a href="#" class="report-link">Item Stock / Sales Report</a><br>
+          <a href="#" class="report-link">Pending Price Changes</a><br>
+          <a href="#" class="report-link">RMA Reasons by Customer</a><br>
+          <a href="#" class="report-link">Sales Rep Sales by Customer/Brand</a><br>
+          <a href="#" class="report-link">Trigger Report</a><br>
+          <a href="#" class="report-link">YTD Reports</a>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+          <a href="#" class="report-link">Backorder Report (new)</a><br>
+          <a href="#" class="report-link">Bulk Label Log Report</a><br>
+          <a href="#" class="report-link">Customer Trailing Data</a><br>
+          <a href="#" class="report-link">Inventory Insurance Report</a><br>
+          <a href="#" class="report-link">Items Not Sold in X Months Report</a><br>
+          <a href="#" class="report-link">Price List</a><br>
+          <a href="#" class="report-link">Sales by Customer</a><br>
+          <a href="#" class="report-link">Shipping Profit Report</a><br>
+          <a href="#" class="report-link">Trigger Reports</a>
+        </div>
+
+        <!-- Column 3 -->
+        <div>
+          <a href="#" class="report-link">Basic Brand Item Export</a><br>
+          <a href="accounting.html" class="report-link">Cash Flow Report</a><br>
+          <a href="#" class="report-link">Daily Order Metrics</a><br>
+          <a href="#" class="report-link">Inventory Reconciling Reports</a><br>
+          <a href="#" class="report-link">Missing Item Data Report</a><br>
+          <a href="#" class="report-link">Profitability Report</a><br>
+          <a href="#" class="report-link">Sales by State</a><br>
+          <a href="#" class="report-link">Sub Category Report</a><br>
+          <a href="vendor.html" class="report-link">Vendor Purchases Analysis</a>
+        </div>
+
+        <!-- Column 4 -->
+        <div>
+          <a href="#" class="report-link">Brand Detail Sales Report</a><br>
+          <a href="#" class="report-link">Customer Order Counts</a><br>
+          <a href="dashboard.html" class="report-link">Dashboard</a><br>
+          <a href="#" class="report-link">Invoice Item Profit Report</a><br>
+          <a href="#" class="report-link">Monthly Avg Item Sales</a><br>
+          <a href="purchasing.html" class="report-link">Purchasing Power Cancellation Report</a><br>
+          <a href="#" class="report-link">Sales by State Detail</a><br>
+          <a href="#" class="report-link">Sub Report</a><br>
+          <a href="#" class="report-link">Vendor Receiving Invoicing Variance Report</a>
+        </div>
+
+        <!-- Column 5 -->
+        <div>
+          <a href="#" class="report-link">Brand Order Counts by Customer</a><br>
+          <a href="#" class="report-link">Customer Order Counts by Brand</a><br>
+          <a href="#" class="report-link">Data Export</a><br>
+          <a href="#" class="report-link">Item Availability Report</a><br>
+          <a href="#" class="report-link">Open Orders Late</a><br>
+          <a href="#" class="report-link">Receiving Report</a><br>
+          <a href="#" class="report-link">Sales Order Cancellation Report</a><br>
+          <a href="#" class="report-link">Top Sellers</a><br>
+          <a href="#" class="report-link">Weekly Order Data</a>
+        </div>
+
+        <!-- Column 6 -->
+        <div>
+          <a href="#" class="report-link">Brand Sales by Customer</a><br>
+          <a href="#" class="report-link">Customer Sales Analysis</a><br>
+          <a href="accounting.html" class="report-link">Gross Margin Report</a><br>
+          <a href="#" class="report-link">Item Sales Volume Report</a><br>
+          <a href="#" class="report-link">Order Count 7 Day Avg</a><br>
+          <a href="#" class="report-link">Rep Commission Report</a><br>
+          <a href="#" class="report-link">Sales Rep Report</a><br>
+          <a href="#" class="report-link">Trigger Brand Exclusions</a><br>
+          <a href="accounting.html" class="report-link">Yearly Profit Review Report</a>
+        </div>
       </div>
-    </section>
-
-    <!-- KPIs -->
-    <section class="grid grid-4" style="margin-bottom:32px;">
-      <article class="card card-premium">
-        <div class="card-header">
-          <div class="card-title">Number of Sales</div>
-          <div class="badge badge-green">Count</div>
-        </div>
-        <div class="stat-value" id="kpiSales">0</div>
-        <div class="stat-trend neutral" id="kpiSalesSub">—</div>
-      </article>
-
-      <article class="card card-premium">
-        <div class="card-header">
-          <div class="card-title">Units Sold</div>
-          <div class="badge badge-green">Volume</div>
-        </div>
-        <div class="stat-value" id="kpiUnits">0</div>
-        <div class="stat-trend neutral">Total in Range</div>
-      </article>
-
-      <article class="card card-premium">
-        <div class="card-header">
-          <div class="card-title">Revenue</div>
-          <div class="badge badge-green">Gross</div>
-        </div>
-        <div class="stat-value" id="kpiRevenue">$0</div>
-        <div class="stat-trend neutral">Total Sales Amount</div>
-      </article>
-
-      <article class="card card-premium">
-        <div class="card-header">
-          <div class="card-title">Forecast (30d)</div>
-          <div class="badge badge-yellow">Prediction</div>
-        </div>
-        <div class="stat-value" id="kpiForecast">0</div>
-        <div class="stat-trend neutral">Based on Daily Avg</div>
-      </article>
-    </section>
-
-    <div class="grid grid-2">
-      <!-- Table -->
-      <section class="card">
-        <h2 style="font-size:18px; margin:0 0 16px;">Sales Detail</h2>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Location</th>
-                <th>Order ID</th>
-                <th>Qty</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody id="salesBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Insights Sidebar -->
-      <aside style="display:grid; gap:24px; align-content:start;">
-        <div class="card">
-          <h2 style="font-size:16px; margin:0 0 16px;">Key Insights</h2>
-
-          <div
-            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
-            id="insight1">
-            <!-- Filled by JS -->
-          </div>
-          <div
-            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;"
-            id="insight2">
-            <!-- Filled by JS -->
-          </div>
-          <div
-            style="background:var(--bg-body); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);"
-            id="insight3">
-            <!-- Filled by JS -->
-          </div>
-
-          <div class="gold-line"></div>
-          <p style="font-size:13px; color:var(--text-muted);">
-            Forecasting model uses simple moving average. Seasonal adjustment module pending.
-          </p>
-        </div>
-      </aside>
     </div>
 
     <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
