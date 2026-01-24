@@ -165,13 +165,14 @@
         <!-- Controls -->
         <div
             style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
-            <div style="display:flex; gap:8px;">
-                <button class="btn btn-primary" style="height:36px; border-radius:18px;">All</button>
-                <button class="btn btn-secondary"
+            <div style="display:flex; gap:8px;" id="filterContainer">
+                <button class="btn btn-primary" onclick="setFilter('All', this)"
+                    style="height:36px; border-radius:18px;">All</button>
+                <button class="btn btn-secondary" onclick="setFilter('Today', this)"
                     style="height:36px; border-radius:18px; border:none; background:transparent;">Today</button>
-                <button class="btn btn-secondary"
+                <button class="btn btn-secondary" onclick="setFilter('Tomorrow', this)"
                     style="height:36px; border-radius:18px; border:none; background:transparent;">Tomorrow</button>
-                <button class="btn btn-secondary"
+                <button class="btn btn-secondary" onclick="setFilter('Week', this)"
                     style="height:36px; border-radius:18px; border:none; background:transparent;">This Week</button>
             </div>
             <div style="position:relative;">
@@ -397,28 +398,64 @@
 
             closeEventModal();
             currentItems = []; renderItems(); document.querySelectorAll("input, textarea").forEach(i => i.value = "");
-
             renderEvents();
             alert("Event Scheduled!");
+        }
+
+        function setFilter(type, btn) {
+            window.currentFilter = type;
+
+            // Visual Update
+            const container = document.getElementById("filterContainer");
+            Array.from(container.children).forEach(b => {
+                b.className = "btn btn-secondary";
+                b.style.background = "transparent";
+                b.style.color = "var(--text-muted)";
+            });
+            btn.className = "btn btn-primary";
+            btn.style.background = "var(--primary)";
+            btn.style.color = "white";
+
+            renderEvents();
         }
 
         function renderEvents() {
             const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
             const tbody = document.getElementById("eventListBody");
             const term = (window.searchTerm || "").toLowerCase();
+            const filter = window.currentFilter || "All";
 
             events.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             tbody.innerHTML = "";
-            if (!events.length) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding:32px; text-align:center; color:var(--text-muted);">No events found. start by clicking + Add Event.</td></tr>`;
-                return;
-            }
+
+            // Date Logic
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+
+            let visibleCount = 0;
 
             events.forEach(e => {
+                // Search
                 if (term && !(e.name + e.customer).toLowerCase().includes(term)) return;
 
-                const d = new Date(e.date);
+                // Time Filter
+                const d = new Date(e.date + "T00:00:00"); // Fix timezone offset
+                if (filter === "Today") {
+                    if (d.getTime() !== today.getTime()) return;
+                } else if (filter === "Tomorrow") {
+                    if (d.getTime() !== tomorrow.getTime()) return;
+                } else if (filter === "Week") {
+                    if (d < today || d > nextWeek) return;
+                }
+
+                visibleCount++;
                 const month = d.toLocaleString('default', { month: 'short' });
                 const day = d.getDate();
                 const year = d.getFullYear();
@@ -456,6 +493,10 @@
                     </tr>
                 `;
             });
+
+            if (visibleCount === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding:32px; text-align:center; color:var(--text-muted);">No events found for this filter.</td></tr>`;
+            }
         }
 
         function searchEvents(val) {
