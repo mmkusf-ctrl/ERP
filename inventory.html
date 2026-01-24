@@ -1,3 +1,16 @@
+<!-- ========================= inventory.html =========================
+PO-Centric Inventory (Stark Premium ERP)
+- Focus only on:
+  1) Receive Inventory (by PO)
+  2) Adjust Inventory
+  3) Dead Stock
+  4) Incoming Inventory (from PO window)
+  5) Invoice Lookup by PO
+  6) PO Lookup
+- Requires: erp.css (your theme), erp.js (auth/nav only), inventory.js (below)
+
+Place this file at: /ERP/inventory.html
+==================================================================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,51 +25,118 @@
   <link rel="stylesheet" href="erp.css" />
 
   <style>
-    /* Minimal additions to match your premium theme */
-    .hero-right{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
-    .btn.sm{ height: 36px; border-radius: 12px; padding: 0 12px; font-size: 13px; }
-    .select.sm{ height: 36px; border-radius: 12px; font-size: 13px; }
-    .pill.sm{ padding: 7px 10px; font-size: 13px; }
-    .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .grid-3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-    .stack{ display:grid; gap: 12px; }
-    .subtle{ color: var(--muted); font-size: 13px; line-height: 1.55; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 7px 10px; border-radius: 999px;
-      border: 1px solid rgba(11,18,32,0.12);
-      background: rgba(11,18,32,0.06);
-      font-size: 12px; font-weight: 900; color: rgba(11,18,32,0.78);
-      white-space: nowrap;
+    /* ===== Inventory: PO-centric refinements ===== */
+    .hero-right{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
     }
-    .badge.good{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
-    .badge.bad{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
-    .badge.warn{ border-color: rgba(177,98,13,0.25); background: rgba(177,98,13,0.10); color: rgba(177,98,13,0.95); }
+    .btn.sm{ height:36px; border-radius:12px; padding:0 12px; font-size:13px; }
+    .select.sm{ height:36px; border-radius:12px; font-size:13px; }
+    .pill.sm{ padding:7px 10px; font-size:13px; }
 
-    .cardline{
+    .inv-grid{
+      display:grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap:16px;
+      margin-top:16px;
+      align-items:start;
+    }
+
+    .kpis.inv{ display:grid; gap:14px; grid-template-columns: repeat(4, minmax(220px, 1fr)); margin-top:16px; }
+    .card.kpi-compact{ min-height: 118px; padding: 16px 16px 14px; }
+    .card.kpi-compact .value{ margin-top: 12px; font-size: 28px; }
+    .card.kpi-compact .sub{ margin-top: 4px; }
+
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .mini-list{
+      margin-top:10px;
+      display:grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow:auto;
+      padding-right: 6px;
+    }
+
+    .mini-row{
       border: 1px solid rgba(11,18,32,0.10);
-      background: rgba(255,255,255,0.72);
-      border-radius: 16px;
-      padding: 12px;
+      background: rgba(255,255,255,0.70);
+      border-radius: 14px;
+      padding: 10px 10px;
       display:flex;
       justify-content: space-between;
-      gap: 10px;
       align-items:flex-start;
+      gap: 10px;
     }
-    .cardline strong{ font-weight: 950; font-size: 13px; }
-    .cardline small{ display:block; color: var(--muted); margin-top: 3px; line-height: 1.4; }
 
-    .table-wrap{ overflow:auto; }
-    table{ width:100%; border-collapse: collapse; }
-    th, td{ padding: 12px 12px; border-bottom: 1px solid rgba(11,18,32,0.08); text-align:left; white-space: nowrap; }
-    th{ font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: rgba(11,18,32,0.62); }
-    td strong{ font-weight: 900; }
+    .mini-row strong{ font-size: 13px; font-weight: 900; display:block; }
+    .mini-row small{ display:block; margin-top: 2px; color: var(--muted); line-height: 1.45; }
+    .mini-row .tag{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid rgba(11,18,32,0.10);
+      background: rgba(11,18,32,0.06);
+      color: rgba(11,18,32,0.78);
+    }
+    .mini-row.red{ border-color: rgba(180,35,24,0.20); background: rgba(180,35,24,0.06); }
+    .mini-row.red .tag{ border-color: rgba(180,35,24,0.25); background: rgba(180,35,24,0.08); color: var(--bad); }
+    .mini-row.green{ border-color: rgba(15,118,110,0.20); background: rgba(15,118,110,0.06); }
+    .mini-row.green .tag{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
 
-    .mini-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
-    .divider{ height: 1px; background: rgba(11,18,32,0.08); margin: 10px 0; }
+    .tabs{
+      display:flex;
+      gap: 8px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .tab{
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(11,18,32,0.12);
+      background: rgba(255,255,255,0.70);
+      font-weight: 900;
+      font-size: 13px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      user-select:none;
+    }
+    .tab.active{
+      border-color: rgba(31,86,216,0.24);
+      background: rgba(31,86,216,0.10);
+      color: rgba(11,18,32,0.88);
+    }
+    .tab .dot{
+      width:8px; height:8px; border-radius:999px; background: rgba(11,18,32,0.25);
+    }
+    .tab.active .dot{ background: rgba(31,86,216,0.65); }
 
-    @media (max-width: 980px){ .grid-2, .grid-3{ grid-template-columns: 1fr; } .hero-right{ justify-content:flex-start; } }
+    .section{ display:none; }
+    .section.active{ display:block; }
+
+    /* Modals */
+    .modal{ display:none; }
+    .modal.open{ display:flex; }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      .kpis.inv{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      .inv-grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px){
+      .kpis.inv{ grid-template-columns: 1fr; }
+      .hero-right{ justify-content:flex-start; }
+      .two-col{ grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 
@@ -68,7 +148,7 @@
         <img src="images/stark-logo.png" alt="Stark Premium" />
       </div>
 
-      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNavSafe()">
+      <button class="hamburger" type="button" aria-label="Open menu" onclick="openMobileNav()">
         <span></span><span></span><span></span>
       </button>
 
@@ -100,7 +180,7 @@
     <div class="mobile-card">
       <div class="mobile-head">
         <strong>Menu</strong>
-        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNavSafe()">×</button>
+        <button class="mobile-close" type="button" aria-label="Close menu" onclick="closeMobileNav()">×</button>
       </div>
       <div class="mobile-links">
         <a href="dashboard.html" data-key="home">Home</a>
@@ -121,746 +201,383 @@
     <div class="hero">
       <div>
         <h1>Inventory</h1>
-        <p>Receive stock, adjust stock, track dead stock, and manage PO/invoice lookup — streamlined.</p>
+        <p>
+          PO-centric receiving, adjustments, dead stock tracking, and lookup tools — streamlined and premium.
+        </p>
       </div>
 
       <div class="hero-right">
-        <button class="btn secondary sm" type="button" onclick="loadDemoPOs()">Load Demo POs</button>
-        <button class="btn sm" type="button" onclick="clearInventoryModule()">Clear Module Data</button>
+        <button class="btn secondary sm" type="button" onclick="invLoadDemo()">Load Demo Data</button>
+        <button class="btn sm" type="button" onclick="invOpenCreatePO()">Create PO</button>
       </div>
     </div>
 
-    <!-- ===== PO Window + Lookups ===== -->
-    <div class="panel">
-      <h2>PO Window</h2>
-      <div class="subtle">
-        Incoming inventory is calculated from POs in this window. Receiving updates on-hand and PO status.
+    <!-- ===== KPI Cards (Reactive) ===== -->
+    <div class="kpis inv">
+      <div class="card kpi-compact">
+        <div class="card-top">
+          <div class="label">Incoming inventory (open POs)</div>
+          <div class="chip">Inbound</div>
+        </div>
+        <div class="value" id="kpiIncomingQty">0</div>
+        <div class="sub" id="kpiIncomingSub">—</div>
       </div>
 
-      <div class="divider"></div>
-
-      <div class="grid-3">
-        <div class="mini">
-          <strong>Window</strong>
-          <span class="subtle">Filter POs by expected date</span>
+      <div class="card kpi-compact">
+        <div class="card-top">
+          <div class="label">Receiving today</div>
+          <div class="chip good">Receiving</div>
         </div>
-        <div>
-          <label class="subtle" for="poStart">Start</label>
-          <input id="poStart" class="input" type="date" />
-        </div>
-        <div>
-          <label class="subtle" for="poEnd">End</label>
-          <input id="poEnd" class="input" type="date" />
-        </div>
+        <div class="value" id="kpiReceivedToday">0</div>
+        <div class="sub" id="kpiReceivedTodaySub">—</div>
       </div>
 
-      <div class="divider"></div>
-
-      <div class="grid-2">
-        <div class="stack">
-          <h2 style="margin:0">PO Lookup</h2>
-          <div class="controls">
-            <input id="poLookupInput" class="input" placeholder="Enter PO number (e.g., PO-1002)..." />
-            <button class="btn sm" type="button" onclick="poLookup()">Lookup</button>
-          </div>
-          <div id="poLookupResult"></div>
+      <div class="card kpi-compact">
+        <div class="card-top">
+          <div class="label">Dead stock (aged / inactive)</div>
+          <div class="chip bad">Aged</div>
         </div>
+        <div class="value" id="kpiDeadStock">0</div>
+        <div class="sub" id="kpiDeadStockSub">—</div>
+      </div>
 
-        <div class="stack">
-          <h2 style="margin:0">Invoice Lookup by PO</h2>
-          <div class="controls">
-            <input id="invoiceLookupInput" class="input" placeholder="Enter PO number to find invoice..." />
-            <button class="btn sm" type="button" onclick="invoiceLookup()">Lookup</button>
-          </div>
-          <div id="invoiceLookupResult"></div>
+      <div class="card kpi-compact">
+        <div class="card-top">
+          <div class="label">Inventory adjustments (30d)</div>
+          <div class="chip">Adjust</div>
         </div>
+        <div class="value" id="kpiAdjust30">0</div>
+        <div class="sub" id="kpiAdjust30Sub">—</div>
       </div>
     </div>
 
-    <!-- ===== Incoming Inventory (based on PO window) ===== -->
+    <!-- ===== Tabs ===== -->
     <div class="panel" style="margin-top:16px;">
-      <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-end; flex-wrap:wrap;">
-        <div>
-          <h2 style="margin:0">Incoming Inventory</h2>
-          <div class="subtle">Only POs within the date window contribute to this view.</div>
-        </div>
-        <div class="mini-actions">
-          <span class="badge" id="incomingCountBadge">0 POs</span>
-          <span class="badge warn" id="incomingUnitsBadge">0 units incoming</span>
-        </div>
+      <h2>Operations</h2>
+
+      <div class="tabs" role="tablist" aria-label="Inventory tabs">
+        <button class="tab active" data-tab="receive" type="button"><span class="dot"></span>Receive</button>
+        <button class="tab" data-tab="adjust" type="button"><span class="dot"></span>Adjust</button>
+        <button class="tab" data-tab="dead" type="button"><span class="dot"></span>Dead Stock</button>
+        <button class="tab" data-tab="incoming" type="button"><span class="dot"></span>Incoming (PO)</button>
+        <button class="tab" data-tab="lookup" type="button"><span class="dot"></span>Lookups</button>
       </div>
 
-      <div class="divider"></div>
+      <div class="goldline"></div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>PO</th>
-              <th>Supplier</th>
-              <th>Expected</th>
-              <th>SKU</th>
-              <th>Item</th>
-              <th>Ordered</th>
-              <th>Received</th>
-              <th>Remaining</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="incomingTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ===== Receive + Adjust ===== -->
-    <div class="grid-2" style="margin-top:16px;">
-      <div class="panel">
-        <h2>Receive Inventory</h2>
-        <div class="subtle">Receive against a PO line. Updates PO received qty and increases on-hand.</div>
-        <div class="divider"></div>
-
-        <div class="stack">
-          <div class="controls">
-            <input id="recvPo" class="input" placeholder="PO number (e.g., PO-1002)" />
-            <input id="recvSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-            <input id="recvQty" class="input" type="number" min="1" placeholder="Qty to receive" />
+      <!-- ===== RECEIVE ===== -->
+      <section class="section active" id="sec-receive">
+        <div class="two-col">
+          <div class="mini">
+            <strong>Quick receive by PO</strong>
+            <span>Select an open PO and receive line items to increase on-hand.</span>
           </div>
-          <div class="controls">
-            <input id="recvInvoice" class="input" placeholder="Invoice # (optional, e.g., INV-8891)" />
-            <button class="btn sm" type="button" onclick="receiveInventory()">Receive</button>
-          </div>
-          <div class="subtle">Tip: Use the Incoming table to confirm SKU/remaining quantity.</div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Adjust Inventory</h2>
-        <div class="subtle">Manual corrections (cycle count, damage, shrink, etc.).</div>
-        <div class="divider"></div>
-
-        <div class="stack">
-          <div class="controls">
-            <input id="adjSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-            <input id="adjQty" class="input" type="number" placeholder="Adjustment (+/-)" />
-            <select id="adjReason" class="input">
-              <option value="Cycle Count">Cycle Count</option>
-              <option value="Damage">Damage</option>
-              <option value="Shrink">Shrink</option>
-              <option value="Found Stock">Found Stock</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="controls">
-            <input id="adjNote" class="input" placeholder="Note (optional)" />
-            <button class="btn sm" type="button" onclick="adjustInventory()">Apply Adjustment</button>
+          <div class="mini">
+            <strong>Tip</strong>
+            <span>Use partial receipts for split shipments. You can invoice later.</span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ===== Dead Stock ===== -->
-    <div class="panel" style="margin-top:16px;">
-      <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-end; flex-wrap:wrap;">
-        <div>
-          <h2 style="margin:0">Dead Stock</h2>
-          <div class="subtle">Flag items as dead stock (obsolete / no movement). Does not change on-hand automatically.</div>
+        <div class="controls" style="margin-top:12px;">
+          <input id="recvSearch" class="input" placeholder="Search PO / supplier / SKU..." />
+          <select id="recvStatus" class="input">
+            <option value="OPEN" selected>Open POs</option>
+            <option value="ALL">All POs</option>
+          </select>
+          <button class="btn secondary sm" type="button" onclick="invExportPOs()">Export POs CSV</button>
         </div>
-        <div class="mini-actions">
-          <button class="btn secondary sm" type="button" onclick="openDeadStockModal()">Flag SKU</button>
-          <span class="badge bad" id="deadCountBadge">0 flagged</span>
+
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>PO</th>
+                <th>Supplier</th>
+                <th>ETA</th>
+                <th>Status</th>
+                <th>Open Qty</th>
+                <th style="width:160px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="poReceiveTable"></tbody>
+          </table>
         </div>
-      </div>
+      </section>
 
-      <div class="divider"></div>
+      <!-- ===== ADJUST ===== -->
+      <section class="section" id="sec-adjust">
+        <div class="two-col">
+          <div class="mini">
+            <strong>Inventory adjustment</strong>
+            <span>Use for cycle counts, damage, shrink, or corrections.</span>
+          </div>
+          <div class="mini">
+            <strong>Audit trail</strong>
+            <span>All adjustments are saved with reason + timestamp.</span>
+          </div>
+        </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Item</th>
-              <th>Flagged On</th>
-              <th>Reason</th>
-              <th>Notes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="deadTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ===== Activity Log (minimal + relevant) ===== -->
-    <div class="panel" style="margin-top:16px;">
-      <h2>Inventory Activity</h2>
-      <div class="subtle">Only logs: receiving + adjustments + dead stock flags.</div>
-      <div class="divider"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Type</th>
-              <th>Reference</th>
-              <th>SKU</th>
-              <th>Qty</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody id="logTable"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Dead Stock Modal ===== -->
-  <div class="modal" id="deadModal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Flag Dead Stock</h3>
-        <button class="x" onclick="closeDeadStockModal()" aria-label="Close">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-grid">
-          <input id="deadSku" class="input" placeholder="SKU (e.g., NK-1001)" />
-          <input id="deadItem" class="input" placeholder="Item name (optional)" />
-          <select id="deadReason" class="input">
-            <option value="Obsolete">Obsolete</option>
-            <option value="No movement">No movement</option>
-            <option value="Seasonal end">Seasonal end</option>
-            <option value="Damaged / unsellable">Damaged / unsellable</option>
+        <div class="controls" style="margin-top:12px;">
+          <input id="adjSku" class="input" placeholder="SKU (e.g., NK-1001)" />
+          <input id="adjWh" class="input" placeholder="Warehouse (e.g., Tampa)" />
+          <input id="adjDelta" class="input" type="number" placeholder="Qty change (+ / -)" />
+          <select id="adjReason" class="input">
+            <option value="Cycle count">Cycle count</option>
+            <option value="Damage">Damage</option>
+            <option value="Shrink">Shrink</option>
+            <option value="Correction" selected>Correction</option>
             <option value="Other">Other</option>
           </select>
-          <input id="deadNote" class="input" placeholder="Notes (optional)" />
+          <button class="btn sm" type="button" onclick="invSaveAdjustment()">Save adjustment</button>
+        </div>
+
+        <div class="goldline"></div>
+
+        <h2 style="margin-top:0;">Recent adjustments</h2>
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>SKU</th>
+                <th>Warehouse</th>
+                <th>Delta</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="adjustTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== DEAD STOCK ===== -->
+      <section class="section" id="sec-dead">
+        <div class="controls" style="margin-top:12px;">
+          <select id="deadAge" class="input">
+            <option value="60">Aged ≥ 60 days</option>
+            <option value="90" selected>Aged ≥ 90 days</option>
+            <option value="120">Aged ≥ 120 days</option>
+            <option value="180">Aged ≥ 180 days</option>
+          </select>
+          <input id="deadSearch" class="input" placeholder="Search SKU / warehouse..." />
+          <button class="btn secondary sm" type="button" onclick="invExportDeadStock()">Export dead stock CSV</button>
+        </div>
+
+        <div class="mini-list" id="deadList"></div>
+      </section>
+
+      <!-- ===== INCOMING ===== -->
+      <section class="section" id="sec-incoming">
+        <div class="controls" style="margin-top:12px;">
+          <input id="incSearch" class="input" placeholder="Search PO / supplier / SKU..." />
+          <select id="incWindow" class="input">
+            <option value="7">ETA window: next 7 days</option>
+            <option value="14" selected>ETA window: next 14 days</option>
+            <option value="30">ETA window: next 30 days</option>
+            <option value="9999">ETA window: all</option>
+          </select>
+        </div>
+
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>PO</th>
+                <th>Supplier</th>
+                <th>ETA</th>
+                <th>SKU</th>
+                <th>Ordered</th>
+                <th>Received</th>
+                <th>Open</th>
+              </tr>
+            </thead>
+            <tbody id="incomingTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== LOOKUPS ===== -->
+      <section class="section" id="sec-lookup">
+        <div class="two-col">
+          <div class="panel" style="padding:14px;">
+            <h2 style="margin:0;">PO Lookup</h2>
+            <div class="sub" style="margin-top:6px;">Find PO header + line status.</div>
+            <div class="controls" style="margin-top:10px;">
+              <input id="lookupPo" class="input" placeholder="Enter PO number (e.g., PO-1007)" />
+              <button class="btn sm" type="button" onclick="invLookupPO()">Lookup</button>
+            </div>
+            <div class="goldline"></div>
+            <div id="poLookupResult" class="mini" style="margin-top:10px;">
+              <strong>—</strong><span>Enter a PO number to view details.</span>
+            </div>
+          </div>
+
+          <div class="panel" style="padding:14px;">
+            <h2 style="margin:0;">Invoice Lookup (by PO)</h2>
+            <div class="sub" style="margin-top:6px;">Find invoice(s) recorded against a PO.</div>
+            <div class="controls" style="margin-top:10px;">
+              <input id="lookupInvPo" class="input" placeholder="Enter PO number (e.g., PO-1007)" />
+              <button class="btn sm" type="button" onclick="invLookupInvoicesByPO()">Lookup</button>
+            </div>
+            <div class="goldline"></div>
+            <div id="invoiceLookupResult" class="mini" style="margin-top:10px;">
+              <strong>—</strong><span>Enter a PO number to view invoices.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Right side: Summary ===== -->
+    <div class="inv-grid">
+      <div class="panel">
+        <h2>Receiving Log</h2>
+        <div class="sub" style="margin-top:-6px;">Latest receipts (across all POs). Used for KPIs.</div>
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>PO</th>
+                <th>SKU</th>
+                <th>Qty</th>
+                <th>Warehouse</th>
+              </tr>
+            </thead>
+            <tbody id="receiveLogTable"></tbody>
+          </table>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn secondary sm" onclick="closeDeadStockModal()">Cancel</button>
-        <button class="btn sm" onclick="saveDeadStock()">Flag</button>
+
+      <div class="side">
+        <div class="panel">
+          <h2>Executive Snapshot</h2>
+          <div class="mini" style="margin-top:10px;">
+            <strong id="execInvHeadline">—</strong>
+            <span id="execInvBody">—</span>
+          </div>
+          <div class="goldline"></div>
+          <div class="mini">
+            <strong>Priority actions</strong>
+            <span id="execInvActions">—</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>System</h2>
+          <div class="sub" style="margin-top:-6px;">
+            Data is stored in <strong>localStorage</strong>. No backend required for GitHub Pages.
+          </div>
+          <div class="goldline"></div>
+          <div class="mini">
+            <strong>Data status</strong>
+            <span id="dataStatus">—</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Optional shared ERP JS -->
+  <!-- ===== Receive Modal ===== -->
+  <div class="modal" id="receiveModal" aria-hidden="true">
+    <div class="modal-card" style="max-width: 760px;">
+      <div class="modal-head">
+        <h3>Receive Inventory</h3>
+        <button class="x" onclick="invCloseReceive()" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mini">
+          <strong id="recvModalTitle">—</strong>
+          <span id="recvModalSub">—</span>
+        </div>
+
+        <div class="goldline"></div>
+
+        <div class="controls">
+          <input id="recvWarehouse" class="input" placeholder="Warehouse (e.g., Tampa)" />
+          <input id="recvInvoiceNo" class="input" placeholder="Invoice # (optional)" />
+          <input id="recvInvoiceAmount" class="input" type="number" step="0.01" placeholder="Invoice total (optional)" />
+        </div>
+
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Description</th>
+                <th>Ordered</th>
+                <th>Received</th>
+                <th>Open</th>
+                <th style="width:160px;">Receive now</th>
+              </tr>
+            </thead>
+            <tbody id="recvLinesTable"></tbody>
+          </table>
+        </div>
+
+        <div class="sub" style="margin-top:10px;">
+          Tip: enter partial quantities; status updates automatically.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary sm" onclick="invCloseReceive()">Cancel</button>
+        <button class="btn sm" onclick="invCommitReceive()">Post receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Create PO Modal ===== -->
+  <div class="modal" id="createPoModal" aria-hidden="true">
+    <div class="modal-card" style="max-width: 820px;">
+      <div class="modal-head">
+        <h3>Create PO</h3>
+        <button class="x" onclick="invCloseCreatePO()" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="controls">
+          <input id="poNumber" class="input" placeholder="PO number (auto if blank)" />
+          <input id="poSupplier" class="input" placeholder="Supplier name" />
+          <input id="poEta" class="input" type="date" />
+        </div>
+
+        <div class="goldline"></div>
+
+        <h2 style="margin-top:0;">Line items</h2>
+        <div class="controls">
+          <input id="poSku" class="input" placeholder="SKU (e.g., NK-1001)" />
+          <input id="poDesc" class="input" placeholder="Description (optional)" />
+          <input id="poQty" class="input" type="number" placeholder="Qty" />
+          <input id="poUnitCost" class="input" type="number" step="0.01" placeholder="Unit cost (optional)" />
+          <button class="btn secondary sm" type="button" onclick="invAddPOLine()">Add line</button>
+        </div>
+
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit cost</th>
+                <th style="width:120px;">Remove</th>
+              </tr>
+            </thead>
+            <tbody id="poLinesDraftTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary sm" onclick="invCloseCreatePO()">Cancel</button>
+        <button class="btn sm" onclick="invSavePO()">Save PO</button>
+      </div>
+    </div>
+  </div>
+
   <script src="erp.js"></script>
-
-  <script>
-    /* =========================================================
-       Inventory (reduced scope): PO window -> incoming -> receive,
-       plus adjustments, dead stock, and lookups.
-       ========================================================= */
-
-    /* ---------- Keys ---------- */
-    const KEYS = {
-      PO:   (window.ERP && ERP.PO)   || "stark_erp_po_v1",
-      INV:  (window.ERP && ERP.INV)  || "stark_erp_invoices_v1",
-      OH:   (window.ERP && ERP.OH)   || "stark_erp_onhand_v1",     // map: SKU -> onHand qty
-      DEAD: (window.ERP && ERP.DEAD) || "stark_erp_deadstock_v1",  // list
-      LOG:  (window.ERP && ERP.LOG)  || "stark_erp_invlog_v1",     // list
-      USER: (window.ERP && ERP.USER) || "stark_erp_current_user_v1",
-      AUTH: (window.ERP && ERP.AUTH) || "stark_erp_auth_v1",
-    };
-
-    /* ---------- Helpers ---------- */
-    function loadJSON(key, fallback){
-      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-      catch { return fallback; }
-    }
-    function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
-    function esc(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
-    function nowISO(){ return new Date().toISOString(); }
-
-    function toast(title, msg){
-      if (window.erpToast) return window.erpToast(title, msg);
-      const wrap = document.getElementById("toastWrap");
-      if(!wrap) return alert(title + "\n" + msg);
-      const el = document.createElement("div");
-      el.className = "toast";
-      el.innerHTML = `<div><strong>${esc(title)}</strong><span>${esc(msg)}</span></div><button class="close">×</button>`;
-      el.querySelector(".close").onclick = ()=> el.remove();
-      wrap.prepend(el);
-      setTimeout(()=> el.remove(), 8000);
-    }
-
-    /* ---------- Safe fallbacks ---------- */
-    function erpSignOutSafe(){
-      if (window.erpSignOut) return window.erpSignOut();
-      localStorage.removeItem(KEYS.AUTH);
-      window.location.href = "index.html";
-    }
-    function requireAuthSafe(){
-      if (window.erpRequireAuth) return window.erpRequireAuth();
-      const a = loadJSON(KEYS.AUTH, null);
-      if (!a || !a.ok) window.location.href = "index.html";
-    }
-    function markActiveSafe(){
-      if (window.erpMarkActive) return window.erpMarkActive("inventory");
-      document.querySelectorAll('[data-key="inventory"]').forEach(a=> a.classList.add("active"));
-      document.querySelectorAll('.mobile-links [data-key="inventory"]').forEach(a=> a.classList.add("active"));
-    }
-    function openMobileNavSafe(){
-      if (window.openMobileNav) return window.openMobileNav();
-      document.getElementById("mobileNav")?.classList.add("open");
-    }
-    function closeMobileNavSafe(){
-      if (window.closeMobileNav) return window.closeMobileNav();
-      document.getElementById("mobileNav")?.classList.remove("open");
-    }
-    function initUserSelectSafe(){
-      const sel = document.getElementById("userSelect");
-      if (!sel) return;
-      const u = localStorage.getItem(KEYS.USER) || "A";
-      sel.value = u;
-      sel.onchange = () => localStorage.setItem(KEYS.USER, sel.value);
-    }
-
-    /* ---------- Data access ---------- */
-    function getPOs(){ return loadJSON(KEYS.PO, []); }
-    function getInvoices(){ return loadJSON(KEYS.INV, []); }
-    function getOnHand(){ return loadJSON(KEYS.OH, {}); }
-    function getDead(){ return loadJSON(KEYS.DEAD, []); }
-    function getLog(){ return loadJSON(KEYS.LOG, []); }
-
-    function addLog(entry){
-      const log = getLog();
-      log.unshift(entry);
-      saveJSON(KEYS.LOG, log.slice(0, 300));
-    }
-
-    /* ---------- Module clear ---------- */
-    function clearInventoryModule(){
-      if (!confirm("Clear Inventory module data? (POs, invoices, on-hand, dead stock, logs)")) return;
-      localStorage.removeItem(KEYS.PO);
-      localStorage.removeItem(KEYS.INV);
-      localStorage.removeItem(KEYS.OH);
-      localStorage.removeItem(KEYS.DEAD);
-      localStorage.removeItem(KEYS.LOG);
-      toast("Cleared", "Inventory module data removed.");
-      renderAll();
-    }
-
-    /* ---------- PO Window ---------- */
-    function parseDate(d){ return d ? new Date(d + "T00:00:00") : null; }
-    function inRange(dateISO, start, end){
-      const dt = new Date(dateISO);
-      if (start && dt < start) return false;
-      if (end && dt > end) return false;
-      return true;
-    }
-
-    function poStatus(po){
-      // po.lines: [{sku,item,qtyOrdered,qtyReceived}]
-      const totalOrdered = po.lines.reduce((s,l)=> s + (Number(l.qtyOrdered)||0), 0);
-      const totalReceived = po.lines.reduce((s,l)=> s + (Number(l.qtyReceived)||0), 0);
-      if (totalReceived <= 0) return "Open";
-      if (totalReceived >= totalOrdered) return "Closed";
-      return "Partial";
-    }
-
-    function renderIncoming(){
-      const tbody = document.getElementById("incomingTable");
-      tbody.innerHTML = "";
-
-      const start = parseDate(document.getElementById("poStart").value);
-      const end = parseDate(document.getElementById("poEnd").value);
-
-      const pos = getPOs().filter(po => inRange(po.expectedDate, start, end));
-
-      let poCount = pos.length;
-      let incomingUnits = 0;
-
-      pos
-        .slice()
-        .sort((a,b)=> new Date(a.expectedDate) - new Date(b.expectedDate))
-        .forEach(po=>{
-          const status = poStatus(po);
-          po.lines.forEach(line=>{
-            const ordered = Number(line.qtyOrdered || 0);
-            const received = Number(line.qtyReceived || 0);
-            const remaining = Math.max(0, ordered - received);
-            incomingUnits += remaining;
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td><strong class="mono">${esc(po.poNumber)}</strong></td>
-              <td>${esc(po.supplier || "—")}</td>
-              <td>${esc(new Date(po.expectedDate).toLocaleDateString())}</td>
-              <td class="mono">${esc(line.sku)}</td>
-              <td>${esc(line.item || "—")}</td>
-              <td>${ordered.toLocaleString()}</td>
-              <td>${received.toLocaleString()}</td>
-              <td><strong>${remaining.toLocaleString()}</strong></td>
-              <td>
-                <span class="badge ${status==="Closed" ? "good" : status==="Partial" ? "warn" : ""}">
-                  ${esc(status)}
-                </span>
-              </td>
-            `;
-            tbody.appendChild(tr);
-          });
-        });
-
-      document.getElementById("incomingCountBadge").textContent = `${poCount} POs`;
-      document.getElementById("incomingUnitsBadge").textContent = `${incomingUnits.toLocaleString()} units incoming`;
-    }
-
-    /* ---------- PO Lookup ---------- */
-    function poLookup(){
-      const q = (document.getElementById("poLookupInput").value || "").trim().toUpperCase();
-      const out = document.getElementById("poLookupResult");
-      out.innerHTML = "";
-      if (!q){ toast("Missing", "Enter a PO number."); return; }
-
-      const po = getPOs().find(p => String(p.poNumber||"").toUpperCase() === q);
-      if (!po){
-        out.innerHTML = `<div class="cardline"><div><strong>Not found</strong><small>No PO matches <span class="mono">${esc(q)}</span>.</small></div><span class="badge bad">Missing</span></div>`;
-        return;
-      }
-
-      const status = poStatus(po);
-      const totalOrdered = po.lines.reduce((s,l)=> s + (Number(l.qtyOrdered)||0), 0);
-      const totalReceived = po.lines.reduce((s,l)=> s + (Number(l.qtyReceived)||0), 0);
-
-      const linesHtml = po.lines.map(l=>{
-        const ordered = Number(l.qtyOrdered||0);
-        const received = Number(l.qtyReceived||0);
-        const remaining = Math.max(0, ordered - received);
-        return `
-          <div class="cardline">
-            <div>
-              <strong class="mono">${esc(l.sku)}</strong>
-              <small>${esc(l.item || "—")} • Ordered ${ordered} • Received ${received} • Remaining ${remaining}</small>
-            </div>
-            <span class="badge ${remaining===0 ? "good" : "warn"}">${remaining===0 ? "Complete" : "Pending"}</span>
-          </div>
-        `;
-      }).join("");
-
-      out.innerHTML = `
-        <div class="cardline">
-          <div>
-            <strong class="mono">${esc(po.poNumber)}</strong>
-            <small>${esc(po.supplier || "—")} • Expected ${esc(new Date(po.expectedDate).toLocaleDateString())}</small>
-            <small>Total Ordered: ${totalOrdered} • Total Received: ${totalReceived}</small>
-          </div>
-          <span class="badge ${status==="Closed" ? "good" : status==="Partial" ? "warn" : ""}">${esc(status)}</span>
-        </div>
-        <div class="stack" style="margin-top:10px;">
-          ${linesHtml}
-        </div>
-      `;
-    }
-
-    /* ---------- Invoice Lookup by PO ---------- */
-    function invoiceLookup(){
-      const q = (document.getElementById("invoiceLookupInput").value || "").trim().toUpperCase();
-      const out = document.getElementById("invoiceLookupResult");
-      out.innerHTML = "";
-      if (!q){ toast("Missing", "Enter a PO number."); return; }
-
-      const invs = getInvoices().filter(i => String(i.poNumber||"").toUpperCase() === q);
-      if (invs.length === 0){
-        out.innerHTML = `<div class="cardline"><div><strong>No invoice found</strong><small>No invoices linked to <span class="mono">${esc(q)}</span>.</small></div><span class="badge warn">None</span></div>`;
-        return;
-      }
-
-      out.innerHTML = invs
-        .slice()
-        .sort((a,b)=> new Date(b.date||0) - new Date(a.date||0))
-        .map(i => `
-          <div class="cardline">
-            <div>
-              <strong class="mono">${esc(i.invoiceNumber || "INV")}</strong>
-              <small>PO: <span class="mono">${esc(i.poNumber)}</span> • Date: ${esc(new Date(i.date).toLocaleDateString())}</small>
-              <small>Total: $${Number(i.total||0).toFixed(2)}</small>
-            </div>
-            <span class="badge good">Invoice</span>
-          </div>
-        `).join("");
-    }
-
-    /* ---------- Receive Inventory ---------- */
-    function receiveInventory(){
-      const poNumber = (document.getElementById("recvPo").value || "").trim().toUpperCase();
-      const sku = (document.getElementById("recvSku").value || "").trim().toUpperCase();
-      const qty = Number(document.getElementById("recvQty").value || 0);
-      const invoiceNumber = (document.getElementById("recvInvoice").value || "").trim();
-
-      if (!poNumber || !sku || qty <= 0){
-        toast("Missing fields", "PO, SKU and a valid Qty are required.");
-        return;
-      }
-
-      const pos = getPOs();
-      const po = pos.find(p => String(p.poNumber||"").toUpperCase() === poNumber);
-      if (!po){ toast("PO not found", `No PO matches ${poNumber}.`); return; }
-
-      const line = po.lines.find(l => String(l.sku||"").toUpperCase() === sku);
-      if (!line){ toast("SKU not found", `SKU ${sku} is not on ${poNumber}.`); return; }
-
-      const ordered = Number(line.qtyOrdered||0);
-      const received = Number(line.qtyReceived||0);
-      const remaining = Math.max(0, ordered - received);
-      if (qty > remaining){
-        toast("Qty too high", `Remaining on PO line is ${remaining}.`);
-        return;
-      }
-
-      // Update PO line
-      line.qtyReceived = received + qty;
-      saveJSON(KEYS.PO, pos);
-
-      // Update on-hand
-      const oh = getOnHand();
-      oh[sku] = Number(oh[sku] || 0) + qty;
-      saveJSON(KEYS.OH, oh);
-
-      // Optional invoice linkage
-      if (invoiceNumber){
-        const invs = getInvoices();
-        invs.push({
-          invoiceNumber,
-          poNumber,
-          date: nowISO(),
-          total: 0
-        });
-        saveJSON(KEYS.INV, invs);
-      }
-
-      addLog({
-        time: nowISO(),
-        type: "Receive",
-        reference: poNumber + (invoiceNumber ? ` / ${invoiceNumber}` : ""),
-        sku,
-        qty,
-        notes: `Received against PO line`
-      });
-
-      toast("Received", `${qty} units received for ${sku} on ${poNumber}.`);
-      document.getElementById("recvQty").value = "";
-      renderAll();
-    }
-
-    /* ---------- Adjust Inventory ---------- */
-    function adjustInventory(){
-      const sku = (document.getElementById("adjSku").value || "").trim().toUpperCase();
-      const qty = Number(document.getElementById("adjQty").value || 0);
-      const reason = document.getElementById("adjReason").value;
-      const note = (document.getElementById("adjNote").value || "").trim();
-
-      if (!sku || qty === 0){
-        toast("Missing fields", "SKU and non-zero adjustment are required.");
-        return;
-      }
-
-      const oh = getOnHand();
-      const before = Number(oh[sku] || 0);
-      const after = before + qty;
-      if (after < 0){
-        toast("Invalid", `On-hand cannot go below 0. Current is ${before}.`);
-        return;
-      }
-
-      oh[sku] = after;
-      saveJSON(KEYS.OH, oh);
-
-      addLog({
-        time: nowISO(),
-        type: "Adjust",
-        reference: reason,
-        sku,
-        qty,
-        notes: note || ""
-      });
-
-      toast("Adjusted", `${sku}: ${before} → ${after} (${qty > 0 ? "+" : ""}${qty})`);
-      document.getElementById("adjQty").value = "";
-      renderAll();
-    }
-
-    /* ---------- Dead Stock ---------- */
-    function openDeadStockModal(){ document.getElementById("deadModal")?.classList.add("open"); }
-    function closeDeadStockModal(){ document.getElementById("deadModal")?.classList.remove("open"); }
-
-    function saveDeadStock(){
-      const sku = (document.getElementById("deadSku").value || "").trim().toUpperCase();
-      const item = (document.getElementById("deadItem").value || "").trim();
-      const reason = document.getElementById("deadReason").value;
-      const note = (document.getElementById("deadNote").value || "").trim();
-
-      if (!sku){ toast("Missing", "SKU is required."); return; }
-
-      const dead = getDead();
-      if (dead.some(d => String(d.sku||"").toUpperCase() === sku)){
-        toast("Already flagged", `${sku} is already flagged as dead stock.`);
-        closeDeadStockModal();
-        return;
-      }
-
-      dead.unshift({ sku, item, reason, note, flaggedAt: nowISO() });
-      saveJSON(KEYS.DEAD, dead);
-
-      addLog({
-        time: nowISO(),
-        type: "Dead Stock",
-        reference: reason,
-        sku,
-        qty: 0,
-        notes: note || ""
-      });
-
-      toast("Flagged", `${sku} flagged as dead stock.`);
-      closeDeadStockModal();
-      ["deadSku","deadItem","deadNote"].forEach(id => document.getElementById(id).value = "");
-      renderAll();
-    }
-
-    function removeDeadStock(sku){
-      if (!confirm(`Remove dead stock flag for ${sku}?`)) return;
-      const dead = getDead().filter(d => String(d.sku||"").toUpperCase() !== String(sku).toUpperCase());
-      saveJSON(KEYS.DEAD, dead);
-      toast("Updated", `${sku} removed from dead stock list.`);
-      renderAll();
-    }
-
-    function renderDead(){
-      const tbody = document.getElementById("deadTable");
-      tbody.innerHTML = "";
-      const dead = getDead();
-
-      document.getElementById("deadCountBadge").textContent = `${dead.length} flagged`;
-
-      dead.forEach(d=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="mono"><strong>${esc(d.sku)}</strong></td>
-          <td>${esc(d.item || "—")}</td>
-          <td>${esc(new Date(d.flaggedAt).toLocaleDateString())}</td>
-          <td>${esc(d.reason || "—")}</td>
-          <td>${esc(d.note || "")}</td>
-          <td><button class="btn secondary sm" type="button" onclick="removeDeadStock('${esc(d.sku)}')">Remove</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      if (dead.length === 0){
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="6" class="subtle">No dead stock flagged.</td>`;
-        tbody.appendChild(tr);
-      }
-    }
-
-    function renderLog(){
-      const tbody = document.getElementById("logTable");
-      tbody.innerHTML = "";
-      const log = getLog();
-
-      log.slice(0, 200).forEach(e=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${esc(new Date(e.time).toLocaleString())}</td>
-          <td><strong>${esc(e.type)}</strong></td>
-          <td class="mono">${esc(e.reference || "—")}</td>
-          <td class="mono">${esc(e.sku || "—")}</td>
-          <td>${Number(e.qty||0)}</td>
-          <td>${esc(e.notes || "")}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      if (log.length === 0){
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="6" class="subtle">No inventory activity yet.</td>`;
-        tbody.appendChild(tr);
-      }
-    }
-
-    /* ---------- Demo Data ---------- */
-    function loadDemoPOs(){
-      const existing = getPOs();
-      if (existing.length > 0){
-        toast("POs already exist", "Demo not loaded because PO data already exists.");
-        renderAll();
-        return;
-      }
-
-      const today = new Date();
-      const plus = (days)=> new Date(today.getTime() + days*86400000).toISOString().slice(0,10);
-
-      const demoPOs = [
-        {
-          poNumber: "PO-1001",
-          supplier: "Aurora Metals",
-          expectedDate: plus(3),
-          lines: [
-            { sku:"NK-1001", item:"Premium Necklace", qtyOrdered: 120, qtyReceived: 0 },
-            { sku:"ER-4040", item:"Gold Earrings", qtyOrdered: 80, qtyReceived: 0 },
-          ]
-        },
-        {
-          poNumber: "PO-1002",
-          supplier: "Citrine Components",
-          expectedDate: plus(8),
-          lines: [
-            { sku:"BR-1101", item:"Bracelet Set", qtyOrdered: 60, qtyReceived: 10 },
-            { sku:"RG-2001", item:"Ring Collection", qtyOrdered: 40, qtyReceived: 0 },
-          ]
-        },
-        {
-          poNumber: "PO-1003",
-          supplier: "NorthBay Wholesale",
-          expectedDate: plus(14),
-          lines: [
-            { sku:"NK-2210", item:"Pearl Necklace", qtyOrdered: 90, qtyReceived: 0 },
-          ]
-        }
-      ];
-
-      saveJSON(KEYS.PO, demoPOs);
-      saveJSON(KEYS.OH, { "BR-1101": 25, "NK-1001": 10, "ER-4040": 5 });
-
-      toast("Demo loaded", "POs + on-hand seeded for testing.");
-      renderAll();
-    }
-
-    /* ---------- Render All ---------- */
-    function defaultWindow(){
-      const start = document.getElementById("poStart");
-      const end = document.getElementById("poEnd");
-      if (!start.value || !end.value){
-        const today = new Date();
-        const s = new Date(today.getTime() - 7*86400000);
-        const e = new Date(today.getTime() + 21*86400000);
-        start.value = s.toISOString().slice(0,10);
-        end.value = e.toISOString().slice(0,10);
-      }
-    }
-
-    function renderAll(){
-      defaultWindow();
-      renderIncoming();
-      renderDead();
-      renderLog();
-    }
-
-    /* ---------- Events ---------- */
-    document.addEventListener("click", ()=> document.getElementById("actionsMenu")?.classList.remove("open"));
-    document.getElementById("deadModal")?.addEventListener("click", (e)=>{
-      if (e.target && e.target.id === "deadModal") closeDeadStockModal();
-    });
-
-    document.getElementById("poStart")?.addEventListener("change", renderIncoming);
-    document.getElementById("poEnd")?.addEventListener("change", renderIncoming);
-
-    /* ---------- Init ---------- */
-    (function init(){
-      requireAuthSafe();
-      markActiveSafe();
-      initUserSelectSafe();
-      defaultWindow();
-      renderAll();
-    })();
-  </script>
+  <script src="inventory.js"></script>
 </body>
 </html>
