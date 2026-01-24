@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Logistics | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Tab Styles */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.04);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link active" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="trends.html">Trends</a>
+            </nav>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link" href="orders.html">Orders</a>
+            <a class="mobile-link active" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="trends.html">Trends</a>
+        </div>
+    </div>
+
+    <main class="container">
+
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Logistics & Shipping</h1>
+            <p class="page-desc">Manage 3PL integrations, track global shipments, and review dropship performance.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('overview')">Overview</div>
+            <div class="tab" onclick="switchTab('3pl')">3PL Operations</div>
+            <div class="tab" onclick="switchTab('reports')">Reports</div>
+            <div class="tab" onclick="switchTab('tools')">Tools & Uploads</div>
+        </div>
+
+        <!-- VIEW: OVERVIEW -->
+        <div id="view-overview" class="view-section active">
+            <!-- Stats -->
+            <section class="kpi-grid" style="margin-bottom:32px;">
+                <article class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kAll">
+                    <div class="card-header">
+                        <div class="card-title">Total Shipments</div>
+                        <div class="badge badge-green">Global</div>
+                    </div>
+                    <div class="stat-value" id="kTotal">0</div>
+                    <div class="stat-trend neutral">All Time</div>
+                </article>
+
+                <article class="card-kpi clickable-kpi" onclick="setFilter('In Transit')" id="kTransit">
+                    <div class="card-header">
+                        <div class="card-title">In Transit</div>
+                        <div class="badge badge-yellow">Active</div>
+                    </div>
+                    <div class="stat-value" id="kTransitVal">0</div>
+                    <div class="stat-trend up">On the move</div>
+                </article>
+
+                <article class="card-kpi clickable-kpi" onclick="setFilter('Delayed')" id="kDelayed">
+                    <div class="card-header">
+                        <div class="card-title">Delayed</div>
+                        <div class="badge badge-red">Alert</div>
+                    </div>
+                    <div class="stat-value" id="kDelayedVal">0</div>
+                    <div class="stat-trend down">Needs attention</div>
+                </article>
+
+                <article class="card-kpi">
+                    <div class="card-header">
+                        <div class="card-title">On-Time Rate</div>
+                        <div class="badge badge-green">Perf</div>
+                    </div>
+                    <div class="stat-value" id="kRate">98%</div>
+                    <div class="stat-trend up">Last 30 days</div>
+                </article>
+            </section>
+
+            <!-- Main Content (Split) -->
+            <div class="grid grid-2">
+                <!-- Shipment List -->
+                <section class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2 style="font-size:18px; margin:0;" id="listTitle">Shipment Manifest</h2>
+                        <button class="btn btn-secondary" style="height:36px; font-size:13px;"
+                            onclick="window.location.href='#tools'">
+                            Export
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tracking #</th>
+                                    <th>Destination</th>
+                                    <th>ETA</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Map / Details Placeholder -->
+                <aside style="display:grid; gap:24px; align-content:start;">
+                    <div class="card" style="min-height:300px; display:flex; flex-direction:column;">
+                        <h2 style="font-size:16px; margin:0 0 16px;">Live Tracking</h2>
+
+                        <div id="mapPlaceholder"
+                            style="background:#e2e8f0; border-radius:12px; flex:1; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:13px; text-align:center; padding:20px;">
+                            Select a shipment to view live location map.
+                        </div>
+
+                        <div id="trackDetail" style="display:none; margin-top:20px;">
+                            <strong style="display:block; font-size:16px; margin-bottom:4px;" id="dId">TRK-000</strong>
+                            <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" id="dDest">New
+                                York, NY</div>
+
+                            <div
+                                style="display:flex; gap:10px; align-items:center; background:#f8fafc; padding:12px; border-radius:8px;">
+                                <div style="font-size:20px;">🚚</div>
+                                <div>
+                                    <div
+                                        style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                        Carrier</div>
+                                    <div style="font-size:13px; font-weight:600;" id="dCarrier">FedEx</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- VIEW: 3PL OPERATIONS -->
+        <div id="view-3pl" class="view-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h2 style="margin:0; font-size:20px;">3PL Order Management</h2>
+                <button class="btn btn-primary" onclick="alert('Demo: Creating New 3PL Shipment Request...')">+ New
+                    Shipment Request</button>
+            </div>
+
+            <section class="card">
+                <h3 style="font-size:16px; margin:0 0 16px; color:var(--text-muted);">Active 3PL Orders</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>3PL Provider</th>
+                                <th>Items</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ORD-3PL-101</strong></td>
+                                <td>ShipBob</td>
+                                <td>500 Units (SKU-X)</td>
+                                <td>2026-01-20</td>
+                                <td><span class="badge badge-yellow">Processing</span></td>
+                                <td><button class="btn btn-secondary"
+                                        style="height:32px; font-size:12px;">Track</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ORD-3PL-102</strong></td>
+                                <td>Amazon FBA</td>
+                                <td>1200 Units (SKU-Y)</td>
+                                <td>2026-01-18</td>
+                                <td><span class="badge badge-green">Shipped</span></td>
+                                <td><button class="btn btn-secondary"
+                                        style="height:32px; font-size:12px;">Details</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ORD-3PL-103</strong></td>
+                                <td>DHL Supply Chain</td>
+                                <td>30 Pallets</td>
+                                <td>2026-01-22</td>
+                                <td><span class="badge badge-red">Pending Acceptance</span></td>
+                                <td><button class="btn btn-secondary"
+                                        style="height:32px; font-size:12px;">Review</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="grid grid-2" style="margin-top:24px;">
+                <div class="card">
+                    <h3 style="font-size:16px; margin:0 0 12px;">3PL Request History</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">Recent inbound requests to external warehouses.
+                    </p>
+                    <button class="btn btn-secondary" style="width:100%">View All History</button>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:16px; margin:0 0 12px;">Integration Status</h3>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <div style="width:8px; height:8px; background:var(--success); border-radius:50%;"></div>
+                        <span style="font-size:13px;">ShipBob API: <strong>Connected</strong></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:8px; height:8px; background:var(--success); border-radius:50%;"></div>
+                        <span style="font-size:13px;">DHL API: <strong>Connected</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: REPORTS -->
+        <div id="view-reports" class="view-section">
+            <h2 style="font-size:20px; margin-bottom:24px;">Logistics Reports</h2>
+
+            <div class="grid grid-2">
+                <section class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                        <h3 style="font-size:16px; margin:0;">Daily Shipment Report</h3>
+                        <span class="badge badge-green">Today</span>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Event</th>
+                                    <th>Ref #</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>09:30 AM</td>
+                                    <td>Outbound Scan</td>
+                                    <td>TRK-9921</td>
+                                </tr>
+                                <tr>
+                                    <td>11:45 AM</td>
+                                    <td>Delivered</td>
+                                    <td>TRK-8812</td>
+                                </tr>
+                                <tr>
+                                    <td>02:15 PM</td>
+                                    <td>Customs Hold</td>
+                                    <td>TRK-7741</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-secondary" style="width:100%; margin-top:16px;">Download PDF</button>
+                </section>
+
+                <section class="card">
+                    <h3 style="font-size:16px; margin:0 0 16px;">Vendor Dropship PO Review</h3>
+                    <div
+                        style="background:#f8fafc; padding:16px; border-radius:8px; border:1px solid var(--border); margin-bottom:16px;">
+                        <strong style="display:block; font-size:24px;">94.5%</strong>
+                        <span style="font-size:13px; color:var(--text-muted);">On-Time Dropship Perf</span>
+                    </div>
+                    <p style="font-size:13px; margin-bottom:16px;">Review pending dropship POs that have not been
+                        acknowledged by vendors within 24h.</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-primary" style="flex:1">Review POs</button>
+                        <button class="btn btn-secondary" style="flex:1">Email Vendors</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- VIEW: TOOLS -->
+        <div id="view-tools" class="view-section">
+            <h2 style="font-size:20px; margin-bottom:24px;">Data Tools</h2>
+
+            <div class="grid grid-2">
+                <section class="card">
+                    <h3 style="font-size:16px; margin-bottom:12px;">Upload Supplier Shipments</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+                        Bulk upload shipment manifests from Excel or CSV.
+                    </p>
+                    <div style="border:2px dashed var(--border); border-radius:12px; padding:40px; text-align:center; cursor:pointer; color:var(--text-muted);"
+                        onclick="alert('Demo: Simulating File Upload...')">
+                        <span style="font-size:24px; display:block; margin-bottom:8px;">📂</span>
+                        Click or Drag File Here
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h3 style="font-size:16px; margin-bottom:12px;">Export Data</h3>
+                    <div style="display:grid; gap:12px;">
+                        <button class="btn btn-secondary"
+                            onclick="toast('Export', 'Downloading Shipment Manifest.csv...')">
+                            📥 Export All Shipments (CSV)
+                        </button>
+                        <button class="btn btn-secondary" onclick="toast('Export', 'Downloading 3PL_Orders.xlsx...')">
+                            📥 Export 3PL Orders (Excel)
+                        </button>
+                        <button class="btn btn-secondary"
+                            onclick="toast('Export', 'Downloading Daily_Report_2026-01-24.pdf...')">
+                            📥 Export Daily Report (PDF)
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
+        </div>
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
+        const KEY_SHIP = "stark_erp_shipments_v1";
+        let CURRENT_FILTER = "all";
+
+        // Tab Logic
+        function switchTab(t) {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(x => x.classList.remove('active'));
+
+            // Find tab by text content is tricky, better to use index or just loop visually
+            const tabs = document.querySelectorAll('.tab');
+            if (t === 'overview') tabs[0].classList.add('active');
+            if (t === '3pl') tabs[1].classList.add('active');
+            if (t === 'reports') tabs[2].classList.add('active');
+            if (t === 'tools') tabs[3].classList.add('active');
+
+            document.getElementById('view-' + t).classList.add('active');
+        }
+
+        /* --- Existing Logic --- */
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+        function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+
+        function setFilter(f) {
+            CURRENT_FILTER = f;
+            document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+            if (f === 'all') document.getElementById("kAll").classList.add("active");
+            if (f === 'In Transit') document.getElementById("kTransit").classList.add("active");
+            if (f === 'Delayed') document.getElementById("kDelayed").classList.add("active");
+            render();
+        }
+
+        function render() {
+            const list = load(KEY_SHIP, []);
+
+            // KPIs
+            document.getElementById("kTotal").textContent = list.length;
+            document.getElementById("kTransitVal").textContent = list.filter(x => x.status === "In Transit").length;
+            document.getElementById("kDelayedVal").textContent = list.filter(x => x.status === "Delayed").length;
+
+            // Filter
+            let shown = list.filter(x => {
+                if (CURRENT_FILTER === 'all') return true;
+                return x.status === CURRENT_FILTER;
+            });
+
+            const tbody = document.getElementById("sBody");
+            tbody.innerHTML = "";
+
+            if (!shown.length) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted);">No shipments found.</td></tr>`;
+
+            shown.forEach(s => {
+                let badge = "badge-green";
+                if (s.status === "In Transit") badge = "badge-yellow";
+                if (s.status === "Delayed") badge = "badge-red";
+
+                const tr = document.createElement("tr");
+                tr.style.cursor = "pointer";
+                tr.onclick = () => showDetail(s);
+                tr.innerHTML = `
+                <td><strong style="color:var(--primary);">${s.id}</strong></td>
+                <td>${s.dest}</td>
+                <td>${s.eta}</td>
+                <td><span class="badge ${badge}">${s.status}</span></td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showDetail(s) {
+            document.getElementById("mapPlaceholder").style.display = "none";
+            document.getElementById("trackDetail").style.display = "block";
+            document.getElementById("dId").textContent = s.id;
+            document.getElementById("dDest").textContent = s.dest;
+            document.getElementById("dCarrier").textContent = s.carrier;
+
+            // Fake map viz
+            const mapDiv = document.createElement("div");
+            mapDiv.style.cssText = "height:200px; background:url('https://maps.googleapis.com/maps/api/staticmap?center=40.7128,-74.0060&zoom=11&size=400x200&sensor=false&key=YOUR_API_KEY_HERE') center/cover; border-radius:12px; margin-bottom:16px; background-color:#cbd5e1;";
+            mapDiv.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b; font-weight:600; background:rgba(255,255,255,0.5);">Map Visualization</div>`;
+
+            const p = document.getElementById("trackDetail");
+            if (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map")) p.firstChild.remove();
+            p.insertBefore(mapDiv, p.firstChild);
+        }
+
+        function addShipment(isDemo) {
+            if (isDemo) {
+                const demo = [
+                    { id: "TRK-9921", dest: "Los Angeles, CA", eta: "2026-01-28", status: "In Transit", carrier: "UPS Freight" },
+                    { id: "TRK-9925", dest: "Berlin, DE", eta: "2026-02-05", status: "In Transit", carrier: "DHL Express" },
+                    { id: "TRK-8812", dest: "Tokyo, JP", eta: "2026-01-22", status: "Delivered", carrier: "Nippon Express" },
+                    { id: "TRK-7741", dest: "Chicago, IL", eta: "2026-01-26", status: "Delayed", carrier: "FedEx Ground" }
+                ];
+                const current = load(KEY_SHIP, []);
+                save(KEY_SHIP, [...demo, ...current]);
+                toast("Shipment Created", "Demo shipments added.");
+                render();
+            }
+        }
+
+        // Init
+        if (load(KEY_SHIP, []).length === 0) addShipment(true);
+        render();
+    </script>
+</body>
+
+</html>
