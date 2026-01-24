@@ -169,7 +169,7 @@
 
     <!-- KPIs (Restored & Interactive) -->
     <section class="kpi-grid" style="margin-bottom:32px;">
-      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('all')" id="kpiAll">
+      <article class="card-kpi clickable-kpi" onclick="setFilter('all')" id="kpiAll">
         <div class="card-header">
           <div class="card-title">Total SKUs</div>
           <div class="badge badge-green">Catalog</div>
@@ -178,7 +178,7 @@
         <div class="stat-trend neutral">View All</div>
       </article>
 
-      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('low')" id="kpiLow">
+      <article class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow">
         <div class="card-header">
           <div class="card-title">Low Stock</div>
           <div class="badge badge-yellow">Alert</div>
@@ -187,7 +187,7 @@
         <div class="stat-trend neutral">Reorder Soon</div>
       </article>
 
-      <article class="card card-premium card-compact clickable-kpi" onclick="setFilter('oos')" id="kpiOOS">
+      <article class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOOS">
         <div class="card-header">
           <div class="card-title">Out of Stock</div>
           <div class="badge badge-red">Critical</div>
@@ -196,7 +196,7 @@
         <div class="stat-trend down">Restock Now</div>
       </article>
 
-      <article class="card card-premium card-compact">
+      <article class="card-kpi">
         <div class="card-header">
           <div class="card-title">Valuation</div>
           <div class="badge badge-green">Asset</div>
@@ -436,6 +436,12 @@
 
   <script src="erp.js"></script>
   <script>
+    const AUTH_KEY = "stark_erp_auth_v1";
+    (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
+    const KEY_CUST = "stark_erp_customers_v1";
+    (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
     const ITEM_KEY = "stark_erp_items_v2";
     const PO_KEY = "stark_erp_pos_v1";
     let CURRENT_FILTER = "all"; // all, low, oos
