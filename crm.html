@@ -9,10 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+  <!-- Your shared premium theme -->
   <link rel="stylesheet" href="erp.css" />
 
   <style>
-    /* ===== CRM premium refinements ===== */
+    /* ========== CRM Premium Layout Refinements (mobile-first) ========== */
     .hero-right{
       display:flex;
       align-items:center;
@@ -24,7 +25,7 @@
     .pill.sm{ padding: 7px 10px; font-size: 13px; }
     .select.sm{ height: 36px; border-radius: 12px; font-size: 13px; }
 
-    .kpis.crm{ grid-template-columns: repeat(4, minmax(220px, 1fr)); }
+    .kpis.crm{ display:grid; gap: 14px; grid-template-columns: repeat(4, minmax(220px, 1fr)); }
     .card.kpi-compact{ min-height: 118px; padding: 16px 16px 14px; }
     .card.kpi-compact .value{ margin-top: 12px; font-size: 28px; }
     .card.kpi-compact .sub{ margin-top: 4px; }
@@ -34,13 +35,14 @@
       grid-template-columns: 1.2fr 0.8fr;
       gap: 16px;
       margin-top: 16px;
+      align-items:start;
     }
 
     .mini-list{
       margin-top: 10px;
       display:grid;
       gap: 8px;
-      max-height: 210px;
+      max-height: 240px;
       overflow:auto;
       padding-right: 6px;
     }
@@ -71,13 +73,22 @@
     .mini-row.green{ border-color: rgba(15,118,110,0.20); background: rgba(15,118,110,0.06); }
     .mini-row.green .tag{ border-color: rgba(15,118,110,0.25); background: rgba(15,118,110,0.08); color: var(--good); }
 
+    /* ========== Hero actions: clean + aligned ========== */
+    .hero-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
     /* Actions dropdown */
     .dropdown{ position: relative; display:inline-flex; align-items:center; gap: 8px; }
     .menu{
       position:absolute;
       right: 0;
       top: calc(100% + 10px);
-      width: 260px;
+      width: 270px;
       background: rgba(255,255,255,0.94);
       border: 1px solid rgba(11,18,32,0.12);
       border-radius: 16px;
@@ -134,6 +145,7 @@
       position: relative;
       cursor:pointer;
       flex:0 0 auto;
+      outline: none;
     }
     .knob{
       width: 20px;
@@ -190,6 +202,7 @@
     @media (max-width: 1100px){
       .kpis.crm{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
       .crm-grid{ grid-template-columns: 1fr; }
+      .hero-actions{ justify-content:flex-start; }
     }
     @media (max-width: 700px){
       .kpis.crm{ grid-template-columns: 1fr; }
@@ -276,7 +289,7 @@
 
         <div class="dropdown">
           <button class="btn secondary sm" id="actionsBtn" type="button">Actions ▾</button>
-          <div class="menu" id="actionsMenu">
+          <div class="menu" id="actionsMenu" aria-label="CRM actions">
             <button type="button" onclick="loadDemoCustomers()">Load demo customers <span class="hint">directory</span></button>
             <button type="button" onclick="loadDemoSales()">Load demo sales <span class="hint">orders</span></button>
             <div class="sep"></div>
@@ -372,10 +385,9 @@
 
     <!-- ===== Main content ===== -->
     <div class="crm-grid">
-      <!-- Left panel: lists + (tables in heavy section) -->
+      <!-- Left -->
       <div class="panel">
         <h2>Signals</h2>
-
         <div class="goldline"></div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
@@ -430,7 +442,7 @@
         </div>
       </div>
 
-      <!-- Right side: executive summary -->
+      <!-- Right -->
       <div class="side">
         <div class="panel">
           <h2>Executive Summary</h2>
@@ -448,7 +460,7 @@
         <div class="panel">
           <h2>Notes</h2>
           <div class="sub" style="margin-top:-6px;">
-            Executive mode is designed to keep the interface clean by hiding heavy tables while preserving all KPIs and signals.
+            Executive mode keeps the interface clean by hiding heavy tables while preserving KPIs, signals, and the mini chart.
           </div>
         </div>
       </div>
@@ -483,6 +495,7 @@
     </div>
   </div>
 
+  <!-- Shared ERP JS (optional) -->
   <script src="erp.js"></script>
 
   <script>
@@ -506,7 +519,7 @@
     function toast(title, msg){
       if (window.erpToast) return window.erpToast(title, msg);
       const wrap = document.getElementById("toastWrap");
-      if(!wrap) return alert(title + "\\n" + msg);
+      if(!wrap) return alert(title + "\n" + msg);
       const el = document.createElement("div");
       el.className = "toast";
       el.innerHTML = `<div><strong>${esc(title)}</strong><span>${esc(msg)}</span></div><button class="close">×</button>`;
@@ -530,6 +543,7 @@
     function markActiveSafe(){
       if (window.erpMarkActive) return window.erpMarkActive("crm");
       document.querySelectorAll('[data-key="crm"]').forEach(a=> a.classList.add("active"));
+      document.querySelectorAll('.mobile-links [data-key="crm"]').forEach(a=> a.classList.add("active"));
     }
 
     function initUserSelectSafe(){
@@ -594,6 +608,8 @@
 
     function buildCustomerFilterOptions(customers){
       const sel = document.getElementById("customerFilter");
+      if (!sel) return;
+      const current = sel.value || "ALL";
       sel.innerHTML = "";
       const optAll = document.createElement("option");
       optAll.value = "ALL";
@@ -609,6 +625,9 @@
           o.textContent = c.name;
           sel.appendChild(o);
         });
+
+      // restore selection if possible
+      if ([...sel.options].some(o=>o.value===current)) sel.value = current;
     }
 
     function salesInMonth(sales, yyyymm){
@@ -678,6 +697,7 @@
         retentionText = `${pct}% retention — ${retained}/${prevActive.size} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(selectedMonth)}.`;
       }
 
+      // Top SKU per customer (by qty) over window
       const skuAgg = new Map();
       const lastOrder = new Map();
       rowsScoped.forEach(r=>{
@@ -695,7 +715,7 @@
         return { customerId:c.id, customerName:c.name, sku: bestSku, qty: bestQty, last: lastOrder.get(c.id) || "—" };
       });
 
-      /* Chart data: orders per month over window months (scoped to current filters) */
+      // Chart data: orders per month in window
       const ordersByMonth = new Map(months.map(m => [m, 0]));
       rowsScoped.forEach(r=>{
         const mk = (r.date||"").slice(0,7);
@@ -722,38 +742,29 @@
       const canvas = document.getElementById("ordersChart");
       if (!canvas) return;
 
-      // Make chart crisp on high DPI
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
       canvas.width = Math.floor(rect.width * dpr);
       canvas.height = Math.floor(rect.height * dpr);
 
       const ctx = canvas.getContext("2d");
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const w = rect.width;
       const h = rect.height;
-
-      // Clear
       ctx.clearRect(0,0,w,h);
 
-      // Premium background subtle
-      ctx.fillStyle = "rgba(255,255,255,0.00)";
-      ctx.fillRect(0,0,w,h);
-
-      const months = monthsDesc.slice().reverse(); // show left->right oldest->newest
+      const months = monthsDesc.slice().reverse(); // oldest -> newest
       const vals = months.map(m => ordersByMonth.get(m) || 0);
       const max = Math.max(1, ...vals);
 
-      // Padding
       const padL = 14, padR = 14, padT = 14, padB = 30;
       const plotW = w - padL - padR;
       const plotH = h - padT - padB;
 
-      // Grid lines
+      // grid
       ctx.strokeStyle = "rgba(11,18,32,0.08)";
       ctx.lineWidth = 1;
-
       const gridCount = 3;
       for (let i=0; i<=gridCount; i++){
         const y = padT + (plotH * i / gridCount);
@@ -763,7 +774,6 @@
         ctx.stroke();
       }
 
-      // Bars
       const gap = 10;
       const barW = Math.max(10, (plotW - gap*(months.length-1)) / months.length);
 
@@ -773,15 +783,12 @@
         const x = padL + i*(barW + gap);
         const y = padT + (plotH - barH);
 
-        // bar fill (premium blue gradient look without setting specific gradients via CSS)
         ctx.fillStyle = "rgba(31,86,216,0.18)";
         ctx.fillRect(x, y, barW, barH);
 
-        // top highlight
         ctx.fillStyle = "rgba(31,86,216,0.28)";
         ctx.fillRect(x, y, barW, Math.min(8, barH));
 
-        // month label
         ctx.fillStyle = "rgba(11,18,32,0.62)";
         ctx.font = "800 11px Inter, system-ui, sans-serif";
         const ml = monthLabel(months[i]);
@@ -789,8 +796,8 @@
         ctx.fillText(ml, tx, h - 10);
       }
 
-      // Title hint
-      document.getElementById("chartSub").textContent = label;
+      const sub = document.getElementById("chartSub");
+      if (sub) sub.textContent = label;
     }
 
     function renderExecSummary(k, selectedMonth, windowSize){
@@ -802,14 +809,12 @@
       const consistent = k.everyMonthCustomers.length;
 
       headline.textContent = `${monthLabel(selectedMonth)} • ${k.ordersInMonth} orders • ${k.activeCustomers} active customers`;
-      body.textContent =
-        `Window: last ${windowSize} months. ${consistent} customers are consistent; ${noSales} customers have no orders this month.`;
+      body.textContent = `Window: last ${windowSize} months. ${consistent} consistent; ${noSales} no-sales this month.`;
 
-      let actionText = [];
-      if (noSales > 0) actionText.push(`Review ${noSales} “no-sales” accounts and trigger outreach.`);
-      if (consistent > 0) actionText.push(`Protect the ${consistent} consistent customers: maintain service level & lead times.`);
-      if (actionText.length === 0) actionText.push("No immediate exceptions detected. Monitor order trend and retention.");
-
+      const actionText = [];
+      if (noSales > 0) actionText.push(`Review ${noSales} no-sales accounts and trigger outreach.`);
+      if (consistent > 0) actionText.push(`Protect ${consistent} consistent customers with service-level priority.`);
+      if (actionText.length === 0) actionText.push("No immediate exceptions detected. Monitor trend + retention.");
       actions.textContent = actionText.join(" ");
     }
 
@@ -822,640 +827,66 @@
 
       buildCustomerFilterOptions(customers);
 
-      const customerFilter = document.getElementById("customerFilter");
-      const storedCustomer = customerFilter.getAttribute("data-last") || "ALL";
-      if ([...customerFilter.options].some(o=>o.value===storedCustomer)) customerFilter.value = storedCustomer;
-
       const q = document.getElementById("searchInput").value || "";
       const selectedMonth = monthPick.value;
       const windowSize = Number(document.getElementById("windowPick").value || 6);
-      const custId = customerFilter.value;
+      const custId = document.getElementById("customerFilter").value || "ALL";
 
       const k = computeKPIs(customers, sales, selectedMonth, windowSize, custId, q);
-      customerFilter.setAttribute("data-last", customerFilter.value);
 
       // KPI render
       document.getElementById("kpiOrders").textContent = k.ordersInMonth.toLocaleString();
       document.getElementById("kpiOrdersSub").textContent = `${monthLabel(selectedMonth)} • scoped to filters`;
 
-      document.getElementById("kpiActive").
-<script>
-  /* ========= Safe helpers if erp.js is incomplete ========= */
-  const KEYS = {
-    CUST: (window.ERP && ERP.CUST) || "stark_erp_crm_customers_v1",
-    SALES: (window.ERP && ERP.SALES) || "stark_erp_sales_v1",
-    USER: (window.ERP && ERP.USER) || "stark_erp_current_user_v1",
-    AUTH: (window.ERP && ERP.AUTH) || "stark_erp_auth_v1",
-    EXEC: "stark_erp_crm_exec_v1"
-  };
+      document.getElementById("kpiActive").textContent = k.activeCustomers.toLocaleString();
+      document.getElementById("kpiActiveSub").textContent = `Customers with ≥1 order in ${monthLabel(selectedMonth)}`;
 
-  function loadJSON(key, fallback){
-    try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-    catch { return fallback; }
-  }
-  function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
-  function uid(prefix){ return `${prefix}-${Math.random().toString(16).slice(2,8).toUpperCase()}${Date.now().toString(16).slice(-4).toUpperCase()}`; }
-  function esc(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+      document.getElementById("kpiNoSales").textContent = k.noSalesCustomers.length.toLocaleString();
+      document.getElementById("kpiNoSalesSub").textContent = `Customers with 0 orders in ${monthLabel(selectedMonth)}`;
 
-  function toast(title, msg){
-    if (window.erpToast) return window.erpToast(title, msg);
-    const wrap = document.getElementById("toastWrap");
-    if(!wrap) return alert(title + "\n" + msg);
-    const el = document.createElement("div");
-    el.className = "toast";
-    el.innerHTML = `<div><strong>${esc(title)}</strong><span>${esc(msg)}</span></div><button class="close">×</button>`;
-    el.querySelector(".close").onclick = ()=> el.remove();
-    wrap.prepend(el);
-    setTimeout(()=> el.remove(), 8000);
-  }
+      document.getElementById("kpiEveryMonth").textContent = k.everyMonthCustomers.length.toLocaleString();
+      document.getElementById("kpiEveryMonthSub").textContent = `Consistent across last ${windowSize} months`;
 
-  function erpSignOutSafe(){
-    if (window.erpSignOut) return window.erpSignOut();
-    localStorage.removeItem(KEYS.AUTH);
-    window.location.href = "index.html";
-  }
+      // Retention + data
+      document.getElementById("retentionText").textContent = k.retentionText;
+      document.getElementById("dataText").textContent =
+        `Customers: ${customers.length} • Sales records: ${sales.length} (localStorage)`;
 
-  function requireAuthSafe(){
-    if (window.erpRequireAuth) return window.erpRequireAuth();
-    const a = loadJSON(KEYS.AUTH, null);
-    if (!a || !a.ok) window.location.href = "index.html";
-  }
+      // Chart
+      drawOrdersChart(k.months, k.ordersByMonth, `Last ${windowSize} months • scoped to current filters`);
 
-  function markActiveSafe(){
-    if (window.erpMarkActive) return window.erpMarkActive("crm");
-    document.querySelectorAll('[data-key="crm"]').forEach(a=> a.classList.add("active"));
-  }
+      // Executive summary
+      renderExecSummary(k, selectedMonth, windowSize);
 
-  function initUserSelectSafe(){
-    const sel = document.getElementById("userSelect");
-    if (!sel) return;
-    const u = localStorage.getItem(KEYS.USER) || "A";
-    sel.value = u;
-    sel.onchange = () => {
-      localStorage.setItem(KEYS.USER, sel.value);
-      render();
-    };
-  }
-
-  /* ========= Executive mode ========= */
-  function setExec(on){
-    document.body.classList.toggle("exec", !!on);
-    localStorage.setItem(KEYS.EXEC, on ? "1" : "0");
-    const sw = document.getElementById("execSwitch");
-    if (sw) sw.setAttribute("aria-checked", on ? "true" : "false");
-  }
-  function getExec(){
-    return localStorage.getItem(KEYS.EXEC) === "1";
-  }
-
-  /* ========= CRM logic ========= */
-  function monthMinus(yyyymm, n){
-    const [y,m] = yyyymm.split("-").map(Number);
-    const dt = new Date(y, m-1, 1);
-    dt.setMonth(dt.getMonth() - n);
-    const yy = dt.getFullYear();
-    const mm = String(dt.getMonth()+1).padStart(2,"0");
-    return `${yy}-${mm}`;
-  }
-  function monthLabel(yyyymm){
-    const [y,m] = yyyymm.split("-");
-    const date = new Date(Number(y), Number(m)-1, 1);
-    return date.toLocaleString(undefined, { month:"short", year:"numeric" });
-  }
-  function todayMonthKey(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    return `${y}-${m}`;
-  }
-
-  function getCustomers(){ return loadJSON(KEYS.CUST, []); }
-  function getSales(){ return loadJSON(KEYS.SALES, []); }
-
-  function normalizeSales(){
-    const sales = getSales();
-    return sales.map(s => ({
-      id: s.id || uid("S"),
-      customerId: s.customerId || "",
-      customerName: s.customerName || "",
-      date: s.date || new Date().toISOString(),
-      sku: s.sku || "SKU",
-      qty: Number(s.qty || 1),
-      amount: Number(s.amount || 0),
-      location: s.location || ""
-    }));
-  }
-
-  function buildCustomerFilterOptions(customers){
-    const sel = document.getElementById("customerFilter");
-    sel.innerHTML = "";
-    const optAll = document.createElement("option");
-    optAll.value = "ALL";
-    optAll.textContent = "All customers";
-    sel.appendChild(optAll);
-
-    customers
-      .slice()
-      .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
-      .forEach(c => {
-        const o = document.createElement("option");
-        o.value = c.id;
-        o.textContent = c.name;
-        sel.appendChild(o);
-      });
-  }
-
-  function salesInMonth(sales, yyyymm){
-    return sales.filter(s => (s.date || "").slice(0,7) === yyyymm);
-  }
-  function salesInWindow(sales, endMonth, windowSize){
-    const months = [];
-    for (let i=0; i<windowSize; i++) months.push(monthMinus(endMonth, i));
-    return { months, rows: sales.filter(s => months.includes((s.date||"").slice(0,7))) };
-  }
-
-  function computeKPIs(customers, sales, selectedMonth, windowSize, customerIdFilter, query){
-    const q = (query || "").trim().toLowerCase();
-
-    let custFiltered = customers.filter(c => {
-      const blob = `${c.name||""} ${c.location||""} ${c.contact||""} ${c.email||""} ${c.phone||""}`.toLowerCase();
-      const matchesSearch = q ? blob.includes(q) : true;
-      const matchesCustomer = (customerIdFilter === "ALL") ? true : (c.id === customerIdFilter);
-      return matchesSearch && matchesCustomer;
-    });
-
-    const custSet = new Set(custFiltered.map(c=>c.id));
-
-    const monthRowsAll = salesInMonth(sales, selectedMonth);
-    const monthRowsScoped = monthRowsAll.filter(r => custSet.has(r.customerId));
-
-    const monthOrdersByCust = new Map();
-    monthRowsAll.forEach(r => {
-      if (!r.customerId) return;
-      monthOrdersByCust.set(r.customerId, (monthOrdersByCust.get(r.customerId) || 0) + 1);
-    });
-
-    const ordersInMonth = monthRowsScoped.length;
-    const activeCustomers = new Set(monthRowsScoped.map(r=>r.customerId)).size;
-    const noSalesCustomers = custFiltered.filter(c => !monthOrdersByCust.get(c.id));
-
-    const window = salesInWindow(sales, selectedMonth, windowSize);
-    const months = window.months;
-    const rowsScoped = window.rows.filter(r => custSet.has(r.customerId));
-
-    const custMonthMap = new Map();
-    rowsScoped.forEach(r=>{
-      const mk = (r.date||"").slice(0,7);
-      if(!mk) return;
-      if(!custMonthMap.has(r.customerId)) custMonthMap.set(r.customerId, new Set());
-      custMonthMap.get(r.customerId).add(mk);
-    });
-
-    const everyMonthCustomers = custFiltered.filter(c => {
-      const s = custMonthMap.get(c.id);
-      if (!s) return false;
-      return months.every(m => s.has(m));
-    });
-
-    const prevMonth = monthMinus(selectedMonth, 1);
-    const prevRowsScoped = salesInMonth(sales, prevMonth).filter(r => custSet.has(r.customerId));
-    const prevActive = new Set(prevRowsScoped.map(r=>r.customerId));
-    const currActive = new Set(monthRowsScoped.map(r=>r.customerId));
-
-    let retentionText = "—";
-    if (prevActive.size === 0){
-      retentionText = `No baseline customers in ${monthLabel(prevMonth)} to calculate retention.`;
-    } else {
-      let retained = 0;
-      prevActive.forEach(id => { if (currActive.has(id)) retained++; });
-      const pct = Math.round((retained / prevActive.size) * 100);
-      retentionText = `${pct}% retention — ${retained}/${prevActive.size} customers ordered in both ${monthLabel(prevMonth)} and ${monthLabel(selectedMonth)}.`;
-    }
-
-    const skuAgg = new Map();
-    const lastOrder = new Map();
-    rowsScoped.forEach(r=>{
-      if (!skuAgg.has(r.customerId)) skuAgg.set(r.customerId, new Map());
-      const map = skuAgg.get(r.customerId);
-      map.set(r.sku, (map.get(r.sku) || 0) + (Number(r.qty)||1));
-      if (!lastOrder.get(r.customerId) || r.date > lastOrder.get(r.customerId)) lastOrder.set(r.customerId, r.date);
-    });
-
-    const topSkuByCust = custFiltered.map(c=>{
-      const map = skuAgg.get(c.id);
-      if (!map) return { customerId:c.id, customerName:c.name, sku:"—", qty:0, last:"—" };
-      let bestSku = "—", bestQty = 0;
-      map.forEach((qty, sku)=>{ if (qty > bestQty){ bestQty = qty; bestSku = sku; } });
-      return { customerId:c.id, customerName:c.name, sku: bestSku, qty: bestQty, last: lastOrder.get(c.id) || "—" };
-    });
-
-    const ordersByMonth = new Map(months.map(m => [m, 0]));
-    rowsScoped.forEach(r=>{
-      const mk = (r.date||"").slice(0,7);
-      if (!ordersByMonth.has(mk)) ordersByMonth.set(mk, 0);
-      ordersByMonth.set(mk, ordersByMonth.get(mk) + 1);
-    });
-
-    return {
-      custFiltered,
-      ordersInMonth,
-      activeCustomers,
-      noSalesCustomers,
-      everyMonthCustomers,
-      retentionText,
-      months,
-      monthOrdersByCust,
-      topSkuByCust,
-      ordersByMonth
-    };
-  }
-
-  /* ========= Mini Chart (Canvas) ========= */
-  function drawOrdersChart(monthsDesc, ordersByMonth, label){
-    const canvas = document.getElementById("ordersChart");
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-    canvas.width = Math.floor(rect.width * dpr);
-    canvas.height = Math.floor(rect.height * dpr);
-
-    const ctx = canvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    const w = rect.width;
-    const h = rect.height;
-
-    ctx.clearRect(0,0,w,h);
-
-    const months = monthsDesc.slice().reverse(); // oldest -> newest
-    const vals = months.map(m => ordersByMonth.get(m) || 0);
-    const max = Math.max(1, ...vals);
-
-    const padL = 14, padR = 14, padT = 14, padB = 30;
-    const plotW = w - padL - padR;
-    const plotH = h - padT - padB;
-
-    // grid
-    ctx.strokeStyle = "rgba(11,18,32,0.08)";
-    ctx.lineWidth = 1;
-    const gridCount = 3;
-    for (let i=0; i<=gridCount; i++){
-      const y = padT + (plotH * i / gridCount);
-      ctx.beginPath();
-      ctx.moveTo(padL, y);
-      ctx.lineTo(padL + plotW, y);
-      ctx.stroke();
-    }
-
-    const gap = 10;
-    const barW = Math.max(10, (plotW - gap*(months.length-1)) / months.length);
-
-    for (let i=0; i<months.length; i++){
-      const v = vals[i];
-      const barH = (v / max) * (plotH - 8);
-      const x = padL + i*(barW + gap);
-      const y = padT + (plotH - barH);
-
-      ctx.fillStyle = "rgba(31,86,216,0.18)";
-      ctx.fillRect(x, y, barW, barH);
-
-      ctx.fillStyle = "rgba(31,86,216,0.28)";
-      ctx.fillRect(x, y, barW, Math.min(8, barH));
-
-      ctx.fillStyle = "rgba(11,18,32,0.62)";
-      ctx.font = "800 11px Inter, system-ui, sans-serif";
-      const ml = monthLabel(months[i]);
-      const tx = x + barW/2 - ctx.measureText(ml).width/2;
-      ctx.fillText(ml, tx, h - 10);
-    }
-
-    const sub = document.getElementById("chartSub");
-    if (sub) sub.textContent = label;
-  }
-
-  function renderExecSummary(k, selectedMonth, windowSize){
-    const headline = document.getElementById("execHeadline");
-    const body = document.getElementById("execBody");
-    const actions = document.getElementById("execActions");
-
-    const noSales = k.noSalesCustomers.length;
-    const consistent = k.everyMonthCustomers.length;
-
-    headline.textContent = `${monthLabel(selectedMonth)} • ${k.ordersInMonth} orders • ${k.activeCustomers} active customers`;
-    body.textContent = `Window: last ${windowSize} months. ${consistent} consistent; ${noSales} no-sales this month.`;
-
-    const actionText = [];
-    if (noSales > 0) actionText.push(`Review ${noSales} no-sales accounts and trigger outreach.`);
-    if (consistent > 0) actionText.push(`Protect ${consistent} consistent customers with service-level priority.`);
-    if (actionText.length === 0) actionText.push("No immediate exceptions detected. Monitor trend + retention.");
-    actions.textContent = actionText.join(" ");
-  }
-
-  function render(){
-    const customers = getCustomers();
-    const sales = normalizeSales();
-
-    const monthPick = document.getElementById("monthPick");
-    if (!monthPick.value) monthPick.value = todayMonthKey();
-
-    buildCustomerFilterOptions(customers);
-
-    const customerFilter = document.getElementById("customerFilter");
-    const storedCustomer = customerFilter.getAttribute("data-last") || "ALL";
-    if ([...customerFilter.options].some(o=>o.value===storedCustomer)) customerFilter.value = storedCustomer;
-
-    const q = document.getElementById("searchInput").value || "";
-    const selectedMonth = monthPick.value;
-    const windowSize = Number(document.getElementById("windowPick").value || 6);
-    const custId = customerFilter.value;
-
-    const k = computeKPIs(customers, sales, selectedMonth, windowSize, custId, q);
-    customerFilter.setAttribute("data-last", customerFilter.value);
-
-    // --- KPI render (THIS IS WHERE YOUR CODE CUT OFF) ---
-    document.getElementById("kpiActive").textContent = k.activeCustomers.toLocaleString();
-    document.getElementById("kpiActiveSub").textContent = `Customers with ≥1 order in ${monthLabel(selectedMonth)}`;
-
-    document.getElementById("kpiNoSales").textContent = k.noSalesCustomers.length.toLocaleString();
-    document.getElementById("kpiEveryMonth").textContent = k.everyMonthCustomers.length.toLocaleString();
-
-    // Retention + data
-    document.getElementById("retentionText").textContent = k.retentionText;
-    document.getElementById("dataText").textContent =
-      `Customers: ${customers.length} • Sales records: ${sales.length} (localStorage)`;
-
-    // Chart
-    drawOrdersChart(k.months, k.ordersByMonth, `Last ${windowSize} months • scoped to current filters`);
-
-    // Executive summary
-    renderExecSummary(k, selectedMonth, windowSize);
-
-    // Lists
-    const noSalesList = document.getElementById("noSalesList");
-    noSalesList.innerHTML = "";
-    if (k.noSalesCustomers.length === 0){
-      noSalesList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
-        <span>None — all customers have orders in ${monthLabel(selectedMonth)}.</span>
-      </div>`;
-    } else {
-      k.noSalesCustomers.slice(0, 30).forEach(c=>{
-        const row = document.createElement("div");
-        row.className = "mini-row red";
-        row.innerHTML = `
-          <div>
-            <strong>${esc(c.name)}</strong>
-            <small>${esc(c.location || "—")} • ${esc(c.contact || "—")}</small>
-          </div>
-          <div class="tag">0 orders</div>
-        `;
-        noSalesList.appendChild(row);
-      });
-    }
-
-    const everyList = document.getElementById("everyMonthList");
-    everyList.innerHTML = "";
-    if (k.everyMonthCustomers.length === 0){
-      everyList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
-        <span>No consistent customers found in this window.</span>
-      </div>`;
-    } else {
-      k.everyMonthCustomers.slice(0, 30).forEach(c=>{
-        const row = document.createElement("div");
-        row.className = "mini-row green";
-        row.innerHTML = `
-          <div>
-            <strong>${esc(c.name)}</strong>
-            <small>${esc(c.location || "—")} • window: ${k.months.length} months</small>
-          </div>
-          <div class="tag">Consistent</div>
-        `;
-        everyList.appendChild(row);
-      });
-    }
-
-    // Tables
-    const tbody = document.getElementById("custTable");
-    if (tbody){
-      tbody.innerHTML = "";
-      k.custFiltered
-        .slice()
-        .sort((a,b)=> (a.name||"").localeCompare(b.name||""))
-        .forEach(c=>{
-          const ordersMonth = (k.monthOrdersByCust.get(c.id) || 0);
-          const top = k.topSkuByCust.find(x=>x.customerId===c.id) || { sku:"—", qty:0 };
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><strong>${esc(c.name)}</strong></td>
-            <td>${esc(c.location || "—")}</td>
-            <td><span class="pilltag">${esc(c.type || "—")}</span></td>
-            <td>
-              <div><strong>${esc(c.contact || "—")}</strong></div>
-              <div style="color:var(--muted);font-size:12px;line-height:1.45">
-                ${esc(c.email || "")}${c.phone ? " • " + esc(c.phone) : ""}
-              </div>
-            </td>
-            <td><span class="pilltag ${ordersMonth===0 ? "bad" : "good"}">${ordersMonth} orders</span></td>
-            <td>${esc(top.sku)} <span style="color:var(--muted);font-size:12px">(${top.qty})</span></td>
+      // Lists
+      const noSalesList = document.getElementById("noSalesList");
+      noSalesList.innerHTML = "";
+      if (k.noSalesCustomers.length === 0){
+        noSalesList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
+          <span>None — all customers have orders in ${monthLabel(selectedMonth)}.</span>
+        </div>`;
+      } else {
+        k.noSalesCustomers.slice(0, 30).forEach(c=>{
+          const row = document.createElement("div");
+          row.className = "mini-row red";
+          row.innerHTML = `
+            <div>
+              <strong>${esc(c.name)}</strong>
+              <small>${esc(c.location || "—")} • ${esc(c.contact || "—")}</small>
+            </div>
+            <div class="tag">0 orders</div>
           `;
-          tbody.appendChild(tr);
+          noSalesList.appendChild(row);
         });
-    }
+      }
 
-    const topT = document.getElementById("topSkuTable");
-    if (topT){
-      topT.innerHTML = "";
-      k.topSkuByCust
-        .slice()
-        .sort((a,b)=> (b.qty||0) - (a.qty||0))
-        .forEach(r=>{
-          const tr = document.createElement("tr");
-          const last = (r.last && r.last !== "—") ? new Date(r.last).toLocaleDateString() : "—";
-          tr.innerHTML = `
-            <td><strong>${esc(r.customerName)}</strong></td>
-            <td>${esc(r.sku)}</td>
-            <td>${Number(r.qty||0).toLocaleString()}</td>
-            <td>${esc(last)}</td>
-          `;
-          topT.appendChild(tr);
-        });
-    }
-  }
-
-  /* ========= Actions dropdown ========= */
-  function toggleActionsMenu(){
-    const m = document.getElementById("actionsMenu");
-    m.classList.toggle("open");
-  }
-  document.getElementById("actionsBtn").addEventListener("click", (e)=>{
-    e.stopPropagation();
-    toggleActionsMenu();
-  });
-  document.addEventListener("click", ()=>{
-    const m = document.getElementById("actionsMenu");
-    if (m) m.classList.remove("open");
-  });
-
-  /* ========= Demo + Export + Clear ========= */
-  function loadDemoCustomers(){
-    const existing = getCustomers();
-    if (existing.length >= 4){
-      toast("Customers already present", "Your directory already has customers.");
-      render();
-      return;
-    }
-    const demo = [
-      { id: uid("CUST"), name:"Asha Retail", location:"Austin, TX", type:"Retailer", contact:"Asha K.", email:"asha@asharetail.com", phone:"+1 512-555-0123", createdAt: Date.now() },
-      { id: uid("CUST"), name:"Citrine Luxe", location:"New York, NY", type:"Distributor", contact:"Noah C.", email:"ops@citrineluxe.com", phone:"+1 212-555-0144", createdAt: Date.now() },
-      { id: uid("CUST"), name:"Emerald Lane", location:"Seattle, WA", type:"Retailer", contact:"Eva L.", email:"purchasing@emeraldlane.com", phone:"+1 206-555-0177", createdAt: Date.now() },
-      { id: uid("CUST"), name:"Harborline Supply", location:"Los Angeles, CA", type:"Distributor", contact:"Hank S.", email:"supply@harborline.com", phone:"+1 213-555-0162", createdAt: Date.now() },
-      { id: uid("CUST"), name:"Golden Thread", location:"Miami, FL", type:"Retailer", contact:"Gina T.", email:"orders@goldenthread.com", phone:"+1 305-555-0190", createdAt: Date.now() },
-      { id: uid("CUST"), name:"NorthBay Wholesale", location:"Chicago, IL", type:"Distributor", contact:"Nolan B.", email:"wholesale@northbay.com", phone:"+1 312-555-0108", createdAt: Date.now() },
-    ];
-    saveJSON(KEYS.CUST, [...existing, ...demo]);
-    toast("Demo customers loaded", "Directory has been populated.");
-    render();
-  }
-
-  function loadDemoSales(){
-    const customers = getCustomers();
-    if (customers.length === 0){
-      toast("Add customers first", "Load demo customers before adding demo sales.");
-      return;
-    }
-    const monthsBack = 10;
-    const skus = ["NK-1001","RG-2001","BR-1101","ER-4040","NK-2210","RG-9022"];
-    const sales = [];
-    const now = new Date();
-
-    for (let i=0; i<700; i++){
-      const cust = customers[Math.floor(Math.random()*customers.length)];
-      const back = Math.floor(Math.random() * monthsBack);
-      const dt = new Date(now.getFullYear(), now.getMonth() - back, 1 + Math.floor(Math.random()*26));
-      const sku = skus[Math.floor(Math.random()*skus.length)];
-      const qty = 1 + Math.floor(Math.random()*8);
-      const amount = qty * (20 + Math.floor(Math.random()*120));
-      sales.push({
-        id: uid("S"),
-        customerId: cust.id,
-        customerName: cust.name,
-        location: cust.location || "",
-        date: dt.toISOString(),
-        sku,
-        qty,
-        amount
-      });
-    }
-
-    saveJSON(KEYS.SALES, sales);
-    toast("Demo sales loaded", "CRM KPIs are now reactive with order history.");
-    render();
-  }
-
-  function downloadFile(filename, content){
-    const blob = new Blob([content], { type:"text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function exportCustomersCSV(){
-    const rows = getCustomers();
-    if (rows.length === 0){ toast("Nothing to export", "No customers in CRM."); return; }
-    const header = ["id","name","location","type","contact","email","phone","createdAt"];
-    const csv = [header.join(",")]
-      .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
-      .join("\n");
-    downloadFile("customers.csv", csv);
-    toast("Export ready", "customers.csv downloaded.");
-  }
-
-  function exportSalesCSV(){
-    const rows = getSales();
-    if (rows.length === 0){ toast("Nothing to export", "No sales records in CRM."); return; }
-    const header = ["id","customerId","customerName","location","date","sku","qty","amount"];
-    const csv = [header.join(",")]
-      .concat(rows.map(r => header.map(h => `"${String(r[h] ?? "").replaceAll('"','""')}"`).join(",")))
-      .join("\n");
-    downloadFile("sales.csv", csv);
-    toast("Export ready", "sales.csv downloaded.");
-  }
-
-  function clearCRMData(){
-    if (!confirm("Clear CRM customers + sales data from this browser?")) return;
-    localStorage.removeItem(KEYS.CUST);
-    localStorage.removeItem(KEYS.SALES);
-    toast("CRM cleared", "Local CRM data removed.");
-    render();
-  }
-
-  /* ========= Add Customer ========= */
-  function openAddCustomer(){ document.getElementById("addCustomerModal").classList.add("open"); }
-  function closeAddCustomer(){ document.getElementById("addCustomerModal").classList.remove("open"); }
-
-  function saveCustomer(){
-    const name = document.getElementById("cName").value.trim();
-    if (!name){ toast("Missing field", "Customer name is required."); return; }
-
-    const customer = {
-      id: uid("CUST"),
-      name,
-      location: document.getElementById("cLocation").value.trim(),
-      type: document.getElementById("cType").value,
-      contact: document.getElementById("cContact").value.trim(),
-      email: document.getElementById("cEmail").value.trim(),
-      phone: document.getElementById("cPhone").value.trim(),
-      createdAt: Date.now()
-    };
-    const customers = getCustomers();
-    customers.push(customer);
-    saveJSON(KEYS.CUST, customers);
-
-    ["cName","cLocation","cContact","cEmail","cPhone"].forEach(id=> document.getElementById(id).value = "");
-    closeAddCustomer();
-    toast("Customer added", `${customer.name} added to CRM.`);
-    render();
-  }
-
-  /* ========= Listeners ========= */
-  document.getElementById("searchInput").addEventListener("input", render);
-  document.getElementById("customerFilter").addEventListener("change", render);
-  document.getElementById("monthPick").addEventListener("change", render);
-  document.getElementById("windowPick").addEventListener("change", render);
-
-  // Executive toggle
-  const execSwitch = document.getElementById("execSwitch");
-  execSwitch.addEventListener("click", ()=> setExec(!getExec()));
-  execSwitch.addEventListener("keydown", (e)=>{
-    if (e.key === "Enter" || e.key === " "){
-      e.preventDefault();
-      setExec(!getExec());
-    }
-  });
-
-  // Modal outside click
-  document.getElementById("addCustomerModal").addEventListener("click", (e)=>{
-    if (e.target.id === "addCustomerModal") closeAddCustomer();
-  });
-
-  // Redraw chart on resize
-  window.addEventListener("resize", ()=> render());
-
-  /* ========= Init ========= */
-  (function init(){
-    requireAuthSafe();
-    markActiveSafe();
-    initUserSelectSafe();
-
-    // Default month and exec state
-    document.getElementById("monthPick").value = todayMonthKey();
-    setExec(getExec());
-
-    buildCustomerFilterOptions(getCustomers());
-    render();
-  })();
-</script>
+      const everyList = document.getElementById("everyMonthList");
+      everyList.innerHTML = "";
+      if (k.everyMonthCustomers.length === 0){
+        everyList.innerHTML = `<div class="mini" style="border:none;background:transparent;padding:0">
+          <span>No consistent customers found in this window.</span>
+        </div>`;
+      } else {
+        k.everyMonthCustomers.slice(0, 30).forEach(c=>{
+          const row = document.createElement("div");
+          row
