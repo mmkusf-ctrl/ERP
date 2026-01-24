@@ -159,7 +159,7 @@
                 <div class="stat-value">3</div>
                 <div class="stat-trend up">Need Response</div>
             </article>
-            <article class="card-kpi click-action" onclick="alert('Feature: New Event Wizard')">
+            <article class="card-kpi click-action" onclick="openEventModal()">
                 <div class="card-header">
                     <div class="card-title">Quick Add</div>
                 </div>
@@ -352,14 +352,178 @@
         </div>
     </main>
 
+    <!-- Create Event Modal -->
+    <div class="mobile-nav" id="eventModal" style="z-index:900;">
+        <div class="card"
+            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                <h3 style="margin:0;">Create New Event</h3>
+                <button onclick="closeEventModal()"
+                    style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+
+            <div style="display:grid; gap:16px;">
+                <!-- Row 1 -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div>
+                        <label
+                            style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Customer
+                            Name</label>
+                        <input id="eCustomer" class="input" placeholder="e.g. Acme Corp" />
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Event
+                            Name</label>
+                        <input id="eName" class="input" placeholder="e.g. Summer Gala" />
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div>
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Ship
+                        To Address</label>
+                    <input id="eAddress" class="input" placeholder="123 Main St, City, State" />
+                </div>
+
+                <!-- Row 3 -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div>
+                        <label
+                            style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">In
+                            Hands Date</label>
+                        <input id="eDate" type="date" class="input" />
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Delivery
+                            Method</label>
+                        <select id="eDelivery" class="input">
+                            <option value="ASAP">ASAP (Ship Immediately)</option>
+                            <option value="HOLD">HOLD (Do Not Ship)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <div
+                    style="background:#f8fafc; padding:12px; border-radius:var(--radius-md); border:1px solid var(--border);">
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Add
+                        Items</label>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <input id="iSku" class="input" placeholder="SKU / Item Name" style="flex:2;" />
+                        <input id="iQty" type="number" class="input" placeholder="Qty" style="flex:1;" />
+                        <button class="btn btn-secondary" onclick="addItemRow()">+</button>
+                    </div>
+                    <!-- Item List -->
+                    <div id="itemList" style="display:grid; gap:4px; max-height:100px; overflow-y:auto;">
+                        <!-- Items go here -->
+                        <div style="font-size:13px; color:var(--text-muted); font-style:italic; padding:4px;">No items
+                            added yet.</div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div>
+                    <label
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Special
+                        Instructions</label>
+                    <textarea id="eInstr" class="input" rows="3"
+                        placeholder="Gate code, packing requirements, etc."></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveEvent()">Create Event</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
     <script src="erp.js"></script>
     <script>
         // Auth Logic
         const AUTH_KEY = "stark_erp_auth_v1";
+        const EVENTS_KEY = "stark_erp_events_v1";
+
         (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
 
         function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
         function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
+
+        function openEventModal() { document.getElementById("eventModal").classList.add("open"); }
+        function closeEventModal() { document.getElementById("eventModal").classList.remove("open"); }
+
+        // Item Logic
+        let currentItems = [];
+
+        function addItemRow() {
+            const sku = document.getElementById("iSku").value.trim();
+            const qty = document.getElementById("iQty").value.trim();
+            if (!sku || !qty) return;
+
+            currentItems.push({ sku, qty });
+            renderItems();
+
+            document.getElementById("iSku").value = "";
+            document.getElementById("iQty").value = "";
+            document.getElementById("iSku").focus();
+        }
+
+        function removeItem(idx) {
+            currentItems.splice(idx, 1);
+            renderItems();
+        }
+
+        function renderItems() {
+            const list = document.getElementById("itemList");
+            if (currentItems.length === 0) {
+                list.innerHTML = `<div style="font-size:13px; color:var(--text-muted); font-style:italic; padding:4px;">No items added yet.</div>`;
+                return;
+            }
+            list.innerHTML = currentItems.map((item, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:6px 10px; border:1px solid var(--border); border-radius:4px; font-size:13px;">
+                    <div><strong>${item.sku}</strong> <span style="color:var(--text-muted);">x${item.qty}</span></div>
+                    <button onclick="removeItem(${idx})" style="border:none; background:transparent; color:var(--danger); cursor:pointer;">&times;</button>
+                </div>
+            `).join("");
+        }
+
+        function saveEvent() {
+            const customer = document.getElementById("eCustomer").value;
+            const name = document.getElementById("eName").value;
+            const address = document.getElementById("eAddress").value;
+            const date = document.getElementById("eDate").value;
+            const delivery = document.getElementById("eDelivery").value;
+            const instr = document.getElementById("eInstr").value;
+
+            if (!customer || !name || !date) return alert("Please fill in required fields (Customer, Event Name, Date).");
+
+            const newEvent = {
+                id: "EVT-" + Date.now(),
+                customer, name, address, date, delivery, instr,
+                items: currentItems,
+                status: "Scheduled"
+            };
+
+            // Save to LS
+            const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
+            events.push(newEvent);
+            localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+
+            // Reset
+            currentItems = [];
+            renderItems();
+            document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+
+            closeEventModal();
+            alert("Event Created Successfully!");
+        }
     </script>
 </body>
 
