@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Item Detail | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.04);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link active" href="item_master.html">Items</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="reports.html">Reports</a>
+                <a class="nav-link" href="events.html">Events</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Online</div>
+                <button class="hamburger" onclick="openMobileNav()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link active" href="item_master.html">Item Master</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+        </div>
+    </div>
+
+    <main class="container">
+
+        <!-- Breadcrumb / Back -->
+        <a href="item_master.html"
+            style="display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:13px; font-weight:600; margin-bottom:16px;">
+            &larr; Back to Item Master
+        </a>
+
+        <!-- Header Info -->
+        <div class="card" style="margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <div
+                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">
+                        Product Detail</div>
+                    <h1 style="margin:0; font-size:28px; font-weight:800; color:var(--text-main);" id="dName">Loading...
+                    </h1>
+                    <div style="display:flex; gap:12px; margin-top:8px; align-items:center;">
+                        <span class="badge badge-gray" id="dSku">SKU: ...</span>
+                        <span class="badge badge-gray" id="dModel">Model: ...</span>
+                        <span id="dStatusBadge"></span>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" onclick="alert('Manage Images - Coming Soon')">Images</button>
+                    <button class="btn btn-primary" onclick="editCurrentItem()">Edit Item</button>
+                </div>
+            </div>
+
+            <hr style="margin:24px 0; border:none; border-top:1px solid var(--border);">
+
+            <div class="grid grid-4">
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On
+                        Hand</div>
+                    <div style="font-size:24px; font-weight:700;" id="dStock">0</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                        Allocated / Hold</div>
+                    <div style="font-size:24px; font-weight:700; color:var(--warning);" id="dHold">0</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                        Total Sold (Lifetime)</div>
+                    <div style="font-size:24px; font-weight:700;" id="dSold">0</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                        Active POs</div>
+                    <div style="font-size:24px; font-weight:700; color:var(--primary);" id="dPos">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('activity')">Activity Log</div>
+            <div class="tab" onclick="switchTab('history')">Status History</div>
+            <div class="tab" onclick="switchTab('purchasing')">Purchase Orders</div>
+        </div>
+
+        <!-- ACTIVITY LOG -->
+        <div id="view-activity" class="view-section active">
+            <div class="card table-container">
+                <table id="activityTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Ref #</th>
+                            <th>Entity</th>
+                            <th style="text-align:right;">Qty Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyActivity"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORY -->
+        <div id="view-history" class="view-section">
+            <div class="card">
+                <h3 style="font-size:16px; margin:0 0 16px;">Status Changes</h3>
+                <div id="historyList" style="display:grid; gap:12px;"></div>
+            </div>
+        </div>
+
+        <!-- POs -->
+        <div id="view-purchasing" class="view-section">
+            <div class="card table-container">
+                <table id="poTable">
+                    <thead>
+                        <tr>
+                            <th>PO #</th>
+                            <th>Date</th>
+                            <th>Vendor</th>
+                            <th>Status</th>
+                            <th>Qty Ordered</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPos"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+        const PO_KEY = "stark_erp_pos_v1";
+
+        function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
+        function loadPOs() { try { return JSON.parse(localStorage.getItem(PO_KEY) || "[]"); } catch { return []; } }
+
+        // Get SKU from URL
+        const params = new URLSearchParams(window.location.search);
+        const SKU = params.get("sku");
+
+        function switchTab(t) {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(x => x.classList.remove('active'));
+
+            // Activate
+            if (t === 'activity') document.querySelectorAll('.tab')[0].classList.add('active');
+            if (t === 'history') document.querySelectorAll('.tab')[1].classList.add('active');
+            if (t === 'purchasing') document.querySelectorAll('.tab')[2].classList.add('active');
+
+            document.getElementById('view-' + t).classList.add('active');
+        }
+
+        function render() {
+            if (!SKU) {
+                alert("No SKU specified");
+                window.location.href = "item_master.html";
+                return;
+            }
+
+            const items = loadItems();
+            const item = items.find(i => i.sku === SKU);
+
+            if (!item) {
+                document.querySelector('main').innerHTML = `<div class="container" style="text-align:center; padding:40px;"><h2>Item Not Found</h2><a href="item_master.html" class="btn btn-primary">Return to List</a></div>`;
+                return;
+            }
+
+            // Bind Header
+            document.getElementById("dName").textContent = item.name;
+            document.getElementById("dSku").textContent = "SKU: " + item.sku;
+            document.getElementById("dModel").textContent = "Model: " + (item.model || "N/A");
+
+            let sClass = "badge-gray";
+            if (item.status === "Live") sClass = "badge-green";
+            if (item.status === "Discontinued") sClass = "badge-red";
+            document.getElementById("dStatusBadge").innerHTML = `<span class="badge ${sClass}">${item.status}</span>`;
+
+            // Stats
+            document.getElementById("dStock").textContent = item.on || 0;
+            document.getElementById("dHold").textContent = item.hold || 0;
+
+            // Mock Stats
+            document.getElementById("dSold").textContent = Math.floor(Math.random() * 500) + 20; // Simulated
+
+            // Mock Activity
+            const tbody = document.getElementById("tbodyActivity");
+            tbody.innerHTML = `
+                <tr>
+                    <td>2026-01-20</td>
+                    <td><span class="badge badge-green">Received</span></td>
+                    <td>PO-1001</td>
+                    <td>${item.vendor || "Vendor"}</td>
+                    <td style="text-align:right; color:var(--success);">+50</td>
+                </tr>
+                <tr>
+                    <td>2026-01-18</td>
+                    <td><span class="badge badge-gray">Adjustment</span></td>
+                    <td>ADJ-002</td>
+                    <td>Admin</td>
+                    <td style="text-align:right; color:var(--text-muted);">-2</td>
+                </tr>
+            `;
+
+            // POs Logic
+            // Ideally filter real POs. For now, empty or mock.
+            const tbodyPos = document.getElementById("tbodyPos");
+            tbodyPos.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No active POs found for this item.</td></tr>`;
+        }
+
+        function editCurrentItem() {
+            // Re-use logic from item_master or redirect?
+            // Simple way: redirect to item_master with a hash or just an alert for now as modal is on other page.
+            // Better: Load modal here? 
+            // Reuse: just alert for MVP phase 1
+            alert("Edit functionality is currently hosted on the main Item Master list. Please edit there for now.");
+        }
+
+        render();
+    </script>
+</body>
+
+</html>
