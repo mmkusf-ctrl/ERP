@@ -1072,3 +1072,65 @@ tr:hover td {
   pointer-events: none;
   /* Let the card handle the click */
 }
+
+/* Action Cards (for Accounting etc) */
+.action-card {
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-light);
+}
+
+.action-icon {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  font-size: 120px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.card-actions {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Tab View Transitions */
+.view-section {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.view-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
