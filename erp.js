@@ -20,10 +20,14 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeMobileNav();
 });
 
-// Toast Notifications
-function toast(title, msg) {
+// Toast Notifications (Enhanced)
+function toast(title, msg, type = 'info') {
   const wrap = document.getElementById("toastWrap");
   if (!wrap) return alert(`${title}\n\n${msg}`);
+
+  let borderColor = "var(--primary)";
+  if (type === 'success') borderColor = "var(--success)";
+  if (type === 'error') borderColor = "var(--danger)";
 
   const el = document.createElement("div");
   // Simple card style for toast
@@ -35,14 +39,14 @@ function toast(title, msg) {
   el.style.display = "flex";
   el.style.gap = "12px";
   el.style.animation = "fadeUp 0.3s ease-out";
-  el.style.borderLeft = "4px solid var(--primary)";
+  el.style.borderLeft = `4px solid ${borderColor}`;
 
   el.innerHTML = `
     <div style="flex:1;">
       <div style="font-weight:700; font-size:14px; margin-bottom:4px;">${escapeHtml(title)}</div>
       <div style="color:var(--text-muted); font-size:13px; line-height:1.4;">${escapeHtml(msg)}</div>
     </div>
-    <button class="toast-close" style="border:none; bg:transparent; cursor:pointer; font-size:18px; color:var(--text-muted);">&times;</button>
+    <button class="toast-close" style="border:none; background:transparent; cursor:pointer; font-size:18px; color:var(--text-muted);">&times;</button>
   `;
 
   el.querySelector(".toast-close").onclick = () => el.remove();
@@ -140,10 +144,40 @@ function escapeHtml(str) {
   document.addEventListener("DOMContentLoaded", () => {
     // Small delay to ensure render happens first if sync
     setTimeout(animatePageElements, 50);
-    initRipples();
     initPullToRefresh();
+    injectResponsiveTableLabels();
+    initKeyboardShortcuts();
   });
 
+  /* --- Enhancements --- */
+
+  // 1. Auto-Inject Data Labels for Mobile Tables
+  function injectResponsiveTableLabels() {
+    document.querySelectorAll('.table-container table').forEach(table => {
+      const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+      table.querySelectorAll('tbody tr').forEach(tr => {
+        tr.querySelectorAll('td').forEach((td, index) => {
+          if (headers[index] && !td.getAttribute('data-label')) {
+            td.setAttribute('data-label', headers[index]);
+          }
+        });
+      });
+    });
+  }
+
+  // 2. Global Shortcuts
+  function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // Ctrl/Cmd + K
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const action = prompt("Quick Action (nav, search, task):");
+        if (action) toast("Action Pending", "Search/Command feature coming soon: " + action);
+      }
+    });
+  }
+
+  // 3. Ripples (Existing)
   function initRipples() {
     document.addEventListener('click', function (e) {
       const target = e.target.closest('.btn, .bottom-nav-item, .clickable-kpi');
@@ -170,6 +204,7 @@ function escapeHtml(str) {
     });
   }
 
+  // 4. Pull to Refresh (Existing)
   function initPullToRefresh() {
     if (window.innerWidth > 768) return; // Mobile only via Touch events usually
 
@@ -216,3 +251,13 @@ function escapeHtml(str) {
   }
 
 })();
+
+// Global Utilities (Exposed)
+window.formatMoney = (val) => {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+};
+
+window.formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  return new Date(dateStr).toLocaleDateString();
+};
