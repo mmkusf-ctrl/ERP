@@ -140,23 +140,23 @@
         <!-- Stats Row -->
         <div
             style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:32px;">
-            <div class="card"
-                style="background:#fffbeb; border:1px solid #fcd34d; color:#d97706; padding:16px; display:flex; gap:10px; align-items:center;">
+            <div class="card click-action" onclick="setFilter('All', this)"
+                style="background:#fffbeb; border:1px solid #fcd34d; color:#d97706; padding:16px; display:flex; gap:10px; align-items:center; cursor:pointer;">
                 <span style="font-size:24px; font-weight:700;">18</span>
                 <span style="font-weight:600;">Upcoming</span>
             </div>
-            <div class="card"
-                style="background:#fff1f2; border:1px solid #fda4af; color:#e11d48; padding:16px; display:flex; gap:10px; align-items:center;">
+            <div class="card click-action" onclick="setFilter('Urgent', this)"
+                style="background:#fff1f2; border:1px solid #fda4af; color:#e11d48; padding:16px; display:flex; gap:10px; align-items:center; cursor:pointer;">
                 <span style="font-size:24px; font-weight:700;">9</span>
                 <span style="font-weight:600;">Urgent</span>
             </div>
-            <div class="card"
-                style="background:#f0fdf4; border:1px solid #86efac; color:#16a34a; padding:16px; display:flex; gap:10px; align-items:center;">
+            <div class="card click-action" onclick="setFilter('Confirmed', this)"
+                style="background:#f0fdf4; border:1px solid #86efac; color:#16a34a; padding:16px; display:flex; gap:10px; align-items:center; cursor:pointer;">
                 <span style="font-size:24px; font-weight:700;">2</span>
                 <span style="font-weight:600;">Confirmed</span>
             </div>
-            <div class="card"
-                style="background:#f5f3ff; border:1px solid #c4b5fd; color:#7c3aed; padding:16px; display:flex; gap:10px; align-items:center;">
+            <div class="card click-action" onclick="setFilter('Draft', this)"
+                style="background:#f5f3ff; border:1px solid #c4b5fd; color:#7c3aed; padding:16px; display:flex; gap:10px; align-items:center; cursor:pointer;">
                 <span style="font-size:24px; font-weight:700;">4</span>
                 <span style="font-weight:600;">Draft</span>
             </div>
@@ -405,16 +405,18 @@
         function setFilter(type, btn) {
             window.currentFilter = type;
 
-            // Visual Update
-            const container = document.getElementById("filterContainer");
-            Array.from(container.children).forEach(b => {
-                b.className = "btn btn-secondary";
-                b.style.background = "transparent";
-                b.style.color = "var(--text-muted)";
-            });
-            btn.className = "btn btn-primary";
-            btn.style.background = "var(--primary)";
-            btn.style.color = "white";
+            // Visual Update if it's a pill button (ignore if it's a card)
+            if (btn.tagName === 'BUTTON') {
+                const container = document.getElementById("filterContainer");
+                Array.from(container.children).forEach(b => {
+                    b.className = "btn btn-secondary";
+                    b.style.background = "transparent";
+                    b.style.color = "var(--text-muted)";
+                });
+                btn.className = "btn btn-primary";
+                btn.style.background = "var(--primary)";
+                btn.style.color = "white";
+            }
 
             renderEvents();
         }
@@ -454,6 +456,11 @@
                 } else if (filter === "Week") {
                     if (d < today || d > nextWeek) return;
                 }
+
+                // Status/Category Filter
+                if (filter === 'Urgent' && e.delivery !== 'HOLD') return; // Mapping Urgent -> HOLD for demo
+                if (filter === 'Confirmed' && e.delivery !== 'ASAP') return; // Mapping Confirmed -> ASAP
+                if (filter === 'Draft' && e.status !== 'Draft') return; // Mapping Draft status
 
                 visibleCount++;
                 const month = d.toLocaleString('default', { month: 'short' });
