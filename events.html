@@ -170,98 +170,46 @@
             </article>
         </section>
 
-        <div class="grid grid-2" style="grid-template-columns: 2fr 1fr;">
-            <!-- Calendar -->
+        <div class="grid" style="display:grid; grid-template-columns: 7fr 3fr; gap:24px; align-items:start;">
+            <!-- Left: Calendar (70%) -->
             <section class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="font-size:18px; margin:0;">February 2026</h2>
+                    <h2 style="font-size:18px; margin:0;" id="calendarTitle">February 2026</h2>
                     <div style="display:flex; gap:8px;">
-                        <button class="btn btn-secondary" style="height:32px;">&larr;</button>
-                        <button class="btn btn-secondary" style="height:32px;">&rarr;</button>
+                        <button class="btn btn-secondary" style="height:32px;" onclick="changeMonth(-1)">&larr;</button>
+                        <button class="btn btn-secondary" style="height:32px;" onclick="changeMonth(1)">&rarr;</button>
                     </div>
                 </div>
-                <!-- Row 4 -->
-                <div class="calendar-day">
-                    <div class="day-num">22</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">23</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">24</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">25</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">26</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">27</div>
-                </div>
-                <div class="calendar-day">
-                    <div class="day-num">28</div>
-                </div>
-        </div>
-        </section>
 
-        <!-- Upcoming List -->
-        <aside style="display:grid; gap:24px; align-content:start;">
-            <div class="card">
-                <h2 style="font-size:16px; margin:0 0 16px;">Agenda</h2>
-                <div style="display:grid; gap:16px;">
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Filled by JS -->
+                </div>
+            </section>
 
-                    <div style="display:flex; gap:12px;">
-                        <div style="text-align:center; min-width:50px;">
-                            <div
-                                style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                                Feb</div>
-                            <div style="font-size:20px; font-weight:700; color:var(--text-main);">10</div>
-                        </div>
-                        <div>
-                            <div style="font-weight:600; color:var(--text-main);">Quarterly Business Review</div>
-                            <div style="font-size:12px; color:var(--text-muted);">2:00 PM - 4:00 PM</div>
-                            <div style="font-size:12px; margin-top:4px;"><span class="badge badge-red">Mandatory</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="height:1px; background:var(--border);"></div>
-
-                    <div style="display:flex; gap:12px;">
-                        <div style="text-align:center; min-width:50px;">
-                            <div
-                                style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                                Feb</div>
-                            <div style="font-size:20px; font-weight:700; color:var(--text-main);">15</div>
-                        </div>
-                        <div>
-                            <div style="font-weight:600; color:var(--text-main);">Tax Submission Deadline</div>
-                            <div style="font-size:12px; color:var(--text-muted);">All Day</div>
-                            <div style="font-size:12px; margin-top:4px;"><span class="badge badge-yellow">Finance</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="height:1px; background:var(--border);"></div>
-
-                    <div style="display:flex; gap:12px;">
-                        <div style="text-align:center; min-width:50px;">
-                            <div
-                                style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                                Feb</div>
-                            <div style="font-size:20px; font-weight:700; color:var(--text-main);">18</div>
-                        </div>
-                        <div>
-                            <div style="font-weight:600; color:var(--text-main);">Stark Mfg Vendor Audit</div>
-                            <div style="font-size:12px; color:var(--text-muted);">9:00 AM - 12:00 PM</div>
-                            <div style="font-size:12px; margin-top:4px;"><span
-                                    class="badge badge-green">Confirmed</span></div>
-                        </div>
+            <!-- Right: Agenda (30%) - Sticky -->
+            <aside style="display:grid; gap:24px; align-content:start; position:sticky; top:20px;">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h2 style="font-size:16px; margin:0;">Agenda</h2>
+                        <span class="badge badge-yellow" id="selectedDateLabel">Selected Date</span>
                     </div>
 
+                    <div id="agendaList"
+                        style="display:grid; gap:12px; max-height:600px; overflow-y:auto; padding-right:4px;">
+                        <!-- Filled by JS -->
+                    </div>
+
+                    <!-- Empty State Template (Hidden) -->
+                    <div id="emptyState"
+                        style="display:none; text-align:center; padding:20px 0; color:var(--text-muted);">
+                        <div style="font-size:24px; margin-bottom:8px;">📭</div>
+                        <div style="font-size:13px; font-weight:600;">No events for this day</div>
+                        <div style="font-size:12px;">Click "Quick Add" to schedule something.</div>
+                        <button class="btn btn-secondary" style="width:100%; margin-top:12px;"
+                            onclick="openEventModal()">+ Create Event</button>
+                    </div>
                 </div>
-                <button class="btn btn-secondary" style="width:100%; margin-top:20px;">Download Sync File</button>
-            </div>
-        </aside>
+            </aside>
         </div>
 
         <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
@@ -271,6 +219,7 @@
 
     <!-- Create Event Modal -->
     <div class="mobile-nav" id="eventModal" style="z-index:900;">
+        <!-- Modal Content Same as Before -->
         <div class="card"
             style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
             <div
@@ -281,7 +230,6 @@
             </div>
 
             <div style="display:grid; gap:16px;">
-                <!-- Row 1 -->
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
                     <div>
                         <label
@@ -296,16 +244,12 @@
                         <input id="eName" class="input" placeholder="e.g. Summer Gala" />
                     </div>
                 </div>
-
-                <!-- Row 2 -->
                 <div>
                     <label
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Ship
                         To Address</label>
                     <input id="eAddress" class="input" placeholder="123 Main St, City, State" />
                 </div>
-
-                <!-- Row 3 -->
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
                     <div>
                         <label
@@ -323,8 +267,6 @@
                         </select>
                     </div>
                 </div>
-
-                <!-- Items Section -->
                 <div
                     style="background:#f8fafc; padding:12px; border-radius:var(--radius-md); border:1px solid var(--border);">
                     <label
@@ -335,15 +277,11 @@
                         <input id="iQty" type="number" class="input" placeholder="Qty" style="flex:1;" />
                         <button class="btn btn-secondary" onclick="addItemRow()">+</button>
                     </div>
-                    <!-- Item List -->
                     <div id="itemList" style="display:grid; gap:4px; max-height:100px; overflow-y:auto;">
-                        <!-- Items go here -->
                         <div style="font-size:13px; color:var(--text-muted); font-style:italic; padding:4px;">No items
                             added yet.</div>
                     </div>
                 </div>
-
-                <!-- Instructions -->
                 <div>
                     <label
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Special
@@ -351,7 +289,6 @@
                     <textarea id="eInstr" class="input" rows="3"
                         placeholder="Gate code, packing requirements, etc."></textarea>
                 </div>
-
                 <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
                     <button class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
                     <button class="btn btn-primary" onclick="saveEvent()">Create Event</button>
@@ -364,51 +301,170 @@
 
     <script src="erp.js"></script>
     <script>
-        // Auth Logic
         const AUTH_KEY = "stark_erp_auth_v1";
         const EVENTS_KEY = "stark_erp_events_v1";
+        let CURRENT_MONTH = new Date(2026, 1, 1); // Feb 2026
+        let SELECTED_DATE = null;
 
         (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
 
         function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
         function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
-
         function openEventModal() { document.getElementById("eventModal").classList.add("open"); }
         function closeEventModal() { document.getElementById("eventModal").classList.remove("open"); }
 
-        // Item Logic
-        let currentItems = [];
+        // Core Calendar Logic
+        function renderCalendar() {
+            const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
+            const grid = document.getElementById("calendarGrid");
+            const m = CURRENT_MONTH.getMonth();
+            const y = CURRENT_MONTH.getFullYear();
 
+            document.getElementById("calendarTitle").textContent = CURRENT_MONTH.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            grid.innerHTML = `
+                <div class="calendar-header">Sun</div><div class="calendar-header">Mon</div><div class="calendar-header">Tue</div>
+                <div class="calendar-header">Wed</div><div class="calendar-header">Thu</div><div class="calendar-header">Fri</div>
+                <div class="calendar-header">Sat</div>
+            `;
+
+            const firstDay = new Date(y, m, 1).getDay();
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+            // Empty slots
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="calendar-day" style="background:#f8fafc;"></div>`;
+            }
+
+            // Days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`; // YYYY-MM-DD
+                const dayEvents = events.filter(e => e.date === dateStr);
+
+                let chips = "";
+                dayEvents.slice(0, 3).forEach(e => {
+                    const style = e.delivery === 'HOLD' ? 'warning' : '';
+                    chips += `<div class="event-chip ${style}">${e.name}</div>`;
+                });
+                if (dayEvents.length > 3) chips += `<div style="font-size:10px; color:var(--text-muted); padding-left:4px;">+${dayEvents.length - 3} more</div>`;
+
+                const isSelected = SELECTED_DATE === dateStr;
+                const activeData = isSelected ? 'border:2px solid var(--primary);' : '';
+
+                grid.innerHTML += `
+                    <div class="calendar-day" style="${activeData} cursor:pointer;" onclick="selectDate('${dateStr}')">
+                        <div class="day-num" style="${isSelected ? 'color:var(--primary); font-weight:800;' : ''}">${i}</div>
+                        ${chips}
+                    </div>
+                `;
+            }
+        }
+
+        function selectDate(dateStr) {
+            SELECTED_DATE = dateStr;
+            renderCalendar(); // Re-render to show active state
+            renderAgenda();
+        }
+
+        function renderAgenda() {
+            const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
+            const list = document.getElementById("agendaList");
+            const empty = document.getElementById("emptyState");
+
+            // Format Title
+            if (!SELECTED_DATE) {
+                document.getElementById("selectedDateLabel").textContent = "All Upcoming";
+            } else {
+                const d = new Date(SELECTED_DATE + "T12:00:00");
+                document.getElementById("selectedDateLabel").textContent = d.toLocaleDateString('default', { month: 'short', day: 'numeric' });
+            }
+
+            // Filter
+            let shown = [];
+            if (SELECTED_DATE) {
+                shown = events.filter(e => e.date === SELECTED_DATE);
+            } else {
+                shown = events.filter(e => new Date(e.date) >= new Date());
+                shown.sort((a, b) => new Date(a.date) - new Date(b.date));
+                shown = shown.slice(0, 10); // Limit global view
+            }
+
+            list.innerHTML = "";
+            if (shown.length === 0) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+            } else {
+                list.style.display = 'grid';
+                empty.style.display = 'none';
+
+                shown.forEach(e => {
+                    const itemCount = e.items ? e.items.length : 0;
+                    list.innerHTML += `
+                        <div class="card" style="padding:16px; border:1px solid var(--border); box-shadow:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                                <div style="font-weight:700; font-size:14px; color:var(--text-main);">${escapeHtml(e.name)}</div>
+                                <span class="badge ${e.delivery === 'HOLD' ? 'badge-red' : 'badge-green'}">${e.delivery}</span>
+                            </div>
+                            <div style="font-size:13px; margin-bottom:4px;">
+                                <span style="color:var(--text-muted);">Customer:</span> <strong>${escapeHtml(e.customer)}</strong>
+                            </div>
+                            <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">
+                                📍 ${escapeHtml(e.address)}
+                            </div>
+                            ${e.instr ? `<div style="font-size:12px; background:#f1f5f9; padding:6px; border-radius:4px; color:var(--text-main);">📝 ${escapeHtml(e.instr)}</div>` : ''}
+                            ${itemCount > 0 ? `<div style="font-size:12px; margin-top:8px; color:var(--primary); font-weight:600;">📦 ${itemCount} Items Included</div>` : ''}
+                            
+                             <div style="display:flex; gap:8px; margin-top:12px;">
+                                <button class="btn btn-secondary" style="height:28px; font-size:11px; width:100%;">View Order</button>
+                                <button class="btn btn-secondary" style="height:28px; font-size:11px; width:100%;">Reschedule</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Stats
+            const future = events.filter(e => new Date(e.date) > new Date()).length;
+            const week = events.filter(e => {
+                const d = new Date(e.date);
+                const now = new Date();
+                const diffTime = Math.abs(d - now);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays <= 7 && d >= now;
+            }).length;
+
+            try {
+                document.getElementById("kpiFuture").textContent = future;
+                document.getElementById("kpiWeek").textContent = week;
+                document.getElementById("kpiHold").textContent = events.filter(e => e.delivery === 'HOLD').length;
+            } catch { }
+        }
+
+        function changeMonth(delta) {
+            CURRENT_MONTH.setMonth(CURRENT_MONTH.getMonth() + delta);
+            renderCalendar();
+        }
+
+        // Init
+        // Item Logic (same as before)
+        let currentItems = [];
         function addItemRow() {
             const sku = document.getElementById("iSku").value.trim();
             const qty = document.getElementById("iQty").value.trim();
             if (!sku || !qty) return;
-
             currentItems.push({ sku, qty });
             renderItems();
-
-            document.getElementById("iSku").value = "";
-            document.getElementById("iQty").value = "";
-            document.getElementById("iSku").focus();
+            document.getElementById("iSku").value = ""; document.getElementById("iQty").value = ""; document.getElementById("iSku").focus();
         }
-
-        function removeItem(idx) {
-            currentItems.splice(idx, 1);
-            renderItems();
-        }
-
+        function removeItem(idx) { currentItems.splice(idx, 1); renderItems(); }
         function renderItems() {
             const list = document.getElementById("itemList");
-            if (currentItems.length === 0) {
-                list.innerHTML = `<div style="font-size:13px; color:var(--text-muted); font-style:italic; padding:4px;">No items added yet.</div>`;
-                return;
-            }
+            if (currentItems.length === 0) { list.innerHTML = `<div style="font-size:13px; color:var(--text-muted); font-style:italic; padding:4px;">No items added yet.</div>`; return; }
             list.innerHTML = currentItems.map((item, idx) => `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:6px 10px; border:1px solid var(--border); border-radius:4px; font-size:13px;">
                     <div><strong>${item.sku}</strong> <span style="color:var(--text-muted);">x${item.qty}</span></div>
                     <button onclick="removeItem(${idx})" style="border:none; background:transparent; color:var(--danger); cursor:pointer;">&times;</button>
-                </div>
-            `).join("");
+                </div>`).join("");
         }
 
         function saveEvent() {
@@ -418,30 +474,22 @@
             const date = document.getElementById("eDate").value;
             const delivery = document.getElementById("eDelivery").value;
             const instr = document.getElementById("eInstr").value;
+            if (!customer || !name || !date) return alert("Required fields missing.");
 
-            if (!customer || !name || !date) return alert("Please fill in required fields (Customer, Event Name, Date).");
-
-            const newEvent = {
-                id: "EVT-" + Date.now(),
-                customer, name, address, date, delivery, instr,
-                items: currentItems,
-                status: "Scheduled"
-            };
-
-            // Save to LS
+            const newEvent = { id: "EVT-" + Date.now(), customer, name, address, date, delivery, instr, items: currentItems, status: "Scheduled" };
             const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
             events.push(newEvent);
             localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
 
-            // Reset
-            currentItems = [];
-            renderItems();
-            document.querySelectorAll("input, textarea").forEach(i => i.value = "");
-
             closeEventModal();
-            alert("Event Created Successfully!");
-            renderEvents(); // Refresh table
+            currentItems = []; renderItems(); document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+
+            selectDate(date); // Auto-select the new date
+            alert("Event Scheduled!");
         }
+
+        renderCalendar();
+        renderAgenda();
     </script>
 </body>
 
