@@ -115,7 +115,7 @@
 
       <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px;" id="inv-grid">
         <!-- Revenue Card (Live) -->
-        <div class="stat-card green"
+        <div class="stat-card green clickable-stat-card" onclick="window.location.href='accounting.html'"
           style="background:#f0fdf4; border:1px solid #dcfce7; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
           <div>
             <div style="font-size:11px; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:12px;">
@@ -123,45 +123,45 @@
             <div id="kpi-revenue-val" style="font-size:32px; font-weight:700; color:#14532d; transition: color 0.3s;">
               $42,593.00</div>
           </div>
-          <button onclick="window.location.href='accounting.html'" class="btn-sm ripple"
+          <button class="btn-sm ripple"
             style="background:#bbf7d0; color:#166534; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">View
             Details</button>
         </div>
 
         <!-- Orders Card (Live) -->
-        <div class="stat-card blue"
+        <div class="stat-card blue clickable-stat-card" onclick="window.location.href='orders.html'"
           style="background:#eff6ff; border:1px solid #dbeafe; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
           <div>
             <div style="font-size:11px; font-weight:700; color:#1e40af; text-transform:uppercase; margin-bottom:12px;">
               Live Orders</div>
             <div id="kpi-orders-val" style="font-size:32px; font-weight:700; color:#1e3a8a;">142</div>
           </div>
-          <button onclick="window.location.href='orders.html'" class="btn-sm ripple"
+          <button class="btn-sm ripple"
             style="background:#bfdbfe; color:#1e40af; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Manage
             Orders</button>
         </div>
 
         <!-- Active Tasks Card (Linked to Data) -->
-        <div class="stat-card orange"
+        <div class="stat-card orange clickable-stat-card" onclick="openTaskModal()"
           style="background:#fff7ed; border:1px solid #ffedd5; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
           <div>
             <div style="font-size:11px; font-weight:700; color:#9a3412; text-transform:uppercase; margin-bottom:12px;">
               Pending Tasks</div>
             <div id="kpiTasks" style="font-size:32px; font-weight:700; color:#7c2d12;">--</div>
           </div>
-          <button onclick="document.querySelector('.input').focus()" class="btn-sm ripple"
+          <button class="btn-sm ripple"
             style="background:#fed7aa; color:#9a3412; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Prioritize</button>
         </div>
 
         <!-- Low Stock Card (Static/Important) -->
-        <div class="stat-card red"
+        <div class="stat-card red clickable-stat-card" onclick="window.location.href='inventory.html'"
           style="background:#fef2f2; border:1px solid #fee2e2; padding:20px; border-radius:12px; display:flex; flex-direction:column; justify-content:space-between; height:160px;">
           <div>
             <div style="font-size:11px; font-weight:700; color:#991b1b; text-transform:uppercase; margin-bottom:12px;">
               Low Stock Items</div>
             <div style="font-size:32px; font-weight:700; color:#7f1d1d;">3</div>
           </div>
-          <button onclick="window.location.href='inventory.html'" class="btn-sm ripple"
+          <button class="btn-sm ripple"
             style="background:#fecaca; color:#991b1b; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; width:fit-content;">Restock</button>
         </div>
       </div>
