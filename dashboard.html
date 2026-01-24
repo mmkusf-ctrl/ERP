@@ -82,6 +82,22 @@
       <div class="gold-line"></div>
     </div>
 
+    <!-- Mobile Quick Actions -->
+    <div class="quick-grid" style="display:none; @media(max-width:768px){display:grid;}">
+      <button class="quick-btn ripple" onclick="openTaskModal()">
+        <span>➕</span> New Task
+      </button>
+      <button class="quick-btn ripple" onclick="toast('Searching...', 'Search module opening...')">
+        <span>🔍</span> Search
+      </button>
+      <button class="quick-btn ripple" onclick="window.location.href='orders.html'">
+        <span>📦</span> Orders
+      </button>
+      <button class="quick-btn ripple" onclick="toast('Scanning...', 'Camera module initializing...')">
+        <span>📸</span> Scan
+      </button>
+    </div>
+
     <!-- Actions Bar -->
     <div style="display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap;">
       <button class="btn btn-primary" onclick="openTaskModal()">
@@ -116,6 +132,16 @@
         <div class="kpi-value" id="kpi-revenue-val">$1,240,500</div>
         <div class="kpi-trend trend-up">
           <span class="material-icons">trending_up</span>
+        </div>
+        <!-- Micro Chart -->
+        <div class="chart-container">
+          <div class="chart-bar" style="height:40%"></div>
+          <div class="chart-bar" style="height:60%"></div>
+          <div class="chart-bar" style="height:35%"></div>
+          <div class="chart-bar" style="height:85%"></div>
+          <div class="chart-bar" style="height:70%"></div>
+          <div class="chart-bar" style="height:50%"></div>
+          <div class="chart-bar" style="height:90%; background:var(--success); opacity:0.8;"></div>
         </div>
       </div>
 
