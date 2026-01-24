@@ -125,6 +125,9 @@
 
     <script src="erp.js"></script>
     <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
         const PO_KEY = "stark_erp_pos_v1";
         const URL_PARAMS = new URLSearchParams(window.location.search);
         let CURRENT_FILTER = URL_PARAMS.get("filter") || "";
