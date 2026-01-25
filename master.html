@@ -9,48 +9,52 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4">
     <style>
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        /* Specific Master Page Styles */
+        .pill-filter {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: white;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        .status-live {
-            background: #dcfce7;
-            color: #166534;
+        .pill-filter:hover {
+            background: #f8fafc;
+            color: var(--text-main);
         }
 
-        .status-fashion {
-            background: #fce7f3;
-            color: #9d174d;
+        .pill-filter.active {
+            background: #6366f1;
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        .status-internal {
-            background: #e0f2fe;
-            color: #075985;
-        }
-
-        .status-discontinued {
+        .sku-img-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
             background: #f1f5f9;
-            color: #475569;
-            text-decoration: line-through;
+            border: 1px solid #e2e8f0;
         }
 
-        .status-feeds {
-            background: #ffedd5;
-            color: #9a3412;
+        .master-row {
+            transition: transform 0.1s, background-color 0.1s;
         }
 
-        .status-presentation {
-            background: #fef9c3;
-            color: #854d0e;
+        .master-row:hover {
+            transform: scale(1.005);
+            background-color: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            position: relative;
         }
     </style>
 </head>
@@ -66,19 +70,20 @@
             </a>
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="master.html">Master</a>
-                <a class="nav-link" href="inventory.html">Inventory</a>
-                <a class="nav-link" href="orders.html">Orders</a>
-                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link active" href="master.html">Items</a>
                 <a class="nav-link" href="crm.html">CRM</a>
-                <a class="nav-link" href="logistics.html">Logistics</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
                 <a class="nav-link" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
                 <a class="nav-link" href="reports.html">Reports</a>
                 <a class="nav-link" href="events.html">Events</a>
             </nav>
             <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green">Online</div>
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online</div>
                 <button class="hamburger" onclick="openMobileNav()">☰</button>
             </div>
         </div>
@@ -93,91 +98,113 @@
                     style="background:none; border:none; font-size:24px;">&times;</button>
             </div>
             <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link active" href="master.html">Master</a>
+            <a class="mobile-link active" href="master.html">Items</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
         </div>
     </div>
 
-    <main class="container">
+    <main class="container soft-ui-wrapper" style="padding-top:40px;">
 
-        <div class="page-header">
-            <h1 class="page-title">Master</h1>
-            <p class="page-desc">Centralized catalog for all product SKUs, status, and attributes.</p>
-            <div class="gold-line"></div>
+        <!-- Page Header -->
+        <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:32px;">
+            <div>
+                <h1 class="page-title" style="margin-bottom:8px;">Item Master</h1>
+                <p class="page-desc">Centralized catalog for product SKUs and attributes.</p>
+                <div
+                    style="height:4px; width:40px; background:linear-gradient(90deg, #6366f1, transparent); border-radius:2px; margin-top:16px;">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="openAddModal()"
+                style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3); height:48px; padding:0 24px;">
+                + Create SKU
+            </button>
         </div>
 
-        <!-- Controls -->
-        <div class="card" style="margin-bottom:24px;">
-            <div class="grid-4"
-                style="gap:16px; align-items:end; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
-
-                <div style="grid-column: span 2;">
-                    <label
-                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Search</label>
-                    <div style="position:relative;">
-                        <input id="qSearch" class="input" placeholder="Search SKU, Model #, Title..." oninput="render()"
-                            style="padding-left:36px;">
-                        <span
-                            style="position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.5;">🔍</span>
+        <!-- KPI Header -->
+        <div class="grid-4" style="gap:24px; margin-bottom:32px;">
+            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+                <div
+                    style="width:48px; height:48px; border-radius:12px; background:#eff6ff; color:#1e40af; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                    📦</div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Total Items
                     </div>
+                    <div id="kpiTotal" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
                 </div>
+            </div>
 
+            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+                <div
+                    style="width:48px; height:48px; border-radius:12px; background:#f0fdf4; color:#166534; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                    💰</div>
                 <div>
-                    <label
-                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Status</label>
-                    <select id="qStatus" class="input" onchange="render()">
-                        <option value="">All Statuses</option>
-                        <option value="Live">Live</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Feeds Only">Feeds Only</option>
-                        <option value="Internal Use">Internal Use</option>
-                        <option value="Discontinued">Discontinued</option>
-                        <option value="Presentation">Presentation</option>
-                    </select>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Stock Value
+                    </div>
+                    <div id="kpiValue" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
                 </div>
+            </div>
 
+            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+                <div
+                    style="width:48px; height:48px; border-radius:12px; background:#fff1f2; color:#be123c; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                    📉</div>
                 <div>
-                    <label
-                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Brand</label>
-                    <select id="qBrand" class="input" onchange="render()">
-                        <option value="">All Brands</option>
-                        <option>Stark Mfg</option>
-                        <option>LuxeGold</option>
-                        <option>Urban Wear</option>
-                    </select>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Low Stock
+                    </div>
+                    <div id="kpiLow" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
                 </div>
+            </div>
+        </div>
 
-                <div style="display:flex; gap:8px;">
-                    <button class="btn btn-primary" style="flex:1;" onclick="openAddModal()">+ New</button>
-                    <button class="btn btn-secondary" style="flex:1;" onclick="exportData()">Export</button>
+        <!-- Controls & Filters -->
+        <div style="margin-bottom:24px; display:flex; flex-direction:column; gap:16px;">
+
+            <!-- Search & Basic -->
+            <div class="card-soft" style="padding:12px; display:flex; gap:12px; align-items:center;">
+                <div style="position:relative; flex:1;">
+                    <span
+                        style="position:absolute; left:16px; top:50%; transform:translateY(-50%); opacity:0.4;">🔍</span>
+                    <input id="qSearch" class="input" placeholder="Search by SKU, Name, or Brand..." oninput="render()"
+                        style="padding-left:42px; height:48px; border:none; background:#f8fafc; font-size:14px;">
                 </div>
+                <div style="width:1px; height:24px; background:#e2e8f0;"></div>
+                <button class="btn btn-secondary" onclick="exportData()" style="height:48px; padding:0 20px;">Export
+                    CSV</button>
+            </div>
 
+            <!-- Dynamic Pills -->
+            <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                <div style="font-size:12px; font-weight:700; color:#64748b; margin-right:8px;">STATUS:</div>
+                <div class="pill-filter active" onclick="setFilter(this, '')">All</div>
+                <div class="pill-filter" onclick="setFilter(this, 'Live')">Live</div>
+                <div class="pill-filter" onclick="setFilter(this, 'Fashion')">Fashion</div>
+                <div class="pill-filter" onclick="setFilter(this, 'Internal Use')">Internal</div>
+                <div class="pill-filter" onclick="setFilter(this, 'Discontinued')">Discontinued</div>
             </div>
         </div>
 
         <!-- Data Table -->
-        <div class="card table-container">
+        <div class="card-soft table-container" style="padding:0; overflow:hidden;">
             <table id="itemTable">
                 <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Model #</th>
-                        <th>Brand</th>
-                        <th>Vendor</th>
-                        <th>Stark ETA</th>
-                        <th>Brand ETA</th>
-                        <th>Status</th>
-                        <th style="text-align:right;">On Hand</th>
-                        <th style="text-align:right;">Hold</th>
-                        <th>Open PO</th>
-                        <th>Actions</th>
+                    <tr
+                        style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
+                        <th style="padding:16px 24px;">Image</th>
+                        <th style="padding:16px;">Product Info</th>
+                        <th style="padding:16px;">Brand / Vendor</th>
+                        <th style="padding:16px;">Category</th>
+                        <th style="padding:16px;">Status</th>
+                        <th style="padding:16px; text-align:right;">OH</th>
+                        <th style="padding:16px; text-align:right;">Hold</th>
+                        <th style="padding:16px;">Cost</th>
+                        <th style="padding:16px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
 
-        <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">
+        <div style="padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">
             &copy; 2026 Stark Premium ERP
         </div>
 
@@ -186,49 +213,64 @@
     <!-- Add Item Modal -->
     <div class="mobile-nav" id="itemModal" style="z-index:900;">
         <div class="card"
-            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 700px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
-                <h3 style="margin:0;">Item Details</h3>
+            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card); padding:32px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h2 style="margin:0; font-size:20px;">SKU Details</h2>
                 <button onclick="closeModal()"
-                    style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+                    style="border:none; background:transparent; font-size:24px; cursor:pointer; color:#94a3b8;">&times;</button>
             </div>
 
-            <div style="display:grid; gap:16px;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div style="display:grid; gap:20px;">
+
+                <!-- Image Input -->
+                <div style="display:flex; gap:16px; align-items:center;">
+                    <div id="imgPreview"
+                        style="width:64px; height:64px; border-radius:12px; background:#f1f5f9; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:24px; overflow:hidden;">
+                        📷
+                    </div>
+                    <div style="flex:1;">
+                        <label
+                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Image
+                            URL</label>
+                        <input id="iImg" class="input" placeholder="https://..." oninput="updatePreview(this.value)">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">SKU</label>
+                        <label
+                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">SKU</label>
                         <input id="iSku" class="input" placeholder="e.g. A-101">
                     </div>
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Model #</label>
+                        <label
+                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Model
+                            #</label>
                         <input id="iModel" class="input" placeholder="e.g. M-202X">
                     </div>
                 </div>
 
                 <div>
-                    <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Title / Name</label>
+                    <label
+                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Title
+                        / Name</label>
                     <input id="iName" class="input" placeholder="Product Name">
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Brand</label>
+                        <label
+                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Brand</label>
                         <select id="iBrand" class="input">
                             <option>Stark Mfg</option>
                             <option>LuxeGold</option>
                             <option>Urban Wear</option>
+                            <option>TechNova</option>
                         </select>
                     </div>
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Vendor</label>
-                        <input id="iVendor" class="input" placeholder="e.g. Supplier Corp">
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Status</label>
+                        <label
+                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Status</label>
                         <select id="iStatus" class="input">
                             <option value="Live">Live</option>
                             <option value="Fashion">Fashion</option>
@@ -238,40 +280,29 @@
                             <option value="Presentation">Presentation</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Categories</label>
-                        <input id="iCat" class="input" placeholder="e.g. Shoes">
-                    </div>
                 </div>
 
                 <div
-                    style="display:grid; grid-template-columns:1fr 1fr; gap:16px; background:#f8fafc; padding:12px; border-radius:6px;">
+                    style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; background:#f8fafc; padding:16px; border-radius:12px;">
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Stark ETA</label>
-                        <input id="iStarkEta" type="date" class="input">
-                    </div>
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Brand ETA</label>
-                        <input id="iBrandEta" type="date" class="input">
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Cost</label>
+                        <label style="font-size:11px; font-weight:700; color:#64748b;">Cost</label>
                         <input id="iCost" class="input" type="number" step="0.01">
                     </div>
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">On Hand</label>
+                        <label style="font-size:11px; font-weight:700; color:#64748b;">On Hand</label>
                         <input id="iOn" class="input" type="number" value="0">
                     </div>
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted);">Hold Qty</label>
+                        <label style="font-size:11px; font-weight:700; color:#64748b;">Hold</label>
                         <input id="iHold" class="input" type="number" value="0">
                     </div>
                 </div>
 
-                <button class="btn btn-primary" onclick="saveItem()" style="margin-top:16px;">Save Item</button>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px;">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveItem()" style="background:#6366f1; border:none;">Save
+                        SKU</button>
+                </div>
             </div>
 
         </div>
@@ -282,62 +313,71 @@
     <script src="erp.js"></script>
     <script>
         const ITEM_KEY = "stark_erp_items_v2";
-        const PO_KEY = "stark_erp_pos_v1";
+        let activeStatus = '';
 
         function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
         function saveItems(list) { localStorage.setItem(ITEM_KEY, JSON.stringify(list)); }
-        function loadPOs() { try { return JSON.parse(localStorage.getItem(PO_KEY) || "[]"); } catch { return []; } }
 
-        // Seed Data if needed
+        // Seed Data
         (function seed() {
             const items = loadItems();
             if (items.length < 5) {
                 const demo = [
-                    { sku: "BX-9001", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60, starkEta: "2026-02-15", brandEta: "2026-02-10" },
-                    { sku: "NK-1001", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00, starkEta: "", brandEta: "" },
-                    { sku: "RG-2001", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00, starkEta: "2026-03-01", brandEta: "2026-02-28" },
-                    { sku: "TS-5544", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50, starkEta: "", brandEta: "" },
-                    { sku: "ZZ-0001", model: "INT-TST", name: "Test Item Placeholder", brand: "Stark Mfg", vendor: "Internal", status: "Internal Use", cat: "Internal", on: 1000, hold: 50, cost: 0.10, starkEta: "", brandEta: "" }
+                    { sku: "BX-9001", image: "https://placehold.co/100/e0e7ff/6366f1?text=BX", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60 },
+                    { sku: "NK-1001", image: "https://placehold.co/100/fce7f3/be123c?text=NK", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00 },
+                    { sku: "RG-2001", image: "https://placehold.co/100/fef3c7/b45309?text=RG", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00 },
+                    { sku: "TS-5544", image: "https://placehold.co/100/f1f5f9/64748b?text=TS", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50 },
+                    { sku: "IP-1234", image: "https://placehold.co/100/dbeafe/1e40af?text=IP", model: "16-PM", name: "iPhone 16 Pro Max", brand: "TechNova", vendor: "Apple Dist", status: "Live", cat: "Electronics", on: 25, hold: 5, cost: 1099.00 }
                 ];
                 saveItems([...demo, ...items]);
             }
         })();
 
+        // Filter Logic
+        function setFilter(el, status) {
+            document.querySelectorAll('.pill-filter').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            activeStatus = status;
+            render();
+        }
+
         function render() {
             const list = loadItems();
-            const pos = loadPOs();
-
             const q = (document.getElementById("qSearch").value || "").toLowerCase();
-            const stat = document.getElementById("qStatus").value;
-            const brand = document.getElementById("qBrand").value;
 
             const tbody = document.getElementById("tbody");
             tbody.innerHTML = "";
 
             const filtered = list.filter(i => {
-                if (stat && i.status !== stat) return false;
-                if (brand && i.brand !== brand) return false;
+                if (activeStatus && i.status !== activeStatus) return false;
                 if (q) {
-                    const txt = [i.sku, i.model, i.name, i.vendor].join(" ").toLowerCase();
+                    const txt = [i.sku, i.model, i.name].join(" ").toLowerCase();
                     if (!txt.includes(q)) return false;
                 }
                 return true;
             });
 
+            // Update KPIs
+            document.getElementById("kpiTotal").textContent = list.length;
+            const value = list.reduce((acc, i) => acc + (i.on * i.cost), 0);
+            document.getElementById("kpiValue").textContent = window.formatMoney(value);
+            document.getElementById("kpiLow").textContent = list.filter(i => i.on < 10).length;
+
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:32px; color:var(--text-muted);">No items found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:var(--text-muted); font-size:14px;">No items match your search.</td></tr>`;
                 return;
             }
 
             filtered.forEach(i => {
                 const tr = document.createElement("tr");
-                tr.style.cursor = "pointer";
+                tr.className = "master-row";
+                tr.style.borderBottom = "1px solid #f1f5f9";
                 tr.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
-                    window.location.href = `item_detail.html?sku=${i.sku}`;
+                    // window.location.href = `item_detail.html?sku=${i.sku}`; // Keeping simple for now
+                    editItem(i.sku);
                 };
 
-                // Status Badge
                 let sClass = "status-live";
                 if (i.status === "Fashion") sClass = "status-fashion";
                 if (i.status === "Internal Use") sClass = "status-internal";
@@ -345,30 +385,28 @@
                 if (i.status === "Feeds Only") sClass = "status-feeds";
                 if (i.status === "Presentation") sClass = "status-presentation";
 
-                // Open PO Logic
-                // Check if any PO contains this SKU (assuming simple check or description match for demo)
-                // Real impl would need PO lines. For this demo, we can just randomly say YES if empty to simulate, 
-                // OR strictly check if there's a stored PO with this SKU in lines.
-                // Let's emulate "Yes" if Stark ETA is set, as a proxy for "Incoming".
-                const hasOpenLimit = (i.starkEta || "").length > 0;
-                const openPoBadge = hasOpenLimit ? `<span class="badge badge-green">Yes</span>` : `<span class="badge badge-gray">No</span>`;
+                const imgUrl = i.image || `https://placehold.co/40/e2e8f0/94a3b8?text=${i.sku.substring(0, 2)}`;
 
                 tr.innerHTML = `
-                <td style="padding:16px;">
-                    <div style="font-weight:600; font-size:14px; color:var(--text-main);">${i.sku}</div>
-                    <div style="font-size:12px; color:var(--text-muted);">${i.name}</div>
+                <td style="padding:16px 24px;">
+                    <img src="${imgUrl}" class="sku-img-thumb" alt="SKU">
                 </td>
-                <td style="padding:16px;">${i.model || "—"}</td>
-                <td style="padding:16px;">${i.brand || "—"}</td>
-                <td style="padding:16px;">${i.vendor || "—"}</td>
-                <td style="padding:16px; font-size:12px;">${i.starkEta || "—"}</td>
-                <td style="padding:16px; font-size:12px;">${i.brandEta || "—"}</td>
-                <td style="padding:16px;"><span class="status-badge ${sClass}">${i.status}</span></td>
-                <td style="padding:16px; text-align:right;">${i.on}</td>
-                <td style="padding:16px; text-align:right; color:#f59e0b;">${i.hold || 0}</td>
-                <td style="padding:16px;">${openPoBadge}</td>
                 <td style="padding:16px;">
-                    <button class="btn btn-secondary" style="font-size:12px;" onclick="editItem('${i.sku}')">Edit</button>
+                    <div style="font-weight:700; font-size:14px; color:#1e293b; margin-bottom:2px;">${i.sku}</div>
+                    <div style="font-size:13px; color:#64748b; margin-bottom:2px;">${i.name}</div>
+                    <div style="font-size:11px; color:#94a3b8;">${i.model || "—"}</div>
+                </td>
+                <td style="padding:16px;">
+                    <div style="font-weight:600; font-size:13px; color:#334155;">${i.brand || "—"}</div>
+                    <div style="font-size:11px; color:#94a3b8;">${i.vendor || "—"}</div>
+                </td>
+                <td style="padding:16px; font-size:13px; color:#475569;">${i.cat || "—"}</td>
+                <td style="padding:16px;"><span class="status-badge ${sClass}">${i.status}</span></td>
+                <td style="padding:16px; text-align:right; font-weight:600; color:#334155;">${i.on}</td>
+                <td style="padding:16px; text-align:right; color:#f59e0b; font-weight:600;">${i.hold || 0}</td>
+                <td style="padding:16px; font-variant-numeric: tabular-nums;">${window.formatMoney(i.cost)}</td>
+                <td style="padding:16px;">
+                    <button class="btn btn-secondary" style="height:32px; font-size:12px; border-radius:8px;" onclick="editItem('${i.sku}')">Edit</button>
                 </td>
             `;
                 tbody.appendChild(tr);
@@ -376,15 +414,24 @@
         }
 
         // Modal Logic
+        function updatePreview(url) {
+            const el = document.getElementById("imgPreview");
+            if (url) {
+                el.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else {
+                el.innerHTML = "📷";
+            }
+        }
+
         function openAddModal() {
             document.getElementById("iSku").value = "";
             document.getElementById("iModel").value = "";
             document.getElementById("iName").value = "";
-            document.getElementById("iVendor").value = "";
-            document.getElementById("iStarkEta").value = "";
-            document.getElementById("iBrandEta").value = "";
+            document.getElementById("iImg").value = "";
+            updatePreview("");
             document.getElementById("iOn").value = "0";
             document.getElementById("iHold").value = "0";
+            document.getElementById("iCost").value = "";
             document.getElementById("itemModal").classList.add("open");
         }
         function closeModal() { document.getElementById("itemModal").classList.remove("open"); }
@@ -398,14 +445,11 @@
 
             const newItem = {
                 sku,
+                image: document.getElementById("iImg").value,
                 model: document.getElementById("iModel").value,
                 name: document.getElementById("iName").value,
                 brand: document.getElementById("iBrand").value,
-                vendor: document.getElementById("iVendor").value,
                 status: document.getElementById("iStatus").value,
-                cat: document.getElementById("iCat").value,
-                starkEta: document.getElementById("iStarkEta").value,
-                brandEta: document.getElementById("iBrandEta").value,
                 on: Number(document.getElementById("iOn").value),
                 hold: Number(document.getElementById("iHold").value),
                 cost: Number(document.getElementById("iCost").value)
@@ -431,11 +475,9 @@
                 document.getElementById("iModel").value = i.model || "";
                 document.getElementById("iName").value = i.name;
                 document.getElementById("iBrand").value = i.brand || "Stark Mfg";
-                document.getElementById("iVendor").value = i.vendor || "";
                 document.getElementById("iStatus").value = i.status || "Live";
-                document.getElementById("iCat").value = i.cat || "";
-                document.getElementById("iStarkEta").value = i.starkEta || "";
-                document.getElementById("iBrandEta").value = i.brandEta || "";
+                document.getElementById("iImg").value = i.image || "";
+                updatePreview(i.image);
                 document.getElementById("iOn").value = i.on;
                 document.getElementById("iHold").value = i.hold || 0;
                 document.getElementById("iCost").value = i.cost;
@@ -444,7 +486,18 @@
         }
 
         function exportData() {
-            alert("Exporting not implemented yet");
+            const list = loadItems();
+            let csv = "SKU,Model,Name,Brand,Status,On Hand,Cost\n";
+            list.forEach(i => {
+                csv += `${i.sku},${i.model},${i.name},${i.brand},${i.status},${i.on},${i.cost}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "master_export.csv";
+            a.click();
+            toast("Export", "CSV Downloaded");
         }
 
         render();
