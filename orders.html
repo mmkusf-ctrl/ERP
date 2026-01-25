@@ -23,7 +23,7 @@
 
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="item_master.html">Items</a>
+                <a class="nav-link" href="master.html">Items</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -55,7 +55,7 @@
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
             <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link" href="item_master.html">Items</a>
+            <a class="mobile-link" href="master.html">Items</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -69,13 +69,20 @@
 
     <main class="container">
         <div class="page-header">
-            <h1 class="page-title">Order Management</h1>
-            <p class="page-desc">Track and validate customer orders.</p>
-            <div class="gold-line"></div>
+            <div style="display:flex; justify-content:space-between; align-items:end;">
+                <div>
+                    <h1 class="page-title">Order Management</h1>
+                    <p class="page-desc">Track and validate customer orders.</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='create_sales_order.html'"
+                    style="background:#6366f1; border:none; padding:12px 24px;">+ Sales Order</button>
+            </div>
+            <div class="gold-line" style="margin-top:16px;"></div>
         </div>
 
         <!-- Stats -->
-        <section class="kpi-grid" style="margin-bottom:32px;">
+        <!-- Stats -->
+        <section class="grid-4" style="margin-bottom:32px;">
             <article class="card-kpi clickable-kpi active" onclick="setFilter('')" id="kAll">
                 <div class="card-header">
                     <div class="card-title">All Orders</div>
@@ -237,3 +244,5 @@
         init();
     </script>
 </body>
+
+</html>
