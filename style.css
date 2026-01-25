@@ -1311,3 +1311,18 @@ tr:hover td {
     padding: 16px;
   }
 }
+
+/* --- Print Styles --- */
+@media print {
+  body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .top-nav, .breadcrumbs, .btn, .no-print { display: none !important; }
+  .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  .card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; break-inside: avoid; page-break-inside: avoid; }
+  .page-header { margin-bottom: 20px; }
+  /* Ensure text is dark enough */
+  h1, h2, h3, h4, h5, h6, p, span, div { color: #000 !important; }
+  .badge { border: 1px solid #ccc; color: black !important; background: transparent !important; }
+  /* Specific overrides for tables */
+  th { color: #000 !important; border-bottom: 1px solid #000 !important; }
+  tr { border-bottom: 1px solid #eee !important; }
+}
