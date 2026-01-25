@@ -121,37 +121,41 @@
         </div>
 
         <!-- KPI Header -->
-        <div class="grid-4" style="gap:24px; margin-bottom:32px;">
-            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
-                <div
-                    style="width:48px; height:48px; border-radius:12px; background:#eff6ff; color:#1e40af; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    📦</div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Total Items
-                    </div>
-                    <div id="kpiTotal" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
-                </div>
-            </div>
-
-            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
-                <div
-                    style="width:48px; height:48px; border-radius:12px; background:#f0fdf4; color:#166534; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    💰</div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Stock Value
-                    </div>
-                    <div id="kpiValue" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
-                </div>
-            </div>
-
+        <div
+            style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:24px; margin-bottom:32px;">
+            <!-- Low Inventory -->
             <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
                 <div
                     style="width:48px; height:48px; border-radius:12px; background:#fff1f2; color:#be123c; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    📉</div>
+                    �</div>
                 <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Low Stock
-                    </div>
-                    <div id="kpiLow" style="font-size:24px; font-weight:800; color:#0f172a;">--</div>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Low Inventory
+                        SKUs</div>
+                    <div id="kpiLow" style="font-size:24px; font-weight:800; color:#be123c;">--</div>
+                </div>
+            </div>
+
+            <!-- Dead Stock Value -->
+            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+                <div
+                    style="width:48px; height:48px; border-radius:12px; background:#f1f5f9; color:#475569; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                    �️</div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Dead Stock
+                        Value</div>
+                    <div id="kpiDead" style="font-size:24px; font-weight:800; color:#1e293b;">--</div>
+                </div>
+            </div>
+
+            <!-- Brands No Sales -->
+            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+                <div
+                    style="width:48px; height:48px; border-radius:12px; background:#fff7ed; color:#c2410c; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                    ⚠️</div>
+                <div>
+                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Stagnant
+                        Brands (3mo)</div>
+                    <div id="kpiStagnant" style="font-size:24px; font-weight:800; color:#9a3412;">--</div>
                 </div>
             </div>
         </div>
@@ -323,11 +327,11 @@
             const items = loadItems();
             if (items.length < 5) {
                 const demo = [
-                    { sku: "BX-9001", image: "https://placehold.co/100/e0e7ff/6366f1?text=BX", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60 },
-                    { sku: "NK-1001", image: "https://placehold.co/100/fce7f3/be123c?text=NK", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00 },
-                    { sku: "RG-2001", image: "https://placehold.co/100/fef3c7/b45309?text=RG", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00 },
-                    { sku: "TS-5544", image: "https://placehold.co/100/f1f5f9/64748b?text=TS", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50 },
-                    { sku: "IP-1234", image: "https://placehold.co/100/dbeafe/1e40af?text=IP", model: "16-PM", name: "iPhone 16 Pro Max", brand: "TechNova", vendor: "Apple Dist", status: "Live", cat: "Electronics", on: 25, hold: 5, cost: 1099.00 }
+                    { sku: "BX-9001", image: "https://placehold.co/100/e0e7ff/6366f1?text=BX", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60, lastSale: "2026-01-20" },
+                    { sku: "NK-1001", image: "https://placehold.co/100/fce7f3/be123c?text=NK", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00, lastSale: "2025-10-01" }, // > 3 months
+                    { sku: "RG-2001", image: "https://placehold.co/100/fef3c7/b45309?text=RG", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00, lastSale: "2025-09-15" },
+                    { sku: "TS-5544", image: "https://placehold.co/100/f1f5f9/64748b?text=TS", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50, lastSale: "2024-01-01" }, // Dead
+                    { sku: "IP-1234", image: "https://placehold.co/100/dbeafe/1e40af?text=IP", model: "16-PM", name: "iPhone 16 Pro Max", brand: "TechNova", vendor: "Apple Dist", status: "Live", cat: "Electronics", on: 5, hold: 5, cost: 1099.00, lastSale: "2026-01-22" }
                 ];
                 saveItems([...demo, ...items]);
             }
@@ -358,10 +362,37 @@
             });
 
             // Update KPIs
-            document.getElementById("kpiTotal").textContent = list.length;
-            const value = list.reduce((acc, i) => acc + (i.on * i.cost), 0);
-            document.getElementById("kpiValue").textContent = window.formatMoney(value);
-            document.getElementById("kpiLow").textContent = list.filter(i => i.on < 10).length;
+            // Low Inventory: on < 10
+            document.getElementById("kpiLow").textContent = list.filter(i => i.on < 10 && i.status === 'Live').length;
+
+            // Dead Stock: No sales in 3 months (90 days)
+            const today = new Date();
+            const ninetyDaysAgo = new Date(today.getTime() - (90 * 24 * 60 * 60 * 1000));
+
+            const deadItems = list.filter(i => {
+                if (!i.lastSale) return false; // Assume new if no date, or treat as dead? Treating as safe for now.
+                return new Date(i.lastSale) < ninetyDaysAgo;
+            });
+            const deadValue = deadItems.reduce((acc, i) => acc + (i.on * i.cost), 0);
+            document.getElementById("kpiDead").textContent = window.formatMoney(deadValue);
+
+            // Stagnant Brands: Brands where ALL items have no sales in 3 months
+            const brands = [...new Set(list.map(i => i.brand).filter(Boolean))];
+            let stagnantCount = 0;
+
+            brands.forEach(b => {
+                const bItems = list.filter(i => i.brand === b);
+                if (bItems.length === 0) return;
+
+                const allStale = bItems.every(i => {
+                    if (!i.lastSale) return true; // No sale ever = stale
+                    return new Date(i.lastSale) < ninetyDaysAgo;
+                });
+
+                if (allStale) stagnantCount++;
+            });
+
+            document.getElementById("kpiStagnant").textContent = stagnantCount;
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:var(--text-muted); font-size:14px;">No items match your search.</td></tr>`;
