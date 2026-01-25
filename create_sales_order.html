@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Sales Order | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=7">
+    <style>
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .input-group-text {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* Autocomplete Styles */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+        }
+
+        .autocomplete-item {
+            padding: 10px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .autocomplete-item:hover {
+            background: #f8fafc;
+            color: #4f46e5;
+        }
+
+        .active-sku {
+            border-color: #6366f1;
+            background: #eef2ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="master.html">Items</a>
+                <a class="nav-link active" href="orders.html">Orders</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Online</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px;">
+
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <div>
+                <button onclick="window.history.back()"
+                    style="background:transparent; border:none; color:#64748b; font-weight:600; cursor:pointer; margin-bottom:8px;">←
+                    Back to Orders</button>
+                <h1 class="page-title" style="margin:0;">New Sales Order</h1>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitOrder()"
+                    style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3);">Submit
+                    Order</button>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Left Col: Order Details & Lines -->
+            <div class="card-soft" style="padding:24px;">
+
+                <div class="form-section">
+                    <div class="section-title">Customer & Order Info</div>
+                    <div class="grid-2" style="gap:20px;">
+                        <div>
+                            <label class="input-group-text">Customer Name</label>
+                            <input id="iCust" class="input" placeholder="e.g. Acme Corp">
+                        </div>
+                        <div>
+                            <label class="input-group-text">Customer PO #</label>
+                            <input id="iPO" class="input" placeholder="e.g. PO-998877">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SKU Line Entry -->
+                <div class="form-section"
+                    style="background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <div class="section-title" style="border:none; margin-bottom:12px;">Add Line Item</div>
+
+                    <div class="grid-3" style="gap:16px; grid-template-columns: 2fr 1fr 1fr;">
+                        <div class="autocomplete-wrapper">
+                            <label class="input-group-text">Search SKU</label>
+                            <input id="iSkuSearch" class="input" placeholder="Type SKU or Name..."
+                                oninput="filterSkus(this.value)" onfocus="filterSkus(this.value)">
+                            <div id="skuList" class="autocomplete-list"></div>
+                        </div>
+                        <div>
+                            <label class="input-group-text">Quantity</label>
+                            <input id="iQty" type="number" class="input" value="1" min="1">
+                        </div>
+                        <div style="display:flex; align-items:end;">
+                            <button class="btn btn-primary" onclick="addLine()" style="width:100%; height:42px;">+
+                                Add</button>
+                        </div>
+                    </div>
+
+                    <!-- Selected SKU Info -->
+                    <div id="skuInfo"
+                        style="margin-top:16px; padding-top:16px; border-top:1px dashed #e2e8f0; display:none; font-size:13px; color:#475569;">
+                        <strong id="infoSku"></strong> - <span id="infoName"></span><br>
+                        <div style="margin-top:4px; display:flex; gap:16px;">
+                            <span>On Hand: <strong id="infoOH" style="color:#0f172a;"></strong></span>
+                            <span>Open PO: <strong id="infoPO"></strong></span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px;">
+                        <label class="input-group-text">Line Special Instructions</label>
+                        <input id="iLineNote" class="input" placeholder="e.g. Pack individually...">
+                    </div>
+                </div>
+
+                <!-- Lines Table -->
+                <div style="margin-top:24px;">
+                    <table style="width:100%; text-align:left; border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b;">
+                                <th style="padding:10px;">SKU</th>
+                                <th style="padding:10px;">Description</th>
+                                <th style="padding:10px; text-align:right;">Qty</th>
+                                <th style="padding:10px;">Notes</th>
+                                <th style="padding:10px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="lineBody">
+                            <tr>
+                                <td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:13px;">
+                                    No items added yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Right Col: Shipping & Options -->
+            <div style="display:grid; gap:24px;">
+
+                <div class="card-soft" style="padding:24px;">
+                    <div class="section-title">Logistics</div>
+
+                    <div style="margin-bottom:16px;">
+                        <label class="input-group-text">Warehouse</label>
+                        <select id="iWh" class="input">
+                            <option value="Sarasota">Sarasota, FL (Main)</option>
+                            <option value="Texas">Austin, TX (West)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:16px;">
+                        <label class="input-group-text">In Hands Date</label>
+                        <input id="iDate" type="date" class="input">
+                    </div>
+                </div>
+
+                <div class="card-soft" style="padding:24px;">
+                    <div class="section-title">Shipping Method</div>
+
+                    <div style="margin-bottom:16px;">
+                        <label class="input-group-text">Carrier Service</label>
+                        <select id="iShip" class="input" onchange="toggleAcctFields()">
+                            <optgroup label="UPS">
+                                <option>UPS Ground</option>
+                                <option>UPS 3 Day Select</option>
+                                <option>UPS 2nd Day Air</option>
+                                <option>UPS Next Day Air</option>
+                            </optgroup>
+                            <optgroup label="FedEx">
+                                <option>FedEx Ground</option>
+                                <option>FedEx Express Saver</option>
+                                <option>FedEx 2Day</option>
+                                <option>FedEx Standard Overnight</option>
+                                <option>FedEx Priority Overnight</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:16px;">
+                        <label class="input-group-text">Customer Account # (Optional)</label>
+                        <input id="iAcct" class="input" placeholder="e.g. 123456">
+                        <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Leave blank to use our account
+                            (Prepaid & Add)</div>
+                    </div>
+                </div>
+
+                <div class="card-soft" style="padding:24px;">
+                    <div class="section-title">Order Notes</div>
+                    <textarea id="iOrderNote" class="input" rows="3"
+                        placeholder="Global special instructions..."></textarea>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+        const ORDER_KEY = "stark_erp_orders_v1";
+
+        let allItems = [];
+        let orderLines = [];
+        let selectedItem = null;
+
+        // Init
+        (function init() {
+            try { allItems = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { allItems = []; }
+
+            // Close autocomplete when clicking outside
+            document.addEventListener("click", function (e) {
+                if (!e.target.closest(".autocomplete-wrapper")) {
+                    document.getElementById("skuList").style.display = "none";
+                }
+            });
+        })();
+
+        // SKU Filter
+        function filterSkus(val) {
+            const listEl = document.getElementById("skuList");
+            if (!val) {
+                listEl.style.display = "none";
+                return;
+            }
+
+            const matches = allItems.filter(i =>
+                i.sku.toLowerCase().includes(val.toLowerCase()) ||
+                (i.name && i.name.toLowerCase().includes(val.toLowerCase()))
+            ).slice(0, 10);
+
+            if (matches.length === 0) {
+                listEl.style.display = "none";
+                return;
+            }
+
+            listEl.innerHTML = matches.map(i => `
+                <div class="autocomplete-item" onclick="selectSku('${i.sku}')">
+                    <span style="font-weight:600;">${i.sku}</span>
+                    <span style="color:#64748b; font-size:12px;">${i.on} OH</span>
+                </div>
+            `).join("");
+            listEl.style.display = "block";
+        }
+
+        function selectSku(sku) {
+            selectedItem = allItems.find(i => i.sku === sku);
+            if (!selectedItem) return;
+
+            // Fill & Show Info
+            document.getElementById("iSkuSearch").value = selectedItem.sku;
+            document.getElementById("skuList").style.display = "none";
+
+            document.getElementById("infoSku").textContent = selectedItem.sku;
+            document.getElementById("infoName").textContent = selectedItem.name || selectedItem.desc || "(No Name)";
+            document.getElementById("infoOH").textContent = selectedItem.on;
+
+            // Sim Open PO check
+            const hasPo = (selectedItem.starkEta || "").length > 0;
+            const poHtml = hasPo ? `<span class="badge badge-green" style="font-size:10px;">Yes (${selectedItem.starkEta})</span>` : `<span style="color:#94a3b8;">No</span>`;
+            document.getElementById("infoPO").innerHTML = poHtml;
+
+            document.getElementById("skuInfo").style.display = "block";
+        }
+
+        function addLine() {
+            if (!selectedItem) return toast("Error", "Please select a valid SKU first.");
+            const qty = parseInt(document.getElementById("iQty").value) || 1;
+            const note = document.getElementById("iLineNote").value;
+
+            orderLines.push({
+                sku: selectedItem.sku,
+                name: selectedItem.name,
+                qty: qty,
+                note: note
+            });
+
+            // Reset Line Inputs
+            document.getElementById("iSkuSearch").value = "";
+            document.getElementById("iQty").value = "1";
+            document.getElementById("iLineNote").value = "";
+            document.getElementById("skuInfo").style.display = "none";
+            selectedItem = null;
+
+            renderLines();
+        }
+
+        function removeLine(idx) {
+            orderLines.splice(idx, 1);
+            renderLines();
+        }
+
+        function renderLines() {
+            const tbody = document.getElementById("lineBody");
+            if (orderLines.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:13px;">No items added yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orderLines.map((l, i) => `
+                <tr style="border-bottom:1px solid #f8fafc;">
+                    <td style="padding:12px;"><strong>${l.sku}</strong></td>
+                    <td style="padding:12px; font-size:13px;">${l.name || ""}</td>
+                    <td style="padding:12px; text-align:right;">${l.qty}</td>
+                    <td style="padding:12px; font-size:12px; color:#64748b; font-style:italic;">${l.note}</td>
+                    <td style="padding:12px; text-align:right;">
+                        <button onclick="removeLine(${i})" style="color:#ef4444; background:none; border:none; cursor:pointer;">&times;</button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function submitOrder() {
+            const cust = document.getElementById("iCust").value.trim();
+            if (!cust) return toast("Error", "Customer Name Required");
+            if (orderLines.length === 0) return toast("Error", "Add at least one item.");
+
+            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+            const newId = "ORD-" + (1000 + orders.length + 1);
+
+            const newOrder = {
+                id: newId,
+                cust: cust,
+                po: document.getElementById("iPO").value,
+                date: new Date().toISOString().split('T')[0],
+                inHands: document.getElementById("iDate").value,
+                wh: document.getElementById("iWh").value,
+                ship: document.getElementById("iShip").value,
+                acct: document.getElementById("iAcct").value,
+                note: document.getElementById("iOrderNote").value,
+                lines: orderLines,
+                total: 0, // Should calc total based on lines * retail, skipped for now
+                status: "Processing"
+            };
+
+            orders.unshift(newOrder);
+            localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+
+            toast("Success", "Order Created: " + newId);
+            setTimeout(() => {
+                window.location.href = "orders.html";
+            }, 1000);
+        }
+
+    </script>
+</body>
+
+</html>
