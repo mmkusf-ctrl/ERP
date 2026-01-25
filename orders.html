@@ -236,7 +236,7 @@
                 <td>${o.date}</td>
                 <td>${money(o.total)}</td>
                 <td><span class="badge ${badge}">${o.status}</span></td>
-                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;">View</button></td>
+                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="window.location.href='order_detail.html?id=${o.id}'">View</button></td>
               `;
                 tbody.appendChild(tr);
             });
