@@ -443,14 +443,41 @@
 
         function submitOrder() {
             const cust = document.getElementById("iCust").value.trim();
+            const shipMethod = document.getElementById("iShip").value;
+
             if (!cust) return toast("Error", "Customer Name Required");
             if (orderLines.length === 0) return toast("Error", "Add at least one item.");
+            if (!shipMethod) return toast("Error", "Select a Shipping Method");
 
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
             const newId = "ORD-" + (1000 + orders.length + 1);
 
             let total = 0;
             orderLines.forEach(l => total += (l.price * l.qty));
+
+            // Validation Logic
+            let status = "Validated";
+            let holdReason = "";
+
+            for (const line of orderLines) {
+                const item = allItems.find(i => i.sku === line.sku);
+                if (item) {
+                    // Check 1: Restricted Status
+                    const restricted = ["Feeds Only", "Discontinued", "Internal Use", "Presentation"];
+                    if (restricted.includes(item.status)) {
+                        status = "On Hold";
+                        holdReason = `Item ${line.sku} is ${item.status}`;
+                        break;
+                    }
+
+                    // Check 2: Stock Availability
+                    if (line.qty > (item.on || 0)) {
+                        status = "On Hold";
+                        holdReason = `Insufficient Stock for ${line.sku} (Req: ${line.qty}, OH: ${item.on})`;
+                        break;
+                    }
+                }
+            }
 
             const newOrder = {
                 id: newId,
@@ -459,21 +486,25 @@
                 date: new Date().toISOString().split('T')[0],
                 inHands: document.getElementById("iDate").value,
                 wh: document.getElementById("iWh").value,
-                ship: document.getElementById("iShip").value,
+                ship: shipMethod,
                 acct: document.getElementById("iAcct").value,
                 note: document.getElementById("iOrderNote").value,
                 lines: orderLines,
                 total: total,
-                status: "Processing"
+                status: status,
+                holdReason: holdReason
             };
 
             orders.unshift(newOrder);
             localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
 
-            toast("Success", "Order Created: " + newId);
+            const msg = status === "On Hold" ? `Order Created (ON HOLD): ${holdReason}` : `Order Created: ${newId}`;
+            const type = status === "On Hold" ? "Warning" : "Success";
+
+            toast(type, msg);
             setTimeout(() => {
                 window.location.href = "orders.html";
-            }, 1000);
+            }, 1500);
         }
 
     </script>
