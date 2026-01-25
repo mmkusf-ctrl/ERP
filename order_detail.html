@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <nav class="top-nav">
+    <nav class="top-nav no-print">
         <div class="nav-brand">
             <span class="material-icons-round" style="color:#6366f1; font-size:24px;">all_inclusive</span>
             <span>Stark<span style="font-weight:400; color:#94a3b8;">ERP</span></span>
@@ -27,7 +27,7 @@
         </div>
     </nav>
 
-    <div class="breadcrumbs">
+    <div class="breadcrumbs no-print">
         <a href="orders.html">Orders</a>
         <span class="separator">/</span>
         <span class="current" id="crumbId">ORD-....</span>
@@ -42,7 +42,9 @@
 
             <div style="display:flex; align-items:center; gap:16px;">
                 <div id="hStatusBadge" class="badge">Processing</div>
-                <button onclick="window.history.back()" class="btn btn-secondary">Back</button>
+                <button onclick="window.print()" class="btn btn-primary no-print"><span class="material-icons-round"
+                        style="font-size:18px;">print</span> Print Order</button>
+                <button onclick="window.history.back()" class="btn btn-secondary no-print">Back</button>
             </div>
         </header>
 
