@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     <style>
         .form-section {
             margin-bottom: 24px;
@@ -22,6 +22,9 @@
             margin-bottom: 16px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .input-group-text {
@@ -46,30 +49,35 @@
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-height: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-height: 240px;
             overflow-y: auto;
             z-index: 50;
             display: none;
+            margin-top: 4px;
         }
 
         .autocomplete-item {
-            padding: 10px 16px;
-            font-size: 14px;
+            padding: 12px 16px;
             border-bottom: 1px solid #f1f5f9;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .autocomplete-item:hover {
             background: #f8fafc;
-            color: #4f46e5;
         }
 
-        .active-sku {
-            border-color: #6366f1;
-            background: #eef2ff;
+        .autocomplete-item strong {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .autocomplete-item span {
+            color: #64748b;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -93,7 +101,7 @@
         </div>
     </header>
 
-    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px;">
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1200px;">
 
         <!-- Header -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
@@ -106,19 +114,20 @@
             <div style="display:flex; gap:12px;">
                 <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
                 <button class="btn btn-primary" onclick="submitOrder()"
-                    style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3);">Submit
+                    style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3); padding:0 32px;">Submit
                     Order</button>
             </div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+        <div style="display:grid; grid-template-columns: 3fr 1fr; gap:32px; align-items:start;">
 
-            <!-- Left Col: Order Details & Lines -->
-            <div class="card-soft" style="padding:24px;">
+            <!-- Left Col: Content -->
+            <div style="display:grid; gap:24px;">
 
-                <div class="form-section">
-                    <div class="section-title">Customer & Order Info</div>
-                    <div class="grid-2" style="gap:20px;">
+                <!-- Order Basics -->
+                <div class="card-soft" style="padding:24px;">
+                    <div class="section-title">Customer Details</div>
+                    <div class="grid-2" style="gap:24px;">
                         <div>
                             <label class="input-group-text">Customer Name</label>
                             <input id="iCust" class="input" placeholder="e.g. Acme Corp">
@@ -130,72 +139,113 @@
                     </div>
                 </div>
 
-                <!-- SKU Line Entry -->
-                <div class="form-section"
-                    style="background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
-                    <div class="section-title" style="border:none; margin-bottom:12px;">Add Line Item</div>
+                <!-- Line Items -->
+                <div class="card-soft" style="padding:24px; min-height:400px;">
+                    <div class="section-title">Line Items</div>
 
-                    <div class="grid-3" style="gap:16px; grid-template-columns: 2fr 1fr 1fr;">
-                        <div class="autocomplete-wrapper">
-                            <label class="input-group-text">Search SKU</label>
-                            <input id="iSkuSearch" class="input" placeholder="Type SKU or Name..."
-                                oninput="filterSkus(this.value)" onfocus="filterSkus(this.value)">
-                            <div id="skuList" class="autocomplete-list"></div>
+                    <!-- Search Bar area -->
+                    <div
+                        style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:24px;">
+                        <div class="grid-4"
+                            style="gap:16px; grid-template-columns: 3fr 1fr 2fr 100px; align-items:end;">
+
+                            <div class="autocomplete-wrapper">
+                                <label class="input-group-text">SKU Lookup</label>
+                                <input id="iSkuSearch" class="input" placeholder="Search by SKU or Name..."
+                                    oninput="filterSkus(this.value)" onfocus="filterSkus(this.value)"
+                                    style="border-color:#cbd5e1;">
+                                <div id="skuList" class="autocomplete-list"></div>
+                            </div>
+
+                            <div>
+                                <label class="input-group-text">Qty</label>
+                                <input id="iQty" type="number" class="input" value="1" min="1"
+                                    style="text-align:center;">
+                            </div>
+
+                            <div>
+                                <label class="input-group-text">Notes / Customization</label>
+                                <input id="iLineNote" class="input" placeholder="Optional notes...">
+                            </div>
+
+                            <button class="btn btn-primary" onclick="addLine()"
+                                style="height:44px; justify-content:center;">Add</button>
                         </div>
-                        <div>
-                            <label class="input-group-text">Quantity</label>
-                            <input id="iQty" type="number" class="input" value="1" min="1">
-                        </div>
-                        <div style="display:flex; align-items:end;">
-                            <button class="btn btn-primary" onclick="addLine()" style="width:100%; height:42px;">+
-                                Add</button>
+
+                        <!-- Active Selection Preview -->
+                        <div id="skuInfo"
+                            style="margin-top:16px; padding-top:16px; border-top:1px dashed #cbd5e1; display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:15px; font-weight:700; color:#1e293b;"><span
+                                            id="infoSku"></span> — <span id="infoName" style="font-weight:400;"></span>
+                                    </div>
+                                    <div style="font-size:12px; color:#64748b; margin-top:4px;">Retail: <strong
+                                            id="infoPrice"></strong></div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div
+                                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">
+                                        Inventory Status</div>
+                                    <div style="display:flex; gap:12px; margin-top:4px;">
+                                        <div class="badge badge-green" id="badgeOH">OH: <span id="infoOH"></span></div>
+                                        <div id="infoPO"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Selected SKU Info -->
-                    <div id="skuInfo"
-                        style="margin-top:16px; padding-top:16px; border-top:1px dashed #e2e8f0; display:none; font-size:13px; color:#475569;">
-                        <strong id="infoSku"></strong> - <span id="infoName"></span><br>
-                        <div style="margin-top:4px; display:flex; gap:16px;">
-                            <span>On Hand: <strong id="infoOH" style="color:#0f172a;"></strong></span>
-                            <span>Open PO: <strong id="infoPO"></strong></span>
-                        </div>
-                    </div>
-
-                    <div style="margin-top:16px;">
-                        <label class="input-group-text">Line Special Instructions</label>
-                        <input id="iLineNote" class="input" placeholder="e.g. Pack individually...">
-                    </div>
-                </div>
-
-                <!-- Lines Table -->
-                <div style="margin-top:24px;">
-                    <table style="width:100%; text-align:left; border-collapse:collapse;">
-                        <thead>
-                            <tr style="border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b;">
-                                <th style="padding:10px;">SKU</th>
-                                <th style="padding:10px;">Description</th>
-                                <th style="padding:10px; text-align:right;">Qty</th>
-                                <th style="padding:10px;">Notes</th>
-                                <th style="padding:10px;"></th>
+                    <!-- Table -->
+                    <table style="width:100%; text-align:left; border-collapse:separate; border-spacing:0;">
+                        <thead style="background:#f8fafc;">
+                            <tr>
+                                <th
+                                    style="padding:12px 16px; border-top-left-radius:8px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700;">
+                                    SKU</th>
+                                <th
+                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700;">
+                                    Description</th>
+                                <th
+                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
+                                    Price</th>
+                                <th
+                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
+                                    Qty</th>
+                                <th
+                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
+                                    Line Total</th>
+                                <th
+                                    style="padding:12px 16px; border-top-right-radius:8px; border-bottom:1px solid #e2e8f0;">
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="lineBody">
                             <tr>
-                                <td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:13px;">
-                                    No items added yet.</td>
+                                <td colspan="6" style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">
+                                    Your cart is empty. Add items above.</td>
                             </tr>
                         </tbody>
+                        <tfoot id="tableFoot" style="display:none;">
+                            <tr>
+                                <td colspan="4" style="text-align:right; padding:16px; font-weight:700; color:#64748b;">
+                                    TOTAL</td>
+                                <td style="text-align:right; padding:16px; font-weight:800; font-size:16px; color:#0f172a;"
+                                    id="orderTotal">$0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
+
                 </div>
 
             </div>
 
-            <!-- Right Col: Shipping & Options -->
-            <div style="display:grid; gap:24px;">
+            <!-- Right Col: Sidebar -->
+            <div style="display:grid; gap:24px; align-content:start;">
 
                 <div class="card-soft" style="padding:24px;">
-                    <div class="section-title">Logistics</div>
+                    <div class="section-title">Shipping & Logistics</div>
 
                     <div style="margin-bottom:16px;">
                         <label class="input-group-text">Warehouse</label>
@@ -206,17 +256,15 @@
                     </div>
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">In Hands Date</label>
+                        <label class="input-group-text">Need By Date</label>
                         <input id="iDate" type="date" class="input">
                     </div>
-                </div>
 
-                <div class="card-soft" style="padding:24px;">
-                    <div class="section-title">Shipping Method</div>
+                    <hr style="border:none; border-top:1px solid #f1f5f9; margin:20px 0;">
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Carrier Service</label>
-                        <select id="iShip" class="input" onchange="toggleAcctFields()">
+                        <label class="input-group-text">Shipping Carrier</label>
+                        <select id="iShip" class="input" style="font-weight:600;">
                             <optgroup label="UPS">
                                 <option>UPS Ground</option>
                                 <option>UPS 3 Day Select</option>
@@ -234,17 +282,15 @@
                     </div>
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Customer Account # (Optional)</label>
-                        <input id="iAcct" class="input" placeholder="e.g. 123456">
-                        <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Leave blank to use our account
-                            (Prepaid & Add)</div>
+                        <label class="input-group-text">Account # (Optional)</label>
+                        <input id="iAcct" class="input" placeholder="Use 3rd party acct...">
                     </div>
                 </div>
 
                 <div class="card-soft" style="padding:24px;">
                     <div class="section-title">Order Notes</div>
-                    <textarea id="iOrderNote" class="input" rows="3"
-                        placeholder="Global special instructions..."></textarea>
+                    <textarea id="iOrderNote" class="input" rows="4"
+                        placeholder="Special instructions for the warehouse team..."></textarea>
                 </div>
 
             </div>
@@ -287,7 +333,7 @@
             const matches = allItems.filter(i =>
                 i.sku.toLowerCase().includes(val.toLowerCase()) ||
                 (i.name && i.name.toLowerCase().includes(val.toLowerCase()))
-            ).slice(0, 10);
+            ).slice(0, 8);
 
             if (matches.length === 0) {
                 listEl.style.display = "none";
@@ -296,8 +342,13 @@
 
             listEl.innerHTML = matches.map(i => `
                 <div class="autocomplete-item" onclick="selectSku('${i.sku}')">
-                    <span style="font-weight:600;">${i.sku}</span>
-                    <span style="color:#64748b; font-size:12px;">${i.on} OH</span>
+                    <div>
+                        <strong>${i.sku}</strong>
+                        <div style="font-size:12px; color:#64748b;">${i.name || i.desc || ''}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-weight:600; font-size:12px;">${i.on} OH</div>
+                    </div>
                 </div>
             `).join("");
             listEl.style.display = "block";
@@ -313,25 +364,30 @@
 
             document.getElementById("infoSku").textContent = selectedItem.sku;
             document.getElementById("infoName").textContent = selectedItem.name || selectedItem.desc || "(No Name)";
+            document.getElementById("infoPrice").textContent = window.formatMoney(selectedItem.retail || 0);
+
             document.getElementById("infoOH").textContent = selectedItem.on;
 
             // Sim Open PO check
             const hasPo = (selectedItem.starkEta || "").length > 0;
-            const poHtml = hasPo ? `<span class="badge badge-green" style="font-size:10px;">Yes (${selectedItem.starkEta})</span>` : `<span style="color:#94a3b8;">No</span>`;
+            const poHtml = hasPo ? `<div class="badge badge-green">Inbound: ${selectedItem.starkEta}</div>` : ``;
             document.getElementById("infoPO").innerHTML = poHtml;
 
             document.getElementById("skuInfo").style.display = "block";
+            document.getElementById("iQty").focus();
         }
 
         function addLine() {
             if (!selectedItem) return toast("Error", "Please select a valid SKU first.");
             const qty = parseInt(document.getElementById("iQty").value) || 1;
             const note = document.getElementById("iLineNote").value;
+            const price = selectedItem.retail || 0;
 
             orderLines.push({
                 sku: selectedItem.sku,
-                name: selectedItem.name,
+                name: selectedItem.name || selectedItem.desc,
                 qty: qty,
+                price: price,
                 note: note
             });
 
@@ -352,22 +408,37 @@
 
         function renderLines() {
             const tbody = document.getElementById("lineBody");
+            const tfoot = document.getElementById("tableFoot");
+
             if (orderLines.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:13px;">No items added yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">Your cart is empty. Add items above.</td></tr>`;
+                tfoot.style.display = "none";
                 return;
             }
 
-            tbody.innerHTML = orderLines.map((l, i) => `
-                <tr style="border-bottom:1px solid #f8fafc;">
-                    <td style="padding:12px;"><strong>${l.sku}</strong></td>
-                    <td style="padding:12px; font-size:13px;">${l.name || ""}</td>
-                    <td style="padding:12px; text-align:right;">${l.qty}</td>
-                    <td style="padding:12px; font-size:12px; color:#64748b; font-style:italic;">${l.note}</td>
-                    <td style="padding:12px; text-align:right;">
-                        <button onclick="removeLine(${i})" style="color:#ef4444; background:none; border:none; cursor:pointer;">&times;</button>
+            let total = 0;
+            tbody.innerHTML = orderLines.map((l, i) => {
+                const lineTotal = l.qty * l.price;
+                total += lineTotal;
+
+                return `
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:12px 16px;"><strong>${l.sku}</strong></td>
+                    <td style="padding:12px 16px; font-size:13px;">
+                        ${l.name || ""}
+                        ${l.note ? `<div style="font-size:11px; color:#6366f1; font-style:italic;">Note: ${l.note}</div>` : ''}
+                    </td>
+                    <td style="padding:12px 16px; text-align:right;">${window.formatMoney(l.price)}</td>
+                    <td style="padding:12px 16px; text-align:right;">${l.qty}</td>
+                    <td style="padding:12px 16px; text-align:right; font-weight:600;">${window.formatMoney(lineTotal)}</td>
+                    <td style="padding:12px 16px; text-align:right;">
+                        <button onclick="removeLine(${i})" style="color:#94a3b8; background:none; border:none; cursor:pointer; font-size:18px;">&times;</button>
                     </td>
                 </tr>
-            `).join("");
+            `}).join("");
+
+            document.getElementById("orderTotal").textContent = window.formatMoney(total);
+            tfoot.style.display = "table-footer-group";
         }
 
         function submitOrder() {
@@ -377,6 +448,9 @@
 
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
             const newId = "ORD-" + (1000 + orders.length + 1);
+
+            let total = 0;
+            orderLines.forEach(l => total += (l.price * l.qty));
 
             const newOrder = {
                 id: newId,
@@ -389,7 +463,7 @@
                 acct: document.getElementById("iAcct").value,
                 note: document.getElementById("iOrderNote").value,
                 lines: orderLines,
-                total: 0, // Should calc total based on lines * retail, skipped for now
+                total: total,
                 status: "Processing"
             };
 
