@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Detail | Stark ERP</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <span class="material-icons-round" style="color:#6366f1; font-size:24px;">all_inclusive</span>
+            <span>Stark<span style="font-weight:400; color:#94a3b8;">ERP</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="orders.html" class="active">Orders</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="master.html">Master</a>
+        </div>
+        <div class="user-profile">
+            <div class="avatar">JM</div>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <a href="orders.html">Orders</a>
+        <span class="separator">/</span>
+        <span class="current" id="crumbId">ORD-....</span>
+    </div>
+
+    <main class="container" style="max-width:1000px; margin:0 auto; padding-bottom:60px;">
+        <header class="page-header" style="justify-content:space-between; align-items:flex-start;">
+            <div>
+                <h1 id="hOrderId">Order Detail</h1>
+                <p style="color:#64748b; margin-top:4px;">Placed on <span id="hDate">...</span></p>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div id="hStatusBadge" class="badge">Processing</div>
+                <button onclick="window.history.back()" class="btn btn-secondary">Back</button>
+            </div>
+        </header>
+
+        <!-- Warning Banner for On Hold -->
+        <div id="holdBanner"
+            style="display:none; background:#fef2f2; border:1px solid #fee2e2; border-radius:12px; padding:16px; margin-bottom:24px; color:#991b1b; display:flex; gap:12px; align-items:flex-start;">
+            <span class="material-icons-round">warning</span>
+            <div>
+                <strong style="display:block; margin-bottom:4px;">Order On Hold</strong>
+                <span id="holdReason">...</span>
+            </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+            <!-- Left Column: Order Info & Lines -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+
+                <!-- Customer Info -->
+                <div class="card">
+                    <h3 class="section-title">Customer Details</h3>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+                        <div>
+                            <label class="label">Customer</label>
+                            <div class="value" id="dCust" style="font-weight:600;">-</div>
+                        </div>
+                        <div>
+                            <label class="label">PO Number</label>
+                            <div class="value" id="dPo">-</div>
+                        </div>
+                        <div>
+                            <label class="label">Account #</label>
+                            <div class="value" id="dAcct">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lines -->
+                <div class="card">
+                    <h3 class="section-title">Order Items</h3>
+                    <div class="table-container" style="margin-top:16px;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr
+                                    style="border-bottom:2px solid #f1f5f9; text-align:left; color:#64748b; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">
+                                    <th style="padding:12px 16px;">SKU</th>
+                                    <th style="padding:12px 16px;">Item</th>
+                                    <th style="padding:12px 16px; text-align:right;">Price</th>
+                                    <th style="padding:12px 16px; text-align:right;">Qty</th>
+                                    <th style="padding:12px 16px; text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lineBody">
+                                <!-- Lines -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="card" id="noteCard" style="display:none;">
+                    <h3 class="section-title">Order Notes</h3>
+                    <p id="dNote" style="margin-top:8px; line-height:1.5; color:#475569;">-</p>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Logistics & Summary -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+
+                <!-- Summary -->
+                <div class="card" style="position:sticky; top:24px;">
+                    <h3 class="section-title">Order Summary</h3>
+
+                    <div style="margin-top:16px; display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="color:#64748b;">Subtotal</span>
+                        <span style="font-weight:600;" id="sSubtotal">$0.00</span>
+                    </div>
+                    <div
+                        style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
+                        <span style="color:#64748b;">Shipping</span>
+                        <span style="font-style:italic; color:#94a3b8;">Not quoted</span>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                        <span style="font-size:16px; font-weight:600;">Total</span>
+                        <span style="font-size:24px; font-weight:700; color:#6366f1;" id="sTotal">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Logistics -->
+                <div class="card">
+                    <h3 class="section-title">Logistics</h3>
+                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
+                        <div>
+                            <label class="label">Warehouse</label>
+                            <div class="value" id="dWh">-</div>
+                        </div>
+                        <div>
+                            <label class="label">Shipping Method</label>
+                            <div class="value" id="dShip">-</div>
+                        </div>
+                        <div>
+                            <label class="label">Need By Date</label>
+                            <div class="value" id="dDate">-</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const ORDER_KEY = "stark_erp_orders_v1";
+
+        (function () {
+            try {
+                const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+                if (!a || !a.user) window.location.href = "index.html";
+            } catch {
+                window.location.href = "index.html";
+            }
+        })();
+
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get("id");
+
+        function init() {
+            if (!orderId) {
+                alert("No Order ID specified");
+                window.location.href = "orders.html";
+                return;
+            }
+
+            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+            const order = orders.find(o => o.id === orderId);
+
+            if (!order) {
+                document.querySelector("main").innerHTML = `<div style="text-align:center; padding:100px;"><h2>Order Not Found</h2><a href="orders.html" class="btn btn-primary" style="margin-top:20px; display:inline-block;">Back to Orders</a></div>`;
+                return;
+            }
+
+            renderOrder(order);
+        }
+
+        function renderOrder(o) {
+            // Header
+            document.getElementById("hOrderId").textContent = o.id;
+            document.getElementById("crumbId").textContent = o.id;
+            document.getElementById("hDate").textContent = o.date;
+
+            // Status Badge
+            const badge = document.getElementById("hStatusBadge");
+            badge.textContent = o.status;
+
+            // Reset classes
+            badge.className = "badge";
+            if (o.status === "Validated") badge.classList.add("badge-green");
+            else if (o.status === "On Hold") badge.classList.add("badge-red");
+            else badge.classList.add("badge-blue");
+
+            // Hold Banner
+            if (o.status === "On Hold") {
+                document.getElementById("holdBanner").style.display = "flex";
+                document.getElementById("holdReason").textContent = o.holdReason || "Reason not specified";
+            }
+
+            // Details
+            document.getElementById("dCust").textContent = o.cust;
+            document.getElementById("dPo").textContent = o.po || "N/A";
+            document.getElementById("dAcct").textContent = o.acct || "N/A";
+
+            if (o.note) {
+                document.getElementById("noteCard").style.display = "block";
+                document.getElementById("dNote").textContent = o.note;
+            }
+
+            // Logistics
+            document.getElementById("dWh").textContent = o.wh || "Default";
+            document.getElementById("dShip").textContent = o.ship || "-";
+            document.getElementById("dDate").textContent = o.inHands || "-";
+
+            // Lines
+            const tbody = document.getElementById("lineBody");
+            let total = 0;
+            tbody.innerHTML = (o.lines || []).map(l => {
+                const lineTotal = (l.price || 0) * (l.qty || 0);
+                total += lineTotal;
+                return `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:12px 16px;"><strong>${l.sku}</strong></td>
+                        <td style="padding:12px 16px;">${l.name || ""}
+                            ${l.note ? `<div style="font-size:11px; color:#6366f1;">${l.note}</div>` : ""}
+                        </td>
+                        <td style="padding:12px 16px; text-align:right;">${window.formatMoney ? window.formatMoney(l.price) : l.price}</td>
+                        <td style="padding:12px 16px; text-align:right;">${l.qty}</td>
+                        <td style="padding:12px 16px; text-align:right; font-weight:600;">${window.formatMoney ? window.formatMoney(lineTotal) : lineTotal}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            // Summary
+            const totalDisplay = window.formatMoney ? window.formatMoney(total) : total;
+            document.getElementById("sSubtotal").textContent = totalDisplay;
+            document.getElementById("sTotal").textContent = totalDisplay;
+        }
+
+        // Helper if formatMoney isn't loaded yet (though erp.js should handle it)
+        window.formatMoney = window.formatMoney || function (n) {
+            return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        };
+
+        window.addEventListener("DOMContentLoaded", init);
+
+    </script>
+</body>
+
+</html>
