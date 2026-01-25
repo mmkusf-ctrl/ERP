@@ -1151,6 +1151,35 @@ tr:hover td {
   padding-bottom: 40px;
 }
 
+.quick-jump-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  background: white;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 0 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-jump-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  border-color: #c4b5fd;
+  background: #fafafa;
+}
+
+.quick-jump-link:active {
+  transform: translateY(0);
+  background: #f3f4f6;
+}
+
+
 .accounting-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
