@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <style>
         .form-section {
             margin-bottom: 24px;
@@ -22,6 +22,9 @@
             margin-bottom: 16px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .calc-field {
@@ -29,6 +32,14 @@
             color: #475569;
             font-weight: 600;
             cursor: not-allowed;
+        }
+
+        .input-group-text {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: block;
         }
     </style>
 </head>
@@ -53,7 +64,7 @@
         </div>
     </header>
 
-    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1000px;">
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px;">
 
         <!-- Page Header -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
@@ -71,69 +82,105 @@
             </div>
         </div>
 
-        <div class="grid-2-sidebar">
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px; align-items:start;">
 
             <!-- Main Form -->
             <div class="card-soft" style="padding:32px;">
 
                 <!-- Basic Info -->
                 <div class="form-section">
-                    <div class="section-title">Basic Information</div>
-                    <div class="grid-2" style="gap:20px;">
+                    <div class="section-title">
+                        <span>Basic Information</span>
+                    </div>
+                    <div class="grid-2" style="gap:24px;">
                         <div>
-                            <label class="label">SKU (Auto)</label>
+                            <label class="input-group-text">SKU (Auto-Generated)</label>
                             <input id="iSku" class="input" placeholder="Generating..."
-                                style="font-weight:700; font-family:monospace;" onblur="checkSku()">
+                                style="font-weight:700; font-family:monospace; background:#f8fafc;" onblur="checkSku()">
                         </div>
                         <div>
-                            <label class="label">Model #</label>
+                            <label class="input-group-text">Model Number</label>
                             <input id="iModel" class="input" placeholder="e.g. MOD-2024">
                         </div>
                     </div>
-                    <div style="margin-top:20px;">
-                        <label class="label">Description / Title</label>
-                        <textarea id="iDesc" class="input" rows="3" placeholder="Product details..."></textarea>
+                    <div style="margin-top:24px;">
+                        <label class="input-group-text">Product Title</label>
+                        <input id="iName" class="input" placeholder="e.g. Premium Cotton Shirt">
+                    </div>
+                    <div style="margin-top:24px;">
+                        <label class="input-group-text">Description</label>
+                        <textarea id="iDesc" class="input" rows="4"
+                            placeholder="Detailed product description..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Classification -->
+                <div class="form-section">
+                    <div class="section-title">Classification</div>
+                    <div class="grid-3" style="gap:24px;">
+                        <div>
+                            <label class="input-group-text">Brand</label>
+                            <select id="iBrand" class="input">
+                                <option>Stark Mfg</option>
+                                <option>LuxeGold</option>
+                                <option>Urban Wear</option>
+                                <option>TechNova</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-group-text">Category</label>
+                            <input id="iCat" class="input" placeholder="e.g. Apparel">
+                        </div>
+                        <div>
+                            <label class="input-group-text">Status</label>
+                            <select id="iStatus" class="input">
+                                <option value="Live">Live</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Internal Use">Internal Use</option>
+                                <option value="Discontinued">Discontinued</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Attributes -->
                 <div class="form-section">
-                    <div class="section-title">Attributes</div>
-                    <div class="grid-3" style="gap:20px;">
+                    <div class="section-title">Physical Attributes</div>
+                    <div class="grid-3" style="gap:24px;">
                         <div>
-                            <label class="label">Vendor</label>
-                            <input id="iVendor" class="input" placeholder="Manufacturer">
+                            <label class="input-group-text">Vendor</label>
+                            <input id="iVendor" class="input" placeholder="Manufacturer Name">
                         </div>
                         <div>
-                            <label class="label">Color</label>
+                            <label class="input-group-text">Color</label>
                             <input id="iColor" class="input" placeholder="e.g. Midnight Blue">
                         </div>
                         <div>
-                            <label class="label">Material</label>
+                            <label class="input-group-text">Material</label>
                             <input id="iMaterial" class="input" placeholder="e.g. 100% Cotton">
                         </div>
                     </div>
-                    <div style="margin-top:20px;">
-                        <label class="label">Measurements</label>
+                    <div style="margin-top:24px;">
+                        <label class="input-group-text">Measurements</label>
                         <input id="iMeasure" class="input" placeholder="e.g. 10x10x5 cm">
                     </div>
                 </div>
 
                 <!-- Image Upload -->
-                <div class="form-section">
+                <div class="form-section" style="margin-bottom:0;">
                     <div class="section-title">Media</div>
-                    <div style="display:flex; gap:20px; align-items:start;">
+                    <div style="display:flex; gap:24px; align-items:start;">
                         <div id="imgPreview"
-                            style="width:120px; height:120px; border-radius:12px; background:#f8fafc; border:2px dashed #e2e8f0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:32px; overflow:hidden;">
+                            style="width:140px; height:140px; border-radius:12px; background:#f8fafc; border:2px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:32px; overflow:hidden;">
                             📷
                         </div>
                         <div style="flex:1;">
-                            <label class="label">Image URL</label>
+                            <label class="input-group-text">Primary Image URL</label>
                             <input id="iImg" class="input" placeholder="https://..."
                                 oninput="updatePreview(this.value)">
-                            <button onclick="document.getElementById('iImg').focus()"
-                                style="margin-top:12px; font-size:12px; color:#6366f1; background:transparent; border:none; cursor:pointer; font-weight:600;">+
-                                Upload from Computer (Simulated)</button>
+                            <div style="margin-top:12px; font-size:12px; color:#64748b;">
+                                Paste a direct image link. Supported formats: JPG, PNG, WEBP.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -143,52 +190,59 @@
             <!-- Side Panel: Pricing -->
             <div style="display:grid; gap:24px; align-content:start;">
 
-                <div class="card-soft" style="padding:24px; border:1px solid #e2e8f0;">
-                    <div class="section-title" style="color:#0f172a;">Pricing & Financials</div>
+                <div class="card-soft"
+                    style="padding:24px; border:1px solid #e2e8f0; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05); position:sticky; top:24px;">
+                    <div class="section-title" style="color:#0f172a; border-bottom:none;">Pricing & Financials</div>
 
-                    <div style="margin-bottom:16px;">
-                        <label class="label">Retail Price ($)</label>
-                        <input id="pRetail" type="number" step="0.01" class="input"
-                            style="font-size:16px; font-weight:600;" oninput="calc()">
-                    </div>
-
-                    <div style="margin-bottom:16px;">
-                        <label class="label">Discount (%)</label>
-                        <input id="pDisc" type="number" step="1" class="input" placeholder="0" oninput="calc()">
-                    </div>
-
-                    <div style="margin-bottom:16px; padding:16px; background:#f8fafc; border-radius:8px;">
-                        <label class="label" style="color:#64748b;">Net Price</label>
-                        <div id="pNet" style="font-size:20px; font-weight:800; color:#0f172a;">$0.00</div>
-                    </div>
-
-                    <div style="margin-bottom:16px;">
-                        <label class="label">Unit Price (Cost)</label>
-                        <input id="pCost" type="number" step="0.01" class="input" placeholder="0.00" oninput="calc()">
-                    </div>
-
-                    <div>
-                        <label class="label">Gross Margin</label>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div style="flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
-                                <div id="marginBar"
-                                    style="width:0%; height:100%; background:#6366f1; transition:width 0.3s; box-shadow:0 0 10px #6366f1;">
-                                </div>
-                            </div>
-                            <span id="pMargin" style="font-weight:700; font-size:14px;">0%</span>
+                    <div
+                        style="background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding:20px; border-radius:16px; margin-bottom:24px; border:1px solid #e2e8f0;">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span
+                                style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">Gross
+                                Margin</span>
+                            <span id="pMargin" style="font-weight:800; font-size:16px; color:#6366f1;">0.0%</span>
+                        </div>
+                        <div
+                            style="height:8px; background:white; border-radius:4px; overflow:hidden; border:1px solid #e2e8f0;">
+                            <div id="marginBar"
+                                style="width:0%; height:100%; background:#6366f1; transition:width 0.3s;"></div>
                         </div>
                     </div>
 
-                </div>
+                    <div style="display:grid; gap:16px;">
+                        <div>
+                            <label class="input-group-text">Retail Price ($)</label>
+                            <input id="pRetail" type="number" step="0.01" class="input"
+                                style="font-size:16px; font-weight:600;" oninput="calc()">
+                        </div>
 
-                <div class="card-soft" style="padding:24px; background:#f0fdf4; border:1px solid #bbf7d0;">
-                    <div
-                        style="font-size:13px; font-weight:700; color:#166534; text-transform:uppercase; margin-bottom:8px;">
-                        Profit Analysis</div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <span style="font-size:13px; color:#14532d;">Profit per Unit</span>
-                        <span id="pProfit" style="font-size:13px; font-weight:800; color:#14532d;">$0.00</span>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div>
+                                <label class="input-group-text">Discount (%)</label>
+                                <input id="pDisc" type="number" step="1" class="input" placeholder="0" oninput="calc()">
+                            </div>
+                            <div>
+                                <label class="input-group-text">Net Price</label>
+                                <div id="pNet"
+                                    style="height:42px; background:#f8fafc; border-radius:8px; display:flex; align-items:center; padding:0 12px; font-weight:700; color:#334155; border:1px solid #e2e8f0;">
+                                    $0.00</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="input-group-text" style="color:#ef4444;">Unit Cost ($)</label>
+                            <input id="pCost" type="number" step="0.01" class="input" placeholder="0.00"
+                                oninput="calc()">
+                        </div>
                     </div>
+
+                    <div
+                        style="margin-top:24px; padding-top:24px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; font-weight:600; color:#475569;">Est. Profit / Unit</span>
+                        <span id="pProfit" style="font-size:18px; font-weight:800; color:#166534;">$0.00</span>
+                    </div>
+
                 </div>
 
             </div>
@@ -222,12 +276,12 @@
             const profit = net - cost;
 
             document.getElementById("pMargin").textContent = margin.toFixed(1) + "%";
-            document.getElementById("pMargin").style.color = margin < 20 ? "#ef4444" : "#1e293b";
+            document.getElementById("pMargin").style.color = margin < 20 ? "#ef4444" : "#6366f1";
             document.getElementById("marginBar").style.width = Math.max(0, Math.min(100, margin)) + "%";
             document.getElementById("marginBar").style.background = margin < 20 ? "#ef4444" : "#6366f1";
 
             document.getElementById("pProfit").textContent = window.formatMoney(profit);
-            document.getElementById("pProfit").style.color = profit < 0 ? "#ef4444" : "#14532d";
+            document.getElementById("pProfit").style.color = profit < 0 ? "#ef4444" : "#166534";
         }
 
         // Generate SKU ID on load
@@ -246,7 +300,9 @@
 
         function saveSku() {
             const sku = document.getElementById("iSku").value.trim();
+            const name = document.getElementById("iName").value.trim();
             if (!sku) return toast("Error", "SKU is required");
+            if (!name) return toast("Error", "Product Title is required");
 
             const list = loadItems();
             if (list.find(x => x.sku === sku)) return toast("Error", "SKU already exists!");
@@ -259,7 +315,11 @@
             const newItem = {
                 sku,
                 model: document.getElementById("iModel").value,
-                name: document.getElementById("iDesc").value, // Using Description as Name for Master list
+                name: name,
+                desc: document.getElementById("iDesc").value,
+                brand: document.getElementById("iBrand").value,
+                cat: document.getElementById("iCat").value,
+                status: document.getElementById("iStatus").value,
                 vendor: document.getElementById("iVendor").value,
                 color: document.getElementById("iColor").value,
                 material: document.getElementById("iMaterial").value,
@@ -267,10 +327,9 @@
                 image: document.getElementById("iImg").value,
 
                 // Pricing
-                retail, disc, net, cost, // Unit Price stored as cost for consistency with Master
+                retail, disc, net, cost, // Unit Price stored as cost
 
                 // Defaults
-                status: "Live",
                 on: 0,
                 hold: 0,
                 createdAt: Date.now()
@@ -287,9 +346,8 @@
         }
 
         function checkSku() {
-            // Optional: check if exists immediately on blur
+            // Optional: check if exists
         }
-
     </script>
 </body>
 
