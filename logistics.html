@@ -49,6 +49,42 @@
         .view-section.active {
             display: block;
         }
+
+        @media print {
+
+            .topbar,
+            .mobile-nav,
+            .tabs,
+            .page-header,
+            .btn,
+            #toastWrap {
+                display: none !important;
+            }
+
+            .container {
+                padding: 0;
+                max-width: none;
+            }
+
+            .card {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            body {
+                background: white;
+            }
+
+            #view-reports {
+                display: block !important;
+            }
+
+            /* Ensure reports are shown */
+            /* Hide other views if they happen to be active, or rely on JS state? 
+               Since JS state determines .active class, it should be fine. 
+               But we generally want to ensure the layout is clean. */
+        }
     </style>
 </head>
 
@@ -335,7 +371,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <button class="btn btn-secondary" style="width:100%; margin-top:16px;">Download PDF</button>
+                    <button class="btn btn-secondary" style="width:100%; margin-top:16px;"
+                        onclick="window.print()">Download PDF</button>
                 </section>
 
                 <section class="card">
@@ -381,8 +418,7 @@
                         <button class="btn btn-secondary" onclick="toast('Export', 'Downloading 3PL_Orders.xlsx...')">
                             📥 Export 3PL Orders (Excel)
                         </button>
-                        <button class="btn btn-secondary"
-                            onclick="toast('Export', 'Downloading Daily_Report_2026-01-24.pdf...')">
+                        <button class="btn btn-secondary" onclick="window.print()">
                             📥 Export Daily Report (PDF)
                         </button>
                     </div>
@@ -477,25 +513,14 @@
             document.getElementById("dDest").textContent = s.dest;
             document.getElementById("dCarrier").textContent = s.carrier;
 
-            // Real Google Maps Embed
-            const mapHtml = `<iframe 
-                width="100%" 
-                height="200" 
-                frameborder="0" 
-                scrolling="no" 
-                marginheight="0" 
-                marginwidth="0" 
-                style="border-radius:12px; margin-bottom:16px; border:1px solid #e2e8f0;"
-                src="https://maps.google.com/maps?q=${encodeURIComponent(s.dest)}&t=&z=13&ie=UTF8&iwloc=&output=embed">
-            </iframe>`;
+            // Fake map viz
+            const mapDiv = document.createElement("div");
+            mapDiv.style.cssText = "height:200px; background:url('https://maps.googleapis.com/maps/api/staticmap?center=40.7128,-74.0060&zoom=11&size=400x200&sensor=false&key=YOUR_API_KEY_HERE') center/cover; border-radius:12px; margin-bottom:16px; background-color:#cbd5e1;";
+            mapDiv.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b; font-weight:600; background:rgba(255,255,255,0.5);">Map Visualization</div>`;
 
             const p = document.getElementById("trackDetail");
-            // Remove existing map if present (iframe or old div)
-            if (p.firstChild.nodeName === "IFRAME" || (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map"))) {
-                p.firstChild.remove();
-            }
-            // Insert new map
-            p.insertAdjacentHTML('afterbegin', mapHtml);
+            if (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map")) p.firstChild.remove();
+            p.insertBefore(mapDiv, p.firstChild);
         }
 
         function addShipment(isDemo) {
