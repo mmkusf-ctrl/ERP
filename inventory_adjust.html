@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Adjust Stock | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Shared split layout */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .item-list-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .item-list-item:hover {
+            background: #f8fafc;
+        }
+
+        .item-list-item.active {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+        }
+
+        .adjust-option {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .adjust-option.active {
+            border-color: var(--primary);
+            background: var(--primary-fade);
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <button class="nav-link" onclick="window.location.href='inventory.html'"
+                    style="background:none; border:none; cursor:pointer;">Back to Inventory</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Header -->
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1 class="page-title">Adjust Stock</h1>
+                <p class="page-desc">Manually correct inventory levels for damage, loss, or audits.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'">Close & Return</button>
+        </div>
+
+        <div class="split-layout">
+            <!-- Left: Item Search & List -->
+            <div class="card"
+                style="padding:0; overflow:hidden; max-height:calc(100vh - 200px); display:flex; flex-direction:column;">
+                <div style="padding:16px; border-bottom:1px solid var(--border); background:#f8fafc;">
+                    <h3 style="margin:0 0 12px 0; font-size:14px; color:var(--text-muted); text-transform:uppercase;">
+                        Select Product</h3>
+                    <input id="itemSearch" class="input" placeholder="Search SKU or Name..."
+                        style="font-size:13px; padding:8px;" oninput="renderItemList()">
+                </div>
+                <div id="itemList" style="overflow-y:auto; flex:1;">
+                    <!-- Populated by JS -->
+                    <div style="padding:24px; text-align:center; color:var(--text-muted);">Loading Items...</div>
+                </div>
+            </div>
+
+            <!-- Right: Adjustment Form -->
+            <div class="card" id="adjustArea"
+                style="min-height:400px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:var(--text-muted);">
+                <span style="font-size:48px; margin-bottom:16px; opacity:0.3;">⚙️</span>
+                <p>Select an item from the list to make an adjustment.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+        let SELECTED_ITEM = null;
+        let ADJ_TYPE = 'remove'; // remove, add, set
+
+        function load(key, fallback) {
+            try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+            catch { return fallback; }
+        }
+        function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        function init() {
+            renderItemList();
+        }
+
+        function renderItemList() {
+            const items = load(ITEM_KEY, []);
+            const term = (document.getElementById("itemSearch").value || "").toLowerCase();
+
+            const filtered = items.filter(i =>
+                i.sku.toLowerCase().includes(term) ||
+                i.name.toLowerCase().includes(term)
+            );
+
+            const listEl = document.getElementById("itemList");
+            if (!filtered.length) {
+                listEl.innerHTML = `<div style="padding:24px; text-align:center; color:var(--text-muted);">No items found.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(i => `
+                <div class="item-list-item ${SELECTED_ITEM && SELECTED_ITEM.sku === i.sku ? 'active' : ''}" onclick="selectItem('${i.sku}')">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <strong style="color:var(--text-main);">${i.sku}</strong>
+                        <strong style="color:var(--text-main);">${i.on}</strong>
+                    </div>
+                    <div style="font-size:13px; color:var(--text-muted);">${i.name}</div>
+                </div>
+            `).join("");
+        }
+
+        window.selectItem = function (sku) {
+            const items = load(ITEM_KEY, []);
+            SELECTED_ITEM = items.find(i => i.sku === sku);
+            renderItemList(); // refresh selection state
+            renderAdjustForm();
+        }
+
+        window.setAdjType = function (type) {
+            ADJ_TYPE = type;
+            renderAdjustForm(); // re-render to update UI state
+        }
+
+        function renderAdjustForm() {
+            if (!SELECTED_ITEM) return;
+
+            const container = document.getElementById("adjustArea");
+            container.style.display = "block";
+            container.style.alignItems = "initial";
+            container.style.justifyContent = "initial";
+            container.style.textAlign = "initial";
+            container.style.color = "initial";
+
+            // Calculate hypothetical internal style vars
+            const removeActive = ADJ_TYPE === 'remove' ? 'active' : '';
+            const addActive = ADJ_TYPE === 'add' ? 'active' : '';
+            const setActive = ADJ_TYPE === 'set' ? 'active' : '';
+
+            container.innerHTML = `
+                <div style="margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+                    <h2 style="margin:0 0 8px 0; font-size:20px;">${SELECTED_ITEM.name}</h2>
+                    <div style="display:flex; gap:16px; color:var(--text-muted); font-size:14px;">
+                        <span>SKU: <strong>${SELECTED_ITEM.sku}</strong></span>
+                        <span>Current Stock: <strong>${SELECTED_ITEM.on}</strong></span>
+                        <span>Value: <strong>$${(SELECTED_ITEM.on * SELECTED_ITEM.cost).toFixed(2)}</strong></span>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+                    <div class="adjust-option ${removeActive}" onclick="setAdjType('remove')">REMOVE (-)</div>
+                    <div class="adjust-option ${addActive}" onclick="setAdjType('add')">ADD (+)</div>
+                    <div class="adjust-option ${setActive}" onclick="setAdjType('set')">SET (=)</div>
+                </div>
+
+                <div class="grid grid-2" style="margin-bottom:24px;">
+                    <div>
+                        <label class="label">Quantity</label>
+                        <input id="adjQty" type="number" class="input" value="1" min="1">
+                    </div>
+                    <div>
+                        <label class="label">Reason Code</label>
+                        <select id="adjReason" class="input">
+                            <option value="Damage">Damaged / Broken</option>
+                            <option value="Expired">Expired</option>
+                            <option value="Theft">Theft / Loss</option>
+                            <option value="Found">Found Inventory</option>
+                            <option value="Audit">Audit Correction</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label">Notes (Optional)</label>
+                    <textarea id="adjNotes" class="input" style="height:80px;" placeholder="Describe the reason..."></textarea>
+                </div>
+
+                <div style="margin-top:24px; text-align:right;">
+                    <button class="btn btn-primary" onclick="commitAdjustment()">Apply Adjustment</button>
+                </div>
+            `;
+        }
+
+        window.commitAdjustment = function () {
+            if (!SELECTED_ITEM) return;
+
+            const qty = parseInt(document.getElementById("adjQty").value || 0);
+            const reason = document.getElementById("adjReason").value;
+            if (qty <= 0) return toast("Error", "Quantity must be greater than 0");
+
+            const items = load(ITEM_KEY, []);
+            const target = items.find(i => i.sku === SELECTED_ITEM.sku);
+
+            if (!target) return;
+
+            let oldVal = target.on;
+            let newVal = oldVal;
+
+            if (ADJ_TYPE === 'remove') newVal -= qty;
+            if (ADJ_TYPE === 'add') newVal += qty;
+            if (ADJ_TYPE === 'set') newVal = qty;
+
+            target.on = newVal;
+            save(ITEM_KEY, items);
+
+            // Re-select to update UI
+            SELECTED_ITEM = target;
+            renderItemList();
+            renderAdjustForm();
+
+            toast("Success", `Stock updated from ${oldVal} to ${newVal}.`);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
