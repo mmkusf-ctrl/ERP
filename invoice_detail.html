@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice | Stark ERP</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        /* Invoice Specific Overrides - Purple Theme */
+        body {
+            background-color: #f3f4f6;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-action-bar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-title-lg {
+            font-size: 20px;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f9fafb;
+            color: #111;
+        }
+
+        .doc-canvas {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            min-height: 800px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 60px;
+        }
+
+        .headline {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .sub-headline {
+            font-size: 14px;
+            color: #111;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .status-badge-open {
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-badge-paid {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .section-label {
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .addr-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #111;
+        }
+
+        .link-blue {
+            color: #2563eb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Table */
+        .zoho-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        .zoho-table th {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4b5563;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .zoho-table td {
+            font-size: 13px;
+            color: #111;
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        /* Totals */
+        .totals-area {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .totals-table {
+            width: 300px;
+            font-size: 13px;
+        }
+
+        .totals-table td {
+            padding: 8px 0;
+            text-align: right;
+        }
+
+        .totals-table tr.grand-total td {
+            font-size: 16px;
+            font-weight: 700;
+            padding-top: 16px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .top-action-bar,
+            .no-print {
+                display: none;
+            }
+
+            .doc-canvas {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Action Bar -->
+    <div class="top-action-bar">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <button onclick="window.history.back()"
+                style="background:none; border:none; color:#6b7280; cursor:pointer; display:flex; align-items:center;">
+                <span class="material-icons-round">arrow_back</span>
+            </button>
+            <div class="order-title-lg" id="topId">INV-00000</div>
+        </div>
+        <div class="action-icons">
+            <button class="icon-btn" title="PDF" onclick="window.print()"><span class="material-icons-round"
+                    style="font-size:18px;">picture_as_pdf</span></button>
+            <button class="icon-btn" title="Print" onclick="window.print()"><span class="material-icons-round"
+                    style="font-size:18px;">print</span></button>
+            <button class="icon-btn" title="Email"><span class="material-icons-round"
+                    style="font-size:18px;">email</span></button>
+        </div>
+    </div>
+
+    <div style="padding:20px; text-align:center; display:none;" id="paidBanner">
+        <div
+            style="background:#dcfce7; color:#166534; display:inline-block; padding:8px 16px; border-radius:20px; font-weight:600; font-size:13px;">
+            ✓ This invoice has been paid
+        </div>
+    </div>
+
+    <!-- Document Canvas -->
+    <div class="doc-canvas" style="margin-top:20px;">
+        <div class="doc-grid">
+            <!-- Left: Title & Date -->
+            <div>
+                <div class="headline">INVOICE</div>
+                <div class="sub-headline">
+                    Invoice# <span id="docId">INV-00000</span>
+                </div>
+                <!-- Status Badge -->
+                <span id="docStatusBadge" class="status-badge-open">Open</span>
+
+                <div style="margin-top:60px;">
+                    <div class="section-label">INVOICE DATE</div>
+                    <div class="addr-text" style="font-weight:600;" id="docDate">24/05/2017</div>
+
+                    <div class="section-label" style="margin-top:20px;">DUE DATE</div>
+                    <div class="addr-text" style="font-weight:600;" id="dueDate">30/05/2017</div>
+                </div>
+            </div>
+
+            <!-- Right: Addresses -->
+            <div>
+                <div style="margin-bottom:32px;">
+                    <div class="section-label">BILL TO</div>
+                    <div class="addr-text">
+                        <strong id="billName">Aaron Clark</strong><br>
+                        <div id="billAddr">
+                            701 N Santa Anita Ave<br>
+                            Arcadia,<br>
+                            United States - 91006-2725
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="zoho-table">
+            <thead>
+                <tr>
+                    <th style="width:45%;">Item</th>
+                    <th style="text-align:right;">Quantity</th>
+                    <th style="text-align:right;">Rate</th>
+                    <th style="text-align:right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="lineBody">
+                <!-- Rows injected here -->
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="totals-area">
+            <table class="totals-table">
+                <tr>
+                    <td style="color:#6b7280;">Sub Total</td>
+                    <td id="sSubtotal" style="font-weight:600;">$0.00</td>
+                </tr>
+                <tr>
+                    <td style="color:#6b7280;">Sales Tax (8.8%)</td>
+                    <td id="sTax" style="color:#6b7280;">$0.00</td>
+                </tr>
+                <tr class="grand-total">
+                    <td>Total</td>
+                    <td id="sTotal">$0.00</td>
+                </tr>
+                <tr>
+                    <td style="color:#6b7280; padding-top:4px;">Balance Due</td>
+                    <td id="sBalance" style="color:#111; font-weight:600; padding-top:4px;">$0.00</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div style="height:100px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const INV_KEY = "stark_erp_invoices_v1";
+
+        (function () {
+            try {
+                const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+                if (!a || !a.user) window.location.href = "index.html";
+            } catch {
+                window.location.href = "index.html";
+            }
+        })();
+
+        const params = new URLSearchParams(window.location.search);
+        const invId = params.get("id");
+
+        function init() {
+            if (!invId) {
+                alert("No Invoice ID specified");
+                window.location.href = "orders.html"; // Should go to invoice list technically
+                return;
+            }
+            const invoices = JSON.parse(localStorage.getItem(INV_KEY) || "[]");
+            const inv = invoices.find(i => i.id === invId);
+
+            if (!inv) {
+                document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Invoice Not Found</h2>";
+                return;
+            }
+
+            render(inv);
+        }
+
+        function render(inv) {
+            document.title = `Invoice ${inv.id} | Stark ERP`;
+            document.getElementById("topId").textContent = inv.id;
+            document.getElementById("docId").textContent = inv.id;
+            document.getElementById("docDate").textContent = window.formatDate(inv.date);
+            document.getElementById("dueDate").textContent = window.formatDate(inv.dueDate);
+
+            // Status
+            const badge = document.getElementById("docStatusBadge");
+            if (inv.status === "Paid") {
+                badge.className = "status-badge-paid";
+                badge.textContent = "Paid";
+                document.getElementById("paidBanner").style.display = "block";
+                document.getElementById("sBalance").textContent = "$0.00";
+            } else {
+                badge.className = "status-badge-open";
+                badge.textContent = "Open";
+                document.getElementById("sBalance").textContent = window.formatMoney(inv.total);
+            }
+
+            // Customer
+            document.getElementById("billName").textContent = inv.custName;
+
+            // Lines
+            const tbody = document.getElementById("lineBody");
+            tbody.innerHTML = (inv.lines || []).map(l => {
+                const amount = l.qty * l.price;
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:#111;">${l.name || "Item"}</div>
+                            <div style="font-size:12px; color:#6b7280;">${l.sku}</div>
+                        </td>
+                        <td style="text-align:right;">${l.qty}</td>
+                        <td style="text-align:right;">${window.formatMoney(l.price)}</td>
+                        <td style="text-align:right; font-weight:600;">${window.formatMoney(amount)}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            // Totals
+            document.getElementById("sSubtotal").textContent = window.formatMoney(inv.subtotal);
+            document.getElementById("sTax").textContent = window.formatMoney(inv.tax);
+            document.getElementById("sTotal").textContent = window.formatMoney(inv.total);
+        }
+
+        window.formatDate = (d) => {
+            if (!d) return "-";
+            return new Date(d).toLocaleDateString("en-GB");
+        };
+
+        window.formatMoney = window.formatMoney || function (n) {
+            return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        };
+
+        window.addEventListener("DOMContentLoaded", init);
+    </script>
+</body>
+
+</html>
