@@ -8,84 +8,391 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-glow: rgba(79, 70, 229, 0.4);
+      --accent: #d4af37;
+      --bg-dark: #0f172a;
+      --text-light: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000;
+      color: var(--text-light);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Dynamic Background --- */
+    .ambient-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: linear-gradient(125deg, #0f172a, #1e1b4b);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      opacity: 0.6;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      top: -10%;
+      left: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      bottom: -20%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+      animation-delay: -2s;
+    }
+
+    .orb-3 {
+      top: 40%;
+      left: 60%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      opacity: 0.3;
+      animation-delay: -5s;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(30px, 50px);
+      }
+    }
+
+    /* --- Glass Container --- */
+    .login-frame {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      width: 1100px;
+      max-width: 90%;
+      height: 700px;
+      max-height: 90vh;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px;
+      box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    /* --- Visual Side (Left) --- */
+    .visual-side {
+      flex: 1.2;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .visual-nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .visual-nav img {
+      height: 32px;
+    }
+
+    .hero-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 56px;
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 440px;
+      opacity: 0;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+    }
+
+    .pills {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+      opacity: 0;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s;
+    }
+
+    .pill {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+    }
+
+    /* --- Form Side (Right) --- */
+    .form-side {
+      flex: 1;
+      background: #ffffff;
+      /* Solid white for legibility */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      color: #1e293b;
+    }
+
+    .form-content {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    .form-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .form-header p {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 40px;
+    }
+
+    .input-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 10px 20px -5px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px var(--primary-glow);
+      background: #4338ca;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-demo {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #64748b;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-demo:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .visual-side {
+        display: none;
+      }
+
+      .login-frame {
+        max-width: 500px;
+        height: auto;
+        min-height: 600px;
+      }
+
+      .form-side {
+        border-radius: 32px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <div class="login-container">
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
+  <div class="login-frame">
     <!-- Visual Side -->
     <div class="visual-side">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
+      <div class="visual-nav">
+        <img src="images/stark-logo.png" alt="Stark">
+        <span>Stark ERP</span>
+      </div>
 
-      <div class="visual-content">
-        <h1 class="visual-title">Enterprise operations,<br>reimagined.</h1>
-        <p class="visual-desc">Experience the next generation of ERP. Manage inventory, procurements, and customer
-          relationships with unparalleled speed and clarity.</p>
-
-        <div class="feature-list">
-          <div class="feature-item">
-            <div class="feature-icon">🚀</div>
-            <span>Real-time Supply Chain Analytics</span>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">💎</div>
-            <span>Premium Vendor Management</span>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">🛡️</div>
-            <span>Secure Role-Based Access</span>
-          </div>
+      <div class="hero-text">
+        <h1>The Future of<br>Business Logic.</h1>
+        <p>Welcome to the next generation of enterprise resource planning. Intelligent, fast, and beautiful.</p>
+        <div class="pills">
+          <div class="pill">✨ AI-Powered</div>
+          <div class="pill">🚀 Real-time</div>
+          <div class="pill">🛡️ Secure</div>
         </div>
+      </div>
+
+      <div style="font-size:12px; color:rgba(255,255,255,0.4);">
+        &copy; 2026 Stark Industries Premium
       </div>
     </div>
 
     <!-- Form Side -->
     <div class="form-side">
-      <div class="login-box">
-        <div class="logo-header">
-          <img src="images/stark-logo.png" alt="Logo">
-          <span>Stark ERP</span>
+      <div class="form-content">
+        <div class="form-header">
+          <h2>Welcome Back</h2>
+          <p>Enter your credentials to access your dashboard.</p>
         </div>
-
-        <h2>Welcome back</h2>
-        <p class="sub">Please enter your details to sign in.</p>
 
         <div class="input-group">
           <label>Email Address</label>
-          <input id="u" type="email" placeholder="admin@stark.com" value="admin" />
+          <input id="u" class="input-field" type="email" placeholder="admin@stark.com" value="admin" />
         </div>
 
         <div class="input-group">
           <label>Password</label>
-          <input id="p" type="password" placeholder="••••••••" value="admin123" />
+          <input id="p" class="input-field" type="password" placeholder="••••••••" value="admin123" />
         </div>
 
-        <button class="btn btn-primary" onclick="login()">
-          Sign In
-        </button>
-
-        <button class="btn btn-ghost" onclick="loginWithDemo()">
-          Log in with Demo Account &rarr;
-        </button>
-
-        <div style="margin-top: 30px; text-align: center; font-size: 12px; color: var(--text-muted);">
-          &copy; 2026 Stark Premium ERP
-        </div>
+        <button class="btn-primary" onclick="login()">Sign In</button>
+        <button class="btn-demo" onclick="loginWithDemo()">Or try the Demo Account &rarr;</button>
       </div>
     </div>
-
   </div>
 
   <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
 
   <script>
-    // Inline minimal toast logic for login page
+    // Minimal Toast Logic
     function toast(msg) {
       const d = document.createElement("div");
       d.style.cssText = "background:white; color:#ef4444; padding:12px 20px; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.1); font-weight:600; font-size:14px; border:1px solid #fee2e2; animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); margin-top:10px;";
@@ -93,7 +400,6 @@
       document.getElementById("toastWrap").appendChild(d);
       setTimeout(() => d.remove(), 4000);
     }
-    // Add keyframe style dynamically
     document.head.insertAdjacentHTML("beforeend", `<style>@keyframes popIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }</style>`);
 
     const AUTH_KEY = "stark_erp_auth_v1";
@@ -105,12 +411,12 @@
       if (u === "admin" && p === "admin123") {
         const btn = document.querySelector(".btn-primary");
         btn.textContent = "Authenticating...";
-        btn.style.opacity = "0.7";
+        btn.style.opacity = "0.8";
         localStorage.setItem(AUTH_KEY, JSON.stringify({ user: "admin", ts: Date.now() }));
 
         setTimeout(() => {
           window.location.href = "dashboard.html";
-        }, 600);
+        }, 800);
       } else {
         toast("Invalid credentials. Please try again.");
         document.getElementById("p").value = "";
@@ -129,7 +435,7 @@
       if (JSON.parse(localStorage.getItem(AUTH_KEY))?.user) window.location.href = "dashboard.html";
     } catch { }
 
-    // Enter key support
+    // Enter key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Enter") login();
     });
