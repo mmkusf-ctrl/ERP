@@ -12,15 +12,137 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* --- Phase 2: Premium Visuals --- */
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --primary-fade: rgba(99, 102, 241, 0.1);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #f1f5f9;
+      /* Light text */
+      --text-muted: #94a3b8;
+      /* Muted light */
+      --bg-body: #0f172a;
+      /* Dark BG */
+      --bg-surface: #1e293b;
+      /* Dark Surface */
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    body {
+      background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
 
     /* Glassmorphism Card Override */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    .glass-card,
+    .card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      color: var(--text-main);
+    }
+
+    /* Donut Chart Fixes */
+    .donut-hole {
+      background: #1e293b !important;
+      box-shadow: none;
+    }
+
+    .page-title {
+      color: white !important;
+    }
+
+    .page-desc {
+      color: #94a3b8 !important;
+    }
+
+    /* Table Dark Mode */
+    th {
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    td {
+      color: #e2e8f0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* Inputs */
+    .input {
+      background: rgba(0, 0, 0, 0.3) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .nav-link {
+      color: #94a3b8 !important;
+    }
+
+    .nav-link.active {
+      color: white !important;
+      border-bottom-color: #8b5cf6 !important;
+    }
+
+    .logo-text {
+      color: white !important;
+    }
+
+    /* KPI Cards */
+    .card-kpi {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .card-kpi .card-title {
+      color: #94a3b8 !important;
+    }
+
+    .card-kpi .stat-value {
+      color: white !important;
+    }
+
+    .card-kpi.active {
+      background: rgba(59, 130, 246, 0.15) !important;
+      border-color: #3b82f6 !important;
+    }
+
+    /* Actions */
+    .clickable-stat-card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .clickable-stat-card h3 {
+      color: white !important;
+    }
+
+    .clickable-stat-card p {
+      color: #94a3b8 !important;
     }
 
     /* Donut Chart */
@@ -45,7 +167,7 @@
     .donut-hole {
       width: 80px;
       height: 80px;
-      background: white;
+      background: var(--bg-surface);
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -70,7 +192,6 @@
     .table-row-anim {
       animation: slideInRow 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       opacity: 0;
-      /* hidden initially */
     }
 
     /* Quick Actions on Hover */
@@ -85,15 +206,6 @@
     tr:hover .row-actions {
       opacity: 1;
       transform: translateX(0);
-    }
-
-    /* Table hover effect */
-    tr {
-      transition: background 0.2s;
-    }
-
-    tr:hover {
-      background: rgba(241, 245, 249, 0.5);
     }
   </style>
 </head>
@@ -167,27 +279,24 @@
       <div class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll">
         <div class="card-title">TOTAL SKUS</div>
         <div class="stat-value" id="kTotal" style="font-size:24px;">—</div>
-        <div class="badge badge-green" style="background:#bfdbfe; color:#1e40af;">View All</div>
+        <div class="badge badge-green" style="background:rgba(16,185,129,0.2); color:#34d399;">View All</div>
       </div>
       <!-- Low Stock -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow"
-        style="background:#fff7ed; border-color:#fed7aa;">
-        <div class="card-title" style="color:#9a3412;">LOW STOCK</div>
-        <div class="stat-value" id="kLow" style="color:#9a3412; font-size:24px;">—</div>
-        <div class="badge" style="background:#ffedd5; color:#9a3412;">Reorder</div>
+      <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow">
+        <div class="card-title">LOW STOCK</div>
+        <div class="stat-value" id="kLow" style="color:#fcd34d !important; font-size:24px;">—</div>
+        <div class="badge" style="background:rgba(251,191,36,0.2); color:#fcd34d;">Reorder</div>
       </div>
       <!-- Out of Stock -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos"
-        style="background:#fef2f2; border-color:#fecaca;">
-        <div class="card-title" style="color:#991b1b;">OUT OF STOCK</div>
-        <div class="stat-value" id="kOOS" style="color:#7f1d1d; font-size:24px;">—</div>
+      <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos">
+        <div class="card-title">OUT OF STOCK</div>
+        <div class="stat-value" id="kOOS" style="color:#f87171 !important; font-size:24px;">—</div>
         <div class="badge badge-red">Restock</div>
       </div>
       <!-- Valuation -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal"
-        style="background:#f0fdf4; border-color:#bbf7d0;">
-        <div class="card-title" style="color:#166534;">VALUATION</div>
-        <div class="stat-value" id="kValue" style="color:#14532d; font-size:20px;">$0.00</div>
+      <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal">
+        <div class="card-title">VALUATION</div>
+        <div class="stat-value" id="kValue" style="color:#34d399 !important; font-size:20px;">$0.00</div>
         <div class="badge badge-green">Cost Basis</div>
       </div>
     </div>
@@ -196,44 +305,41 @@
     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; margin-bottom:24px;">
 
       <!-- Receive -->
-      <div class="card clickable-stat-card" onclick="window.location.href='inventory_receive.html'"
-        style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); border:1px solid #c4b5fd;">
+      <div class="card clickable-stat-card" onclick="window.location.href='inventory_receive.html'">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
           <span style="font-size:20px;">📦</span>
           <h3 style="margin:0; font-size:16px;">Receive Inventory</h3>
         </div>
-        <p style="font-size:13px; color:#5b21b6; margin-bottom:16px;">Process specific items for all POs arrival.</p>
+        <p style="font-size:13px; margin-bottom:16px;">Process specific items for all POs arrival.</p>
         <button class="btn"
-          style="width:100%; background:#8b5cf6; color:white; border:none; display:flex; justify-content:space-between; align-items:center;">
+          style="width:100%; background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:white; border:none; display:flex; justify-content:space-between; align-items:center;">
           + Start Reception <span>&rarr;</span>
         </button>
       </div>
 
       <!-- Adjust -->
-      <div class="card clickable-stat-card" onclick="window.location.href='inventory_adjust.html'"
-        style="background:#fffbeb; border:1px solid #fcd34d;">
+      <div class="card clickable-stat-card" onclick="window.location.href='inventory_adjust.html'">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <h3 style="margin:0; font-size:16px; color:#92400e;">Adjust Stock</h3>
+          <h3 style="margin:0; font-size:16px;">Adjust Stock</h3>
           <span style="font-size:20px;">⚙️</span>
         </div>
-        <p style="font-size:13px; color:#92400e; margin-bottom:16px;">Manual adjustments for damage, loss, or extras.
+        <p style="font-size:13px; margin-bottom:16px;">Manual adjustments for damage, loss, or extras.
         </p>
-        <button class="btn"
-          style="width:100%; background:transparent; border:1px solid #d97706; color:#92400e; display:flex; justify-content:space-between; align-items:center;">
+        <button class="btn btn-secondary"
+          style="width:100%; display:flex; justify-content:space-between; align-items:center;">
           Adjust Now <span>&rarr;</span>
         </button>
       </div>
 
       <!-- Cycle Count -->
-      <div class="card clickable-stat-card" onclick="openCountModal()"
-        style="background:#ecfeff; border:1px solid #a5f3fc;">
+      <div class="card clickable-stat-card" onclick="openCountModal()">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <h3 style="margin:0; font-size:16px; color:#0e7490;">Cycle Count</h3>
+          <h3 style="margin:0; font-size:16px;">Cycle Count</h3>
           <span style="font-size:20px;">📋</span>
         </div>
-        <p style="font-size:13px; color:#0e7490; margin-bottom:16px;">Verify physical stock accuracy by zone.</p>
-        <button class="btn"
-          style="width:100%; background:transparent; border:1px solid #0891b2; color:#0e7490; display:flex; justify-content:space-between; align-items:center;">
+        <p style="font-size:13px; margin-bottom:16px;">Verify physical stock accuracy by zone.</p>
+        <button class="btn btn-secondary"
+          style="width:100%; display:flex; justify-content:space-between; align-items:center;">
           Start Count <span>&rarr;</span>
         </button>
       </div>
@@ -254,17 +360,12 @@
             style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">🔍</span>
         </div>
         <div style="display:flex; gap:8px;">
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
+          <button class="btn btn-secondary" style="height:48px; font-size:12px; padding:0 12px;">ETA ▾</button>
+          <button class="btn btn-secondary" style="height:48px; font-size:12px; padding:0 12px;">Vendor ▾</button>
+          <button class="btn btn-secondary" style="height:48px; font-size:12px; padding:0 12px;">Status ▾</button>
         </div>
       </div>
     </div>
-
-
 
     <!-- Bottom Section: Table & Sidebar -->
     <div class="grid grid-2" style="align-items:start;">
@@ -358,7 +459,7 @@
           <option value="">Select Purchase Order...</option>
         </select>
         <div
-          style="text-align:center; padding:10px; background:#f8fafc; border-radius:8px; color:var(--text-muted); font-size:13px;">
+          style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; color:var(--text-muted); font-size:13px;">
           OR
         </div>
         <select id="rMetaItem" class="input"> <!-- Filled by items -->
@@ -536,8 +637,8 @@
       if (!items.length) return document.getElementById("countList").innerHTML = "No items.";
       const subset = items.sort(() => 0.5 - Math.random()).slice(0, 3);
       const html = subset.map(i => `
-            <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">
-                 <div style="font-weight:600; font-size:13px;">${i.sku} - ${i.name}</div>
+            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                 <div style="font-weight:600; font-size:13px; color:var(--text-main);">${i.sku} - ${i.name}</div>
                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
                      <span style="font-size:12px; color:var(--text-muted);">System: ${i.on}</span>
                      <input class="input" style="width:100px; height:32px;" placeholder="Actual" type="number" />
@@ -692,7 +793,21 @@
 
       const search = (document.getElementById("searchDel") ? document.getElementById("searchDel").value : "").toLowerCase();
 
-      const tbody = document.getElementById("delBody");
+      const tbody = document.getElementById("mainTable").querySelector("tbody");
+      document.getElementById("tableTitle").textContent = "Upcoming Deliveries...";
+      document.getElementById("backToDel").style.display = "none";
+
+      // Reset header for deliveries
+      document.getElementById("mainTable").querySelector("thead").innerHTML = `
+              <tr>
+                <th>ETA</th>
+                <th>PO #</th>
+                <th>Vendor</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>`;
+
       tbody.innerHTML = "";
 
       // Filter
@@ -734,11 +849,9 @@
       });
     }
 
-
-
     function renderAll() {
       renderStock();
-      renderDeliveries();
+      renderDeliveries(); // Default view
     }
 
     // Auto-seed
