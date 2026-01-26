@@ -513,14 +513,25 @@
             document.getElementById("dDest").textContent = s.dest;
             document.getElementById("dCarrier").textContent = s.carrier;
 
-            // Fake map viz
-            const mapDiv = document.createElement("div");
-            mapDiv.style.cssText = "height:200px; background:url('https://maps.googleapis.com/maps/api/staticmap?center=40.7128,-74.0060&zoom=11&size=400x200&sensor=false&key=YOUR_API_KEY_HERE') center/cover; border-radius:12px; margin-bottom:16px; background-color:#cbd5e1;";
-            mapDiv.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#64748b; font-weight:600; background:rgba(255,255,255,0.5);">Map Visualization</div>`;
+            // Real Google Maps Embed
+            const mapHtml = `<iframe 
+                width="100%" 
+                height="200" 
+                frameborder="0" 
+                scrolling="no" 
+                marginheight="0" 
+                marginwidth="0" 
+                style="border-radius:12px; margin-bottom:16px; border:1px solid #e2e8f0;"
+                src="https://maps.google.com/maps?q=${encodeURIComponent(s.dest)}&t=&z=13&ie=UTF8&iwloc=&output=embed">
+            </iframe>`;
 
             const p = document.getElementById("trackDetail");
-            if (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map")) p.firstChild.remove();
-            p.insertBefore(mapDiv, p.firstChild);
+            // Remove existing map if present (iframe or old div)
+            if (p.firstChild.nodeName === "IFRAME" || (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map"))) {
+                p.firstChild.remove();
+            }
+            // Insert new map
+            p.insertAdjacentHTML('afterbegin', mapHtml);
         }
 
         function addShipment(isDemo) {
