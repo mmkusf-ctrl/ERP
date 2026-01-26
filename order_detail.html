@@ -6,8 +6,229 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Detail | Stark ERP</title>
     <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        /* Document / Print Styles */
+        body {
+            background-color: #f1f5f9;
+        }
+
+        .document-page {
+            background: white;
+            max-width: 850px;
+            /* A4ish width */
+            margin: 0 auto;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            /* Slight rounding on screen, zero on print */
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .doc-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 24px;
+        }
+
+        .doc-section-title {
+            background-color: #0f766e;
+            /* Using a green like the reference */
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            display: inline-block;
+            /* Tag style */
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .addr-block {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #334155;
+        }
+
+        .meta-grid {
+            margin: 30px 0;
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .meta-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: center;
+        }
+
+        .meta-label {
+            color: #64748b;
+        }
+
+        .highlight-val {
+            background: #fef08a;
+            /* Yellow highlight style from image */
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        /* Table */
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            margin-top: 10px;
+        }
+
+        .doc-table th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #0f172a;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .doc-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        .doc-table td.num {
+            text-align: right;
+        }
+
+        /* Totals */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .totals-grid {
+            width: 300px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            text-align: right;
+        }
+
+        .total-row-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .total-row-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .grand-total {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 4px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Terms */
+        .terms-row {
+            display: flex;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .terms-label {
+            background-color: #0f766e;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 12px;
+            width: 140px;
+            margin-right: 20px;
+            text-align: right;
+        }
+
+        .terms-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            background: #fef08a;
+            /* Highlight style */
+            padding: 0 4px;
+        }
+
+        .side-marker {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%) translateX(100%);
+            background: #0f766e;
+            color: white;
+            padding: 8px 12px;
+            font-weight: 700;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+            /* Hidden by default as it might break fluid layout, enable if strictly following image on wider screens */
+        }
+
+        @media (min-width: 1100px) {
+            .side-marker {
+                display: block;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .document-page {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                max-width: none;
+                border-radius: 0;
+            }
+
+            .container {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+            nav,
+            .breadcrumbs,
+            .page-header {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -33,24 +254,27 @@
         <span class="current" id="crumbId">ORD-....</span>
     </div>
 
-    <main class="container" style="max-width:1000px; margin:0 auto; padding-bottom:60px;">
-        <header class="page-header" style="justify-content:space-between; align-items:flex-start;">
-            <div>
-                <h1 id="hOrderId">Order Detail</h1>
-                <p style="color:#64748b; margin-top:4px;">Placed on <span id="hDate">...</span></p>
-            </div>
+    <main class="container" style="padding-bottom:60px; max-width: 1000px; margin: 0 auto;">
 
-            <div style="display:flex; align-items:center; gap:16px;">
+        <!-- Controls -->
+        <div class="no-print"
+            style="max-width:850px; margin:0 auto 20px; display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="window.history.back()" class="btn btn-secondary"
+                style="display:flex; align-items:center; gap:6px;">
+                <span class="material-icons-round" style="font-size:16px;">arrow_back</span> Back
+            </button>
+            <div style="display:flex; gap:12px; align-items:center;">
                 <div id="hStatusBadge" class="badge">Processing</div>
-                <button onclick="window.print()" class="btn btn-primary no-print"><span class="material-icons-round"
-                        style="font-size:18px;">print</span> Print Order</button>
-                <button onclick="window.history.back()" class="btn btn-secondary no-print">Back</button>
+                <button onclick="window.print()" class="btn btn-primary"
+                    style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-icons-round" style="font-size:18px;">print</span> Print / Save PDF
+                </button>
             </div>
-        </header>
+        </div>
 
-        <!-- Warning Banner for On Hold -->
-        <div id="holdBanner"
-            style="display:none; background:#fef2f2; border:1px solid #fee2e2; border-radius:12px; padding:16px; margin-bottom:24px; color:#991b1b; display:flex; gap:12px; align-items:flex-start;">
+        <!-- Warning Banner -->
+        <div id="holdBanner" class="no-print"
+            style="display:none; max-width:850px; margin:0 auto 24px; background:#fef2f2; border:1px solid #fee2e2; border-radius:12px; padding:16px; color:#991b1b; gap:12px; align-items:flex-start;">
             <span class="material-icons-round">warning</span>
             <div>
                 <strong style="display:block; margin-bottom:4px;">Order On Hold</strong>
@@ -58,102 +282,140 @@
             </div>
         </div>
 
-        <div class="grid" style="grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
-            <!-- Left Column: Order Info & Lines -->
-            <div style="display:flex; flex-direction:column; gap:24px;">
+        <!-- DOCUMENT -->
+        <div class="document-page">
 
-                <!-- Customer Info -->
-                <div class="card">
-                    <h3 class="section-title">Customer Details</h3>
-                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
-                        <div>
-                            <label class="label">Customer</label>
-                            <div class="value" id="dCust" style="font-weight:600;">-</div>
-                        </div>
-                        <div>
-                            <label class="label">PO Number</label>
-                            <div class="value" id="dPo">-</div>
-                        </div>
-                        <div>
-                            <label class="label">Account #</label>
-                            <div class="value" id="dAcct">-</div>
-                        </div>
+            <h1 class="doc-title">Sales Order</h1>
+
+            <div
+                style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; position:relative;">
+
+                <!-- Left Column: Company -->
+                <div style="position:relative; padding-left:24px; border-left: 4px solid #0f766e;">
+                    <!-- Floating Tag like in image -->
+                    <div
+                        style="position:absolute; left:-145px; top:10px; background:#0f766e; color:white; padding:6px 10px; font-weight:700; font-size:12px; width:110px; text-align:right; display:none; /* Hidden on small screens */ @media(min-width:1100px){display:block;}">
+                        Company Details</div>
+                    <div class="doc-section-title" style="@media(min-width:1100px){display:none;}">Company Details</div>
+                    <!-- Mobile fallback -->
+
+                    <div class="addr-block">
+                        <strong style="background:#fef08a; padding:0 2px;">Stark Manufacturing</strong><br>
+                        <span style="background:#fef08a; padding:0 2px;">123 Innovation Dr.</span><br>
+                        <span style="background:#fef08a; padding:0 2px;">Tech City, CA 90210</span><br>
+                        <span style="background:#fef08a; padding:0 2px;">USA</span><br>
+                        <span style="background:#fef08a; padding:0 2px; color:#000;">billing@starkmfg.com</span>
                     </div>
                 </div>
 
-                <!-- Lines -->
-                <div class="card">
-                    <h3 class="section-title">Order Items</h3>
-                    <div class="table-container" style="margin-top:16px;">
-                        <table style="width:100%; border-collapse:collapse;">
-                            <thead>
-                                <tr
-                                    style="border-bottom:2px solid #f1f5f9; text-align:left; color:#64748b; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">
-                                    <th style="padding:12px 16px;">SKU</th>
-                                    <th style="padding:12px 16px;">Item</th>
-                                    <th style="padding:12px 16px; text-align:right;">Price</th>
-                                    <th style="padding:12px 16px; text-align:right;">Qty</th>
-                                    <th style="padding:12px 16px; text-align:right;">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lineBody">
-                                <!-- Lines -->
-                            </tbody>
-                        </table>
+                <!-- Right Column: Customer -->
+                <div style="position:relative; width:45%; text-align:left;">
+                    <!-- Side Marker for Customer Details -->
+                    <div
+                        style="position:absolute; top:-30px; right:0; background:#0f766e; color:white; padding:6px 12px; font-weight:700; font-size:12px;">
+                        Customer Details</div>
+
+                    <div class="addr-block" style="margin-top:10px;">
+                        <strong id="dCust" class="highlight-val"
+                            style="font-size:14px; display:inline-block; margin-bottom:2px;">-</strong><br>
+                        <div id="dShipAddr" style="display:flex; flex-direction:column; gap:2px;">
+                            <span class="highlight-val" style="width:fit-content;">742 Evergreen Terrace</span>
+                            <span class="highlight-val" style="width:fit-content;">Springfield, IL 62704</span>
+                            <span class="highlight-val" style="width:fit-content;">USA</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Notes -->
-                <div class="card" id="noteCard" style="display:none;">
-                    <h3 class="section-title">Order Notes</h3>
-                    <p id="dNote" style="margin-top:8px; line-height:1.5; color:#475569;">-</p>
-                </div>
-
             </div>
 
-            <!-- Right Column: Logistics & Summary -->
-            <div style="display:flex; flex-direction:column; gap:24px;">
+            <!-- Meta Data (No. Date) -->
+            <div class="meta-grid">
+                <div class="meta-row">
+                    <span class="meta-label">Sales Order No.:</span>
+                    <strong class="highlight-val" id="hOrderId">-</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Date:</span>
+                    <strong class="highlight-val" id="hDate">-</strong>
+                </div>
+            </div>
 
-                <!-- Summary -->
-                <div class="card" style="position:sticky; top:24px;">
-                    <h3 class="section-title">Order Summary</h3>
+            <!-- Items -->
+            <div style="position:relative; margin-bottom:20px;">
+                <div class="side-marker" style="right:-90px; top:50%;">Products<br>Purchased</div>
 
-                    <div style="margin-top:16px; display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="color:#64748b;">Subtotal</span>
-                        <span style="font-weight:600;" id="sSubtotal">$0.00</span>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th style="padding:12px;">Price</th>
+                            <th style="text-align:right;">QTY</th>
+                            <th style="text-align:right;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lineBody">
+                        <!-- Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; gap:40px; align-items:flex-start; margin-bottom:40px;">
+
+                <!-- Left Bottom: Remarks -->
+                <div style="flex:1; position:relative;">
+                    <div
+                        style="position:absolute; left:-145px; top:20px; background:#0f766e; color:white; padding:6px 10px; font-weight:700; font-size:12px; width:110px; text-align:right; line-height:1.3; display:none; @media(min-width:1100px){display:block;}">
+                        Balance and<br>Accounting<br>Information</div>
+
+                    <div
+                        style="background:#f1f5f9; padding:8px 12px; font-weight:700; font-size:12px; margin-bottom:0; display:flex; align-items:center; gap:8px;">
+                        Other Remarks
+                    </div>
+                    <div style="border:1px solid #f1f5f9; padding:12px; min-height:80px; font-size:13px; color:#475569;"
+                        id="dNote">
+                        -
+                    </div>
+                </div>
+
+                <!-- Right Bottom: Totals -->
+                <div class="totals-section" style="margin-bottom:0;">
+                    <div class="totals-grid">
+                        <span class="total-row-label">Subtotal</span>
+                        <span class="total-row-value" id="sSubtotal">$0.00</span>
+
+                        <span class="total-row-label">Discount</span>
+                        <span class="total-row-value" style="color:#0f172a;">$0.00</span>
+
+                        <span class="total-row-label">Tax</span>
+                        <span class="total-row-value" id="sTax">$0.00</span>
+
+                        <span class="total-row-label grand-total">Total</span>
+                        <span class="grand-total" id="sTotal">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Terms -->
+            <div style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0;">
+                <div class="terms-row">
+                    <div class="terms-label">Shipping Terms</div>
+                    <div class="terms-value">
+                        <span id="dShip">Standard Ground</span>
                     </div>
                     <div
-                        style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
-                        <span style="color:#64748b;">Shipping</span>
-                        <span style="font-style:italic; color:#94a3b8;">Not quoted</span>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                        <span style="font-size:16px; font-weight:600;">Total</span>
-                        <span style="font-size:24px; font-weight:700; color:#6366f1;" id="sTotal">$0.00</span>
-                    </div>
+                        style="margin-left:auto; background:#0f766e; color:white; padding:4px 12px; font-weight:700; font-size:12px;">
+                        Shipping Terms</div>
                 </div>
-
-                <!-- Logistics -->
-                <div class="card">
-                    <h3 class="section-title">Logistics</h3>
-                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
-                        <div>
-                            <label class="label">Warehouse</label>
-                            <div class="value" id="dWh">-</div>
-                        </div>
-                        <div>
-                            <label class="label">Shipping Method</label>
-                            <div class="value" id="dShip">-</div>
-                        </div>
-                        <div>
-                            <label class="label">Need By Date</label>
-                            <div class="value" id="dDate">-</div>
-                        </div>
+                <div class="terms-row">
+                    <div class="terms-label">Payment Terms</div>
+                    <div class="terms-value">
+                        <span id="dPayTerms">Net 30</span>
                     </div>
+                    <div
+                        style="margin-left:auto; background:#0f766e; color:white; padding:4px 12px; font-weight:700; font-size:12px;">
+                        Payment Terms</div>
                 </div>
-
             </div>
+
         </div>
     </main>
 
@@ -201,8 +463,6 @@
             // Status Badge
             const badge = document.getElementById("hStatusBadge");
             badge.textContent = o.status;
-
-            // Reset classes
             badge.className = "badge";
             if (o.status === "Validated") badge.classList.add("badge-green");
             else if (o.status === "On Hold") badge.classList.add("badge-red");
@@ -216,18 +476,20 @@
 
             // Details
             document.getElementById("dCust").textContent = o.cust;
-            document.getElementById("dPo").textContent = o.po || "N/A";
-            document.getElementById("dAcct").textContent = o.acct || "N/A";
+
+            // Note: In a real app we'd have full address, using mock for visual match
+            // document.getElementById("dAcct").textContent = "Acct: " + (o.acct || "N/A");
+
+            document.getElementById("dPayTerms").textContent = o.terms || "Net 30";
 
             if (o.note) {
-                document.getElementById("noteCard").style.display = "block";
                 document.getElementById("dNote").textContent = o.note;
+            } else {
+                document.getElementById("dNote").textContent = "No remarks.";
             }
 
             // Logistics
-            document.getElementById("dWh").textContent = o.wh || "Default";
-            document.getElementById("dShip").textContent = o.ship || "-";
-            document.getElementById("dDate").textContent = o.inHands || "-";
+            document.getElementById("dShip").textContent = o.shipMethod || "Standard Ground";
 
             // Lines
             const tbody = document.getElementById("lineBody");
@@ -236,22 +498,29 @@
                 const lineTotal = (l.price || 0) * (l.qty || 0);
                 total += lineTotal;
                 return `
-                    <tr style="border-bottom:1px solid #f1f5f9;">
-                        <td style="padding:12px 16px;"><strong>${l.sku}</strong></td>
-                        <td style="padding:12px 16px;">${l.name || ""}
-                            ${l.note ? `<div style="font-size:11px; color:#6366f1;">${l.note}</div>` : ""}
+                    <tr>
+                        <td style="vertical-align:top;">
+                            <div style="font-weight:600; color:#1e293b;">${l.name || "Product"}</div>
+                            <div style="color:#64748b; font-size:12px; margin-top:2px;">${l.sku}</div>
                         </td>
-                        <td style="padding:12px 16px; text-align:right;">${window.formatMoney ? window.formatMoney(l.price) : l.price}</td>
-                        <td style="padding:12px 16px; text-align:right;">${l.qty}</td>
-                        <td style="padding:12px 16px; text-align:right; font-weight:600;">${window.formatMoney ? window.formatMoney(lineTotal) : lineTotal}</td>
+                        <td style="padding:12px; vertical-align:top;">${window.formatMoney ? window.formatMoney(l.price) : l.price}</td>
+                        <td class="num" style="vertical-align:top;">${l.qty}</td>
+                        <td class="num" style="font-weight:600; vertical-align:top;">${window.formatMoney ? window.formatMoney(lineTotal) : lineTotal}</td>
                     </tr>
                 `;
             }).join("");
 
             // Summary
-            const totalDisplay = window.formatMoney ? window.formatMoney(total) : total;
-            document.getElementById("sSubtotal").textContent = totalDisplay;
-            document.getElementById("sTotal").textContent = totalDisplay;
+            // Calculate fake tax/discount to match image feel or simple total
+            // Image has Discount and Tax. Let's start with 0 discount and 8.875% tax as example
+            const discount = 0;
+            const taxRate = 0.08875;
+            const tax = (total - discount) * taxRate;
+            const grandTotal = total - discount + tax;
+
+            document.getElementById("sSubtotal").textContent = window.formatMoney(total);
+            document.getElementById("sTax").textContent = window.formatMoney(tax);
+            document.getElementById("sTotal").textContent = window.formatMoney(grandTotal);
         }
 
         // Helper if formatMoney isn't loaded yet (though erp.js should handle it)
