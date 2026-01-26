@@ -40,8 +40,8 @@
     body {
       background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
         radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
-      background-color: var(--bg-body);
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%) !important;
+      background-color: var(--bg-body) !important;
       color: var(--text-main);
       font-family: 'Inter', sans-serif;
     }
@@ -55,6 +55,17 @@
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
       color: var(--text-main);
+    }
+
+    /* Fix Buttons in Dark Mode */
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: white !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
     }
 
     /* Donut Chart Fixes */
@@ -73,30 +84,27 @@
 
     /* Table Dark Mode */
     th {
-      color: #94a3b8;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: transparent !important;
+      /* Fix white header */
     }
 
     td {
       color: #e2e8f0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
 
     tr:hover {
       background: rgba(255, 255, 255, 0.05) !important;
     }
 
-    /* Inputs */
-    .input {
+    /* Inputs Fix */
+    .input,
+    select {
       background: rgba(0, 0, 0, 0.3) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       color: white !important;
-    }
-
-    /* Topbar */
-    .topbar {
-      background: rgba(15, 23, 42, 0.8) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
 
     .nav-link {
