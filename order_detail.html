@@ -261,7 +261,7 @@
                     style="font-size:18px;">picture_as_pdf</span></button>
             <button class="icon-btn" title="Print" onclick="window.print()"><span class="material-icons-round"
                     style="font-size:18px;">print</span></button>
-            <button class="icon-btn" title="Email"><span class="material-icons-round"
+            <button class="icon-btn" title="Email" onclick="openEmailModal()"><span class="material-icons-round"
                     style="font-size:18px;">email</span></button>
             <div style="border-right:1px solid #e5e7eb; margin:0 4px;"></div>
             <button class="btn-dropdown">Create <span class="material-icons-round"
@@ -300,6 +300,9 @@
                 <div style="margin-top:60px;">
                     <div class="section-label">ORDER DATE</div>
                     <div class="addr-text" style="font-weight:600;" id="docDate">24/05/2017</div>
+                    <div class="section-label" style="margin-top:20px;">IN HANDS DATE</div>
+                    <input type="date" id="inHandsDate" class="input" onchange="setInHandsDate(this.value)"
+                        style="border:1px solid #d1d5db; padding:4px 8px; border-radius:4px; font-size:12px; color:#374151;">
                 </div>
             </div>
 
@@ -330,6 +333,12 @@
             </div>
         </div>
 
+        <!-- Packages Section (Interactive) -->
+        <div id="pkgSection" style="margin-bottom:20px; display:none;">
+            <div class="section-label">PACKAGES & SHIPMENTS</div>
+            <div id="pkgList" style="display:grid; gap:12px;"></div>
+        </div>
+
         <!-- Table -->
         <table class="zoho-table">
             <thead>
@@ -341,12 +350,19 @@
                     <th style="text-align:right;">RATE</th>
                     <th style="text-align:right;">DISCOUNT</th>
                     <th style="text-align:right;">AMOUNT</th>
+                    <th style="width:40px;"></th> <!-- Delete Col -->
                 </tr>
             </thead>
             <tbody id="lineBody">
                 <!-- Rows injected here -->
             </tbody>
         </table>
+
+        <!-- Add Item Button -->
+        <div style="margin-bottom:40px;">
+            <button onclick="openAddItem()" class="btn-dropdown"
+                style="width:auto; display:inline-flex; border-style:dashed;">+ Add Another Item</button>
+        </div>
 
         <!-- Footer -->
         <div class="totals-area">
@@ -370,6 +386,105 @@
 
     <div style="height:100px;"></div>
 
+    <!-- Email Modal -->
+    <div id="emailModal"
+        style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div class="card"
+            style="width:500px; max-width:95%; background:white; border-radius:8px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+            <div
+                style="padding:16px 20px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px; font-weight:600; color:#111;">Email Sales Order</h3>
+                <button onclick="closeEmailModal()"
+                    style="border:none; background:none; font-size:20px; color:#6b7280; cursor:pointer;">&times;</button>
+            </div>
+            <div style="padding:20px;">
+                <div style="margin-bottom:16px;">
+                    <label
+                        style="display:block; font-size:12px; font-weight:600; color:#374151; margin-bottom:4px;">To</label>
+                    <input id="emailTo" type="email" class="input" placeholder="customer@example.com"
+                        style="width:100%; border:1px solid #d1d5db; padding:8px 12px; border-radius:4px; font-size:13px;">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label
+                        style="display:block; font-size:12px; font-weight:600; color:#374151; margin-bottom:4px;">Subject</label>
+                    <input id="emailSubj" type="text" class="input" value="Sales Order #SO-00000"
+                        style="width:100%; border:1px solid #d1d5db; padding:8px 12px; border-radius:4px; font-size:13px;">
+                </div>
+                <div>
+                    <label
+                        style="display:block; font-size:12px; font-weight:600; color:#374151; margin-bottom:4px;">Message</label>
+                    <textarea id="emailMsg" rows="4"
+                        style="width:100%; border:1px solid #d1d5db; padding:8px 12px; border-radius:4px; font-size:13px; font-family:inherit;">Please find attached the sales order for your recent purchase.</textarea>
+                </div>
+            </div>
+            <div
+                style="padding:16px 20px; border-top:1px solid #e5e7eb; display:flex; justify-content:flex-end; gap:8px;">
+                <button onclick="closeEmailModal()" class="btn btn-secondary"
+                    style="background:white; border:1px solid #d1d5db; color:#374151; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancel</button>
+                <button onclick="sendEmail()" class="btn btn-primary"
+                    style="background:#4f46e5; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Send
+                    Email</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="itemModal"
+        style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div class="card"
+            style="width:400px; max-width:95%; background:white; border-radius:8px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);">
+            <div style="padding:16px; border-bottom:1px solid #e5e7eb;">
+                <h3 style="margin:0; font-size:16px;">Add Line Item</h3>
+            </div>
+            <div style="padding:20px; display:grid; gap:12px;">
+                <input id="newItemName" class="input" placeholder="Item Name / SKU"
+                    style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px;">
+                <input id="newItemPrice" type="number" class="input" placeholder="Price ($)"
+                    style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px;">
+                <input id="newItemQty" type="number" class="input" placeholder="Quantity" value="1"
+                    style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px;">
+            </div>
+            <div style="padding:16px; border-top:1px solid #e5e7eb; text-align:right;">
+                <button onclick="document.getElementById('itemModal').style.display='none'" class="btn btn-secondary"
+                    style="margin-right:8px; padding:6px 12px; cursor:pointer;">Cancel</button>
+                <button onclick="saveNewItem()" class="btn btn-primary"
+                    style="background:#4f46e5; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Add
+                    Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div id="trackModal"
+        style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div class="card"
+            style="width:400px; max-width:95%; background:white; border-radius:8px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);">
+            <div style="padding:16px; border-bottom:1px solid #e5e7eb;">
+                <h3 style="margin:0; font-size:16px;">Create Package / Tracking</h3>
+            </div>
+            <div style="padding:20px; display:grid; gap:12px;">
+                <select id="trackCarrier" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px;">
+                    <option value="FedEx">FedEx</option>
+                    <option value="UPS">UPS</option>
+                    <option value="USPS">USPS</option>
+                    <option value="DHL">DHL</option>
+                </select>
+                <input id="trackNum" class="input" placeholder="Tracking Number"
+                    style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:4px;">
+            </div>
+            <div style="padding:16px; border-top:1px solid #e5e7eb; text-align:right;">
+                <button onclick="document.getElementById('trackModal').style.display='none'" class="btn btn-secondary"
+                    style="margin-right:8px; padding:6px 12px; cursor:pointer;">Cancel</button>
+                <button onclick="savePackage()" class="btn btn-primary"
+                    style="background:#4f46e5; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Create
+                    Shipment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container (if not in layout yet) -->
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
     <script src="erp.js"></script>
     <script>
         const AUTH_KEY = "stark_erp_auth_v1";
@@ -383,6 +498,112 @@
             return `<div style="width:40px; height:40px; background:#${color}; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#555; font-size:10px; font-weight:bold;">${sku.slice(0, 2)}</div>`;
         }
 
+        // Email Modal Logic
+        let currentOrder = null;
+        let currentCustomer = null;
+
+        function openEmailModal() {
+            const modal = document.getElementById("emailModal");
+            modal.style.display = "flex";
+
+            // Pre-fill
+            if (currentOrder) {
+                document.getElementById("emailSubj").value = `Sales Order #${currentOrder.id} from Stark ERP`;
+            }
+
+            // Try to find email
+            const emailInput = document.getElementById("emailTo");
+            if (currentCustomer && currentCustomer.email) {
+                emailInput.value = currentCustomer.email;
+            } else {
+                emailInput.value = "";
+            }
+        }
+
+        function closeEmailModal() {
+            document.getElementById("emailModal").style.display = "none";
+        }
+
+        function sendEmail() {
+            const to = document.getElementById("emailTo").value;
+            if (!to) return alert("Please enter a recipient email.");
+
+            closeEmailModal();
+            // Simulate sending
+            setTimeout(() => {
+                if (window.toast) toast("Email Sent", `Sales Order has been sent to ${to}`, "success");
+                else alert(`Email sent to ${to}`);
+            }, 500);
+        }
+
+        // --- NEW FEATURES LOGIC ---
+
+        function updateOrder() {
+            if (!currentOrder) return;
+            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+            const idx = orders.findIndex(o => o.id === currentOrder.id);
+            if (idx >= 0) {
+                orders[idx] = currentOrder;
+                localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+            }
+        }
+
+        function setInHandsDate(val) {
+            currentOrder.inHandsDate = val;
+            updateOrder();
+            if (window.toast) toast("Date Saved", "In Hands Date updated.", "success");
+        }
+
+        function openCreatePackage() {
+            document.getElementById("trackModal").style.display = "flex";
+        }
+
+        function savePackage() {
+            const carrier = document.getElementById("trackCarrier").value;
+            const num = document.getElementById("trackNum").value;
+            if (!num) return alert("Tracking Number required");
+
+            if (!currentOrder.packages) currentOrder.packages = [];
+            currentOrder.packages.push({ carrier, num, status: "Shipped", date: new Date().toISOString() });
+
+            updateOrder();
+            document.getElementById("trackModal").style.display = "none";
+            render(currentOrder, currentCustomer);
+            if (window.toast) toast("Package Created", "Tracking info added.", "success");
+        }
+
+        function openAddItem() {
+            document.getElementById("itemModal").style.display = "flex";
+            document.getElementById("newItemName").value = "";
+            document.getElementById("newItemPrice").value = "";
+            document.getElementById("newItemQty").value = "1";
+        }
+
+        function saveNewItem() {
+            const name = document.getElementById("newItemName").value;
+            const price = parseFloat(document.getElementById("newItemPrice").value);
+            const qty = parseInt(document.getElementById("newItemQty").value);
+
+            if (!name || !price || !qty) return alert("All fields required");
+
+            if (!currentOrder.lines) currentOrder.lines = [];
+            currentOrder.lines.push({ name, sku: name.substring(0, 3).toUpperCase() + "-001", price, qty });
+
+            updateOrder();
+            document.getElementById("itemModal").style.display = "none";
+            render(currentOrder, currentCustomer);
+            if (window.toast) toast("Item Added", "Line item added to order.", "success");
+        }
+
+        function deleteItemLine(idx) {
+            if (!confirm("Remove this item?")) return;
+            currentOrder.lines.splice(idx, 1);
+            updateOrder();
+            render(currentOrder, currentCustomer);
+        }
+
+        // --- END NEW FEATURES ---
+
         (function () {
             try {
                 const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
@@ -395,6 +616,7 @@
         const params = new URLSearchParams(window.location.search);
         const orderId = params.get("id");
 
+
         function init() {
             if (!orderId) {
                 alert("No Order ID specified");
@@ -402,13 +624,13 @@
                 return;
             }
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-            const order = orders.find(o => o.id === orderId);
-            if (!order) return;
+            currentOrder = orders.find(o => o.id === orderId);
+            if (!currentOrder) return;
 
             const customers = JSON.parse(localStorage.getItem(CUST_KEY) || "[]");
-            const customer = customers.find(c => c.name === order.cust);
+            currentCustomer = customers.find(c => c.name === currentOrder.cust); // Store globally for modal
 
-            render(order, customer);
+            render(currentOrder, currentCustomer);
         }
 
         function render(o, c) {
@@ -416,11 +638,36 @@
             document.getElementById("docId").textContent = o.id;
             document.getElementById("docDate").textContent = window.formatDate(o.date);
 
+            // In Hands Date
+            const handInput = document.getElementById("inHandsDate");
+            if (o.inHandsDate) handInput.value = o.inHandsDate;
+
             // Status Badge
             const badge = document.getElementById("docStatusBadge");
             if (o.status === "Validated") { badge.style.background = "#22c55e"; badge.textContent = "Confirmed"; }
             else if (o.status === "On Hold") { badge.style.background = "#ef4444"; badge.textContent = "On Hold"; }
             else { badge.style.background = "#9ca3af"; badge.textContent = "Draft"; }
+
+            // Packages Logic
+            const pkgInfo = document.querySelector(".main-tabs").nextElementSibling; // The pkg notification div
+            if (o.packages && o.packages.length > 0) {
+                pkgInfo.style.display = "none";
+                document.getElementById("pkgSection").style.display = "block";
+                document.getElementById("pkgList").innerHTML = o.packages.map(p => `
+                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; color:#166534;">${p.carrier} Shipment</div>
+                            <div style="font-size:12px; color:#15803d;">Tracking: ${p.num}</div>
+                        </div>
+                        <span class="badge badge-green" style="background:#dcfce7; color:#166534;">${p.status}</span>
+                    </div>
+                 `).join("");
+            } else {
+                // Reset to default empty state but make "New Package" clickable
+                pkgInfo.innerHTML = `No Packages created so far <a href="javascript:void(0)" onclick="openCreatePackage()" style="color:#2563eb; text-decoration:none; margin-left:4px;">New Package</a>`;
+                pkgInfo.style.display = "block";
+                document.getElementById("pkgSection").style.display = "none";
+            }
 
             // Addresses
             document.getElementById("billName").textContent = o.cust;
@@ -436,7 +683,7 @@
             // Lines
             const tbody = document.getElementById("lineBody");
             let total = 0;
-            tbody.innerHTML = (o.lines || []).map(l => {
+            tbody.innerHTML = (o.lines || []).map((l, i) => {
                 const amount = (l.qty || 0) * (l.price || 0);
                 total += amount;
                 return `
@@ -459,6 +706,11 @@
                         <td style="text-align:right;">${l.price.toFixed(2)}</td>
                         <td style="text-align:right;">0</td>
                         <td style="text-align:right; font-weight:600;">${amount.toFixed(2)}</td>
+                        <td>
+                            <button onclick="deleteItemLine(${i})" style="color:#ef4444; background:none; border:none; cursor:pointer;">
+                                <span class="material-icons-round" style="font-size:18px;">delete</span>
+                            </button>
+                        </td>
                     </tr>
                 `;
             }).join("");
