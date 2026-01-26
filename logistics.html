@@ -63,7 +63,7 @@
 
             <nav class="nav">
                 <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="item_master.html">Items</a>
+                <a class="nav-link" href="master.html">Items</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -94,7 +94,7 @@
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
             <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link" href="item_master.html">Items</a>
+            <a class="mobile-link" href="master.html">Items</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -125,7 +125,7 @@
         <!-- VIEW: OVERVIEW -->
         <div id="view-overview" class="view-section active">
             <!-- Stats -->
-            <section class="kpi-grid" style="margin-bottom:32px;">
+            <section class="grid-4" style="margin-bottom:32px;">
                 <article class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kAll">
                     <div class="card-header">
                         <div class="card-title">Total Shipments</div>
@@ -164,13 +164,13 @@
             </section>
 
             <!-- Main Content (Split) -->
-            <div class="grid grid-2">
+            <div class="grid grid-2" style="align-items:start;">
                 <!-- Shipment List -->
                 <section class="card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                         <h2 style="font-size:18px; margin:0;" id="listTitle">Shipment Manifest</h2>
                         <button class="btn btn-secondary" style="height:36px; font-size:13px;"
-                            onclick="window.location.href='#tools'">
+                            onclick="exportShipmentsCSV()">
                             Export
                         </button>
                     </div>
@@ -375,8 +375,7 @@
                 <section class="card">
                     <h3 style="font-size:16px; margin-bottom:12px;">Export Data</h3>
                     <div style="display:grid; gap:12px;">
-                        <button class="btn btn-secondary"
-                            onclick="toast('Export', 'Downloading Shipment Manifest.csv...')">
+                        <button class="btn btn-secondary" onclick="exportShipmentsCSV()">
                             📥 Export All Shipments (CSV)
                         </button>
                         <button class="btn btn-secondary" onclick="toast('Export', 'Downloading 3PL_Orders.xlsx...')">
@@ -503,8 +502,36 @@
             }
         }
 
+        function exportShipmentsCSV() {
+            const list = load(KEY_SHIP, []);
+            if (!list.length) return toast("Export Failed", "No shipments to export.", "error");
+
+            // CSV Header
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Tracking ID,Destination,ETA,Status,Carrier\n";
+
+            // CSV Rows
+            list.forEach(item => {
+                const row = `${item.id},"${item.dest}",${item.eta},${item.status},${item.carrier}`;
+                csvContent += row + "\n";
+            });
+
+            // Download Trigger
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "stark_shipments.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toast("Export Success", "Shipment manifest downloaded.", "success");
+        }
+
         // Init
         if (load(KEY_SHIP, []).length === 0) addShipment(true);
         render();
     </script>
 </body>
+
+</html>
