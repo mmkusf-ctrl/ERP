@@ -11,6 +11,146 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=3">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --primary-fade: rgba(99, 102, 241, 0.1);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --bg-body: #0f172a;
+      --bg-surface: #1e293b;
+      --border: rgba(255, 255, 255, 0.1);
+      --radius-md: 8px;
+    }
+
+    body {
+      background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Glassmorphism Panel */
+    .glass-panel,
+    .card-soft,
+    .card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+      color: var(--text-main) !important;
+    }
+
+    /* Topbar Override */
+    .topbar {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .nav-link {
+      color: #94a3b8 !important;
+    }
+
+    .nav-link.active {
+      color: white !important;
+      border-bottom-color: #8b5cf6 !important;
+    }
+
+    .logo-text {
+      color: white !important;
+    }
+
+    /* Inputs */
+    .input {
+      background: rgba(0, 0, 0, 0.3) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+    }
+
+    div.table-container {
+      background: transparent !important;
+    }
+
+    /* Table Dark Mode */
+    th {
+      color: #94a3b8 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    td {
+      color: #e2e8f0 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* Quick Links */
+    .quick-jump-link {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .quick-jump-link:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      transform: translateX(4px);
+    }
+
+    .quick-jump-link span {
+      color: #e2e8f0 !important;
+    }
+
+    .page-title {
+      color: white !important;
+    }
+
+    .page-desc {
+      color: #94a3b8 !important;
+    }
+
+    /* Buttons */
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    tbody tr {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+  </style>
 </head>
 
 <body>
@@ -52,7 +192,7 @@
       <h1 class="page-title" style="margin-bottom:8px;">Operational Overview</h1>
       <p class="page-desc">Real-time insights across purchasing, inventory, and logistics.</p>
       <div
-        style="height:4px; width:40px; background:linear-gradient(90deg, #d4af37, transparent); border-radius:2px; margin-top:16px;">
+        style="height:4px; width:40px; background:linear-gradient(90deg, #6366f1, transparent); border-radius:2px; margin-top:16px;">
       </div>
     </div>
 
@@ -67,24 +207,21 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
           <div style="display:flex; gap:12px;">
             <button class="btn btn-primary" onclick="openTaskModal()"
-              style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3);">
+              style="background:linear-gradient(135deg, #6366f1, #4f46e5); border:none; box-shadow:0 0 15px rgba(99, 102, 241, 0.4);">
               + New Task
             </button>
             <button class="btn btn-secondary" onclick="loadDemoTasks()">
               Load Demo Data
             </button>
           </div>
-
-
         </div>
 
         <!-- Task Manager -->
-        <section class="card-soft">
+        <section class="glass-panel" style="padding:24px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-            <h2 style="font-size:18px; margin:0; font-weight:800;">Task Manager</h2>
+            <h2 style="font-size:18px; margin:0; font-weight:700; color:white;">Task Manager</h2>
             <div style="display:flex; gap:12px;">
-              <select id="cat" class="input"
-                style="width:auto; height:36px; padding:0 12px; font-size:13px; background:#f8fafc; border:none;"
+              <select id="cat" class="input" style="width:auto; height:36px; padding:0 12px; font-size:13px;"
                 onchange="setManualFilter()">
                 <option value="">All Categories</option>
                 <option>Vendor</option>
@@ -93,24 +230,20 @@
                 <option>Orders</option>
                 <option>Logistics</option>
               </select>
-              <select id="priority" class="input"
-                style="width:auto; height:36px; padding:0 12px; font-size:13px; background:#f8fafc; border:none;"
+              <select id="priority" class="input" style="width:auto; height:36px; padding:0 12px; font-size:13px;"
                 onchange="setManualFilter()">
                 <option value="">All Priority</option>
                 <option>High</option>
                 <option>Medium</option>
                 <option>Low</option>
               </select>
-              <button
-                style="width:36px; height:36px; border-radius:8px; border:1px solid #e2e8f0; background:white; color:#6366f1;">🔍</button>
             </div>
           </div>
 
           <div class="table-container">
             <table id="taskTable">
               <thead>
-                <tr
-                  style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
+                <tr>
                   <th style="padding:16px;">Task</th>
                   <th style="padding:16px;">Category</th>
                   <th style="padding:16px;">Priority</th>
@@ -124,49 +257,40 @@
           </div>
         </section>
 
-
-
       </div>
 
       <!-- RIGHT COLUMN (Sidebar) -->
       <div style="display:grid; gap:24px; align-content:start;">
 
         <!-- Quick Jumps -->
-        <div class="card-soft">
+        <div class="glass-panel" style="padding:24px;">
           <div style="font-size:11px; font-weight:700; color:#94a3b8; margin-bottom:16px; letter-spacing:1px;">QUICK
             JUMPS</div>
 
           <div style="display:grid; gap:12px;">
             <a href="inventory.html" class="quick-jump-link">
               <span style="font-size:16px;">📦</span>
-              <span style="font-size:13px; font-weight:600; color:#334155;">Review Low Stock</span>
+              <span style="font-size:13px; font-weight:600;">Review Low Stock</span>
             </a>
             <a href="orders.html" class="quick-jump-link">
               <span style="font-size:16px;">📋</span>
-              <span style="font-size:13px; font-weight:600; color:#334155;">Validate Orders</span>
+              <span style="font-size:13px; font-weight:600;">Validate Orders</span>
             </a>
             <a href="logistics.html" class="quick-jump-link">
               <span style="font-size:16px;">🚚</span>
-              <span style="font-size:13px; font-weight:600; color:#334155;">Track Shipments</span>
+              <span style="font-size:13px; font-weight:600;">Track Shipments</span>
             </a>
             <a href="accounting.html" class="quick-jump-link">
               <span style="font-size:16px;">🧾</span>
-              <span style="font-size:13px; font-weight:600; color:#334155;">Accounting Overview</span>
+              <span style="font-size:13px; font-weight:600;">Accounting Overview</span>
             </a>
           </div>
 
           <button onclick="window.location.href='events.html'"
-            style="margin-top:16px; width:100%; height:44px; background:#f8fafc; border:none; border-radius:12px; font-size:13px; font-weight:600; color:#475569; cursor:pointer;">
+            style="margin-top:16px; width:100%; height:44px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; font-size:13px; font-weight:600; color:#e2e8f0; cursor:pointer;">
             View Calendar
           </button>
-
-          <div style="margin-top:24px; padding-top:24px; border-top:1px solid #f1f5f9;">
-            <div style="height:4px; width:40%; background:#e2e8f0; border-radius:2px; margin-bottom:6px;"></div>
-            <div style="height:4px; width:70%; background:#e2e8f0; border-radius:2px;"></div>
-          </div>
         </div>
-
-
 
       </div>
 
@@ -180,13 +304,13 @@
 
   <!-- Add Task Modal -->
   <div class="mobile-nav" id="taskModal" style="z-index:900;">
-    <div class="card"
-      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
+    <div class="glass-panel"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; padding:24px; background:#1e293b; border:1px solid rgba(255,255,255,0.1);">
       <div
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
-        <h3 style="margin:0;">Add Task</h3>
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <h3 style="margin:0; color:white;">Add Task</h3>
         <button onclick="closeTaskModal()"
-          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
+          style="border:none; background:transparent; font-size:24px; cursor:pointer; color:white;">&times;</button>
       </div>
 
       <div style="display:grid; gap:16px;">
@@ -260,10 +384,6 @@
       localStorage.removeItem(AUTH_KEY);
       window.location.href = "index.html";
     }
-
-    // Mobile Nav handled by erp.js largely, but here for backup
-    // function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
-    // function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
 
     function loadTasks() {
       try { return JSON.parse(localStorage.getItem(TASK_KEY) || "[]"); } catch { return []; }
@@ -369,32 +489,35 @@
         const isDone = t.status === "Completed";
 
         let priBadgeClass = "badge-gray";
-        let priBg = "#f1f5f9"; let priCol = "#475569";
-        if (t.pri === "High") { priBg = "#fff1f2"; priCol = "#be123c"; }
-        if (t.pri === "Medium") { priBg = "#fff7ed"; priCol = "#c2410c"; }
-        if (t.pri === "Low") { priBg = "#f0fdf4"; priCol = "#15803d"; }
+        let priBg = "rgba(255,255,255,0.1)"; let priCol = "#94a3b8";
+        // Dark Mode badges
+        if (t.pri === "High") { priBg = "rgba(239, 68, 68, 0.2)"; priCol = "#fca5a5"; }
+        if (t.pri === "Medium") { priBg = "rgba(245, 158, 11, 0.2)"; priCol = "#fcd34d"; }
+        if (t.pri === "Low") { priBg = "rgba(16, 185, 129, 0.2)"; priCol = "#6ee7b7"; }
 
 
-        const statusBadge = isDone ? `<span class="badge badge-green" style="background:#dcfce7; color:#166534;">Done</span>` : `<span class="badge badge-yellow" style="background:#fef9c3; color:#854d0e;">OPEN</span>`;
+        const statusBadge = isDone ?
+          `<span class="badge" style="background:rgba(16, 185, 129, 0.2); color:#6ee7b7;">Done</span>` :
+          `<span class="badge" style="background:rgba(255,255,255,0.1); color:#e2e8f0;">OPEN</span>`;
         const opacity = isDone ? "0.6" : "1";
 
         tr.style.opacity = opacity;
-        tr.style.borderBottom = "1px solid #f1f5f9";
+
         tr.innerHTML = `
            <td style="padding:16px;">
-             <div style="font-weight:600; color:var(--text-main); font-size:14px;">${escapeHtml(t.title)}</div>
+             <div style="font-weight:600; color:var(--text-main); font-size:14px;">${t.title}</div>
              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${t.assignees.join(", ") || "Unassigned"}</div>
            </td>
-           <td style="padding:16px; color:var(--text-main);">${escapeHtml(t.cat)}</td>
-           <td style="padding:16px;"><span style="background:${priBg}; color:${priCol}; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">${escapeHtml(t.pri.toUpperCase())}</span></td>
-           <td style="padding:16px; font-variant-numeric: tabular-nums;">${t.due || "—"}</td>
+           <td style="padding:16px; color:var(--text-main);">${t.cat}</td>
+           <td style="padding:16px;"><span style="background:${priBg}; color:${priCol}; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">${t.pri.toUpperCase()}</span></td>
+           <td style="padding:16px;">${t.due || "—"}</td>
            <td style="padding:16px;">${statusBadge}</td>
            <td style="padding:16px;">
              <div style="display:flex; gap:6px;">
-                 <button style="height:28px; padding:0 12px; font-size:12px; font-weight:600; border:1px solid #e2e8f0; background:white; border-radius:6px; cursor:pointer;" onclick="toggleDone('${t.id}')">
+                 <button style="height:28px; padding:0 12px; font-size:12px; font-weight:600; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:white; border-radius:6px; cursor:pointer;" onclick="toggleDone('${t.id}')">
                    ${isDone ? "Undo" : "Done"}
                  </button>
-                 <button style="height:28px; padding:0 8px; font-size:12px; color:#be123c; border:1px solid #fecdd3; background:#fff1f2; border-radius:6px; cursor:pointer;" onclick="removeTask('${t.id}')">
+                 <button style="height:28px; padding:0 8px; font-size:12px; color:#fca5a5; border:1px solid rgba(239, 68, 68, 0.3); background:rgba(239, 68, 68, 0.1); border-radius:6px; cursor:pointer;" onclick="removeTask('${t.id}')">
                    Del
                  </button>
              </div>
