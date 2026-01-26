@@ -24,7 +24,7 @@
 
       <nav class="nav">
         <a class="nav-link" href="dashboard.html">Overview</a>
-        <a class="nav-link" href="item_master.html">Items</a>
+        <a class="nav-link" href="master.html">Items</a>
         <a class="nav-link" href="crm.html">CRM</a>
         <a class="nav-link" href="vendor.html">Vendor</a>
         <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -56,7 +56,7 @@
           style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
       </div>
       <a class="mobile-link" href="dashboard.html">Overview</a>
-      <a class="mobile-link" href="item_master.html">Items</a>
+      <a class="mobile-link" href="master.html">Items</a>
       <a class="mobile-link" href="crm.html">CRM</a>
       <a class="mobile-link" href="vendor.html">Vendor</a>
       <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -64,7 +64,7 @@
       <a class="mobile-link" href="accounting.html">Accounting</a>
       <a class="mobile-link" href="orders.html">Orders</a>
       <a class="mobile-link" href="logistics.html">Logistics</a>
-      <a class="mobile-link" href="trends.html">Trends</a>
+
     </div>
   </div>
 
@@ -106,25 +106,28 @@
         <h3 style="margin:0 0 16px 0; font-size:16px; font-weight:700; color:var(--text-main);">Inventory Overview</h3>
         <div class="grid-4" style="gap:16px;">
           <!-- Total SKUs -->
-          <div class="card-kpi active">
+          <div class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll">
             <div class="card-title">TOTAL SKUS</div>
             <div class="stat-value" id="kTotal" style="font-size:24px;">—</div>
             <div class="badge badge-green" style="background:#bfdbfe; color:#1e40af;">View All</div>
           </div>
           <!-- Low Stock -->
-          <div class="card-kpi" style="background:#fff7ed; border-color:#fed7aa;">
+          <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow"
+            style="background:#fff7ed; border-color:#fed7aa;">
             <div class="card-title" style="color:#9a3412;">LOW STOCK</div>
             <div class="stat-value" id="kLow" style="color:#9a3412; font-size:24px;">—</div>
             <div class="badge" style="background:#ffedd5; color:#9a3412;">Reorder</div>
           </div>
           <!-- Out of Stock -->
-          <div class="card-kpi" style="background:#fef2f2; border-color:#fecaca;">
+          <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos"
+            style="background:#fef2f2; border-color:#fecaca;">
             <div class="card-title" style="color:#991b1b;">OUT OF STOCK</div>
             <div class="stat-value" id="kOOS" style="color:#7f1d1d; font-size:24px;">—</div>
             <div class="badge badge-red">Restock</div>
           </div>
           <!-- Valuation -->
-          <div class="card-kpi" style="background:#f0fdf4; border-color:#bbf7d0;">
+          <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal"
+            style="background:#f0fdf4; border-color:#bbf7d0;">
             <div class="card-title" style="color:#166534;">VALUATION</div>
             <div class="stat-value" id="kValue" style="color:#14532d; font-size:20px;">$0.00</div>
             <div class="badge badge-green">Cost Basis</div>
@@ -186,12 +189,16 @@
 
       <!-- Table -->
       <div class="card" style="grid-column: span 2; @media(min-width: 1000px){ grid-column: auto; }">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
-          <span style="font-size:18px; color:var(--success);">📦</span>
-          <h2 style="font-size:16px; margin:0;">Upcoming Deliveries...</h2>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px; color:var(--success);">📦</span>
+            <h2 style="font-size:16px; margin:0;" id="tableTitle">Upcoming Deliveries...</h2>
+          </div>
+          <button class="btn btn-secondary" style="height:32px; font-size:12px; display:none;" id="backToDel"
+            onclick="setFilter('del')">Back to Deliveries</button>
         </div>
         <div class="table-container">
-          <table>
+          <table id="mainTable">
             <thead>
               <tr>
                 <th>ETA</th>
@@ -202,7 +209,7 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody id="delBody"></tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
