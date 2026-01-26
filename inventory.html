@@ -11,6 +11,91 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
+  <style>
+    /* --- Phase 2: Premium Visuals --- */
+
+    /* Glassmorphism Card Override */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    /* Donut Chart */
+    .donut-chart {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: conic-gradient(var(--success) 0deg 240deg, var(--warning) 240deg 300deg, var(--danger) 300deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .donut-chart:hover {
+      transform: scale(1.05);
+    }
+
+    .donut-hole {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Staggered Row Animation */
+    @keyframes slideInRow {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .table-row-anim {
+      animation: slideInRow 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      /* hidden initially */
+    }
+
+    /* Quick Actions on Hover */
+    .row-actions {
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.2s ease;
+      display: flex;
+      gap: 8px;
+    }
+
+    tr:hover .row-actions {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Table hover effect */
+    tr {
+      transition: background 0.2s;
+    }
+
+    tr:hover {
+      background: rgba(241, 245, 249, 0.5);
+    }
+  </style>
 </head>
 
 <body>
@@ -188,7 +273,7 @@
     <div class="grid grid-2" style="align-items:start;">
 
       <!-- Table -->
-      <div class="card" style="grid-column: span 2; @media(min-width: 1000px){ grid-column: auto; }">
+      <div class="card glass-card" style="grid-column: span 2; @media(min-width: 1000px){ grid-column: auto; }">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:18px; color:var(--success);">📦</span>
@@ -215,27 +300,42 @@
       </div>
 
       <!-- Sidebar -->
-      <div class="card" style="background:#f8fafc; display:none; @media(min-width: 1000px){ display:block; }">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+      <div class="card glass-card" style="display:none; @media(min-width: 1000px){ display:block; }">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
           <span style="font-size:16px; background:#dcfce7; padding:4px; border-radius:4px; color:#166534;">+</span>
-          <h3 style="margin:0; font-size:16px;">Inventory Overview</h3>
+          <h3 style="margin:0; font-size:16px;">Stock Health</h3>
         </div>
 
-        <div
-          style="background:white; padding:16px; border-radius:8px; border:1px solid var(--border); margin-bottom:16px;">
-          <div
-            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:flex; justify-content:space-between;">
-            TOTAL SKUS <span style="font-size:14px;">&rsaquo;</span>
+        <div style="margin-bottom:24px; text-align:center;">
+          <div class="donut-chart" id="stockChart">
+            <div class="donut-hole">
+              <span style="font-size:20px; font-weight:800; color:var(--text-main);" id="kTotalSide">—</span>
+              <span style="font-size:10px; color:var(--text-muted); font-weight:600;">ITEMS</span>
+            </div>
           </div>
-          <div style="font-size:32px; font-weight:700; margin:4px 0;" id="kTotalSide">—</div>
-          <div style="background:#ffedd5; padding:8px; border-radius:4px; margin-top:8px;">
-            <div style="font-size:12px; font-weight:600; color:#9a3412;">Reorder Soon</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:24px; padding:0 12px;">
+          <div style="text-align:center;">
+            <div style="width:8px; height:8px; background:var(--success); border-radius:50%; margin:0 auto 4px;"></div>
+            <div style="color:var(--text-muted);">Good</div>
+            <strong id="valGood">-</strong>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:8px; height:8px; background:var(--warning); border-radius:50%; margin:0 auto 4px;"></div>
+            <div style="color:var(--text-muted);">Low</div>
+            <strong id="valLow">-</strong>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:8px; height:8px; background:var(--danger); border-radius:50%; margin:0 auto 4px;"></div>
+            <div style="color:var(--text-muted);">OOS</div>
+            <strong id="valOos">-</strong>
           </div>
         </div>
 
         <button class="btn" onclick="openItemModal()"
-          style="width:100%; background:linear-gradient(to right, #6ee7b7, #3b82f6); color:white; border:none; font-weight:600; padding:12px;">
-          Add New Item
+          style="width:100%; background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; font-weight:600; padding:12px; box-shadow:0 4px 12px rgba(16, 185, 129, 0.3);">
+          + Add New Item
         </button>
       </div>
 
@@ -474,15 +574,72 @@
       CURRENT_FILTER = type;
       // visual state
       document.querySelectorAll(".clickable-kpi").forEach(el => el.classList.remove("active"));
-      if (type !== 'all') {
-        const el = document.getElementById("kpi" + type.charAt(0).toUpperCase() + type.slice(1));
-        if (el) el.classList.add("active");
-        document.getElementById("stockBadge").style.display = "inline-flex";
-        document.getElementById("stockBadge").textContent = (type === 'low' ? 'Low Stock' : 'Out of Stock');
-      } else {
-        document.getElementById("stockBadge").style.display = "none";
+
+      if (type === 'del') {
+        renderDeliveries();
+        return;
       }
+
+      // KPIs
+      if (type === 'all') document.getElementById("kpiAll").classList.add("active");
+      if (type === 'low') document.getElementById("kpiLow").classList.add("active");
+      if (type === 'oos') document.getElementById("kpiOos").classList.add("active");
+      if (type === 'val') document.getElementById("kpiVal").classList.add("active");
+
       renderStock();
+      renderInventoryTable();
+    }
+
+    function renderInventoryTable() {
+      document.getElementById("tableTitle").textContent = (CURRENT_FILTER === 'all' ? "All Items" : (CURRENT_FILTER === 'low' ? "Low Stock Items" : (CURRENT_FILTER === 'oos' ? "Out of Stock" : "Inventory Valuation")));
+      document.getElementById("backToDel").style.display = "block";
+
+      const list = load(ITEM_KEY, []);
+      let shown = list;
+
+      if (CURRENT_FILTER === 'low') shown = list.filter(i => i.on <= i.rop && i.on > 0);
+      if (CURRENT_FILTER === 'oos') shown = list.filter(i => i.on <= 0);
+      if (CURRENT_FILTER === 'val') shown = [...list].sort((a, b) => (b.on * b.cost) - (a.on * a.cost));
+
+      const table = document.getElementById("mainTable");
+
+      // Switch Header
+      table.querySelector("thead").innerHTML = `
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>On Hand</th>
+                <th>Cost</th>
+                <th>Value</th>
+            </tr>
+        `;
+
+      const tbody = table.querySelector("tbody");
+      tbody.innerHTML = "";
+
+      if (!shown.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No items found.</td></tr>`;
+
+      shown.forEach((i, index) => {
+        const val = i.on * i.cost;
+        let skuStyle = "font-weight:700; color:var(--text-main);";
+        if (i.on <= 0) skuStyle += " color:var(--danger);";
+        else if (i.on <= i.rop) skuStyle += " color:var(--warning);";
+
+        const tr = document.createElement("tr");
+        tr.className = "table-row-anim";
+        tr.style.animationDelay = `${index * 50}ms`;
+
+        tr.innerHTML = `
+                <td style="padding:16px; ${skuStyle}">${i.sku}</td>
+                <td style="padding:16px;">${i.name}</td>
+                <td style="padding:16px;">${i.cat}</td>
+                <td style="padding:16px;"><strong>${i.on}</strong> <span style="font-size:11px; color:#64748b;">(ROP: ${i.rop})</span></td>
+                <td style="padding:16px;">${money(i.cost)}</td>
+                <td style="padding:16px;">${money(val)}</td>
+           `;
+        tbody.appendChild(tr);
+      });
     }
 
     function renderStock() {
@@ -493,6 +650,7 @@
       // Calculate Stats
       const low = items.filter(i => i.on <= i.rop && i.on > 0).length;
       const oos = items.filter(i => i.on <= 0).length;
+      const good = items.length - low - oos;
       const val = items.reduce((acc, i) => acc + (i.on * i.cost), 0);
 
       // Update Top Stats
@@ -501,9 +659,32 @@
       document.getElementById("kOOS").textContent = oos;
       document.getElementById("kValue").textContent = money(val);
 
-      // Update Sidebar Stats
+      // Update Sidebar Chart
       if (document.getElementById("kTotalSide")) {
         document.getElementById("kTotalSide").textContent = items.length;
+        document.getElementById("valGood").textContent = good;
+        document.getElementById("valLow").textContent = low;
+        document.getElementById("valOos").textContent = oos;
+
+        // Calculate Degrees
+        const total = items.length || 1;
+        const degGood = (good / total) * 360;
+        const degLow = (low / total) * 360;
+        const degOos = (oos / total) * 360;
+
+        // Conic Gradient Logic: Good -> Low -> OOS
+        // Good ends at degGood
+        // Low starts at degGood, ends at degGood + degLow
+        // OOS starts at degGood + degLow
+
+        const chart = document.getElementById("stockChart");
+        if (chart) {
+          chart.style.background = `conic-gradient(
+                var(--success) 0deg ${degGood}deg, 
+                var(--warning) ${degGood}deg ${degGood + degLow}deg, 
+                var(--danger) ${degGood + degLow}deg 360deg
+            )`;
+        }
       }
     }
 
@@ -525,8 +706,10 @@
 
       if (!shown.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No upcoming deliveries match.</td></tr>`;
 
-      shown.forEach(p => {
+      shown.forEach((p, index) => {
         const tr = document.createElement("tr");
+        tr.className = "table-row-anim";
+        tr.style.animationDelay = `${index * 50}ms`;
 
         // Mock statuses
         let statusClass = "badge-yellow";
@@ -542,7 +725,13 @@
                 <td style="padding:16px;">${p.vendor}</td>
                 <td style="padding:16px;">${(p.lines || "").split("\n").filter(Boolean).length} lines</td>
                 <td style="padding:16px;"><span class="badge ${statusClass}">${statusText}</span></td>
-                <td style="padding:16px;"><button class="btn btn-secondary" style="height:32px; padding:0 12px; font-size:12px;" onclick="document.getElementById('receiveModal').classList.add('open')">Receive</button></td>
+                <td style="padding:16px; display:flex; align-items:center; gap:8px;">
+                    <button class="btn btn-secondary" style="height:32px; padding:0 12px; font-size:12px;" onclick="document.getElementById('receiveModal').classList.add('open')">Receive</button>
+                    <div class="row-actions">
+                         <button class="btn btn-secondary" style="height:32px; width:32px; padding:0; border-radius:50%;" title="View PO">👁️</button>
+                         <button class="btn btn-secondary" style="height:32px; width:32px; padding:0; border-radius:50%; color:var(--danger); border-color:var(--danger-bg);" title="Delete">🗑️</button>
+                    </div>
+                </td>
              `;
         tbody.appendChild(tr);
       });
