@@ -192,31 +192,7 @@
       </div>
     </div>
 
-    <!-- Section 2: Search & Filter (Full Width) -->
-    <div class="card" style="display:flex; flex-direction:column; justify-content:center; margin-bottom:24px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="font-size:18px; color:var(--success);">📦</span>
-        <h3 style="margin:0; font-size:16px; font-weight:700; color:var(--text-main);">Upcoming Deliveries...</h3>
-      </div>
-      <div style="display:flex; gap:16px; flex-wrap:wrap;">
-        <div style="position:relative; flex:1; min-width:200px;">
-          <input class="input" id="searchDel" placeholder="Search deliveries..." style="padding-right:32px;"
-            oninput="renderDeliveries()">
-          <span
-            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">🔍</span>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Middle Section: Actions -->
+    <!-- Middle Section: Actions (Row 2) -->
     <div class="grid grid-3" style="margin-bottom:24px;">
 
       <!-- Receive -->
@@ -263,6 +239,32 @@
       </div>
 
     </div>
+
+    <!-- Section 2: Search & Filter (Full Width) -->
+    <div class="card" style="display:flex; flex-direction:column; justify-content:center; margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <span style="font-size:18px; color:var(--success);">📦</span>
+        <h3 style="margin:0; font-size:16px; font-weight:700; color:var(--text-main);">Upcoming Deliveries...</h3>
+      </div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="position:relative; flex:1; min-width:200px;">
+          <input class="input" id="searchDel" placeholder="Search deliveries..." style="padding-right:32px;"
+            oninput="renderDeliveries()">
+          <span
+            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">🔍</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary"
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
+          <button class="btn btn-secondary"
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
+          <button class="btn btn-secondary"
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- Bottom Section: Table & Sidebar -->
     <div class="grid grid-2" style="align-items:start;">
