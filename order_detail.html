@@ -423,6 +423,7 @@
     <script>
         const AUTH_KEY = "stark_erp_auth_v1";
         const ORDER_KEY = "stark_erp_orders_v1";
+        const CUST_KEY = "stark_erp_customers_v1";
 
         (function () {
             try {
@@ -435,6 +436,7 @@
 
         const params = new URLSearchParams(window.location.search);
         const orderId = params.get("id");
+        let currentOrder = null;
 
         function init() {
             if (!orderId) {
@@ -444,17 +446,22 @@
             }
 
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-            const order = orders.find(o => o.id === orderId);
+            currentOrder = orders.find(o => o.id === orderId);
 
-            if (!order) {
+            if (!currentOrder) {
                 document.querySelector("main").innerHTML = `<div style="text-align:center; padding:100px;"><h2>Order Not Found</h2><a href="orders.html" class="btn btn-primary" style="margin-top:20px; display:inline-block;">Back to Orders</a></div>`;
                 return;
             }
 
-            renderOrder(order);
+            // Load Customers for linking
+            const customers = JSON.parse(localStorage.getItem(CUST_KEY) || "[]");
+            const customer = customers.find(c => c.name === currentOrder.cust);
+
+            renderOrder(currentOrder, customer);
+            renderActions(currentOrder);
         }
 
-        function renderOrder(o) {
+        function renderOrder(o, c) {
             // Header
             document.getElementById("hOrderId").textContent = o.id;
             document.getElementById("crumbId").textContent = o.id;
@@ -464,7 +471,7 @@
             const badge = document.getElementById("hStatusBadge");
             badge.textContent = o.status;
             badge.className = "badge";
-            if (o.status === "Validated") badge.classList.add("badge-green");
+            if (o.status === "Validated" || o.status === "Shipped") badge.classList.add("badge-green");
             else if (o.status === "On Hold") badge.classList.add("badge-red");
             else badge.classList.add("badge-blue");
 
@@ -472,13 +479,28 @@
             if (o.status === "On Hold") {
                 document.getElementById("holdBanner").style.display = "flex";
                 document.getElementById("holdReason").textContent = o.holdReason || "Reason not specified";
+            } else {
+                document.getElementById("holdBanner").style.display = "none";
             }
 
-            // Details
+            // Customer Details
             document.getElementById("dCust").textContent = o.cust;
 
-            // Note: In a real app we'd have full address, using mock for visual match
-            // document.getElementById("dAcct").textContent = "Acct: " + (o.acct || "N/A");
+            const addrBlock = document.getElementById("dShipAddr");
+            if (c) {
+                // Dynamic Data
+                addrBlock.innerHTML = `
+                    <span class="highlight-val" style="width:fit-content;">${c.location}</span>
+                    <span class="highlight-val" style="width:fit-content;">${c.contact || ""}</span>
+                    <span class="highlight-val" style="width:fit-content;">${c.phone || ""}</span>
+                `;
+            } else {
+                // Fallback / Mock
+                addrBlock.innerHTML = `
+                    <span class="highlight-val" style="width:fit-content;">Walk-in / Unknown</span>
+                    <span class="highlight-val" style="width:fit-content;">-</span>
+                `;
+            }
 
             document.getElementById("dPayTerms").textContent = o.terms || "Net 30";
 
@@ -511,16 +533,72 @@
             }).join("");
 
             // Summary
-            // Calculate fake tax/discount to match image feel or simple total
-            // Image has Discount and Tax. Let's start with 0 discount and 8.875% tax as example
-            const discount = 0;
+            const discount = o.discount || 0;
             const taxRate = 0.08875;
-            const tax = (total - discount) * taxRate;
-            const grandTotal = total - discount + tax;
+            const subtotal = total;
+            const tax = (subtotal - discount) * taxRate;
+            const grandTotal = subtotal - discount + tax;
 
-            document.getElementById("sSubtotal").textContent = window.formatMoney(total);
+            document.getElementById("sSubtotal").textContent = window.formatMoney(subtotal);
             document.getElementById("sTax").textContent = window.formatMoney(tax);
             document.getElementById("sTotal").textContent = window.formatMoney(grandTotal);
+        }
+
+        function renderActions(o) {
+            // Remove existing action buttons first (if any, though we usually just append or init once)
+            const controlsDiv = document.querySelector(".no-print > div:last-child"); // The div with badge and print button
+
+            // Clean up old action buttons if re-rendering
+            const oldBtns = controlsDiv.querySelectorAll(".action-btn");
+            oldBtns.forEach(b => b.remove());
+
+            // Helper to create btn
+            const addBtn = (label, icon, colorClass, onClick) => {
+                const b = document.createElement("button");
+                b.className = `btn ${colorClass} action-btn`;
+                b.style = "display:flex; align-items:center; gap:6px; margin-right:8px;";
+                b.innerHTML = `<span class="material-icons-round" style="font-size:18px;">${icon}</span> ${label}`;
+                b.onclick = onClick;
+                controlsDiv.insertBefore(b, controlsDiv.firstChild); // Insert before badge
+            };
+
+            if (o.status === "Processing") {
+                addBtn("Hold", "pause", "btn-secondary", () => updateStatus("On Hold"));
+                addBtn("Validate", "check_circle", "btn-primary", () => updateStatus("Validated"));
+            } else if (o.status === "On Hold") {
+                addBtn("Release", "play_arrow", "btn-primary", () => updateStatus("Processing"));
+            } else if (o.status === "Validated") {
+                addBtn("Ship", "local_shipping", "btn-primary", () => updateStatus("Shipped"));
+            }
+        }
+
+        function updateStatus(newStatus) {
+            if (!currentOrder) return;
+
+            if (newStatus === "On Hold") {
+                const reason = prompt("Enter reason for holding order:");
+                if (!reason) return; // Cancelled
+                currentOrder.holdReason = reason;
+            } else {
+                // Clear hold reason if moving out of hold
+                delete currentOrder.holdReason;
+            }
+
+            currentOrder.status = newStatus;
+
+            // Save to LocalStorage using the full list
+            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+            const idx = orders.findIndex(o => o.id === currentOrder.id);
+            if (idx >= 0) {
+                orders[idx] = currentOrder;
+                localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+            }
+
+            // Feedback
+            if (window.toast) toast("Status Updated", `Order marked as ${newStatus}`, "success");
+
+            // Re-render
+            init(); // Reloads data and re-renders
         }
 
         // Helper if formatMoney isn't loaded yet (though erp.js should handle it)
