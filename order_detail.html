@@ -273,16 +273,50 @@
 
     <!-- Main Tabs -->
     <div class="main-tabs">
-        <div class="tab-link active">Packages</div>
-        <div class="tab-link">Invoices</div>
-        <div class="tab-link">Comments & History</div>
+        <div class="tab-link active" onclick="showTab('packages')">Packages</div>
+        <div class="tab-link" onclick="showTab('invoices')">Invoices</div>
+        <div class="tab-link" onclick="showTab('comments')">Comments & History</div>
     </div>
 
-    <!-- Sub-Notification (matches 'No Packages created' line in reference) -->
-    <div
-        style="background:#f9fafb; padding:12px; text-align:center; font-size:13px; color:#6b7280; margin-bottom:20px;">
-        No Packages created so far <a href="#" style="color:#2563eb; text-decoration:none; margin-left:4px;">New
-            Package</a>
+    <!-- Tab Sections Container -->
+    <div style="max-width:1000px; margin:0 auto 20px;">
+
+        <!-- Packages Section -->
+        <div id="pkgSection">
+            <div id="pkgList" style="display:grid; gap:12px;"></div>
+            <!-- Empty State for Packages (handled by JS render) -->
+            <div id="pkgEmpty"
+                style="background:#f9fafb; padding:12px; text-align:center; font-size:13px; color:#6b7280; display:none;">
+                No Packages created so far <a href="javascript:void(0)" onclick="openCreatePackage()"
+                    style="color:#2563eb; text-decoration:none; margin-left:4px;">New Package</a>
+            </div>
+        </div>
+
+        <!-- Invoices Section -->
+        <div id="invSection" style="display:none;">
+            <div style="background:#f9fafb; padding:12px; border:1px dashed #e5e7eb; border-radius:4px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div class="section-label" style="margin:0;">Invoices</div>
+                    <button onclick="createInvoice()" class="btn btn-primary"
+                        style="background:#4f46e5; color:white; border:none; padding:4px 12px; border-radius:4px; font-size:12px; cursor:pointer;">+
+                        Create Invoice</button>
+                </div>
+                <div id="invList" style="display:grid; gap:8px;">
+                    <!-- Invoice List Injected Here -->
+                </div>
+                <div id="invEmpty" style="text-align:center; font-size:13px; color:#6b7280; padding:8px;">
+                    No Invoices associated with this order.
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div id="commentSection" style="display:none;">
+            <div style="background:#f9fafb; padding:20px; text-align:center; font-size:13px; color:#6b7280;">
+                No comments available.
+            </div>
+        </div>
+
     </div>
 
     <!-- Document Canvas -->
@@ -331,12 +365,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Packages Section (Interactive) -->
-        <div id="pkgSection" style="margin-bottom:20px; display:none;">
-            <div class="section-label">PACKAGES & SHIPMENTS</div>
-            <div id="pkgList" style="display:grid; gap:12px;"></div>
         </div>
 
         <!-- Table -->
@@ -490,12 +518,33 @@
         const AUTH_KEY = "stark_erp_auth_v1";
         const ORDER_KEY = "stark_erp_orders_v1";
         const CUST_KEY = "stark_erp_customers_v1";
+        const INV_KEY = "stark_erp_invoices_v1";
 
         /* --- Mock Images --- */
         function getThumb(sku) {
             const seeds = ["BFDBFE", "FBCFE8", "E9D5FF", "BBF7D0", "FECACA"];
             const color = seeds[(sku.length) % seeds.length];
             return `<div style="width:40px; height:40px; background:#${color}; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#555; font-size:10px; font-weight:bold;">${sku.slice(0, 2)}</div>`;
+        }
+
+        // Tab Logic
+        function showTab(tabName) {
+            // Hide all
+            document.getElementById("pkgSection").style.display = "none";
+            document.getElementById("invSection").style.display = "none";
+            document.getElementById("commentSection").style.display = "none";
+
+            // Show target
+            if (tabName === 'packages') document.getElementById("pkgSection").style.display = "block";
+            if (tabName === 'invoices') document.getElementById("invSection").style.display = "block";
+            if (tabName === 'comments') document.getElementById("commentSection").style.display = "block";
+
+            // Update active state
+            const tabs = document.querySelectorAll(".tab-link");
+            tabs.forEach(t => t.classList.remove("active"));
+            if (tabName === 'packages') tabs[0].classList.add("active");
+            if (tabName === 'invoices') tabs[1].classList.add("active");
+            if (tabName === 'comments') tabs[2].classList.add("active");
         }
 
         // Email Modal Logic
@@ -552,6 +601,78 @@
             currentOrder.inHandsDate = val;
             updateOrder();
             if (window.toast) toast("Date Saved", "In Hands Date updated.", "success");
+        }
+
+        // --- INVOICE LOGIC ---
+        function renderInvoices(o) {
+            const list = document.getElementById("invList");
+            const empty = document.getElementById("invEmpty");
+
+            if (!o.invoices || o.invoices.length === 0) {
+                list.style.display = "none";
+                empty.style.display = "block";
+            } else {
+                list.style.display = "grid";
+                empty.style.display = "none";
+
+                // Fetch actual invoices
+                const allInvs = JSON.parse(localStorage.getItem(INV_KEY) || "[]");
+                const related = allInvs.filter(i => o.invoices.includes(i.id));
+
+                list.innerHTML = related.map(inv => `
+                    <div onclick="window.location.href='invoice_detail.html?id=${inv.id}'" style="cursor:pointer; background:white; border:1px solid #e5e7eb; padding:12px; border-radius:4px; display:flex; justify-content:space-between; align-items:center; transition:0.2s; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                        <div>
+                            <div style="font-weight:600; color:#4f46e5;">${inv.id}</div>
+                            <div style="font-size:12px; color:#6b7280;">Due: ${window.formatDate(inv.dueDate)}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700;">${window.formatMoney(inv.total)}</div>
+                            <span style="font-size:11px; padding:2px 6px; border-radius:10px; background:${inv.status === 'Paid' ? '#dcfce7' : '#eef2ff'}; color:${inv.status === 'Paid' ? '#166534' : '#4f46e5'};">${inv.status}</span>
+                        </div>
+                    </div>
+                 `).join("");
+            }
+        }
+
+        function createInvoice() {
+            if (!currentOrder) return;
+
+            // 1. Generate ID
+            const r = Math.floor(Math.random() * 90000) + 10000;
+            const newId = `INV-${r}`;
+
+            // 2. Calculate Totals
+            const totalLines = (currentOrder.lines || []).reduce((sum, l) => sum + (l.qty * l.price), 0);
+            const tax = totalLines * 0.088;
+            const total = totalLines + tax;
+
+            // 3. Create Object
+            const newInv = {
+                id: newId,
+                orderId: currentOrder.id,
+                date: new Date().toISOString(),
+                dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // +14 days
+                custName: currentOrder.cust || "Unknown",
+                lines: currentOrder.lines || [],
+                subtotal: totalLines,
+                tax: tax,
+                total: total,
+                status: "Open"
+            };
+
+            // 4. Save Invoice
+            const allInvs = JSON.parse(localStorage.getItem(INV_KEY) || "[]");
+            allInvs.push(newInv);
+            localStorage.setItem(INV_KEY, JSON.stringify(allInvs));
+
+            // 5. Link to Order
+            if (!currentOrder.invoices) currentOrder.invoices = [];
+            currentOrder.invoices.push(newId);
+            updateOrder();
+
+            // 6. Feedback
+            renderInvoices(currentOrder);
+            if (window.toast) toast("Invoice Created", `${newId} generated successfully.`, "success");
         }
 
         function openCreatePackage() {
@@ -631,6 +752,7 @@
             currentCustomer = customers.find(c => c.name === currentOrder.cust); // Store globally for modal
 
             render(currentOrder, currentCustomer);
+            showTab('packages'); // Default to packages tab
         }
 
         function render(o, c) {
@@ -649,25 +771,26 @@
             else { badge.style.background = "#9ca3af"; badge.textContent = "Draft"; }
 
             // Packages Logic
-            const pkgInfo = document.querySelector(".main-tabs").nextElementSibling; // The pkg notification div
+            const pkgInfo = document.querySelector("#pkgEmpty"); // The empty notification div inside pkgSection
             if (o.packages && o.packages.length > 0) {
                 pkgInfo.style.display = "none";
-                document.getElementById("pkgSection").style.display = "block";
+                document.getElementById("pkgList").style.display = "grid";
                 document.getElementById("pkgList").innerHTML = o.packages.map(p => `
-                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:700; color:#166534;">${p.carrier} Shipment</div>
-                            <div style="font-size:12px; color:#15803d;">Tracking: ${p.num}</div>
-                        </div>
-                        <span class="badge badge-green" style="background:#dcfce7; color:#166534;">${p.status}</span>
-                    </div>
-                 `).join("");
+                     <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                         <div>
+                             <div style="font-weight:700; color:#166534;">${p.carrier} Shipment</div>
+                             <div style="font-size:12px; color:#15803d;">Tracking: ${p.num}</div>
+                         </div>
+                         <span class="badge badge-green" style="background:#dcfce7; color:#166534;">${p.status}</span>
+                     </div>
+                  `).join("");
             } else {
-                // Reset to default empty state but make "New Package" clickable
-                pkgInfo.innerHTML = `No Packages created so far <a href="javascript:void(0)" onclick="openCreatePackage()" style="color:#2563eb; text-decoration:none; margin-left:4px;">New Package</a>`;
                 pkgInfo.style.display = "block";
-                document.getElementById("pkgSection").style.display = "none";
+                document.getElementById("pkgList").style.display = "none";
             }
+
+            // Invoices Logic
+            renderInvoices(o);
 
             // Addresses
             document.getElementById("billName").textContent = o.cust;
