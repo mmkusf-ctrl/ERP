@@ -161,16 +161,45 @@
       <div class="gold-line"></div>
     </div>
 
-    <!-- Top Section: Search & Stats -->
-    <div class="grid grid-2" style="align-items:stretch;">
+    <!-- Section 1: Top KPI Grid -->
+    <div class="grid grid-4" style="gap:16px; margin-bottom:24px;">
+      <!-- Total SKUs -->
+      <div class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll">
+        <div class="card-title">TOTAL SKUS</div>
+        <div class="stat-value" id="kTotal" style="font-size:24px;">—</div>
+        <div class="badge badge-green" style="background:#bfdbfe; color:#1e40af;">View All</div>
+      </div>
+      <!-- Low Stock -->
+      <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow"
+        style="background:#fff7ed; border-color:#fed7aa;">
+        <div class="card-title" style="color:#9a3412;">LOW STOCK</div>
+        <div class="stat-value" id="kLow" style="color:#9a3412; font-size:24px;">—</div>
+        <div class="badge" style="background:#ffedd5; color:#9a3412;">Reorder</div>
+      </div>
+      <!-- Out of Stock -->
+      <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos"
+        style="background:#fef2f2; border-color:#fecaca;">
+        <div class="card-title" style="color:#991b1b;">OUT OF STOCK</div>
+        <div class="stat-value" id="kOOS" style="color:#7f1d1d; font-size:24px;">—</div>
+        <div class="badge badge-red">Restock</div>
+      </div>
+      <!-- Valuation -->
+      <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal"
+        style="background:#f0fdf4; border-color:#bbf7d0;">
+        <div class="card-title" style="color:#166534;">VALUATION</div>
+        <div class="stat-value" id="kValue" style="color:#14532d; font-size:20px;">$0.00</div>
+        <div class="badge badge-green">Cost Basis</div>
+      </div>
+    </div>
 
-      <!-- Left: Search/Filter Panel -->
-      <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-          <span style="font-size:18px; color:var(--success);">📦</span>
-          <h3 style="margin:0; font-size:16px; font-weight:700; color:var(--text-main);">Upcoming Deliveries...</h3>
-        </div>
-        <div style="position:relative; margin-bottom:12px;">
+    <!-- Section 2: Search & Filter (Full Width) -->
+    <div class="card" style="display:flex; flex-direction:column; justify-content:center; margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <span style="font-size:18px; color:var(--success);">📦</span>
+        <h3 style="margin:0; font-size:16px; font-weight:700; color:var(--text-main);">Upcoming Deliveries...</h3>
+      </div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="position:relative; flex:1; min-width:200px;">
           <input class="input" id="searchDel" placeholder="Search deliveries..." style="padding-right:32px;"
             oninput="renderDeliveries()">
           <span
@@ -178,45 +207,11 @@
         </div>
         <div style="display:flex; gap:8px;">
           <button class="btn btn-secondary"
-            style="height:32px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
           <button class="btn btn-secondary"
-            style="height:32px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
           <button class="btn btn-secondary"
-            style="height:32px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
-        </div>
-      </div>
-
-      <!-- Right: Stats Panel -->
-      <div class="card">
-        <h3 style="margin:0 0 16px 0; font-size:16px; font-weight:700; color:var(--text-main);">Inventory Overview</h3>
-        <div class="grid-4" style="gap:16px;">
-          <!-- Total SKUs -->
-          <div class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll">
-            <div class="card-title">TOTAL SKUS</div>
-            <div class="stat-value" id="kTotal" style="font-size:24px;">—</div>
-            <div class="badge badge-green" style="background:#bfdbfe; color:#1e40af;">View All</div>
-          </div>
-          <!-- Low Stock -->
-          <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow"
-            style="background:#fff7ed; border-color:#fed7aa;">
-            <div class="card-title" style="color:#9a3412;">LOW STOCK</div>
-            <div class="stat-value" id="kLow" style="color:#9a3412; font-size:24px;">—</div>
-            <div class="badge" style="background:#ffedd5; color:#9a3412;">Reorder</div>
-          </div>
-          <!-- Out of Stock -->
-          <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos"
-            style="background:#fef2f2; border-color:#fecaca;">
-            <div class="card-title" style="color:#991b1b;">OUT OF STOCK</div>
-            <div class="stat-value" id="kOOS" style="color:#7f1d1d; font-size:24px;">—</div>
-            <div class="badge badge-red">Restock</div>
-          </div>
-          <!-- Valuation -->
-          <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal"
-            style="background:#f0fdf4; border-color:#bbf7d0;">
-            <div class="card-title" style="color:#166534;">VALUATION</div>
-            <div class="stat-value" id="kValue" style="color:#14532d; font-size:20px;">$0.00</div>
-            <div class="badge badge-green">Cost Basis</div>
-          </div>
+            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
         </div>
       </div>
     </div>
