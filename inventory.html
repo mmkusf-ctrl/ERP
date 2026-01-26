@@ -2,757 +2,263 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Inventory | Stark Premium ERP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <title>Receive Inventory | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
-  <style>
-    /* --- Phase 2: Premium Visuals --- */
+    <style>
+        /* Specific Styles for Receive Page */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
 
-    /* Glassmorphism Card Override */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-    }
+        @media (max-width: 900px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    /* Donut Chart */
-    .donut-chart {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 0 auto;
-      border-radius: 50%;
-      background: conic-gradient(var(--success) 0deg 240deg, var(--warning) 240deg 300deg, var(--danger) 300deg 360deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
+        .po-list-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-    .donut-chart:hover {
-      transform: scale(1.05);
-    }
+        .po-list-item:hover {
+            background: #f8fafc;
+        }
 
-    .donut-hole {
-      width: 80px;
-      height: 80px;
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
+        .po-list-item.active {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+        }
 
-    /* Staggered Row Animation */
-    @keyframes slideInRow {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .table-row-anim {
-      animation: slideInRow 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      opacity: 0;
-      /* hidden initially */
-    }
-
-    /* Quick Actions on Hover */
-    .row-actions {
-      opacity: 0;
-      transform: translateX(10px);
-      transition: all 0.2s ease;
-      display: flex;
-      gap: 8px;
-    }
-
-    tr:hover .row-actions {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* Table hover effect */
-    tr {
-      transition: background 0.2s;
-    }
-
-    tr:hover {
-      background: rgba(241, 245, 249, 0.5);
-    }
-  </style>
+        .qty-input {
+            width: 80px;
+            text-align: center;
+            font-weight: 700;
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Top Navigation -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="dashboard.html" class="logo">
-        <img src="images/stark-logo.png" alt="Stark Premium">
-        <span class="logo-text">Stark ERP</span>
-      </a>
-
-      <nav class="nav">
-        <a class="nav-link" href="dashboard.html">Overview</a>
-        <a class="nav-link" href="master.html">Items</a>
-        <a class="nav-link" href="crm.html">CRM</a>
-        <a class="nav-link" href="vendor.html">Vendor</a>
-        <a class="nav-link" href="purchasing.html">Purchasing</a>
-        <a class="nav-link active" href="inventory.html">Inventory</a>
-        <a class="nav-link" href="accounting.html">Accounting</a>
-        <a class="nav-link" href="orders.html">Orders</a>
-        <a class="nav-link" href="logistics.html">Logistics</a>
-        <a class="nav-link" href="reports.html">Reports</a>
-        <a class="nav-link" href="events.html">Events</a>
-      </nav>
-
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-          Online
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="inventory.html">Back to Inventory</a>
+            </nav>
         </div>
-        <button class="hamburger" onclick="openMobileNav()">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Mobile Drawer -->
-  <div class="mobile-nav" id="mobileNav">
-    <div class="mobile-drawer">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <strong style="font-size:16px;">Navigation</strong>
-        <button onclick="closeMobileNav()"
-          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <a class="mobile-link" href="dashboard.html">Overview</a>
-      <a class="mobile-link" href="master.html">Items</a>
-      <a class="mobile-link" href="crm.html">CRM</a>
-      <a class="mobile-link" href="vendor.html">Vendor</a>
-      <a class="mobile-link" href="purchasing.html">Purchasing</a>
-      <a class="mobile-link active" href="inventory.html">Inventory</a>
-      <a class="mobile-link" href="accounting.html">Accounting</a>
-      <a class="mobile-link" href="orders.html">Orders</a>
-      <a class="mobile-link" href="logistics.html">Logistics</a>
-
-    </div>
-  </div>
-
-  <main class="container">
-    <!-- Header -->
-    <div class="page-header" style="margin-bottom:24px;">
-      <h1 class="page-title">Inventory Operations</h1>
-      <p class="page-desc">Manage stock levels, process inbound shipments, and maintain accuracy.</p>
-      <div class="gold-line"></div>
-    </div>
-
-    <!-- Section 1: Top KPI Grid -->
-    <div class="grid grid-4" style="gap:16px; margin-bottom:24px;">
-      <!-- Total SKUs -->
-      <div class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll">
-        <div class="card-title">TOTAL SKUS</div>
-        <div class="stat-value" id="kTotal" style="font-size:24px;">—</div>
-        <div class="badge badge-green" style="background:#bfdbfe; color:#1e40af;">View All</div>
-      </div>
-      <!-- Low Stock -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('low')" id="kpiLow"
-        style="background:#fff7ed; border-color:#fed7aa;">
-        <div class="card-title" style="color:#9a3412;">LOW STOCK</div>
-        <div class="stat-value" id="kLow" style="color:#9a3412; font-size:24px;">—</div>
-        <div class="badge" style="background:#ffedd5; color:#9a3412;">Reorder</div>
-      </div>
-      <!-- Out of Stock -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('oos')" id="kpiOos"
-        style="background:#fef2f2; border-color:#fecaca;">
-        <div class="card-title" style="color:#991b1b;">OUT OF STOCK</div>
-        <div class="stat-value" id="kOOS" style="color:#7f1d1d; font-size:24px;">—</div>
-        <div class="badge badge-red">Restock</div>
-      </div>
-      <!-- Valuation -->
-      <div class="card-kpi clickable-kpi" onclick="setFilter('val')" id="kpiVal"
-        style="background:#f0fdf4; border-color:#bbf7d0;">
-        <div class="card-title" style="color:#166534;">VALUATION</div>
-        <div class="stat-value" id="kValue" style="color:#14532d; font-size:20px;">$0.00</div>
-        <div class="badge badge-green">Cost Basis</div>
-      </div>
-    </div>
-
-    <!-- Middle Section: Actions (Row 2) -->
-    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; margin-bottom:24px;">
-
-      <!-- Receive -->
-      <div class="card clickable-stat-card" onclick="openReceiveModal()"
-        style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); border:1px solid #c4b5fd;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <span style="font-size:20px;">📦</span>
-          <h3 style="margin:0; font-size:16px;">Receive Inventory</h3>
-        </div>
-        <p style="font-size:13px; color:#5b21b6; margin-bottom:16px;">Process specific items for all POs arrival.</p>
-        <button class="btn"
-          style="width:100%; background:#8b5cf6; color:white; border:none; display:flex; justify-content:space-between; align-items:center;">
-          + Start Reception <span>&rarr;</span>
-        </button>
-      </div>
-
-      <!-- Adjust -->
-      <div class="card clickable-stat-card" onclick="openAdjustModal()"
-        style="background:#fffbeb; border:1px solid #fcd34d;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <h3 style="margin:0; font-size:16px; color:#92400e;">Adjust Stock</h3>
-          <span style="font-size:20px;">⚙️</span>
-        </div>
-        <p style="font-size:13px; color:#92400e; margin-bottom:16px;">Manual adjustments for damage, loss, or extras.
-        </p>
-        <button class="btn"
-          style="width:100%; background:transparent; border:1px solid #d97706; color:#92400e; display:flex; justify-content:space-between; align-items:center;">
-          Adjust Now <span>&rarr;</span>
-        </button>
-      </div>
-
-      <!-- Cycle Count -->
-      <div class="card clickable-stat-card" onclick="openCountModal()"
-        style="background:#ecfeff; border:1px solid #a5f3fc;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <h3 style="margin:0; font-size:16px; color:#0e7490;">Cycle Count</h3>
-          <span style="font-size:20px;">📋</span>
-        </div>
-        <p style="font-size:13px; color:#0e7490; margin-bottom:16px;">Verify physical stock accuracy by zone.</p>
-        <button class="btn"
-          style="width:100%; background:transparent; border:1px solid #0891b2; color:#0e7490; display:flex; justify-content:space-between; align-items:center;">
-          Start Count <span>&rarr;</span>
-        </button>
-      </div>
-
-    </div>
-
-    <!-- Section 2: Search & Filter (Full Width) -->
-    <div class="card" style="display:flex; flex-direction:column; justify-content:center; margin-bottom:24px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
-        <span style="font-size:18px; color:var(--success);">📦</span>
-        <h3 style="margin:0; font-size:16px; font-weight:700; color:var(--text-main);">Upcoming Deliveries...</h3>
-      </div>
-      <div style="display:flex; gap:16px; flex-wrap:wrap;">
-        <div style="position:relative; flex:1; min-width:200px;">
-          <input class="input" id="searchDel" placeholder="Search deliveries..." style="padding-right:32px;"
-            oninput="renderDeliveries()">
-          <span
-            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">🔍</span>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">ETA ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Vendor ▾</button>
-          <button class="btn btn-secondary"
-            style="height:48px; font-size:12px; padding:0 12px; background:#f1f5f9; border:none;">Status ▾</button>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- Bottom Section: Table & Sidebar -->
-    <div class="grid grid-2" style="align-items:start;">
-
-      <!-- Table -->
-      <div class="card glass-card" style="grid-column: span 2; @media(min-width: 1000px){ grid-column: auto; }">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:18px; color:var(--success);">📦</span>
-            <h2 style="font-size:16px; margin:0;" id="tableTitle">Upcoming Deliveries...</h2>
-          </div>
-          <button class="btn btn-secondary" style="height:32px; font-size:12px; display:none;" id="backToDel"
-            onclick="setFilter('del')">Back to Deliveries</button>
-        </div>
-        <div class="table-container">
-          <table id="mainTable">
-            <thead>
-              <tr>
-                <th>ETA</th>
-                <th>PO #</th>
-                <th>Vendor</th>
-                <th>Items</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div class="card glass-card" style="display:none; @media(min-width: 1000px){ display:block; }">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
-          <span style="font-size:16px; background:#dcfce7; padding:4px; border-radius:4px; color:#166534;">+</span>
-          <h3 style="margin:0; font-size:16px;">Stock Health</h3>
-        </div>
-
-        <div style="margin-bottom:24px; text-align:center;">
-          <div class="donut-chart" id="stockChart">
-            <div class="donut-hole">
-              <span style="font-size:20px; font-weight:800; color:var(--text-main);" id="kTotalSide">—</span>
-              <span style="font-size:10px; color:var(--text-muted); font-weight:600;">ITEMS</span>
+    <main class="container">
+        <!-- Header -->
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1 class="page-title">Receive Inventory</h1>
+                <p class="page-desc">Select a Purchase Order to process incoming stock.</p>
             </div>
-          </div>
+            <a href="inventory.html" class="btn btn-secondary">Close & Return</a>
         </div>
 
-        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:24px; padding:0 12px;">
-          <div style="text-align:center;">
-            <div style="width:8px; height:8px; background:var(--success); border-radius:50%; margin:0 auto 4px;"></div>
-            <div style="color:var(--text-muted);">Good</div>
-            <strong id="valGood">-</strong>
-          </div>
-          <div style="text-align:center;">
-            <div style="width:8px; height:8px; background:var(--warning); border-radius:50%; margin:0 auto 4px;"></div>
-            <div style="color:var(--text-muted);">Low</div>
-            <strong id="valLow">-</strong>
-          </div>
-          <div style="text-align:center;">
-            <div style="width:8px; height:8px; background:var(--danger); border-radius:50%; margin:0 auto 4px;"></div>
-            <div style="color:var(--text-muted);">OOS</div>
-            <strong id="valOos">-</strong>
-          </div>
+        <div class="split-layout">
+            <!-- Left: PO List -->
+            <div class="card"
+                style="padding:0; overflow:hidden; max-height:calc(100vh - 200px); display:flex; flex-direction:column;">
+                <div
+                    style="padding:16px; border-bottom:1px solid var(--border); background:#f8fafc; display:flex; flex-direction:column; gap:12px;">
+                    <h3 style="margin:0; font-size:14px; color:var(--text-muted); text-transform:uppercase;">Open
+                        Purchase Orders</h3>
+
+                    <select id="whSelect" class="input" style="font-size:13px; padding:8px;">
+                        <option value="TX">Warehouse: Texas (Main)</option>
+                        <option value="FL">Warehouse: Sarasota</option>
+                    </select>
+
+                    <input id="poSearch" class="input" placeholder="Filter by PO # or Vendor..."
+                        style="font-size:13px; padding:8px;" oninput="renderPOList()">
+                </div>
+                <div id="poList" style="overflow-y:auto; flex:1;">
+                    <!-- Populated by JS -->
+                    <div style="padding:24px; text-align:center; color:var(--text-muted);">Loading POs...</div>
+                </div>
+            </div>
+
+            <!-- Right: Receipt Form -->
+            <div class="card" id="receiptArea"
+                style="min-height:400px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:var(--text-muted);">
+                <span style="font-size:48px; margin-bottom:16px; opacity:0.3;">📄</span>
+                <p>Select a Purchase Order from the list to begin.</p>
+            </div>
         </div>
 
-        <button class="btn" onclick="openItemModal()"
-          style="width:100%; background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; font-weight:600; padding:12px; box-shadow:0 4px 12px rgba(16, 185, 129, 0.3);">
-          + Add New Item
-        </button>
-      </div>
+    </main>
 
-    </div>
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
-    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-      &copy; 2026 Stark Premium ERP. secure. fast. reliable.
-    </div>
+    <script src="erp.js"></script>
+    <script>
+        const PO_KEY = "stark_erp_pos_v1";
+        const ITEM_KEY = "stark_erp_items_v2";
+        let SELECTED_PO = null;
 
-  </main>
-
-  <!-- Modals (Same as before) -->
-  <div class="mobile-nav" id="receiveModal" style="z-index:900;">
-    <div class="card"
-      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="margin:0;">Receive Inventory</h3>
-        <button onclick="closeReceiveModal()"
-          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <div style="display:grid; gap:16px;">
-        <select id="rPo" class="input">
-          <option value="">Select Purchase Order...</option>
-        </select>
-        <div
-          style="text-align:center; padding:10px; background:#f8fafc; border-radius:8px; color:var(--text-muted); font-size:13px;">
-          OR
-        </div>
-        <select id="rMetaItem" class="input"> <!-- Filled by items -->
-        </select>
-        <input id="rQty" type="number" class="input" placeholder="Quantity Received" />
-
-        <button class="btn btn-primary" onclick="doReceive()">Process Receipt</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="mobile-nav" id="adjustModal" style="z-index:900;">
-    <div class="card"
-      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); box-shadow:var(--shadow-card);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="margin:0;">Adjust Stock</h3>
-        <button onclick="closeAdjustModal()"
-          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <div style="display:grid; gap:16px;">
-        <select id="aItem" class="input"></select>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-          <input id="aQty" type="number" class="input" placeholder="Qty Change (+/-)" />
-          <select id="aReason" class="input">
-            <option>Damaged</option>
-            <option>Lost/Stolen</option>
-            <option>Found</option>
-            <option>Correction</option>
-          </select>
-        </div>
-        <button class="btn btn-warning" style="background:var(--warning); color:white; border:none;"
-          onclick="doAdjust()">Apply Adjustment</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="mobile-nav" id="countModal" style="z-index:900;">
-    <div class="card"
-      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:80vh; overflow-y:auto; box-shadow:var(--shadow-card);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="margin:0;">Cycle Count Session</h3>
-        <button onclick="closeCountModal()"
-          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <p style="font-size:13px; color:var(--text-muted);">Please verify physical counts for the following randomly
-        selected items:</p>
-      <div id="countList" style="display:grid; gap:12px; margin-bottom:16px;"></div>
-      <button class="btn btn-primary" onclick="doCycleCount()">Submit Counts</button>
-    </div>
-  </div>
-
-  <div class="mobile-nav" id="itemModal" style="z-index:900;">
-    <div class="card"
-      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card);">
-      <div
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
-        <h3 style="margin:0;">Add Inventory Item</h3>
-        <button onclick="closeItemModal()"
-          style="border:none; background:transparent; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <div style="display:grid; gap:16px;">
-        <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
-          <input id="iSku" class="input" placeholder="SKU (e.g. A-101)" />
-          <input id="iName" class="input" placeholder="Item Name" />
-        </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-          <input id="iCat" class="input" placeholder="Category" />
-          <input id="iWh" class="input" placeholder="Warehouse" />
-        </div>
-        <input id="iSup" class="input" placeholder="Supplier" />
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On
-              Hand</label>
-            <input id="iOn" class="input" type="number" />
-          </div>
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Reorder
-              Pt</label>
-            <input id="iRop" class="input" type="number" />
-          </div>
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Unit
-              Cost</label>
-            <input id="iCost" class="input" type="number" step="0.01" />
-          </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
-          <button class="btn btn-secondary" onclick="closeItemModal()">Cancel</button>
-          <button class="btn btn-primary" onclick="addItem()">Save Item</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
-
-  <script src="erp.js"></script>
-  <script>
-    const AUTH_KEY = "stark_erp_auth_v1";
-    (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
-
-    const KEY_CUST = "stark_erp_customers_v1";
-    (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
-
-    const ITEM_KEY = "stark_erp_items_v2";
-    const PO_KEY = "stark_erp_pos_v1";
-    let CURRENT_FILTER = "all"; // all, low, oos
-
-    function load(key, fallback) {
-      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-      catch { return fallback; }
-    }
-    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
-
-    // --- Modal Logic ---
-    function openReceiveModal() { populateSelects(); document.getElementById("receiveModal").classList.add("open"); }
-    function closeReceiveModal() { document.getElementById("receiveModal").classList.remove("open"); }
-    function openAdjustModal() { populateSelects(); document.getElementById("adjustModal").classList.add("open"); }
-    function closeAdjustModal() { document.getElementById("adjustModal").classList.remove("open"); }
-    function openCountModal() { generateCountList(); document.getElementById("countModal").classList.add("open"); }
-    function closeCountModal() { document.getElementById("countModal").classList.remove("open"); }
-    function openItemModal() { document.getElementById("itemModal").classList.add("open"); }
-    function closeItemModal() { document.getElementById("itemModal").classList.remove("open"); }
-
-    // --- Core Logic ---
-    function populateSelects() {
-      const items = load(ITEM_KEY, []);
-      const pos = load(PO_KEY, []);
-      const itemOpts = `<option value="">Select Item...</option>` + items.map(i => `<option value="${i.sku}">${i.sku} - ${i.name} (Cur: ${i.on})</option>`).join("");
-      document.getElementById("aItem").innerHTML = itemOpts;
-      document.getElementById("rMetaItem").innerHTML = itemOpts;
-      const poOpts = `<option value="">Select Purchase Order...</option>` + pos.filter(p => p.status !== "Completed").map(p => `<option value="${p.id}">${p.id} - ${p.vendor} (ETA: ${p.eta})</option>`).join("");
-      document.getElementById("rPo").innerHTML = poOpts;
-    }
-
-    function doReceive() {
-      const poId = document.getElementById("rPo").value;
-      const sku = document.getElementById("rMetaItem").value;
-      const qty = Number(document.getElementById("rQty").value);
-      if (!qty || qty <= 0) return toast("Error", "Valid quantity required.");
-      const list = load(ITEM_KEY, []);
-      if (poId) {
-        const pos = load(PO_KEY, []);
-        const p = pos.find(x => x.id === poId);
-        if (p) {
-          p.status = "Completed"; save(PO_KEY, pos);
-          if (list.length) { list[0].on += qty; save(ITEM_KEY, list); }
-          toast("Success", `Received against ${poId}.`);
+        function load(key, fallback) {
+            try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+            catch { return fallback; }
         }
-      } else if (sku) {
-        const item = list.find(x => x.sku === sku);
-        if (item) { item.on += qty; save(ITEM_KEY, list); toast("Success", `Received ${sku}.`); }
-      }
-      closeReceiveModal(); renderAll();
-    }
+        function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
-    function doAdjust() {
-      const sku = document.getElementById("aItem").value;
-      const qty = Number(document.getElementById("aQty").value);
-      const reason = document.getElementById("aReason").value;
-      if (!sku || !qty) return toast("Error", "Required fields missing.");
-      const list = load(ITEM_KEY, []);
-      const item = list.find(x => x.sku === sku);
-      if (item) {
-        item.on += qty; save(ITEM_KEY, list);
-        toast("Success", "Stock adjusted.");
-        closeAdjustModal(); renderAll();
-      }
-    }
+        function init() {
+            renderPOList();
+        }
 
-    function generateCountList() {
-      const items = load(ITEM_KEY, []);
-      if (!items.length) return document.getElementById("countList").innerHTML = "No items.";
-      const subset = items.sort(() => 0.5 - Math.random()).slice(0, 3);
-      const html = subset.map(i => `
-            <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">
-                 <div style="font-weight:600; font-size:13px;">${i.sku} - ${i.name}</div>
-                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                     <span style="font-size:12px; color:var(--text-muted);">System: ${i.on}</span>
-                     <input class="input" style="width:100px; height:32px;" placeholder="Actual" type="number" />
-                 </div>
-            </div>`).join("");
-      document.getElementById("countList").innerHTML = html;
-    }
+        function renderPOList() {
+            const pos = load(PO_KEY, []);
+            let active = pos.filter(p => p.status !== "Completed" && p.status !== "Delivered");
 
-    function doCycleCount() { toast("Success", "Counts submitted."); closeCountModal(); }
+            const term = (document.getElementById("poSearch") ? document.getElementById("poSearch").value : "").toLowerCase();
+            if (term) {
+                active = active.filter(p =>
+                    p.id.toLowerCase().includes(term) ||
+                    p.vendor.toLowerCase().includes(term)
+                );
+            }
 
-    function addItem() {
-      const sku = (document.getElementById("iSku").value || "").trim();
-      const name = (document.getElementById("iName").value || "").trim();
-      if (!sku || !name) return toast("Error", "SKU/Name required.");
-      const item = {
-        sku, name,
-        cat: (document.getElementById("iCat").value || "").trim() || "General",
-        wh: (document.getElementById("iWh").value || "").trim() || "WH-A",
-        sup: (document.getElementById("iSup").value || "").trim() || "Vendor",
-        on: Number(document.getElementById("iOn").value || 0),
-        rop: Number(document.getElementById("iRop").value || 0),
-        cost: Number(document.getElementById("iCost").value || 0)
-      };
-      const list = load(ITEM_KEY, []);
-      list.unshift(item); save(ITEM_KEY, list);
-      closeItemModal(); toast("Success", "Item added."); renderAll();
-    }
+            const listEl = document.getElementById("poList");
+            if (!active.length) {
+                listEl.innerHTML = `<div style="padding:24px; text-align:center; color:var(--text-muted);">No open purchase orders found.</div>`;
+                return;
+            }
 
-    // --- Views ---
-    function setFilter(type) {
-      CURRENT_FILTER = type;
-      // visual state
-      document.querySelectorAll(".clickable-kpi").forEach(el => el.classList.remove("active"));
+            listEl.innerHTML = active.map(p => `
+        <div class="po-list-item ${SELECTED_PO && SELECTED_PO.id === p.id ? 'active' : ''}" onclick="selectPO('${p.id}')">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <strong style="color:var(--text-main);">${p.id}</strong>
+            <span class="badge ${p.status === 'Approved' ? 'badge-green' : 'badge-yellow'}" style="font-size:10px;">${p.status || 'Draft'}</span>
+          </div>
+          <div style="font-size:13px; color:var(--text-main);">${p.vendor}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">ETA: ${p.eta} • ${(p.lines || '').split('\n').length} Items</div>
+        </div>
+      `).join("");
+        }
 
-      if (type === 'del') {
-        renderDeliveries();
-        return;
-      }
+        window.selectPO = function (poId) {
+            const pos = load(PO_KEY, []);
+            SELECTED_PO = pos.find(p => p.id === poId);
+            renderPOList(); // refresh active state
+            renderReceiptForm();
+        }
 
-      // KPIs
-      if (type === 'all') document.getElementById("kpiAll").classList.add("active");
-      if (type === 'low') document.getElementById("kpiLow").classList.add("active");
-      if (type === 'oos') document.getElementById("kpiOos").classList.add("active");
-      if (type === 'val') document.getElementById("kpiVal").classList.add("active");
+        function renderReceiptForm() {
+            if (!SELECTED_PO) return;
 
-      renderStock();
-      renderInventoryTable();
-    }
+            const container = document.getElementById("receiptArea");
+            // Reset style from "empty state"
+            container.style.display = "block";
+            container.style.alignItems = "initial";
+            container.style.justifyContent = "initial";
+            container.style.textAlign = "initial";
+            container.style.color = "initial";
 
-    function renderInventoryTable() {
-      document.getElementById("tableTitle").textContent = (CURRENT_FILTER === 'all' ? "All Items" : (CURRENT_FILTER === 'low' ? "Low Stock Items" : (CURRENT_FILTER === 'oos' ? "Out of Stock" : "Inventory Valuation")));
-      document.getElementById("backToDel").style.display = "block";
+            // Mock parsing lines: "ItemName | SKU | Qty | Cost" logic or just simple string parsing
+            // Assuming lines structure from previous artifacts: "SKU - Name (Qty: X)"
+            // IF the lines are just strings, we try to parse relevant SKU. 
+            // For this demo, let's assume lines are newline separated strings.
+            // We will try to match them to real items in ITEM_KEY for details.
 
-      const list = load(ITEM_KEY, []);
-      let shown = list;
+            const lines = (SELECTED_PO.lines || "").split("\n").filter(Boolean);
+            const inventory = load(ITEM_KEY, []);
 
-      if (CURRENT_FILTER === 'low') shown = list.filter(i => i.on <= i.rop && i.on > 0);
-      if (CURRENT_FILTER === 'oos') shown = list.filter(i => i.on <= 0);
-      if (CURRENT_FILTER === 'val') shown = [...list].sort((a, b) => (b.on * b.cost) - (a.on * a.cost));
+            // Map lines to actionable objects
+            const rowHtml = lines.map((line, idx) => {
+                // Heuristic parse: Look for 'Qty: \d+' or just assume entire line is description
+                // Ideally we'd have structured PO items. We'll fallback to a simple row.
+                // Try to extract QTY
+                let qty = 1;
+                const qtyMatch = line.match(/Qty:\s*(\d+)/i);
+                if (qtyMatch) qty = parseInt(qtyMatch[1]);
 
-      const table = document.getElementById("mainTable");
-
-      // Switch Header
-      table.querySelector("thead").innerHTML = `
-            <tr>
-                <th>SKU</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>On Hand</th>
-                <th>Cost</th>
-                <th>Value</th>
-            </tr>
-        `;
-
-      const tbody = table.querySelector("tbody");
-      tbody.innerHTML = "";
-
-      if (!shown.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No items found.</td></tr>`;
-
-      shown.forEach((i, index) => {
-        const val = i.on * i.cost;
-        let skuStyle = "font-weight:700; color:var(--text-main);";
-        if (i.on <= 0) skuStyle += " color:var(--danger);";
-        else if (i.on <= i.rop) skuStyle += " color:var(--warning);";
-
-        const tr = document.createElement("tr");
-        tr.className = "table-row-anim";
-        tr.style.animationDelay = `${index * 50}ms`;
-
-        tr.innerHTML = `
-                <td style="padding:16px; ${skuStyle}">${i.sku}</td>
-                <td style="padding:16px;">${i.name}</td>
-                <td style="padding:16px;">${i.cat}</td>
-                <td style="padding:16px;"><strong>${i.on}</strong> <span style="font-size:11px; color:#64748b;">(ROP: ${i.rop})</span></td>
-                <td style="padding:16px;">${money(i.cost)}</td>
-                <td style="padding:16px;">${money(val)}</td>
+                return `
+             <tr>
+               <td style="padding:12px;">${line}</td>
+               <td style="padding:12px; text-align:center;">${qty}</td>
+               <td style="padding:12px; text-align:center;">
+                  <input class="input qty-input" id="rec_qty_${idx}" type="number" value="${qty}" min="0">
+               </td>
+               <td style="padding:12px; text-align:center; color:var(--success);">Match</td>
+             </tr>
            `;
-        tbody.appendChild(tr);
-      });
-    }
+            }).join("");
 
-    function renderStock() {
-      // Logic for main Stock Card (now removed/replaced by specific views, but we reused logic?)
-      // We need to update the top stats and the sidebar stats
-      const items = load(ITEM_KEY, []);
-
-      // Calculate Stats
-      const low = items.filter(i => i.on <= i.rop && i.on > 0).length;
-      const oos = items.filter(i => i.on <= 0).length;
-      const good = items.length - low - oos;
-      const val = items.reduce((acc, i) => acc + (i.on * i.cost), 0);
-
-      // Update Top Stats
-      document.getElementById("kTotal").textContent = items.length;
-      document.getElementById("kLow").textContent = low;
-      document.getElementById("kOOS").textContent = oos;
-      document.getElementById("kValue").textContent = money(val);
-
-      // Update Sidebar Chart
-      if (document.getElementById("kTotalSide")) {
-        document.getElementById("kTotalSide").textContent = items.length;
-        document.getElementById("valGood").textContent = good;
-        document.getElementById("valLow").textContent = low;
-        document.getElementById("valOos").textContent = oos;
-
-        // Calculate Degrees
-        const total = items.length || 1;
-        const degGood = (good / total) * 360;
-        const degLow = (low / total) * 360;
-        const degOos = (oos / total) * 360;
-
-        // Conic Gradient Logic: Good -> Low -> OOS
-        // Good ends at degGood
-        // Low starts at degGood, ends at degGood + degLow
-        // OOS starts at degGood + degLow
-
-        const chart = document.getElementById("stockChart");
-        if (chart) {
-          chart.style.background = `conic-gradient(
-                var(--success) 0deg ${degGood}deg, 
-                var(--warning) ${degGood}deg ${degGood + degLow}deg, 
-                var(--danger) ${degGood + degLow}deg 360deg
-            )`;
+            container.innerHTML = `
+         <div style="margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+               <h2 style="margin:0; font-size:18px;">Receiving: ${SELECTED_PO.id}</h2>
+               <p style="margin:0; color:var(--text-muted); font-size:13px;">${SELECTED_PO.vendor} • ${SELECTED_PO.eta}</p>
+            </div>
+            <button class="btn btn-primary" onclick="commitReceipt()">Finalize Receipt</button>
+         </div>
+         
+         <div class="table-container">
+            <table style="width:100%; border-collapse:collapse;">
+               <thead style="background:#f8fafc; font-size:12px; text-transform:uppercase; color:var(--text-muted);">
+                  <tr>
+                     <th style="padding:12px; text-align:left;">Item Description</th>
+                     <th style="padding:12px; width:100px; text-align:center;">Expected</th>
+                     <th style="padding:12px; width:100px; text-align:center;">Received</th>
+                     <th style="padding:12px; width:100px; text-align:center;">Status</th>
+                  </tr>
+               </thead>
+               <tbody style="font-size:14px;">
+                  ${rowHtml}
+               </tbody>
+            </table>
+         </div>
+       `;
         }
-      }
-    }
 
-    function renderDeliveries() {
-      const pos = load(PO_KEY, []);
-      const active = pos.filter(p => p.status !== "Completed" && p.status !== "Delivered");
-      active.sort((a, b) => new Date(a.eta) - new Date(b.eta));
+        window.commitReceipt = function () {
+            if (!SELECTED_PO) return;
 
-      const search = (document.getElementById("searchDel") ? document.getElementById("searchDel").value : "").toLowerCase();
+            const wh = document.getElementById("whSelect") ? document.getElementById("whSelect").value : 'TX';
+            const whName = wh === 'FL' ? 'Sarasota' : 'Texas';
 
-      const tbody = document.getElementById("delBody");
-      tbody.innerHTML = "";
+            // In a real app, we would parse the inputs, match SKUs to Inventory, and update counts.
+            // For this visual demo, we will mark the PO as "Completed" and "Simulate" adding stock.
 
-      // Filter
-      const shown = active.filter(p => {
-        if (search && !(p.id + p.vendor).toLowerCase().includes(search)) return false;
-        return true;
-      });
+            const pos = load(PO_KEY, []);
+            const target = pos.find(p => p.id === SELECTED_PO.id);
+            if (target) {
+                target.status = "Completed";
+                save(PO_KEY, pos);
 
-      if (!shown.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No upcoming deliveries match.</td></tr>`;
+                // Simulate Stock Increase on first item as demo
+                const inventory = load(ITEM_KEY, []);
+                if (inventory.length) {
+                    inventory[0].on += 100; // Mock addition
+                    save(ITEM_KEY, inventory);
+                }
 
-      shown.forEach((p, index) => {
-        const tr = document.createElement("tr");
-        tr.className = "table-row-anim";
-        tr.style.animationDelay = `${index * 50}ms`;
+                toast("Success", `Received ${SELECTED_PO.id} into ${whName}.`);
+                setTimeout(() => window.location.href = "inventory.html", 1500);
+            }
+        }
 
-        // Mock statuses
-        let statusClass = "badge-yellow";
-        let statusText = p.status || "OPEN";
-        const etaDate = new Date(p.eta);
-        const today = new Date();
-        if (etaDate < today) { statusClass = "badge-red"; statusText = "DELAYED"; }
-        else if (statusText === 'Approved') { statusClass = "badge-green"; statusText = "APPROVED"; }
-
-        tr.innerHTML = `
-                <td style="padding:16px;">${p.eta || "—"}</td>
-                <td style="padding:16px;"><strong>${p.id}</strong></td>
-                <td style="padding:16px;">${p.vendor}</td>
-                <td style="padding:16px;">${(p.lines || "").split("\n").filter(Boolean).length} lines</td>
-                <td style="padding:16px;"><span class="badge ${statusClass}">${statusText}</span></td>
-                <td style="padding:16px; display:flex; align-items:center; gap:8px;">
-                    <button class="btn btn-secondary" style="height:32px; padding:0 12px; font-size:12px;" onclick="document.getElementById('receiveModal').classList.add('open')">Receive</button>
-                    <div class="row-actions">
-                         <button class="btn btn-secondary" style="height:32px; width:32px; padding:0; border-radius:50%;" title="View PO">👁️</button>
-                         <button class="btn btn-secondary" style="height:32px; width:32px; padding:0; border-radius:50%; color:var(--danger); border-color:var(--danger-bg);" title="Delete">🗑️</button>
-                    </div>
-                </td>
-             `;
-        tbody.appendChild(tr);
-      });
-    }
-
-
-
-    function renderAll() {
-      renderStock();
-      renderDeliveries();
-    }
-
-    // Auto-seed
-    if (load(ITEM_KEY, []).length === 0) {
-      const demo = [
-        { sku: "BX-9001", name: "Premium Gift Box", cat: "Packaging", wh: "WH-A", sup: "PackPro", on: 140, rop: 50, cost: 1.60 },
-        { sku: "NK-1001", name: "Necklace — Aurora", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 62, rop: 30, cost: 42.00 },
-        { sku: "RG-2001", name: "Ring — Obsidian", cat: "Finished Goods", wh: "WH-B", sup: "Stark Mfg", on: 0, rop: 18, cost: 38.00 }
-      ];
-      save(ITEM_KEY, demo);
-    }
-
-    renderAll();
-  </script>
+        init();
+    </script>
 </body>
 
 </html>
