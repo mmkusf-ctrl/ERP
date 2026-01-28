@@ -9,7 +9,96 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --bg-body: #0f172a;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%) !important;
+      background-color: var(--bg-body) !important;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Glassmorphism */
+    .glass-panel,
+    .card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Topbar Override */
+    .topbar {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .nav-link {
+      color: #94a3b8 !important;
+    }
+
+    .nav-link.active {
+      color: white !important;
+      border-bottom-color: #8b5cf6 !important;
+    }
+
+    .logo-text {
+      color: white !important;
+    }
+
+    /* Layout */
+    .page-title {
+      color: white !important;
+    }
+
+    .gold-line {
+      background: linear-gradient(90deg, #6366f1, transparent) !important;
+    }
+
+    /* Report Links Grid */
+    .report-index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .report-link {
+      display: block;
+      /* Full block for click target */
+      padding: 10px 14px;
+      color: #6366f1;
+      /* Premium Link Color */
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+      font-size: 13px;
+      font-weight: 500;
+      background: transparent;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .report-link:hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: #818cf8;
+      transform: translateX(4px);
+    }
+  </style>
 </head>
 
 <body>
@@ -23,7 +112,7 @@
 
       <nav class="nav">
         <a class="nav-link" href="dashboard.html">Overview</a>
-        <a class="nav-link" href="item_master.html">Items</a>
+        <a class="nav-link" href="master.html">Items</a>
         <a class="nav-link" href="crm.html">CRM</a>
         <a class="nav-link" href="inventory.html">Inventory</a>
         <a class="nav-link" href="accounting.html">Accounting</a>
@@ -34,9 +123,9 @@
       </nav>
 
       <div style="display:flex; align-items:center; gap:12px;">
-        <button class="btn btn-secondary" style="height:36px;" onclick="seedSales()">
-          Load Demo Sales
-        </button>
+        <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+          System Live
+        </div>
         <button class="hamburger" onclick="openMobileNav()">
           <span></span><span></span><span></span>
         </button>
@@ -44,348 +133,81 @@
     </div>
   </header>
 
-  <!-- Mobile Drawer -->
-  <div class="mobile-nav" id="mobileNav">
-    <div class="mobile-drawer">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <strong style="font-size:16px;">Navigation</strong>
-        <button onclick="closeMobileNav()"
-          style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <a class="mobile-link" href="dashboard.html">Overview</a>
-      <a class="mobile-link" href="item_master.html">Items</a>
-      <a class="mobile-link" href="crm.html">CRM</a>
-      <a class="mobile-link" href="inventory.html">Inventory</a>
-      <a class="mobile-link" href="orders.html">Orders</a>
-      <a class="mobile-link" href="logistics.html">Logistics</a>
-      <a class="mobile-link active" href="reports.html">Reports</a>
-      <a class="mobile-link" href="events.html">Events</a>
-    </div>
-  </div>
-
-  <main class="container">
+  <main class="container" style="padding-top:40px;">
     <!-- Header -->
-    <div class="page-header">
-      <h1 class="page-title">REPORTS</h1>
-      <div class="gold-line"></div>
+    <div class="page-header" style="margin-bottom:32px;">
+      <h1 class="page-title">All Reports</h1>
+      <p style="color:#94a3b8;">Comprehensive list of all available system reports.</p>
+      <div class="gold-line" style="height:4px; width:60px; border-radius:2px; margin-top:16px;"></div>
     </div>
 
-    <style>
-      .report-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 20px 40px;
-        /* Row gap, Col gap */
-        margin-bottom: 40px;
-      }
-
-      .report-link {
-        color: var(--primary);
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 1.4;
-        display: block;
-        border-bottom: 1px solid transparent;
-      }
-
-      .report-link:hover {
-        text-decoration: underline;
-        color: var(--primary-dark);
-      }
-
-      @media (max-width: 1400px) {
-        .report-grid {
-          grid-template-columns: repeat(4, 1fr);
-        }
-      }
-
-      @media (max-width: 1000px) {
-        .report-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .report-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (max-width: 480px) {
-        .report-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-
-    <div class="card" style="padding: 32px;">
-      <div class="report-grid">
-        <!-- Column 1 -->
-        <div>
-          <a href="#" class="report-link">Backorder Report</a><br>
-          <a href="#" class="report-link">Brand Sales by Sku</a><br>
-          <a href="#" class="report-link">Customer Sales by Brand</a><br>
-          <a href="#" class="report-link">Inventory As Of A Specific Date</a><br>
-          <a href="#" class="report-link">Item Stock / Sales Report</a><br>
-          <a href="#" class="report-link">Pending Price Changes</a><br>
-          <a href="#" class="report-link">RMA Reasons by Customer</a><br>
-          <a href="#" class="report-link">Sales Rep Sales by Customer/Brand</a><br>
-          <a href="#" class="report-link">Trigger Report</a><br>
-          <a href="#" class="report-link">YTD Reports</a>
-        </div>
-
-        <!-- Column 2 -->
-        <div>
-          <a href="#" class="report-link">Backorder Report (new)</a><br>
-          <a href="#" class="report-link">Bulk Label Log Report</a><br>
-          <a href="#" class="report-link">Customer Trailing Data</a><br>
-          <a href="#" class="report-link">Inventory Insurance Report</a><br>
-          <a href="#" class="report-link">Items Not Sold in X Months Report</a><br>
-          <a href="#" class="report-link">Price List</a><br>
-          <a href="#" class="report-link">Sales by Customer</a><br>
-          <a href="#" class="report-link">Shipping Profit Report</a><br>
-          <a href="#" class="report-link">Trigger Reports</a>
-        </div>
-
-        <!-- Column 3 -->
-        <div>
-          <a href="#" class="report-link">Basic Brand Item Export</a><br>
-          <a href="accounting.html" class="report-link">Cash Flow Report</a><br>
-          <a href="#" class="report-link">Daily Order Metrics</a><br>
-          <a href="#" class="report-link">Inventory Reconciling Reports</a><br>
-          <a href="#" class="report-link">Missing Item Data Report</a><br>
-          <a href="#" class="report-link">Profitability Report</a><br>
-          <a href="#" class="report-link">Sales by State</a><br>
-          <a href="#" class="report-link">Sub Category Report</a><br>
-          <a href="vendor.html" class="report-link">Vendor Purchases Analysis</a>
-        </div>
-
-        <!-- Column 4 -->
-        <div>
-          <a href="#" class="report-link">Brand Detail Sales Report</a><br>
-          <a href="#" class="report-link">Customer Order Counts</a><br>
-          <a href="dashboard.html" class="report-link">Dashboard</a><br>
-          <a href="#" class="report-link">Invoice Item Profit Report</a><br>
-          <a href="#" class="report-link">Monthly Avg Item Sales</a><br>
-          <a href="purchasing.html" class="report-link">Purchasing Power Cancellation Report</a><br>
-          <a href="#" class="report-link">Sales by State Detail</a><br>
-          <a href="#" class="report-link">Sub Report</a><br>
-          <a href="#" class="report-link">Vendor Receiving Invoicing Variance Report</a>
-        </div>
-
-        <!-- Column 5 -->
-        <div>
-          <a href="#" class="report-link">Brand Order Counts by Customer</a><br>
-          <a href="#" class="report-link">Customer Order Counts by Brand</a><br>
-          <a href="#" class="report-link">Data Export</a><br>
-          <a href="#" class="report-link">Item Availability Report</a><br>
-          <a href="#" class="report-link">Open Orders Late</a><br>
-          <a href="#" class="report-link">Receiving Report</a><br>
-          <a href="#" class="report-link">Sales Order Cancellation Report</a><br>
-          <a href="#" class="report-link">Top Sellers</a><br>
-          <a href="#" class="report-link">Weekly Order Data</a>
-        </div>
-
-        <!-- Column 6 -->
-        <div>
-          <a href="#" class="report-link">Brand Sales by Customer</a><br>
-          <a href="#" class="report-link">Customer Sales Analysis</a><br>
-          <a href="accounting.html" class="report-link">Gross Margin Report</a><br>
-          <a href="#" class="report-link">Item Sales Volume Report</a><br>
-          <a href="#" class="report-link">Order Count 7 Day Avg</a><br>
-          <a href="#" class="report-link">Rep Commission Report</a><br>
-          <a href="#" class="report-link">Sales Rep Report</a><br>
-          <a href="#" class="report-link">Trigger Brand Exclusions</a><br>
-          <a href="accounting.html" class="report-link">Yearly Profit Review Report</a>
-        </div>
+    <!-- Report Grid -->
+    <div class="glass-panel" style="padding: 32px;">
+      <div class="report-index-grid">
+        <a href="report_view.html?id=backorder_report" class="report-link">Backorder Report</a>
+        <a href="report_view.html?id=backorder_report_new" class="report-link">Backorder Report (new)</a>
+        <a href="report_view.html?id=brand_item_export" class="report-link">Basic Brand Item Export</a>
+        <a href="report_view.html?id=brand_detail_sales" class="report-link">Brand Detail Sales Report</a>
+        <a href="report_view.html?id=brand_order_counts_cust" class="report-link">Brand Order Counts by Cust</a>
+        <a href="report_view.html?id=brand_sales_cust" class="report-link">Brand Sales by Customer</a>
+        <a href="report_view.html?id=brand_sales_sku" class="report-link">Brand Sales by SKU</a>
+        <a href="report_view.html?id=bulk_label_log" class="report-link">Bulk Label Log Report</a>
+        <a href="report_view.html?id=cash_flow" class="report-link">Cash Flow Report</a>
+        <a href="report_view.html?id=cust_order_counts" class="report-link">Customer Order Counts</a>
+        <a href="report_view.html?id=cust_order_counts_brand" class="report-link">Customer Order Counts by Brand</a>
+        <a href="report_view.html?id=cust_sales_analysis" class="report-link">Customer Sales Analysis</a>
+        <a href="report_view.html?id=cust_sales_brand" class="report-link">Customer Sales by Brand</a>
+        <a href="report_view.html?id=cust_trailing_data" class="report-link">Customer Trailing Data</a>
+        <a href="report_view.html?id=daily_order_metrics" class="report-link">Daily Order Metrics</a>
+        <a href="dashboard.html" class="report-link">Dashboard</a>
+        <a href="report_view.html?id=data_export" class="report-link">Data Export</a>
+        <a href="report_view.html?id=gross_margin" class="report-link">Gross Margin Report</a>
+        <a href="report_view.html?id=inventory_date" class="report-link">Inventory As Of Date</a>
+        <a href="report_view.html?id=inventory_insurance" class="report-link">Inventory Insurance Report</a>
+        <a href="report_view.html?id=inventory_reconcile" class="report-link">Inventory Reconciling Reports</a>
+        <a href="report_view.html?id=invoice_item_profit" class="report-link">Invoice Item Profit Report</a>
+        <a href="report_view.html?id=item_availability" class="report-link">Item Availability Report</a>
+        <a href="report_view.html?id=item_sales_volume" class="report-link">Item Sales Volume Report</a>
+        <a href="report_view.html?id=item_stock_sales" class="report-link">Item Stock / Sales Report</a>
+        <a href="report_view.html?id=items_not_sold" class="report-link">Items Not Sold in X Months</a>
+        <a href="report_view.html?id=missing_item_data" class="report-link">Missing Item Data Report</a>
+        <a href="report_view.html?id=monthly_avg_sales" class="report-link">Monthly Avg Item Sales</a>
+        <a href="report_view.html?id=open_orders_late" class="report-link">Open Orders Late</a>
+        <a href="report_view.html?id=order_count_7day" class="report-link">Order Count 7 Day Avg</a>
+        <a href="report_view.html?id=pending_price_changes" class="report-link">Pending Price Changes</a>
+        <a href="report_view.html?id=price_list" class="report-link">Price List</a>
+        <a href="report_view.html?id=profitability" class="report-link">Profitability Report</a>
+        <a href="report_view.html?id=purchase_power_cancel" class="report-link">Purchasing Power Cancellation</a>
+        <a href="report_view.html?id=receiving_report" class="report-link">Receiving Report</a>
+        <a href="report_view.html?id=rep_commission" class="report-link">Rep Commission Report</a>
+        <a href="report_view.html?id=rma_reasons" class="report-link">RMA Reasons by Customer</a>
+        <a href="report_view.html?id=sales_by_cust" class="report-link">Sales by Customer</a>
+        <a href="report_view.html?id=sales_by_state" class="report-link">Sales by State</a>
+        <a href="report_view.html?id=sales_by_state_detail" class="report-link">Sales by State Detail</a>
+        <a href="report_view.html?id=sales_order_cancel" class="report-link">Sales Order Cancellation</a>
+        <a href="report_view.html?id=sales_rep_report" class="report-link">Sales Rep Report</a>
+        <a href="report_view.html?id=sales_rep_cust_brand" class="report-link">Sales Rep by Cust/Brand</a>
+        <a href="report_view.html?id=shipping_profit" class="report-link">Shipping Profit Report</a>
+        <a href="report_view.html?id=sub_category" class="report-link">Sub Category Report</a>
+        <a href="report_view.html?id=sub_report" class="report-link">Sub Report</a>
+        <a href="report_view.html?id=top_sellers" class="report-link">Top Sellers</a>
+        <a href="report_view.html?id=trigger_brand_exclude" class="report-link">Trigger Brand Exclusions</a>
+        <a href="report_view.html?id=trigger_report" class="report-link">Trigger Report</a>
+        <a href="report_view.html?id=trigger_reports_all" class="report-link">Trigger Reports</a>
+        <a href="report_view.html?id=vendor_purchases" class="report-link">Vendor Purchases Analysis</a>
+        <a href="report_view.html?id=vendor_receiving_var" class="report-link">Vendor Receiving Variance</a>
+        <a href="report_view.html?id=weekly_order_data" class="report-link">Weekly Order Data</a>
+        <a href="report_view.html?id=yearly_profit" class="report-link">Yearly Profit Review Report</a>
       </div>
     </div>
 
     <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-      &copy; 2026 Stark Premium ERP.
+      &copy; 2026 Stark Premium ERP. secure. fast. reliable.
     </div>
+
   </main>
 
-  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
-
   <script src="erp.js"></script>
-  <script>
-    const KEY_ITEMS = "stark_erp_items_v2"; // updated key from inventory.html
-    const KEY_SALES = "stark_erp_sales_v1";
-
-    function load(key, fallback) {
-      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-      catch { return fallback; }
-    }
-    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-    function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
-
-    // Data init
-    let items = load(KEY_ITEMS, []);
-    let sales = load(KEY_SALES, []);
-
-    function unique(arr) { return Array.from(new Set(arr)).filter(Boolean).sort(); }
-
-    function initControls() {
-      const skuSelect = document.getElementById("skuSelect");
-      const locSelect = document.getElementById("locationSelect");
-
-      // Populate SKU
-      const skus = items.length ? items.map(i => i.sku) : unique(sales.map(s => s.sku));
-      skuSelect.innerHTML = skus.length
-        ? `<option value="">All SKUs</option>` + skus.map(s => `<option value="${s}">${s}</option>`).join("")
-        : `<option value="">No SKUs Found</option>`;
-
-      // Populate Locations
-      const locs = unique(sales.map(s => s.location));
-      locSelect.innerHTML = `<option value="">All Locations</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join("");
-    }
-
-    function render() {
-      // Reload newest data
-      items = load(KEY_ITEMS, []);
-      sales = load(KEY_SALES, []);
-
-      const skuVal = document.getElementById("skuSelect").value;
-      const rangeVal = Number(document.getElementById("rangeSelect").value);
-      const locVal = document.getElementById("locationSelect").value;
-      const custSearch = (document.getElementById("customerSearch").value || "").toLowerCase();
-
-      const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - rangeVal);
-      const cutoffTime = cutoff.getTime();
-
-      let filtered = sales.filter(s => {
-        if (new Date(s.date).getTime() < cutoffTime) return false;
-        if (skuVal && s.sku !== skuVal) return false;
-        if (locVal && s.location !== locVal) return false;
-        if (custSearch && !s.customer.toLowerCase().includes(custSearch)) return false;
-        return true;
-      });
-
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      // Calculate KPIs
-      const totalUnits = filtered.reduce((acc, s) => acc + Number(s.qty), 0);
-      const totalRev = filtered.reduce((acc, s) => acc + (Number(s.qty) * Number(s.unitPrice)), 0);
-      const dailyAvg = totalUnits / Math.max(1, rangeVal);
-      const forecast = Math.round(dailyAvg * 30);
-
-      document.getElementById("kpiSales").textContent = filtered.length;
-      document.getElementById("kpiSalesSub").textContent = skuVal || "All SKUs";
-      document.getElementById("kpiUnits").textContent = totalUnits;
-      document.getElementById("kpiRevenue").textContent = money(totalRev);
-      document.getElementById("kpiForecast").textContent = forecast;
-
-      // Render Table
-      const tbody = document.getElementById("salesBody");
-      tbody.innerHTML = "";
-
-      if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No sales data in this range.</td></tr>`;
-      } else {
-        filtered.slice(0, 100).forEach(s => {
-          const tr = document.createElement("tr");
-          const total = Number(s.qty) * Number(s.unitPrice);
-          tr.innerHTML = `
-               <td>${new Date(s.date).toLocaleDateString()}</td>
-               <td>${s.customer}</td>
-               <td><span class="badge badge-green">${s.location}</span></td>
-               <td>${s.orderId}</td>
-               <td>${s.qty}</td>
-               <td>${money(total)}</td>
-             `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      // Insights
-      const bestCust = getTop(filtered, s => s.customer);
-      const bestLoc = getTop(filtered, s => s.location);
-      const bestDay = getTopDay(filtered);
-
-      document.getElementById("insight1").innerHTML = `
-          <strong style="display:block; font-size:13px;">Top Customer</strong>
-          <span style="font-size:14px; margin-top:4px;">${bestCust || "—"}</span>
-       `;
-      document.getElementById("insight2").innerHTML = `
-          <strong style="display:block; font-size:13px;">Top Region</strong>
-          <span style="font-size:14px; margin-top:4px;">${bestLoc || "—"}</span>
-       `;
-      document.getElementById("insight3").innerHTML = `
-          <strong style="display:block; font-size:13px;">Peak Sales Day</strong>
-          <span style="font-size:14px; margin-top:4px;">${bestDay || "—"}</span>
-       `;
-    }
-
-    function getTop(list, keyFn) {
-      const m = {};
-      list.forEach(item => {
-        const k = keyFn(item);
-        m[k] = (m[k] || 0) + Number(item.qty);
-      });
-      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
-      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
-    }
-
-    function getTopDay(list) {
-      const m = {};
-      list.forEach(item => {
-        const d = new Date(item.date).toLocaleDateString();
-        m[d] = (m[d] || 0) + Number(item.qty);
-      });
-      const sorted = Object.entries(m).sort((a, b) => b[1] - a[1]);
-      return sorted.length ? `${sorted[0][0]} (${sorted[0][1]} units)` : null;
-    }
-
-    // Demo Data
-    function seedSales() {
-      // Generate random sales for last 6 months
-      const newSales = [];
-      const customers = [
-        { name: "Asha Retail", loc: "Austin, TX" },
-        { name: "Blue Harbor", loc: "Miami, FL" },
-        { name: "Citrine Luxe", loc: "New York, NY" },
-        { name: "Desert Pearl", loc: "Phoenix, AZ" },
-        { name: "Emerald Lane", loc: "Seattle, WA" }
-      ];
-      const skus = items.length ? items.map(i => i.sku) : ["A-101", "B-202", "C-303"]; // fallback
-
-      for (let i = 0; i < 150; i++) {
-        const daysAgo = Math.floor(Math.random() * 90);
-        const d = new Date(); d.setDate(d.getDate() - daysAgo);
-        const c = customers[Math.floor(Math.random() * customers.length)];
-        const sku = skus[Math.floor(Math.random() * skus.length)];
-
-        newSales.push({
-          date: d.toISOString(),
-          customer: c.name,
-          location: c.loc,
-          sku: sku,
-          qty: Math.floor(Math.random() * 15) + 1,
-          unitPrice: 50 + Math.floor(Math.random() * 150),
-          orderId: "ORD-" + Math.floor(Math.random() * 90000)
-        });
-      }
-
-      sales = sales.concat(newSales);
-      save(KEY_SALES, sales);
-      toast("Success", "Loaded 150 demo sales records.");
-      initControls();
-      render();
-    }
-
-    function clearSales() {
-      if (confirm("Delete all sales history?")) {
-        save(KEY_SALES, []);
-        render();
-        toast("Cleared", "Sales history deleted.");
-      }
-    }
-
-    // Init
-    initControls();
-    render();
-  </script>
 </body>
+
+</html>
