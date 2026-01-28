@@ -222,7 +222,23 @@
         // --- Engine Logic ---
         const urlParams = new URLSearchParams(window.location.search);
         const reportId = urlParams.get('id') || 'default';
-        const config = REPORTS[reportId] || REPORTS['default'];
+
+        // Auto-Generate Title from ID if not found in REPORTS
+        let config = REPORTS[reportId];
+
+        if (!config) {
+            // Fallback Generator
+            const titleStr = reportId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            config = {
+                title: titleStr,
+                desc: `Detailed analysis for ${titleStr}.`,
+                cols: ["Date", "Reference", "Description", "Value", "Status", "Allocated"],
+                type: "bar",
+                kpis: ["Total Count", "Total Value", "Avg Metric"],
+                color: "#6366f1"
+            };
+        }
+
         let chartInstance = null;
 
         function init() {
