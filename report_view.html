@@ -231,6 +231,16 @@
             document.getElementById("reportDesc").textContent = config.desc;
             document.title = `${config.title} | Stark ERP`;
 
+            // Chart Controls
+            const chartBox = document.getElementById("chartContainer");
+            const controls = document.createElement("div");
+            controls.style.cssText = "position:absolute; top:16px; right:16px; display:flex; gap:8px;";
+            controls.innerHTML = `
+                <button class="btn btn-xs" style="font-size:10px; padding:4px 8px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:4px; cursor:pointer;" onclick="updateChartType('bar')">Bar</button>
+                <button class="btn btn-xs" style="font-size:10px; padding:4px 8px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:4px; cursor:pointer;" onclick="updateChartType('line')">Line</button>
+            `;
+            chartBox.appendChild(controls);
+
             // Set Date Defaults
             const now = new Date();
             document.getElementById("dateEnd").valueAsDate = now;
@@ -240,14 +250,28 @@
             renderReport();
         }
 
+        function updateChartType(type) {
+            config.type = type;
+            renderReport();
+        }
+
         function renderReport() {
-            // 1. Generate KPIs
+            // 1. Generate KPIs with Trends
             const kpiHtml = config.kpis.map(k => {
                 const val = simulateValue(k);
+                // Simulate Trend
+                const change = (Math.random() * 20 - 5).toFixed(1); // -5% to +15%
+                const isPos = change > 0;
+                const color = isPos ? "#10b981" : "#ef4444";
+                const arrow = isPos ? "▲" : "▼";
+
                 return `
             <div class="card" style="padding:16px; background:rgba(255,255,255,0.05) !important;">
                 <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">${k}</div>
-                <div style="font-size:24px; font-weight:700; color:white;">${val}</div>
+                <div style="font-size:24px; font-weight:700; color:white; margin-bottom:4px;">${val}</div>
+                <div style="font-size:12px; color:${color}; font-weight:500;">
+                    ${arrow} ${Math.abs(change)}% <span style="color:#64748b; font-weight:400;">vs last period</span>
+                </div>
             </div>`;
             }).join("");
             document.getElementById("kpiRow").innerHTML = kpiHtml;
@@ -262,29 +286,32 @@
             const rowCount = 25;
             const chartLabels = [];
             const chartData = [];
+            window.currentData = []; // Store for export
 
             for (let i = 0; i < rowCount; i++) {
                 const tr = document.createElement("tr");
-                tr.className = "table-row-anim"; // Reusing anim class if defined in css, else it's harmless
+                tr.className = "table-row-anim";
                 tr.style.animationDelay = (i * 20) + "ms";
 
-                // Generate row data based on column types simplistically
+                let rowObj = {};
                 let inner = "";
                 config.cols.forEach((col, idx) => {
                     const text = generateCellData(col, i);
                     inner += `<td style="padding:12px;">${text}</td>`;
+                    rowObj[col] = text;
 
                     // Collect Chart Data (Label = Col 0, Value = Col 4 or last numeric)
                     if (idx === 0) chartLabels.push(text);
                     if (idx === 4) chartData.push(parseFloat(text.replace(/[^0-9.-]+/g, "")) || 0); // heuristic
                 });
+                window.currentData.push(rowObj);
 
                 tr.innerHTML = inner;
                 tbody.appendChild(tr);
             }
 
             // 4. Render Chart
-            renderChart(chartLabels.slice(0, 10), chartData.slice(0, 10)); // Top 10 for chart
+            renderChart(chartLabels.slice(0, 10), chartData.slice(0, 10)); // Top 10
         }
 
         function generateCellData(colName, seed) {
@@ -370,7 +397,26 @@
         }
 
         function exportData() {
-            toast("Download Started", "Report exporting to CSV...");
+            if (!window.currentData || !window.currentData.length) {
+                toast("Export Failed", "No data to export.", "error");
+                return;
+            }
+
+            // Convert to CSV
+            const headers = config.cols.join(",");
+            const rows = window.currentData.map(obj => config.cols.map(c => `"${obj[c]}"`).join(","));
+            const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
+
+            // Download
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${config.title.replace(/ /g, "_")}_Report.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toast("Export Complete", `Downloaded ${config.title} as CSV.`);
         }
 
         // Start
