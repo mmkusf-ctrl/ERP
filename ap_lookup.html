@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>AP Invoice Lookup | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        .search-hero {
+            background: linear-gradient(135deg, #fff 0%, #fdf2f8 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input-lg {
+            width: 100%;
+            height: 64px;
+            font-size: 18px;
+            padding: 0 24px;
+            padding-right: 140px;
+            /* Space for button */
+            border-radius: 99px;
+            border: 2px solid rgba(225, 29, 72, 0.1);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s;
+        }
+
+        .search-input-lg:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-fade);
+            outline: none;
+        }
+
+        .search-btn-abs {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            height: 48px;
+            border-radius: 99px;
+            padding: 0 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-btn-abs:hover {
+            background: var(--primary-dark);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            height: 40px;
+            border-radius: 99px;
+            border: 1px solid #e5e7eb;
+            padding: 0 16px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+            color: #4b5563;
+        }
+    </style>
+</head>
+
+<body><main class="container">
+
+        <div style="margin-bottom:24px;">
+            <a href="accounting.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600;">← Back to
+                Accounting</a>
+        </div>
+
+        <!-- Hero Search -->
+        <div class="search-hero animate-enter">
+            <h1 class="page-title" style="text-align:center; margin-bottom:8px;">Invoice Lookup</h1>
+            <p class="page-desc" style="margin:0 auto 32px auto; text-align:center;">
+                Search across all Accounts Payable invoices, vendors, and payments.
+            </p>
+
+            <div class="search-container">
+                <input class="search-input-lg" placeholder="Search Invoice #, PO #, or Vendor Name..." />
+                <button class="search-btn-abs">Search</button>
+            </div>
+
+            <div class="filters-row">
+                <select class="filter-select">
+                    <option>Any Status</option>
+                    <option>Posted</option>
+                    <option>Paid</option>
+                    <option>Pending Approval</option>
+                    <option>Disputed</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Vendors</option>
+                    <option>Acme Corp</option>
+                    <option>Stark Industries</option>
+                    <option>Globex</option>
+                </select>
+                <input type="date" class="filter-select" style="width:auto;" />
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="card animate-enter stagger-1">
+            <div class="card-header">
+                <div class="card-title">Recent Invoices</div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-sm btn-secondary">Export CSV</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr
+                            style="border-bottom:2px solid #f3f4f6; color:#6b7280; font-size:12px; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">
+                            <th style="padding:16px; font-weight:600;">Status</th>
+                            <th style="padding:16px; font-weight:600;">Invoice #</th>
+                            <th style="padding:16px; font-weight:600;">Vendor</th>
+                            <th style="padding:16px; font-weight:600;">Date</th>
+                            <th style="padding:16px; font-weight:600;">Due Date</th>
+                            <th style="padding:16px; font-weight:600;">Amount</th>
+                            <th style="padding:16px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #f9fafb;">
+                            <td style="padding:16px;"><span class="badge badge-green"
+                                    style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700;">PAID</span>
+                            </td>
+                            <td style="padding:16px; font-weight:600; color:#111;">INV-00102</td>
+                            <td style="padding:16px;">Acme Corp</td>
+                            <td style="padding:16px; color:#666;">Jan 24, 2026</td>
+                            <td style="padding:16px; color:#666;">Feb 24, 2026</td>
+                            <td style="padding:16px; font-weight:600; color:#111;">$12,450.00</td>
+                            <td style="padding:16px; text-align:right;">
+                                <button class="btn btn-sm btn-secondary"
+                                    style="height:32px; padding:0 12px;">View</button>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f9fafb;">
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#fff7ed; color:#c2410c; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700;">OPEN</span>
+                            </td>
+                            <td style="padding:16px; font-weight:600; color:#111;">INV-00103</td>
+                            <td style="padding:16px;">Stark Industries</td>
+                            <td style="padding:16px; color:#666;">Jan 28, 2026</td>
+                            <td style="padding:16px; color:#666;">Feb 28, 2026</td>
+                            <td style="padding:16px; font-weight:600; color:#111;">$8,400.00</td>
+                            <td style="padding:16px; text-align:right;">
+                                <button class="btn btn-sm btn-secondary"
+                                    style="height:32px; padding:0 12px;">View</button>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #f9fafb;">
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#fef2f2; color:#b91c1c; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700;">OVERDUE</span>
+                            </td>
+                            <td style="padding:16px; font-weight:600; color:#111;">INV-00098</td>
+                            <td style="padding:16px;">Globex Corp</td>
+                            <td style="padding:16px; color:#666;">Dec 15, 2025</td>
+                            <td style="padding:16px; color:#b91c1c; font-weight:600;">Jan 15, 2026</td>
+                            <td style="padding:16px; font-weight:600; color:#111;">$2,100.00</td>
+                            <td style="padding:16px; text-align:right;">
+                                <button class="btn btn-sm btn-secondary"
+                                    style="height:32px; padding:0 12px;">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:16px;"><span class="badge"
+                                    style="background:#fff7ed; color:#c2410c; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700;">OPEN</span>
+                            </td>
+                            <td style="padding:16px; font-weight:600; color:#111;">INV-00104</td>
+                            <td style="padding:16px;">Cyberdyne Systems</td>
+                            <td style="padding:16px; color:#666;">Jan 29, 2026</td>
+                            <td style="padding:16px; color:#666;">Feb 28, 2026</td>
+                            <td style="padding:16px; font-weight:600; color:#111;">$15,500.00</td>
+                            <td style="padding:16px; text-align:right;">
+                                <button class="btn btn-sm btn-secondary"
+                                    style="height:32px; padding:0 12px;">View</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px; text-align:center;">
+                <button class="btn btn-secondary" style="font-size:13px;">Load More Invoices</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="erp.js"></script>
+</body>
+
+</html>
