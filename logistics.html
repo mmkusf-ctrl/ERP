@@ -11,6 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         /* Tab Styles */
         .tabs {
@@ -50,6 +56,19 @@
             display: block;
         }
 
+        #map {
+            height: 320px;
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            z-index: 1;
+            /* Ensure route shows above tiles */
+        }
+
+        .leaflet-container {
+            font-family: 'Inter', sans-serif !important;
+        }
+
         @media print {
 
             .topbar,
@@ -79,11 +98,6 @@
             #view-reports {
                 display: block !important;
             }
-
-            /* Ensure reports are shown */
-            /* Hide other views if they happen to be active, or rely on JS state? 
-               Since JS state determines .active class, it should be fine. 
-               But we generally want to ensure the layout is clean. */
         }
     </style>
 </head>
@@ -98,8 +112,8 @@
             </a>
 
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="master.html">Items</a>
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link" href="master.html">Master</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -129,8 +143,8 @@
                 <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link" href="master.html">Items</a>
+            <a class="mobile-link" href="dashboard.html">Home</a>
+            <a class="mobile-link" href="master.html">Master</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -216,6 +230,8 @@
                             <thead>
                                 <tr>
                                     <th>Tracking #</th>
+                                    <th>Order #</th>
+                                    <th>Customer</th>
                                     <th>Destination</th>
                                     <th>ETA</th>
                                     <th>Status</th>
@@ -229,28 +245,43 @@
                 <!-- Map / Details Placeholder -->
                 <aside style="display:grid; gap:24px; align-content:start;">
                     <div class="card" style="min-height:300px; display:flex; flex-direction:column;">
-                        <h2 style="font-size:16px; margin:0 0 16px;">Live Tracking</h2>
-
-                        <div id="mapPlaceholder"
-                            style="background:#e2e8f0; border-radius:12px; flex:1; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:13px; text-align:center; padding:20px;">
-                            Select a shipment to view live location map.
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                            <h2 style="font-size:16px; margin:0;">Live Tracking Map</h2>
+                            <div class="badge badge-green" id="mapStatus" style="display:none;">LIVE</div>
                         </div>
 
+                        <div id="map"></div>
+
                         <div id="trackDetail" style="display:none; margin-top:20px;">
-                            <strong style="display:block; font-size:16px; margin-bottom:4px;" id="dId">TRK-000</strong>
-                            <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" id="dDest">New
-                                York, NY</div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+                                <div>
+                                    <div style="font-size:11px; color:var(--text-muted); font-weight:700;">TRACKING ID
+                                    </div>
+                                    <div style="font-weight:600;" id="dId">TRK-000</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:11px; color:var(--text-muted); font-weight:700;">ORDER #</div>
+                                    <div style="font-weight:600;" id="dOrder">SO-000</div>
+                                </div>
+                            </div>
 
                             <div
-                                style="display:flex; gap:10px; align-items:center; background:#f8fafc; padding:12px; border-radius:8px;">
+                                style="display:flex; gap:10px; align-items:center; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">
                                 <div style="font-size:20px;">🚚</div>
                                 <div>
                                     <div
                                         style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                                        Carrier</div>
+                                        Carrier Info</div>
                                     <div style="font-size:13px; font-weight:600;" id="dCarrier">FedEx</div>
+                                    <div style="font-size:12px; color:var(--text-muted);" id="dDest">New York, NY</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div id="mapPlaceholder"
+                            style="padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+                            Select a shipment to view live tracking.
                         </div>
                     </div>
                 </aside>
@@ -440,13 +471,15 @@
 
         const KEY_SHIP = "stark_erp_shipments_v1";
         let CURRENT_FILTER = "all";
+        let map = null;
+        let routeLayer = null;
+        let markerLayer = null;
 
         // Tab Logic
         function switchTab(t) {
             document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.view-section').forEach(x => x.classList.remove('active'));
 
-            // Find tab by text content is tricky, better to use index or just loop visually
             const tabs = document.querySelectorAll('.tab');
             if (t === 'overview') tabs[0].classList.add('active');
             if (t === '3pl') tabs[1].classList.add('active');
@@ -454,6 +487,11 @@
             if (t === 'tools') tabs[3].classList.add('active');
 
             document.getElementById('view-' + t).classList.add('active');
+
+            // Fix map resize issue when tab becomes visible
+            if (t === 'overview' && map) {
+                setTimeout(() => map.invalidateSize(), 300);
+            }
         }
 
         /* --- Existing Logic --- */
@@ -486,7 +524,7 @@
             const tbody = document.getElementById("sBody");
             tbody.innerHTML = "";
 
-            if (!shown.length) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted);">No shipments found.</td></tr>`;
+            if (!shown.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">No shipments found.</td></tr>`;
 
             shown.forEach(s => {
                 let badge = "badge-green";
@@ -497,7 +535,9 @@
                 tr.style.cursor = "pointer";
                 tr.onclick = () => showDetail(s);
                 tr.innerHTML = `
-                <td><strong style="color:var(--primary);">${s.id}</strong></td>
+                <td><strong style="color:var(--primary); font-family:monospace;">${s.id}</strong></td>
+                <td>${s.orderId || "—"}</td>
+                <td>${s.customer || "Unknown"}</td>
                 <td>${s.dest}</td>
                 <td>${s.eta}</td>
                 <td><span class="badge ${badge}">${s.status}</span></td>
@@ -508,43 +548,85 @@
 
         function showDetail(s) {
             document.getElementById("mapPlaceholder").style.display = "none";
+            document.getElementById("map").style.display = "block";
             document.getElementById("trackDetail").style.display = "block";
+            document.getElementById("mapStatus").style.display = "inline-flex";
+
             document.getElementById("dId").textContent = s.id;
+            document.getElementById("dOrder").textContent = s.orderId || "—";
             document.getElementById("dDest").textContent = s.dest;
             document.getElementById("dCarrier").textContent = s.carrier;
 
-            // Real Google Maps Embed
-            const mapHtml = `<iframe 
-                width="100%" 
-                height="200" 
-                frameborder="0" 
-                scrolling="no" 
-                marginheight="0" 
-                marginwidth="0" 
-                style="border-radius:12px; margin-bottom:16px; border:1px solid #e2e8f0;"
-                src="https://maps.google.com/maps?q=${encodeURIComponent(s.dest)}&t=&z=13&ie=UTF8&iwloc=&output=embed">
-            </iframe>`;
-
-            const p = document.getElementById("trackDetail");
-            // Remove existing map if present (iframe or old div)
-            if (p.firstChild.nodeName === "IFRAME" || (p.firstChild.nodeName === "DIV" && p.firstChild.innerHTML.includes("Map"))) {
-                p.firstChild.remove();
+            // Initialize Map if not exists
+            if (!map) {
+                map = L.map('map').setView([39.8283, -98.5795], 4); // Center of US
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 19
+                }).addTo(map);
             }
-            // Insert new map
-            p.insertAdjacentHTML('afterbegin', mapHtml);
+
+            // Clear previous layers
+            if (routeLayer) map.removeLayer(routeLayer);
+            if (markerLayer) map.removeLayer(markerLayer);
+
+            // Add Markers & Route
+            if (s.coords && s.route) {
+                const start = s.route[0];
+                const end = s.route[s.route.length - 1];
+                const curr = s.coords;
+
+                markerLayer = L.layerGroup([
+                    L.marker(start).bindPopup("Origin: " + s.origin),
+                    L.marker(end).bindPopup("Destination: " + s.dest),
+                    L.circleMarker(curr, { color: 'red', radius: 6 }).bindPopup("Current Location")
+                ]).addTo(map);
+
+                routeLayer = L.polyline(s.route, { color: 'blue', weight: 3, opacity: 0.7, dashArray: '10, 10' }).addTo(map);
+
+                // Fit bounds
+                map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+            } else {
+                // Fallback if no geo data
+                map.setView([39.8283, -98.5795], 4);
+                if (confirm("No geo-data for this shipment. Reset demo data?")) addShipment(true);
+            }
+
+            setTimeout(() => map.invalidateSize(), 300);
         }
 
         function addShipment(isDemo) {
             if (isDemo) {
+                // Mock Geo Data for Routes
                 const demo = [
-                    { id: "TRK-9921", dest: "Los Angeles, CA", eta: "2026-01-28", status: "In Transit", carrier: "UPS Freight" },
-                    { id: "TRK-9925", dest: "Berlin, DE", eta: "2026-02-05", status: "In Transit", carrier: "DHL Express" },
-                    { id: "TRK-8812", dest: "Tokyo, JP", eta: "2026-01-22", status: "Delivered", carrier: "Nippon Express" },
-                    { id: "TRK-7741", dest: "Chicago, IL", eta: "2026-01-26", status: "Delayed", carrier: "FedEx Ground" }
+                    {
+                        id: "TRK-9921", orderId: "SO-8820", customer: "Acme Corp",
+                        origin: "Atlanta, GA", dest: "Los Angeles, CA", eta: "2026-01-28", status: "In Transit", carrier: "UPS Freight",
+                        coords: [35.0, -100.0], // Somewhere mid-route
+                        route: [[33.7490, -84.3880], [35.0, -100.0], [34.0522, -118.2437]]
+                    },
+                    {
+                        id: "TRK-9925", orderId: "SO-8822", customer: "Globex Inc",
+                        origin: "New York, NY", dest: "Berlin, DE", eta: "2026-02-05", status: "In Transit", carrier: "DHL Express",
+                        coords: [50.0, -20.0], // Mid atlantic
+                        route: [[40.7128, -74.0060], [50.0, -20.0], [52.5200, 13.4050]]
+                    },
+                    {
+                        id: "TRK-8812", orderId: "SO-8805", customer: "Stark Ind",
+                        origin: "San Francisco, CA", dest: "Tokyo, JP", eta: "2026-01-22", status: "Delivered", carrier: "Nippon Express",
+                        coords: [35.6762, 139.6503], // Arrived
+                        route: [[37.7749, -122.4194], [35.6762, 139.6503]]
+                    },
+                    {
+                        id: "TRK-7741", orderId: "SO-8799", customer: "Wayne Ent",
+                        origin: "Miami, FL", dest: "Chicago, IL", eta: "2026-01-26", status: "Delayed", carrier: "FedEx Ground",
+                        coords: [38.0, -85.0], // Kentucky visual
+                        route: [[25.7617, -80.1918], [38.0, -85.0], [41.8781, -87.6298]]
+                    }
                 ];
-                const current = load(KEY_SHIP, []);
-                save(KEY_SHIP, [...demo, ...current]);
-                toast("Shipment Created", "Demo shipments added.");
+                save(KEY_SHIP, demo);
+                toast("Data Refreshed", "Logistics demo data loaded.");
                 render();
             }
         }
@@ -553,26 +635,24 @@
             const list = load(KEY_SHIP, []);
             if (!list.length) return toast("Export Failed", "No shipments to export.", "error");
 
-            // CSV Header
+            // Updated CSV Header
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Tracking ID,Destination,ETA,Status,Carrier\n";
+            csvContent += "Tracking ID,Order #,Customer,Destination,ETA,Status,Carrier\n";
 
-            // CSV Rows
             list.forEach(item => {
-                const row = `${item.id},"${item.dest}",${item.eta},${item.status},${item.carrier}`;
+                const row = `${item.id},${item.orderId || ""},"${item.customer || ""}", "${item.dest}",${item.eta},${item.status},${item.carrier}`;
                 csvContent += row + "\n";
             });
 
-            // Download Trigger
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "stark_shipments.csv");
+            link.setAttribute("download", "stark_logistics_manifest.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
-            toast("Export Success", "Shipment manifest downloaded.", "success");
+            toast("Export Success", "Detailed manifest downloaded.", "success");
         }
 
         // Init
