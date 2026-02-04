@@ -90,7 +90,7 @@ function escapeHtml(str) {
     nav.innerHTML = `
         <a href="dashboard.html" class="bottom-nav-item ${isHome ? 'active' : ''}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span style="font-size:10px; margin-top:2px;">Overview</span>
+            <span style="font-size:10px; margin-top:2px;">Home</span>
         </a>
         <a href="master.html" class="bottom-nav-item ${isItems ? 'active' : ''}">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
@@ -296,19 +296,229 @@ function startLiveSimulation() {
         revenueNode.style.color = "var(--success)";
         setTimeout(() => revenueNode.style.color = "", 500);
       }
-      // 20% chance to update orders
-      if (Math.random() > 0.8) {
-        let currentOrders = parseInt(orderNode.innerText) || 0;
-        orderNode.innerText = currentOrders + 1;
-      }
-    }, 5000);
-  }
 
-  scheduleNextToast();
+      /* --- CRM Data Engine (Mock) --- */
+      class CRMStore {
+        constructor() {
+          this.customers = JSON.parse(localStorage.getItem('stark_crm_customers')) || [];
+          if (this.customers.length === 0) this.seedData();
+        }
+
+        seedData() {
+          const statuses = ['Active', 'Lead', 'Churned', 'Active', 'Active']; // Weighted
+          const tiers = ['Standard', 'Gold', 'Platinum'];
+          const names = ['Acme Corp', 'Globex', 'Soylent Corp', 'Initech', 'Umbrella Corp', 'Cyberdyne', 'Massive Dynamic', 'Hooli', 'Vehement', 'Stark Ind'];
+
+          for (let i = 0; i < 50; i++) {
+            this.customers.push({
+              id: `CUST-${1000 + i}`,
+              name: names[i % names.length] + " " + (i + 1),
+              email: `contact@${names[i % names.length].toLowerCase().replace(' ', '')}.com`,
+              status: statuses[Math.floor(Math.random() * statuses.length)],
+              tier: tiers[Math.floor(Math.random() * tiers.length)],
+              spent: Math.floor(Math.random() * 50000 + 1000),
+              lastOrder: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
+              deals: Math.floor(Math.random() * 5),
+              probability: Math.floor(Math.random() * 100)
+            });
+          }
+          this.save();
+        }
+
+        save() {
+          localStorage.setItem('stark_crm_customers', JSON.stringify(this.customers));
+          window.dispatchEvent(new Event('crm-updated'));
+        }
+
+        getAll() {
+          return this.customers.sort((a, b) => new Date(b.lastOrder) - new Date(a.lastOrder));
+        }
+
+        getKPIs() {
+          const active = this.customers.filter(c => c.status === 'Active');
+          const mrr = active.reduce((sum, c) => sum + (c.spent / 12), 0); // Mock MRR from LTV
+          const deals = this.customers.reduce((sum, c) => sum + c.deals, 0);
+          const churn = this.customers.filter(c => c.status === 'Churned').length;
+          const rate = ((churn / this.customers.length) * 100).toFixed(1);
+
+          return {
+            mrr: mrr,
+            activeCount: active.length,
+            openDeals: deals,
+            churnRate: rate
+          };
+        }
+
+        search(query) {
+          if (!query) return this.getAll();
+          const lower = query.toLowerCase();
+          return this.customers.filter(c =>
+            c.name.toLowerCase().includes(lower) ||
+            c.email.toLowerCase().includes(lower) ||
+            c.id.toLowerCase().includes(lower)
+          );
+        }
+      }
+
+      // Initialize Global Instance
+      window.crmStore = new CRMStore();
+
+      let currentOrders = parseInt(orderNode.innerText) || 0;
+      orderNode.innerText = currentOrders + 1;
+    }
+    }, 5000);
+}
+
+scheduleNextToast();
 }
 
 // Start simulation on load
 document.addEventListener("DOMContentLoaded", () => {
   // Slight delay to not interfere with init
-  // setTimeout(startLiveSimulation, 2000);
+  setTimeout(startLiveSimulation, 2000);
 });
+
+/* --- CRM Data Engine (Mock) --- */
+class CRMStore {
+  constructor() {
+    this.customers = JSON.parse(localStorage.getItem('stark_crm_customers')) || [];
+    if (this.customers.length === 0) this.seedData();
+  }
+
+  seedData() {
+    const statuses = ['Active', 'Lead', 'Churned', 'Active', 'Active']; // Weighted
+    const tiers = ['Standard', 'Gold', 'Platinum'];
+    const names = ['Acme Corp', 'Globex', 'Soylent Corp', 'Initech', 'Umbrella Corp', 'Cyberdyne', 'Massive Dynamic', 'Hooli', 'Vehement', 'Stark Ind'];
+
+    for (let i = 0; i < 50; i++) {
+      this.customers.push({
+        id: `CUST-${1000 + i}`,
+        name: names[i % names.length] + " " + (i + 1),
+        email: `contact@${names[i % names.length].toLowerCase().replace(' ', '')}.com`,
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        tier: tiers[Math.floor(Math.random() * tiers.length)],
+        spent: Math.floor(Math.random() * 50000 + 1000),
+        lastOrder: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
+        deals: Math.floor(Math.random() * 5),
+        probability: Math.floor(Math.random() * 100)
+      });
+    }
+    this.save();
+  }
+
+  save() {
+    localStorage.setItem('stark_crm_customers', JSON.stringify(this.customers));
+    window.dispatchEvent(new Event('crm-updated'));
+  }
+
+  getAll() {
+    return this.customers.sort((a, b) => new Date(b.lastOrder) - new Date(a.lastOrder));
+  }
+
+  getKPIs() {
+    const active = this.customers.filter(c => c.status === 'Active');
+    const mrr = active.reduce((sum, c) => sum + (c.spent / 12), 0); // Mock MRR from LTV
+    const deals = this.customers.reduce((sum, c) => sum + c.deals, 0);
+    const churn = this.customers.filter(c => c.status === 'Churned').length;
+    const rate = ((churn / this.customers.length) * 100).toFixed(1);
+
+    return {
+      mrr: mrr,
+      activeCount: active.length,
+      openDeals: deals,
+      churnRate: rate
+    };
+  }
+
+  search(query) {
+    if (!query) return this.getAll();
+    const lower = query.toLowerCase();
+    return this.customers.filter(c =>
+      c.name.toLowerCase().includes(lower) ||
+      c.email.toLowerCase().includes(lower) ||
+      c.id.toLowerCase().includes(lower)
+    );
+  }
+}
+
+// Initialize Global Instance
+window.crmStore = new CRMStore();
+
+/* --- Collaborative Task Engine --- */
+class TaskStore {
+  constructor() {
+    this.key = "stark_erp_tasks_v2";
+    this.listeners = [];
+
+    // Listen for cross-tab updates
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.key) {
+        this.notify();
+      }
+    });
+  }
+
+  getAll() {
+    try {
+      return JSON.parse(localStorage.getItem(this.key) || "[]");
+    } catch { return []; }
+  }
+
+  save(tasks) {
+    localStorage.setItem(this.key, JSON.stringify(tasks));
+    this.notify();
+    // Dispatch local storage event for current tab
+    window.dispatchEvent(new Event('task-updates'));
+  }
+
+  add(task) {
+    const tasks = this.getAll();
+    if (!task.id) task.id = "T-" + Date.now().toString(36).toUpperCase();
+    if (!task.createdAt) task.createdAt = Date.now();
+    if (!task.status) task.status = "Open";
+    if (!task.assignees) task.assignees = [];
+
+    tasks.unshift(task);
+    this.save(tasks);
+    return task;
+  }
+
+  update(id, updates) {
+    const tasks = this.getAll();
+    const idx = tasks.findIndex(t => t.id === id);
+    if (idx === -1) return null;
+
+    tasks[idx] = { ...tasks[idx], ...updates, updatedAt: Date.now() };
+    this.save(tasks);
+    return tasks[idx];
+  }
+
+  delete(id) {
+    const tasks = this.getAll().filter(t => t.id !== id);
+    this.save(tasks);
+  }
+
+  // Collaboration: Get tasks for specific user
+  forUser(username) {
+    const all = this.getAll();
+    if (!username || username === 'Admin') return all; // Admin sees all
+    return all.filter(t => t.assignees && t.assignees.includes(username));
+  }
+
+  subscribe(callback) {
+    this.listeners.push(callback);
+    // Initial call
+    callback(this.getAll());
+    // Return unsubscribe
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== callback);
+    };
+  }
+
+  notify() {
+    const tasks = this.getAll();
+    this.listeners.forEach(cb => cb(tasks));
+  }
+}
+
+window.taskStore = new TaskStore();
