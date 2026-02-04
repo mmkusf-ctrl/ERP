@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Add Expense | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-lg);
+            background: #f8fafc;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: #fff1f2;
+        }
+
+        .suggestion-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-subtle);
+        }
+    </style>
+</head>
+
+<body><main class="container">
+        <div style="margin-bottom:24px;">
+            <a href="accounting.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600;">← Back to
+                Accounting</a>
+        </div>
+
+        <div class="grid grid-2 animate-enter">
+            <!-- Left: Form -->
+            <div class="card">
+                <h1 style="font-size:24px; font-weight:800; margin:0 0 24px 0;">Record New Expense</h1>
+
+                <div class="form-group">
+                    <label class="form-label">Vendor</label>
+                    <input class="input" placeholder="Start typing vendor..." list="vendors" />
+                    <datalist id="vendors">
+                        <datalist id="vendors">
+                            <option value="Acme Corp">
+                            <option value="Stark Industries">
+                            <option value="Globex Corporation">
+                            <option value="Office Depot">
+                            <option value="FedEx">
+                        </datalist>
+                    </datalist>
+                    <div style="margin-top:12px;">
+                        <span
+                            style="font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; margin-right:8px;">Suggestions:</span>
+                        <div class="suggestion-chip">+ Office Depot</div>
+                        <div class="suggestion-chip">+ FedEx</div>
+                        <div class="suggestion-chip">+ WeWork</div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label class="form-label">Invoice Date</label>
+                        <input type="date" class="input" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="input" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Total Amount</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute; left:16px; top:12px; color:#999;">$</span>
+                        <input type="number" class="input" style="padding-left:32px; font-weight:700;"
+                            placeholder="0.00" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">GL Account</label>
+                    <select class="input">
+                        <option>6000 - Office Expenses</option>
+                        <option>6100 - Travel & Entertainment</option>
+                        <option>6200 - Software Subscriptions</option>
+                        <option>5000 - COGS</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description / Memo</label>
+                    <textarea class="input" style="height:100px; padding-top:12px;"
+                        placeholder="Optional notes..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" style="width:100%;">Create Expense Record</button>
+            </div>
+
+            <!-- Right: Upload -->
+            <div class="card" style="background:white;">
+                <h3 style="font-size:16px; font-weight:700; margin:0 0 16px 0;">Receipt / Invoice Copy</h3>
+                <div class="upload-zone" id="dropZone">
+                    <input type="file" id="fileInput" hidden accept="image/*,application/pdf" />
+                    <div id="uploadContent">
+                        <div style="font-size:40px; margin-bottom:16px;">📄</div>
+                        <div style="font-weight:600; color:var(--text-main); margin-bottom:4px;">Upload Invoice</div>
+                        <p style="font-size:13px; color:var(--text-muted); margin:0;" id="uploadText">Drag and drop PDF
+                            or Image here<br><span style="font-size:11px; opacity:0.7;">(or paste from clipboard)</span>
+                        </p>
+                        <button class="btn btn-sm btn-secondary" style="margin-top:16px;"
+                            onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top:24px; padding:16px; background:#f0fdf4; border-radius:12px; border:1px solid #bbf7d0;">
+                    <div style="font-size:12px; font-weight:700; color:#15803d; margin-bottom:4px;">TIP</div>
+                    <p style="font-size:12px; color:#166534; margin:0;">Upload the invoice first and our AI will attempt
+                        to auto-fill the details for you.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script src="erp.js"></script>
+    <script>
+        // Chip Interaction
+        document.querySelectorAll('.suggestion-chip').forEach(chip => {
+            chip.onclick = () => {
+                const vendorName = chip.innerText.replace('+', '').trim();
+                document.querySelector('input[list="vendors"]').value = vendorName;
+            }
+        });
+
+        // File Upload Logic
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadText = document.getElementById('uploadText');
+
+        // Browse
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag & Drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--primary)';
+            dropZone.style.background = '#fff1f2';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e1';
+            dropZone.style.background = '#f8fafc';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e1';
+            dropZone.style.background = '#f8fafc';
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Paste
+        document.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file') {
+                    const file = items[i].getAsFile();
+                    handleFile(file);
+                    break;
+                }
+            }
+        });
+
+        function handleFileSelect(e) {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        }
+
+        function handleFile(file) {
+            console.log('File captured:', file.name);
+            uploadText.innerHTML = `<strong>${file.name}</strong><br><span style="color:#15803d;">Ready to upload</span>`;
+            toast('File Attached', `Captured ${file.name}`, 'success');
+
+            // Simulating AI extraction
+            setTimeout(() => {
+                // Only fill if empty to avoid overwriting user input
+                if (!document.querySelector('input[list="vendors"]').value) {
+                    toast('AI Auto-Fill', 'Extracted Vendor: Acme Corp', 'info');
+                    document.querySelector('input[list="vendors"]').value = "Acme Corp";
+                    document.querySelector('input[type="number"]').value = "1240.50";
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
