@@ -18,7 +18,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
             background: white;
             color: var(--text-muted);
             transition: all 0.2s;
@@ -28,17 +28,20 @@
         .pill-filter:hover {
             background: #f8fafc;
             color: var(--text-main);
+            border-color: var(--text-muted);
         }
 
         .pill-filter.active {
-            background: #6366f1;
+            background: var(--primary);
+            /* Pink/Red from global */
             color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
         .sku-img-thumb {
-            width: 40px;
-            height: 40px;
+            width: 80px;
+            height: 80px;
             border-radius: 8px;
             object-fit: cover;
             background: #f1f5f9;
@@ -50,9 +53,10 @@
         }
 
         .master-row:hover {
-            transform: scale(1.005);
-            background-color: #f8fafc;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: scale(1.00);
+            /* Removed scale effect for cleaner look */
+            background-color: var(--hover-bg) !important;
+            box-shadow: none;
             z-index: 10;
             position: relative;
         }
@@ -68,9 +72,10 @@
                 <img src="images/stark-logo.png" alt="Stark Premium">
                 <span class="logo-text">Stark ERP</span>
             </a>
+
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="master.html">Items</a>
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link active" href="master.html">Master</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -81,10 +86,14 @@
                 <a class="nav-link" href="reports.html">Reports</a>
                 <a class="nav-link" href="events.html">Events</a>
             </nav>
+
             <div style="display:flex; align-items:center; gap:12px;">
                 <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-                    Online</div>
-                <button class="hamburger" onclick="openMobileNav()">☰</button>
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
     </header>
@@ -95,11 +104,18 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                 <strong style="font-size:16px;">Navigation</strong>
                 <button onclick="closeMobileNav()"
-                    style="background:none; border:none; font-size:24px;">&times;</button>
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link active" href="master.html">Items</a>
+            <a class="mobile-link" href="dashboard.html">Home</a>
+            <a class="mobile-link active" href="master.html">Master</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link" href="accounting.html">Accounting</a>
+            <a class="mobile-link" href="orders.html">Orders</a>
+            <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="trends.html">Trends</a>
         </div>
     </div>
 
@@ -120,197 +136,155 @@
             </button>
         </div>
 
-        <!-- KPI Header -->
-        <div
-            style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:24px; margin-bottom:32px;">
-            <!-- Low Inventory -->
-            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
-                <div
-                    style="width:48px; height:48px; border-radius:12px; background:#fff1f2; color:#be123c; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    �</div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Low Inventory
-                        SKUs</div>
-                    <div id="kpiLow" style="font-size:24px; font-weight:800; color:#be123c;">--</div>
-                </div>
-            </div>
-
-            <!-- Dead Stock Value -->
-            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
-                <div
-                    style="width:48px; height:48px; border-radius:12px; background:#f1f5f9; color:#475569; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    �️</div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Dead Stock
-                        Value</div>
-                    <div id="kpiDead" style="font-size:24px; font-weight:800; color:#1e293b;">--</div>
-                </div>
-            </div>
-
-            <!-- Brands No Sales -->
-            <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
-                <div
-                    style="width:48px; height:48px; border-radius:12px; background:#fff7ed; color:#c2410c; display:flex; align-items:center; justify-content:center; font-size:20px;">
-                    ⚠️</div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Stagnant
-                        Brands (3mo)</div>
-                    <div id="kpiStagnant" style="font-size:24px; font-weight:800; color:#9a3412;">--</div>
-                </div>
-            </div>
-        </div>
+        <!-- KPI Header Removed -->
 
         <!-- Controls & Filters -->
         <div style="margin-bottom:24px; display:flex; flex-direction:column; gap:16px;">
 
-            <!-- Search & Basic -->
-            <div class="card-soft" style="padding:12px; display:flex; gap:12px; align-items:center;">
-                <div style="position:relative; flex:1;">
-                    <span
-                        style="position:absolute; left:16px; top:50%; transform:translateY(-50%); opacity:0.4;">🔍</span>
-                    <input id="qSearch" class="input" placeholder="Search by SKU, Name, or Brand..." oninput="render()"
-                        style="padding-left:42px; height:48px; border:none; background:#f8fafc; font-size:14px;">
+            <!-- Search & Advanced Filters -->
+            <div class="card-soft" style="padding:24px; margin-bottom:24px;">
+                <div
+                    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:20px; align-items:end;">
+                    <div>
+                        <label
+                            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Model
+                            #</label>
+                        <input id="qModel" class="input" placeholder="e.g. 8421..." oninput="smartSearch()"
+                            style="background:#f8fafc;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Item
+                            Title</label>
+                        <input id="qTitle" class="input" placeholder="e.g. Necklace..." oninput="smartSearch()"
+                            style="background:#f8fafc;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Brand</label>
+                        <input id="qBrand" class="input" list="dlBrands" placeholder="e.g. Gucci..."
+                            oninput="updateModelList(); smartSearch()" style="background:#f8fafc;">
+                        <datalist id="dlBrands"></datalist>
+                    </div>
+                    <div style="padding-bottom:12px;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <input type="checkbox" id="qDisc" onchange="smartSearch()"
+                                style="width:18px; height:18px; accent-color:var(--primary);">
+                            <span style="font-size:13px; font-weight:600; color:var(--text-main);">Include
+                                Discontinued</span>
+                        </label>
+                    </div>
+                    <div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-secondary" onclick="exportData()"
+                                style="flex:1; padding:0 10px; font-size:13px;">Export</button>
+                            <button class="btn" onclick="clearSearch()"
+                                style="flex:1; background:var(--primary); color:white; padding:0 10px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                <span>Clear</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div style="width:1px; height:24px; background:#e2e8f0;"></div>
-                <button class="btn btn-secondary" onclick="exportData()" style="height:48px; padding:0 20px;">Export
-                    CSV</button>
             </div>
 
-            <!-- Dynamic Pills -->
-            <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                <div style="font-size:12px; font-weight:700; color:#64748b; margin-right:8px;">STATUS:</div>
-                <div class="pill-filter active" onclick="setFilter(this, '')">All</div>
-                <div class="pill-filter" onclick="setFilter(this, 'Live')">Live</div>
-                <div class="pill-filter" onclick="setFilter(this, 'Fashion')">Fashion</div>
-                <div class="pill-filter" onclick="setFilter(this, 'Internal Use')">Internal</div>
-                <div class="pill-filter" onclick="setFilter(this, 'Discontinued')">Discontinued</div>
+            <!-- Data Table -->
+            <div class="card-soft table-container" style="padding:0; overflow:hidden;">
+                <table id="itemTable">
+                    <thead>
+                        <tr
+                            style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
+                            <th style="padding:16px 24px;">Image</th>
+                            <th style="padding:16px;">Product Info</th>
+                            <th style="padding:16px;">Brand / Vendor</th>
+                            <th style="padding:16px;">Category</th>
+                            <th style="padding:16px;">Status</th>
+                            <th style="padding:16px; text-align:right;">HOLD</th>
+                            <th style="padding:16px; text-align:right;">Avail</th>
+                            <th style="padding:16px; text-align:right;">Upcoming</th>
+                            <th style="padding:16px;">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
             </div>
-        </div>
 
-        <!-- Data Table -->
-        <div class="card-soft table-container" style="padding:0; overflow:hidden;">
-            <table id="itemTable">
-                <thead>
-                    <tr
-                        style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
-                        <th style="padding:16px 24px;">Image</th>
-                        <th style="padding:16px;">Product Info</th>
-                        <th style="padding:16px;">Brand / Vendor</th>
-                        <th style="padding:16px;">Category</th>
-                        <th style="padding:16px;">Status</th>
-                        <th style="padding:16px; text-align:right;">OH</th>
-                        <th style="padding:16px; text-align:right;">Hold</th>
-                        <th style="padding:16px;">Cost</th>
-                        <th style="padding:16px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-        </div>
-
-        <div style="padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-            &copy; 2026 Stark Premium ERP
-        </div>
+            <div style="padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+                &copy; 2026 Stark Premium ERP
+            </div>
 
     </main>
 
     <!-- Add Item Modal -->
-    <div class="mobile-nav" id="itemModal"
-        style="z-index:900; display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-        <div class="card"
-            style="width:min(90%, 600px); max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card); padding:32px; background:white; border-radius:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h2 style="margin:0; font-size:20px;">SKU Details</h2>
-                <button onclick="closeModal()"
-                    style="border:none; background:transparent; font-size:24px; cursor:pointer; color:#94a3b8;">&times;</button>
-            </div>
-
-            <div style="display:grid; gap:20px;">
-
-                <!-- Image Input -->
-                <div style="display:flex; gap:16px; align-items:center;">
-                    <div id="imgPreview"
-                        style="width:64px; height:64px; border-radius:12px; background:#f1f5f9; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:24px; overflow:hidden;">
-                        📷
-                    </div>
-                    <div style="flex:1;">
-                        <label
-                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Image
-                            URL</label>
-                        <input id="iImg" class="input" placeholder="https://..." oninput="updatePreview(this.value)">
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <div>
-                        <label
-                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">SKU</label>
-                        <input id="iSku" class="input" placeholder="e.g. A-101">
-                    </div>
-                    <div>
-                        <label
-                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Model
-                            #</label>
-                        <input id="iModel" class="input" placeholder="e.g. M-202X">
-                    </div>
-                </div>
-
-                <div>
-                    <label
-                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Title
-                        / Name</label>
-                    <input id="iName" class="input" placeholder="Product Name">
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <div>
-                        <label
-                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Brand</label>
-                        <select id="iBrand" class="input">
-                            <option>Stark Mfg</option>
-                            <option>LuxeGold</option>
-                            <option>Urban Wear</option>
-                            <option>TechNova</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label
-                            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Status</label>
-                        <select id="iStatus" class="input">
-                            <option value="Live">Live</option>
-                            <option value="Fashion">Fashion</option>
-                            <option value="Feeds Only">Feeds Only</option>
-                            <option value="Internal Use">Internal Use</option>
-                            <option value="Discontinued">Discontinued</option>
-                            <option value="Presentation">Presentation</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div
-                    style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; background:#f8fafc; padding:16px; border-radius:12px;">
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:#64748b;">Cost</label>
-                        <input id="iCost" class="input" type="number" step="0.01">
-                    </div>
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:#64748b;">On Hand</label>
-                        <input id="iOn" class="input" type="number" value="0">
-                    </div>
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:#64748b;">Hold</label>
-                        <input id="iHold" class="input" type="number" value="0">
-                    </div>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px;">
-                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button class="btn btn-primary" onclick="saveItem()" style="background:#6366f1; border:none;">Save
-                        SKU</button>
-                </div>
-            </div>
-
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+            <label
+                style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">SKU</label>
+            <input id="iSku" class="input" placeholder="e.g. A-101">
         </div>
+        <div>
+            <label
+                style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Model
+                #</label>
+            <input id="iModel" class="input" placeholder="e.g. M-202X">
+        </div>
+    </div>
+
+    <div>
+        <label
+            style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Title
+            / Name</label>
+        <input id="iName" class="input" placeholder="Product Name">
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+            <label
+                style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Brand</label>
+            <select id="iBrand" class="input">
+                <option>Stark Mfg</option>
+                <option>LuxeGold</option>
+                <option>Urban Wear</option>
+                <option>TechNova</option>
+            </select>
+        </div>
+        <div>
+            <label
+                style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:6px;">Status</label>
+            <select id="iStatus" class="input">
+                <option value="Live">Live</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Feeds Only">Feeds Only</option>
+                <option value="Internal Use">Internal Use</option>
+                <option value="Discontinued">Discontinued</option>
+                <option value="Presentation">Presentation</option>
+            </select>
+        </div>
+    </div>
+
+    <div
+        style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; background:#f8fafc; padding:16px; border-radius:12px;">
+        <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b;">Cost</label>
+            <input id="iCost" class="input" type="number" step="0.01">
+        </div>
+        <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b;">On Hand</label>
+            <input id="iOn" class="input" type="number" value="0">
+        </div>
+        <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b;">Hold</label>
+            <input id="iHold" class="input" type="number" value="0">
+        </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px;">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveItem()" style="background:#6366f1; border:none;">Save
+            SKU</button>
+    </div>
+    </div>
+
+    </div>
     </div>
 
     <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
@@ -324,123 +298,257 @@
         function saveItems(list) { localStorage.setItem(ITEM_KEY, JSON.stringify(list)); }
 
         // Seed Data
-        (function seed() {
-            const items = loadItems();
-            if (items.length < 5) {
-                const demo = [
-                    { sku: "BX-9001", image: "https://placehold.co/100/e0e7ff/6366f1?text=BX", model: "BX-900", name: "Premium Gift Box", brand: "Stark Mfg", vendor: "PackPro", status: "Live", cat: "Packaging", on: 140, hold: 10, cost: 1.60, lastSale: "2026-01-20" },
-                    { sku: "NK-1001", image: "https://placehold.co/100/fce7f3/be123c?text=NK", model: "NK-AUR", name: "Necklace — Aurora", brand: "LuxeGold", vendor: "GoldSmiths", status: "Fashion", cat: "Jewelry", on: 62, hold: 0, cost: 42.00, lastSale: "2025-10-01" }, // > 3 months
-                    { sku: "RG-2001", image: "https://placehold.co/100/fef3c7/b45309?text=RG", model: "RG-OBS", name: "Ring — Obsidian", brand: "LuxeGold", vendor: "GoldSmiths", status: "Presentation", cat: "Jewelry", on: 0, hold: 2, cost: 38.00, lastSale: "2025-09-15" },
-                    { sku: "TS-5544", image: "https://placehold.co/100/f1f5f9/64748b?text=TS", model: "TS-VNT", name: "Vintage Tee", brand: "Urban Wear", vendor: "Textico", status: "Discontinued", cat: "Apparel", on: 12, hold: 0, cost: 8.50, lastSale: "2024-01-01" }, // Dead
-                    { sku: "IP-1234", image: "https://placehold.co/100/dbeafe/1e40af?text=IP", model: "16-PM", name: "iPhone 16 Pro Max", brand: "TechNova", vendor: "Apple Dist", status: "Live", cat: "Electronics", on: 5, hold: 5, cost: 1099.00, lastSale: "2026-01-22" }
-                ];
-                saveItems([...demo, ...items]);
-            }
+        // Demo Data Logic
+        const BRANDS_DATA = [
+            { sku: "KS-NE-001", model: "842177145029", name: "Elisa Pendant Necklace - Gold Iridescent Drusy", brand: "Kendra Scott", cat: "Jewelry", cost: 28.00, price: 65.00, on: 150, image: "https://images.kendrascott.com/image/upload/q_auto,f_auto,dpr_auto/w_800,c_fit/d_placeholder_product.jpg/products/842177145029.jpg" },
+            { sku: "KS-EA-002", model: "842177017371", name: "Elle Drop Earrings - Gold Turquoise", brand: "Kendra Scott", cat: "Jewelry", cost: 32.00, price: 70.00, on: 85, image: "https://images.kendrascott.com/image/upload/w_800,c_fit/products/842177017371.jpg" },
+            { sku: "CE-SH-001", model: "CE-BAM-QS", name: "Bamboo Sheet Set - Queen / White", brand: "Cozy Earth", cat: "Home Goods", cost: 120.00, price: 319.00, on: 50 },
+            { sku: "LP-DR-001", model: "007892", name: "Kristen Swing Dress - Pink Tropics", brand: "Lilly Pulitzer", cat: "Apparel", cost: 45.00, price: 118.00, on: 60 },
+            { sku: "GU-BG-001", model: "443497 DTD1T 1000", name: "GG Marmont Small Matelassé Shoulder Bag", brand: "Gucci", cat: "Accessories", cost: 1200.00, price: 2550.00, on: 12 },
+            { sku: "GU-BT-002", model: "406831 DJ20T 1000", name: "Double G Leather Belt", brand: "Gucci", cat: "Accessories", cost: 210.00, price: 520.00, on: 45 },
+            { sku: "PR-SG-001", model: "PR 17WS", name: "Symbole Sunglasses - Black", brand: "Prada", cat: "Accessories", cost: 190.00, price: 520.00, on: 35 },
+            { sku: "CU-FP-001", model: "DLC-2A", name: "Mini-Prep Plus Food Processor", brand: "Cuisinart", cat: "Home Goods", cost: 22.00, price: 49.95, on: 90 },
+            { sku: "BU-SC-001", model: "8010111", name: "Classic Check Cashmere Scarf", brand: "Burberry", cat: "Apparel", cost: 210.00, price: 550.00, on: 40 },
+            { sku: "YSL-BG-001", model: "612544", name: "Lou Camera Bag in Quilted Leather", brand: "Yves Saint Laurent", cat: "Accessories", cost: 750.00, price: 1690.00, on: 15 },
+            { sku: "NF-CN-001", model: "NEST-BAM-3W", name: "Bamboo 3-Wick Candle", brand: "Nest Fragrances", cat: "Home Goods", cost: 32.00, price: 80.00, on: 100 },
+            { sku: "LN-BG-001", model: "LN-ORIG-BK", name: "The Origami Backpack - Black", brand: "Lux & Nyx", cat: "Accessories", cost: 95.00, price: 228.00, on: 50 }
+        ];
+
+        function forceSeed() {
+            if (!confirm("Resetting will clear all existing data and load the Brand Demo set. Continue?")) return;
+            localStorage.removeItem(ITEM_KEY);
+            localStorage.removeItem("stark_erp_pos_v1");
+            localStorage.removeItem("stark_erp_orders_v1");
+            localStorage.removeItem("stark_events_v1");
+            localStorage.removeItem("stark_allocated_items");
+
+            seedFullData();
+            window.location.reload();
+        }
+
+        function seedFullData() {
+            // ITEMS
+            const items = BRANDS_DATA.map(b => ({
+                ...b,
+                status: "Live",
+                wh: "WH-A",
+                sup: "Direct",
+                hold: 0,
+                rop: 10,
+                lastSale: "2026-01-20",
+                image: b.image || "https://placehold.co/100/e0e7ff/6366f1?text=" + b.sku.substring(0, 2),
+                feeds: [],
+                vendors: [],
+                attrs: []
+            }));
+            saveItems(items);
+
+            // POs
+            // POs
+            const pos = [
+                // Scenario 1: On Track (Future ETA) -> Kendra Scott -> Should be Top Rated
+                { id: "PO-8001", vendor: "Kendra Scott Wholesale", status: "Open", eta: "2026-02-15", items: [{ sku: "KS-NE-001", qty: 50 }, { sku: "KS-EA-002", qty: 30 }] },
+
+                // Scenario 2: Late (Past ETA) -> Gucci -> Should be At Risk
+                { id: "PO-8002", vendor: "Gucci Supply", status: "Open", eta: "2026-01-15", items: [{ sku: "GU-BG-001", qty: 5 }] },
+
+                // Scenario 3: Late (Past ETA) -> Global Home -> Should be At Risk
+                { id: "PO-8003", vendor: "Global Home", status: "Open", eta: "2026-01-20", items: [{ sku: "CE-SH-001", qty: 20 }] },
+
+                // Scenario 4: On Track -> Prada -> Should be Top Rated
+                { id: "PO-8004", vendor: "Prada Group", status: "Approved", eta: "2026-03-01", items: [{ sku: "PR-SG-001", qty: 10 }] }
+            ];
+            localStorage.setItem("stark_erp_pos_v1", JSON.stringify(pos));
+
+            // Orders
+            const orders = [
+                { id: "ORD-5001", cust: "Nordstrom", date: "2026-01-26", total: 4500, status: "Validated", items: [] },
+                { id: "ORD-5002", cust: "Neiman Marcus", date: "2026-01-27", total: 12000, status: "Processing", items: [] },
+                { id: "ORD-5003", cust: "Saks Fifth Ave", date: "2026-01-28", total: 8200, status: "On Hold", items: [] }
+            ];
+            localStorage.setItem("stark_erp_orders_v1", JSON.stringify(orders));
+
+            console.log("Demo Data Loaded");
+        }
+
+        // Auto-Run if empty
+        (function initSeed() {
+            const i = loadItems();
+            if (i.length < 5) seedFullData();
         })();
 
-        // Filter Logic
-        function setFilter(el, status) {
-            document.querySelectorAll('.pill-filter').forEach(e => e.classList.remove('active'));
-            el.classList.add('active');
-            activeStatus = status;
+        // Autocomplete Logic
+        function updateModelList() {
+            const list = loadItems();
+            const brandVal = (document.getElementById("qBrand").value || "").toLowerCase();
+
+            // Brands List
+            const brands = [...new Set(list.map(i => i.brand).filter(Boolean))].sort();
+            const dlBrands = document.getElementById("dlBrands");
+            if (dlBrands && dlBrands.children.length === 0) { // Only specific logic if needed, but lets just rebuild or check
+                dlBrands.innerHTML = brands.map(b => `<option value="${b}">`).join("");
+            }
+
+            // Models List (Filtered by Brand)
+            const dlModels = document.getElementById("dlModels");
+            let modelItems = list;
+            if (brandVal) {
+                modelItems = list.filter(i => (i.brand || "").toLowerCase().includes(brandVal));
+            }
+
+            // Extract unique models
+            const models = [...new Set(modelItems.map(i => i.model).filter(Boolean))].sort();
+            dlModels.innerHTML = models.map(m => `<option value="${m}">`).join("");
+        }
+
+        // Clear
+        function clearSearch() {
+            document.getElementById("qModel").value = "";
+            document.getElementById("qTitle").value = "";
+            document.getElementById("qBrand").value = "";
+            document.getElementById("qDisc").checked = false;
+            updateModelList();
             render();
         }
 
+        // PO Logic Helper
+        function getOpenPoQty(sku) {
+            try {
+                const pos = JSON.parse(localStorage.getItem("stark_erp_pos_v1") || "[]");
+                let qty = 0;
+                pos.forEach(p => {
+                    if (p.status !== 'Completed' && p.status !== 'Cancelled' && p.items) {
+                        const line = p.items.find(l => l.sku === sku);
+                        if (line) qty += parseInt(line.qty || 0);
+                    }
+                });
+                return qty;
+            } catch { return 0; }
+        }
+
+        // Smart search with debouncing
+        let searchTimeout;
+        function smartSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                render();
+            }, 300); // 300ms debounce for smooth typing
+        }
+
         function render() {
+            updateModelList();
             const list = loadItems();
-            const q = (document.getElementById("qSearch").value || "").toLowerCase();
+            const allocatedItems = JSON.parse(localStorage.getItem('stark_allocated_items') || "[]");
+
+            // Inputs
+            const qModel = (document.getElementById("qModel").value || "").toLowerCase().trim();
+            const qTitle = (document.getElementById("qTitle").value || "").toLowerCase().trim();
+            const qBrand = (document.getElementById("qBrand").value || "").toLowerCase().trim();
+            const qDisc = document.getElementById("qDisc").checked;
 
             const tbody = document.getElementById("tbody");
             tbody.innerHTML = "";
 
+            // Check if any search criteria is entered
+            const hasSearchCriteria = qModel || qTitle || qBrand;
+
+            // If no search criteria, show default empty state
+            if (!hasSearchCriteria) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:60px; color:var(--text-muted);">
+                    <div style="font-size:48px; margin-bottom:16px;">🔍</div>
+                    <div style="font-size:16px; font-weight:600; margin-bottom:8px;">Start searching for items</div>
+                    <div style="font-size:13px;">Enter a brand, model, or item title to view results</div>
+                </td></tr>`;
+                return;
+            }
+
             const filtered = list.filter(i => {
-                if (activeStatus && i.status !== activeStatus) return false;
-                if (q) {
-                    const txt = [i.sku, i.model, i.name].join(" ").toLowerCase();
-                    if (!txt.includes(q)) return false;
+                // Discontinued Filter (checkbox = include)
+                if (!qDisc && i.status === 'Discontinued') return false;
+
+                // Smart Search Logic
+                // Brand search: Show all items under that brand
+                if (qBrand) {
+                    const brandMatch = (i.brand || "").toLowerCase().includes(qBrand);
+                    if (!brandMatch) return false;
+
+                    // If only brand is specified, show all items of that brand
+                    if (!qModel && !qTitle) return true;
                 }
+
+                // Model search: Exact or partial match on model/SKU
+                if (qModel) {
+                    const modelMatch = (i.model || "").toLowerCase().includes(qModel) ||
+                        (i.sku || "").toLowerCase().includes(qModel);
+                    if (!modelMatch) return false;
+                }
+
+                // Title search: Partial match on item name
+                if (qTitle && !(i.name || "").toLowerCase().includes(qTitle)) return false;
+
                 return true;
             });
 
-            // Update KPIs
-            // Low Inventory: on < 10
-            document.getElementById("kpiLow").textContent = list.filter(i => i.on < 10 && i.status === 'Live').length;
-
-            // Dead Stock: No sales in 3 months (90 days)
-            const today = new Date();
-            const ninetyDaysAgo = new Date(today.getTime() - (90 * 24 * 60 * 60 * 1000));
-
-            const deadItems = list.filter(i => {
-                if (!i.lastSale) return false; // Assume new if no date, or treat as dead? Treating as safe for now.
-                return new Date(i.lastSale) < ninetyDaysAgo;
-            });
-            const deadValue = deadItems.reduce((acc, i) => acc + (i.on * i.cost), 0);
-            document.getElementById("kpiDead").textContent = window.formatMoney(deadValue);
-
-            // Stagnant Brands: Brands where ALL items have no sales in 3 months
-            const brands = [...new Set(list.map(i => i.brand).filter(Boolean))];
-            let stagnantCount = 0;
-
-            brands.forEach(b => {
-                const bItems = list.filter(i => i.brand === b);
-                if (bItems.length === 0) return;
-
-                const allStale = bItems.every(i => {
-                    if (!i.lastSale) return true; // No sale ever = stale
-                    return new Date(i.lastSale) < ninetyDaysAgo;
-                });
-
-                if (allStale) stagnantCount++;
-            });
-
-            document.getElementById("kpiStagnant").textContent = stagnantCount;
-
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:var(--text-muted); font-size:14px;">No items match your search.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:60px; color:var(--text-muted);">
+                    <div style="font-size:48px; margin-bottom:16px;">📭</div>
+                    <div style="font-size:16px; font-weight:600; margin-bottom:8px;">No items found</div>
+                    <div style="font-size:13px;">Try adjusting your search criteria</div>
+                </td></tr>`;
                 return;
             }
 
             filtered.forEach(i => {
+                // Calcs
+                const onHand = parseInt(i.on || 0);
+                const hold = parseInt(i.hold || 0);
+                const avail = onHand - hold;
+                const openPo = getOpenPoQty(i.sku);
+                const upcoming = avail + openPo;
+
                 const tr = document.createElement("tr");
                 tr.className = "master-row";
                 tr.style.borderBottom = "1px solid #f1f5f9";
-                tr.onclick = (e) => {
-                    if (e.target.tagName === 'BUTTON') return;
-                    // window.location.href = `item_detail.html?sku=${i.sku}`; // Keeping simple for now
-                    editItem(i.sku);
-                };
+                tr.onclick = (e) => { editItem(i.sku); };
 
                 let sClass = "status-live";
                 if (i.status === "Fashion") sClass = "status-fashion";
-                if (i.status === "Internal Use") sClass = "status-internal";
-                if (i.status === "Discontinued") sClass = "status-discontinued";
-                if (i.status === "Feeds Only") sClass = "status-feeds";
-                if (i.status === "Presentation") sClass = "status-presentation";
+                if (i.status === "Discontinued") sClass = "status-disco";
+                if (i.status === "Presentation" || i.status === "Internal Use") sClass = "status-internal";
 
                 const imgUrl = i.image || `https://placehold.co/40/e2e8f0/94a3b8?text=${i.sku.substring(0, 2)}`;
 
+                // Check allocation
+                const isAllocated = allocatedItems.includes(i.name) || allocatedItems.includes(i.sku);
+
                 tr.innerHTML = `
-                <td style="padding:16px 24px;">
-                    <img src="${imgUrl}" class="sku-img-thumb" alt="SKU">
-                </td>
-                <td style="padding:16px;">
-                    <div style="font-weight:700; font-size:14px; color:#1e293b; margin-bottom:2px;">${i.sku}</div>
-                    <div style="font-size:13px; color:#64748b; margin-bottom:2px;">${i.name}</div>
-                    <div style="font-size:11px; color:#94a3b8;">${i.model || "—"}</div>
-                </td>
-                <td style="padding:16px;">
-                    <div style="font-weight:600; font-size:13px; color:#334155;">${i.brand || "—"}</div>
-                    <div style="font-size:11px; color:#94a3b8;">${i.vendor || "—"}</div>
-                </td>
-                <td style="padding:16px; font-size:13px; color:#475569;">${i.cat || "—"}</td>
-                <td style="padding:16px;"><span class="status-badge ${sClass}">${i.status}</span></td>
-                <td style="padding:16px; text-align:right; font-weight:600; color:#334155;">${i.on}</td>
-                <td style="padding:16px; text-align:right; color:#f59e0b; font-weight:600;">${i.hold || 0}</td>
-                <td style="padding:16px; font-variant-numeric: tabular-nums;">${window.formatMoney(i.cost)}</td>
-                <td style="padding:16px;">
-                    <button class="btn btn-secondary" style="height:32px; font-size:12px; border-radius:8px;" onclick="editItem('${i.sku}')">Edit</button>
-                </td>
-            `;
+                    <td style="padding:64px 24px;">
+                        <img src="${imgUrl}" class="sku-img-thumb" alt="SKU">
+                    </td>
+                    <td style="padding:64px 16px;">
+                        <div style="font-weight:700; font-size:14px; color:#1e293b; margin-bottom:2px;">
+                            ${i.sku}
+                            ${isAllocated ?
+                        `<a href="events.html?item=${encodeURIComponent(i.name)}" onclick="event.stopPropagation()" style="text-decoration:none;"><span style="background:#6366f1; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:6px; vertical-align:middle; cursor:pointer;" title="View in Events">E</span></a>`
+                        : ''}
+                        </div>
+                        <div style="font-size:13px; color:#64748b; margin-bottom:2px;">${i.name}</div>
+                        <div style="font-size:11px; color:#94a3b8;">${i.model || "—"}</div>
+                    </td>
+                    <td style="padding:64px 16px;">
+                        <div style="font-weight:600; font-size:13px; color:#334155;">${i.brand || "—"}</div>
+                        <div style="font-size:11px; color:#94a3b8;">${i.vendor || "—"}</div>
+                    </td>
+                    <td style="padding:64px 16px; font-size:13px; color:#475569;">${i.cat || "—"}</td>
+                    <td style="padding:64px 16px;"><span class="status-badge ${sClass}">${i.status}</span></td>
+                    <td style="padding:64px 16px; text-align:right; font-weight:600; color:#334155;">${hold}</td>
+                    <td style="padding:64px 16px; text-align:right; font-weight:700; color:var(--success);">${avail}</td>
+                    <td style="padding:64px 16px; text-align:right;">
+                        <div style="font-weight:700; color:var(--primary);">${upcoming}</div>
+                        <div style="font-size:10px; color:var(--text-muted);">(${openPo} PO)</div>
+                    </td>
+                    <td style="padding:64px 16px; font-variant-numeric: tabular-nums;">${window.formatMoney ? window.formatMoney(i.cost) : '$' + Number(i.cost).toFixed(2)}</td>
+                `;
                 tbody.appendChild(tr);
             });
         }
@@ -455,21 +563,7 @@
         function closeModal() { document.getElementById("itemModal").style.display = "none"; }
 
         function editItem(sku) {
-            const list = loadItems();
-            const i = list.find(x => x.sku === sku);
-            if (i) {
-                document.getElementById("iSku").value = i.sku;
-                document.getElementById("iModel").value = i.model || "";
-                document.getElementById("iName").value = i.name;
-                document.getElementById("iBrand").value = i.brand || "Stark Mfg";
-                document.getElementById("iStatus").value = i.status || "Live";
-                document.getElementById("iImg").value = i.image || "";
-                updatePreview(i.image);
-                document.getElementById("iOn").value = i.on;
-                document.getElementById("iHold").value = i.hold || 0;
-                document.getElementById("iCost").value = i.cost;
-                document.getElementById("itemModal").style.display = "flex";
-            }
+            window.location.href = `item_edit.html?sku=${sku}`;
         }
 
         function exportData() {
@@ -487,7 +581,9 @@
             toast("Export", "CSV Downloaded");
         }
 
-        render();
+        // Initialize: Populate datalists but show empty state
+        updateModelList();
+        render(); // Will show "Start searching" message since no search criteria
     </script>
 </body>
 
