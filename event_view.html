@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Event Details | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .label-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .section-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+
+<body><main class="container">
+        <div id="loading" style="text-align:center; padding:100px;">Loading Event...</div>
+
+        <div id="content" style="display:none;">
+            <div class="page-header" style="flex-direction:row; justify-content:space-between; align-items:end;">
+                <div>
+                    <div
+                        style="font-size:12px; font-weight:700; color:var(--primary); text-transform:uppercase; margin-bottom:8px; letter-spacing:0.5px;">
+                        Event Details</div>
+                    <h1 class="page-title" id="eName">Event Name</h1>
+                    <p class="page-desc" id="eId">ID: Loading...</p>
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <span class="badge badge-purple" id="eStatus">Scheduled</span>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+
+                <!-- Left: Details & Items -->
+                <div class="card">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:24px;">
+                        <div>
+                            <div class="label-title">Customer</div>
+                            <div class="data-value" id="eCustomer">--</div>
+                        </div>
+                        <div>
+                            <div class="label-title">In-Hands Date</div>
+                            <div class="data-value" id="eDate">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Addr -->
+                    <div class="section-box">
+                        <div class="label-title" style="margin-bottom:8px;">Shipping Address</div>
+                        <div class="data-value" id="eAddr" style="line-height:1.6;">
+                            --
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="section-box" id="instructBox">
+                        <div class="label-title" style="margin-bottom:8px;">Special Instructions</div>
+                        <div class="data-value" id="eInstruct"
+                            style="line-height:1.6; font-style:italic; color:var(--text-main);">
+                            --
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <h3 style="font-size:16px; margin:0 0 16px;">Required Inventory</h3>
+                    <div class="table-container" style="border:1px solid var(--border); border-radius:12px;">
+                        <table style="width:100%;">
+                            <thead style="background:#f8fafc;">
+                                <tr>
+                                    <th style="padding:12px 16px; font-size:12px;">Item</th>
+                                    <th style="padding:12px 16px; font-size:12px;">Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsBody"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Right: Fulfillment -->
+                <div class="card">
+                    <h3 style="font-size:16px; margin:0 0 16px;">Fulfillment</h3>
+
+                    <div style="margin-bottom:16px;">
+                        <div class="label-title">Method</div>
+                        <div class="badge badge-green" id="eFulfill" style="margin-top:4px; display:inline-block;">--
+                        </div>
+                    </div>
+
+                    <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
+                        <button class="btn btn-secondary" style="width:100%; justify-content:center;"
+                            onclick="window.print()">Print Details</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        const EVENT_KEY = "stark_events_v1";
+
+        // Get ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        const events = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
+        const evt = events.find(e => e.id === id);
+
+        if (!evt) {
+            document.getElementById('loading').innerHTML = `
+                <div style="color:var(--danger); font-weight:600; font-size:18px;">Event Not Found</div>
+                <button class="btn btn-secondary" style="margin-top:16px;" onclick="window.location.href='events.html'">Back to Events</button>
+            `;
+        } else {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+            // Populate Fields
+            document.getElementById('eName').textContent = evt.name;
+            document.getElementById('eId').textContent = "ID: " + evt.id;
+            document.getElementById('eCustomer').textContent = evt.customer;
+            document.getElementById('eDate').textContent = evt.date;
+            document.getElementById('eFulfill').textContent = evt.fulfill === 'Hold' ? 'Hold Internal Stock' : 'Dropship';
+
+            // Address
+            if (evt.address) {
+                document.getElementById('eAddr').innerHTML = `
+                    ${evt.address.line1}<br>
+                    ${evt.address.line2 ? evt.address.line2 + '<br>' : ''}
+                    ${evt.address.line3 ? evt.address.line3 + '<br>' : ''}
+                    ${evt.address.city}, ${evt.address.state} ${evt.address.zip}
+                `;
+            } else {
+                document.getElementById('eAddr').textContent = "No address provided.";
+            }
+
+            // Instructions
+            if (evt.instructions) {
+                document.getElementById('eInstruct').textContent = evt.instructions;
+            } else {
+                document.getElementById('instructBox').style.display = 'none';
+            }
+
+            // Items
+            const tbody = document.getElementById('itemsBody');
+            if (evt.items && evt.items.length > 0) {
+                evt.items.forEach(i => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="padding:12px 16px; font-weight:600;">${i.sku}</td>
+                            <td style="padding:12px 16px;">${i.qty}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="2" style="text-align:center; padding:20px; color:var(--text-muted);">No items.</td></tr>`;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
