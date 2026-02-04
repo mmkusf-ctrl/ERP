@@ -2,249 +2,248 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Reports | Stark Premium ERP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2">
-
-  <style>
-    :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --bg-body: #0f172a;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-    }
-
-    body {
-      background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%) !important;
-      background-color: var(--bg-body) !important;
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
-    }
-
-    /* Glassmorphism */
-    .glass-panel,
-    .card {
-      background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-radius: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Topbar Override */
-    .topbar {
-      background: rgba(15, 23, 42, 0.8) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
-
-    .nav-link {
-      color: #94a3b8 !important;
-    }
-
-    .nav-link.active {
-      color: white !important;
-      border-bottom-color: #8b5cf6 !important;
-    }
-
-    .logo-text {
-      color: white !important;
-    }
-
-    /* Layout */
-    .page-title {
-      color: white !important;
-    }
-
-    .gold-line {
-      background: linear-gradient(90deg, #6366f1, transparent) !important;
-    }
-
-    /* Report Links Grid */
-    .report-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .report-group {
-      margin-bottom: 32px;
-    }
-
-    .report-group h3 {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-      margin-bottom: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 8px;
-    }
-
-    .report-link {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      color: #e2e8f0;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.02);
-      margin-bottom: 8px;
-    }
-
-    .report-link:hover {
-      background: rgba(99, 102, 241, 0.1);
-      border-color: rgba(99, 102, 241, 0.2);
-      color: white;
-      transform: translateX(4px);
-    }
-
-    .report-link::before {
-      content: "📄";
-      margin-right: 12px;
-      font-size: 16px;
-      opacity: 0.7;
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .report-group {
-      animation: fadeIn 0.4s ease-out forwards;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Orders | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <!-- Top Navigation -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="dashboard.html" class="logo">
-        <img src="images/stark-logo.png" alt="Stark Premium">
-        <span class="logo-text">Stark ERP</span>
-      </a>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
 
-      <nav class="nav">
-        <a class="nav-link" href="dashboard.html">Overview</a>
-        <a class="nav-link" href="master.html">Items</a>
-        <a class="nav-link" href="crm.html">CRM</a>
-        <a class="nav-link" href="inventory.html">Inventory</a>
-        <a class="nav-link" href="accounting.html">Accounting</a>
-        <a class="nav-link" href="orders.html">Orders</a>
-        <a class="nav-link" href="logistics.html">Logistics</a>
-        <a class="nav-link active" href="reports.html">Reports</a>
-        <a class="nav-link" href="events.html">Events</a>
-      </nav>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link" href="master.html">Master</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="accounting.html">Accounting</a>
+                <a class="nav-link active" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="reports.html">Reports</a>
+                <a class="nav-link" href="events.html">Events</a>
+            </nav>
 
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-          System Live
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </div>
-        <button class="hamburger" onclick="openMobileNav()">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="container" style="padding-top:40px;">
-    <!-- Header -->
-    <div class="page-header" style="margin-bottom:32px;">
-      <h1 class="page-title">Executive Reports</h1>
-      <p style="color:#94a3b8;">Access real-time analytics across all business units.</p>
-      <div class="gold-line" style="height:4px; width:60px; border-radius:2px; margin-top:16px;"></div>
-    </div>
-
-    <!-- Report Grid -->
-    <div class="glass-panel" style="padding: 32px;">
-
-      <div class="report-grid">
-
-        <!-- Sales & Customers -->
-        <div class="report-group" style="animation-delay: 0ms;">
-          <h3>Sales & Distribution</h3>
-          <a href="report_view.html?id=brand_sales" class="report-link">Brand Sales by SKU</a>
-          <a href="report_view.html?id=cust_sales_brand" class="report-link">Customer Sales by Brand</a>
-          <a href="report_view.html?id=sales_cust" class="report-link">Sales by Customer</a>
-          <a href="report_view.html?id=sales_state" class="report-link">Sales by State</a>
-          <a href="report_view.html?id=top_sellers" class="report-link">Top Sellers Report</a>
-          <a href="report_view.html?id=daily_orders" class="report-link">Daily Order Metrics</a>
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Home</a>
+            <a class="mobile-link" href="master.html">Master</a>
+            <a class="mobile-link" href="crm.html">CRM</a>
+            <a class="mobile-link" href="vendor.html">Vendor</a>
+            <a class="mobile-link" href="purchasing.html">Purchasing</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link" href="accounting.html">Accounting</a>
+            <a class="mobile-link active" href="orders.html">Orders</a>
+            <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="trends.html">Trends</a>
         </div>
-
-        <!-- Inventory & Stock -->
-        <div class="report-group" style="animation-delay: 100ms;">
-          <h3>Inventory Operations</h3>
-          <a href="report_view.html?id=inventory_date" class="report-link">Inventory as of Date</a>
-          <a href="report_view.html?id=item_stock_sales" class="report-link">Item Stock / Sales Velocity</a>
-          <a href="report_view.html?id=backorder" class="report-link">Backorder Report</a>
-          <a href="report_view.html?id=dead_stock" class="report-link">Items Not Sold (Dead Stock)</a>
-          <a href="report_view.html?id=availability" class="report-link">Item Availability</a>
-          <a href="report_view.html?id=receiving" class="report-link">Receiving Log</a>
-        </div>
-
-        <!-- Financials -->
-        <div class="report-group" style="animation-delay: 200ms;">
-          <h3>Financial Performance</h3>
-          <a href="report_view.html?id=profitability" class="report-link">Profitability Report</a>
-          <a href="report_view.html?id=gross_margin" class="report-link">Gross Margin Analysis</a>
-          <a href="report_view.html?id=shipping_profit" class="report-link">Shipping Profit Report</a>
-          <a href="report_view.html?id=cash_flow" class="report-link">Cash Flow Statement</a>
-          <a href="report_view.html?id=invoice_variance" class="report-link">Invoice Variance Report</a>
-          <a href="report_view.html?id=yearly_profit" class="report-link">Yearly Profit Review</a>
-        </div>
-
-        <!-- CRM & Vendor -->
-        <div class="report-group" style="animation-delay: 300ms;">
-          <h3>CRM & Vendor</h3>
-          <a href="report_view.html?id=rma_reasons" class="report-link">RMA Reasons</a>
-          <a href="report_view.html?id=cust_trailing" class="report-link">Customer Trailing Data</a>
-          <a href="report_view.html?id=vendor_purchases" class="report-link">Vendor Purchases Analysis</a>
-          <a href="report_view.html?id=rep_commission" class="report-link">Rep Commission Report</a>
-          <a href="report_view.html?id=rep_sales" class="report-link">Sales Rep Performance</a>
-        </div>
-
-        <!-- System & Logs -->
-        <div class="report-group" style="animation-delay: 400ms;">
-          <h3>System & Logs</h3>
-          <a href="report_view.html?id=trigger_log" class="report-link">System Trigger Log</a>
-          <a href="report_view.html?id=price_changes" class="report-link">Price Change Log</a>
-          <a href="report_view.html?id=missing_data" class="report-link">Missing Data Exceptions</a>
-          <a href="report_view.html?id=bulk_label" class="report-link">Bulk Label History</a>
-          <a href="report_view.html?id=data_export" class="report-link">Full Data Export</a>
-        </div>
-
-      </div>
-
     </div>
 
-    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-      &copy; 2026 Stark Premium ERP. secure. fast. reliable.
-    </div>
+    <main class="container">
+        <div class="page-header">
+            <div style="display:flex; justify-content:space-between; align-items:end;">
+                <div>
+                    <h1 class="page-title">Order Management</h1>
+                    <p class="page-desc">Track and validate customer orders.</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='create_sales_order.html'"
+                    style="background:#6366f1; border:none; padding:12px 24px;">+ Sales Order</button>
+            </div>
+            <div class="gold-line" style="margin-top:16px;"></div>
+        </div>
 
-  </main>
+        <!-- Stats -->
+        <!-- Stats -->
+        <section
+            style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px; margin-bottom:32px;">
+            <article class="card-kpi clickable-kpi active" onclick="setFilter('')" id="kAll">
+                <div class="card-header">
+                    <div class="card-title">All Orders</div>
+                </div>
+                <div class="stat-value" id="cAll">0</div>
+            </article>
+            <article class="card-kpi clickable-kpi" onclick="setFilter('Validated')" id="kVal">
+                <div class="card-header">
+                    <div class="card-title">Validated</div>
+                    <div class="badge badge-green">Ready</div>
+                </div>
+                <div class="stat-value" id="cVal">0</div>
+            </article>
+            <article class="card-kpi clickable-kpi" onclick="setFilter('On Hold')" id="kHold">
+                <div class="card-header">
+                    <div class="card-title">On Hold</div>
+                    <div class="badge badge-red">Alert</div>
+                </div>
+                <div class="stat-value" id="cHold">0</div>
+            </article>
+            <article class="card-kpi clickable-kpi" onclick="setFilter('Processing')" id="kProc">
+                <div class="card-header">
+                    <div class="card-title">Processing</div>
+                </div>
+                <div class="stat-value" id="cProc">0</div>
+            </article>
+        </section>
 
-  <script src="erp.js"></script>
+        <!-- Table -->
+        <section class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h2 style="font-size:18px; margin:0;" id="listTitle">All Orders</h2>
+                <button class="btn btn-primary" onclick="generateDemoOrders()">Reset Demo Data</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
+        const KEY_ORD = "stark_erp_orders_v1";
+        const URL_PARAMS = new URLSearchParams(window.location.search);
+        let CURRENT_FILTER = URL_PARAMS.get("filter") || "";
+
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+        function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+        function money(n) { return Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" }); }
+
+        function init() {
+            let orders = load(KEY_ORD, []);
+            if (orders.length === 0) {
+                orders = generateDemoOrders(true);
+            }
+            render();
+
+            // Set initial filter visual state
+            if (CURRENT_FILTER) {
+                const map = { "Validated": "kVal", "On Hold": "kHold", "Processing": "kProc" };
+                const id = map[CURRENT_FILTER];
+                if (id) {
+                    document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+                    document.getElementById(id).classList.add("active");
+                }
+            }
+        }
+
+        function generateDemoOrders(ret) {
+            const arr = [
+                { id: "ORD-1001", cust: "Asha Retail", date: "2026-01-20", total: 1200, status: "Validated" },
+                { id: "ORD-1002", cust: "Blue Harbor", date: "2026-01-21", total: 850, status: "Processing" },
+                { id: "ORD-1003", cust: "Citrine Luxe", date: "2026-01-22", total: 3200, status: "On Hold" },
+                { id: "ORD-1004", cust: "Desert Pearl", date: "2026-01-22", total: 450, status: "Validated" },
+                { id: "ORD-1005", cust: "Emerald Lane", date: "2026-01-23", total: 2100, status: "Validated" },
+                { id: "ORD-1006", cust: "Asha Retail", date: "2026-01-23", total: 1500, status: "On Hold" }
+            ];
+            save(KEY_ORD, arr);
+            if (ret) return arr;
+            render();
+        }
+
+        function setFilter(f) {
+            CURRENT_FILTER = f;
+
+            // Visuals
+            document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+            const map = { "": "kAll", "Validated": "kVal", "On Hold": "kHold", "Processing": "kProc" };
+            const id = map[f] || "kAll";
+            document.getElementById(id).classList.add("active");
+
+            render();
+
+            // Update URL without reload
+            const url = new URL(window.location);
+            if (f) url.searchParams.set("filter", f);
+            else url.searchParams.delete("filter");
+            window.history.pushState({}, "", url);
+        }
+
+        function render() {
+            const orders = load(KEY_ORD, []);
+
+            // Stats
+            document.getElementById("cAll").textContent = orders.length;
+            document.getElementById("cVal").textContent = orders.filter(x => x.status === "Validated").length;
+            document.getElementById("cHold").textContent = orders.filter(x => x.status === "On Hold").length;
+            document.getElementById("cProc").textContent = orders.filter(x => x.status === "Processing").length;
+
+            // Filter
+            const shown = orders.filter(x => CURRENT_FILTER ? x.status === CURRENT_FILTER : true);
+
+            document.getElementById("listTitle").textContent = CURRENT_FILTER ? `${CURRENT_FILTER} Orders` : "All Orders";
+
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
+            if (!shown.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No orders found.</td></tr>`;
+                return;
+            }
+
+            shown.forEach(o => {
+                let badge = "badge-green";
+                if (o.status === "On Hold") badge = "badge-red";
+                if (o.status === "Processing") badge = "badge-yellow";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td><strong>${o.id}</strong></td>
+                <td>${o.cust}</td>
+                <td>${o.date}</td>
+                <td>${money(o.total)}</td>
+                <td><span class="badge ${badge}">${o.status}</span></td>
+                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="window.location.href='order_detail.html?id=${o.id}'">View</button></td>
+              `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        init();
+    </script>
 </body>
 
 </html>
