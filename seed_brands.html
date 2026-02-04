@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Stark ERP - Data Seeder</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #4f46e5;
+        }
+
+        #log {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1 id="status">Initializing Seeder...</h1>
+        <p>Injecting premium brand data into Stark ERP database.</p>
+        <div id="log"></div>
+        <button class="btn" onclick="window.location.href='master.html'">Go to Item Master</button>
+    </div>
+
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+
+        const brands = [
+            // Kendra Scott
+            { sku: "KS-NE-001", model: "842177145029", name: "Elisa Pendant Necklace - Gold Iridescent Drusy", brand: "Kendra Scott", cat: "Jewelry", cost: 28.00, price: 65.00, on: 150, image: "https://images.kendrascott.com/image/upload/q_auto,f_auto,dpr_auto/w_800,c_fit/d_placeholder_product.jpg/products/842177145029.jpg" },
+            { sku: "KS-EA-002", model: "842177017371", name: "Elle Drop Earrings - Gold Turquoise", brand: "Kendra Scott", cat: "Jewelry", cost: 32.00, price: 70.00, on: 85, image: "https://images.kendrascott.com/image/upload/w_800,c_fit/products/842177017371.jpg" },
+            { sku: "KS-BR-003", model: "842177196908", name: "Elton Cuff Bracelet - Gold Platinum Drusy", brand: "Kendra Scott", cat: "Jewelry", cost: 30.00, price: 75.00, on: 40, image: "" },
+
+            // Cozy Earth
+            { sku: "CE-SH-001", model: "CE-BAM-QS", name: "Bamboo Sheet Set - Queen / White", brand: "Cozy Earth", cat: "Home Goods", cost: 120.00, price: 319.00, on: 50, image: "" },
+            { sku: "CE-PJ-002", model: "CE-PJ-L-BLK", name: "Long Sleeve Bamboo Pajama Set - Black", brand: "Cozy Earth", cat: "Apparel", cost: 85.00, price: 195.00, on: 110, image: "" },
+
+            // Lilly Pulitzer
+            { sku: "LP-DR-001", model: "007892", name: "Kristen Swing Dress - Pink Tropics", brand: "Lilly Pulitzer", cat: "Apparel", cost: 45.00, price: 118.00, on: 60, image: "" },
+            { sku: "LP-AC-002", model: "008912", name: "Run Around Hat - Blue Peri", brand: "Lilly Pulitzer", cat: "Accessories", cost: 18.00, price: 48.00, on: 30, image: "" },
+
+            // Gucci
+            { sku: "GU-BG-001", model: "443497 DTD1T 1000", name: "GG Marmont Small Matelassé Shoulder Bag", brand: "Gucci", cat: "Accessories", cost: 1200.00, price: 2550.00, on: 12, image: "" },
+            { sku: "GU-BT-002", model: "406831 DJ20T 1000", name: "Double G Leather Belt", brand: "Gucci", cat: "Accessories", cost: 210.00, price: 520.00, on: 45, image: "" },
+            { sku: "GU-SH-003", model: "387993 A3830 9071", name: "Ace Embroidered Sneaker", brand: "Gucci", cat: "Apparel", cost: 380.00, price: 850.00, on: 20, image: "" },
+
+            // Prada
+            { sku: "PR-SG-001", model: "PR 17WS", name: "Symbole Sunglasses - Black", brand: "Prada", cat: "Accessories", cost: 190.00, price: 520.00, on: 35, image: "" },
+            { sku: "PR-BG-002", model: "1BA156", name: "Monochrome Saffiano Leather Bag", brand: "Prada", cat: "Accessories", cost: 1400.00, price: 2950.00, on: 8, image: "" },
+
+            // Marc Jacobs
+            { sku: "MJ-BG-001", model: "M0016156", name: "The Tote Bag - Medium Canvas", brand: "Marc Jacobs", cat: "Accessories", cost: 95.00, price: 195.00, on: 200, image: "" },
+            { sku: "MJ-FR-002", model: "MJ-DAISY-100", name: "Daisy Eau de Toilette 100ml", brand: "Marc Jacobs", cat: "Beauty", cost: 42.00, price: 108.00, on: 80, image: "" },
+
+            // BaubleBar
+            { sku: "BB-ER-001", model: "39201", name: "Mini Alidia Ring - Clear", brand: "BaubleBar", cat: "Jewelry", cost: 12.00, price: 48.00, on: 300, image: "" },
+            { sku: "BB-NK-002", model: "45002", name: "Bennett 18K Gold Tennis Necklace", brand: "BaubleBar", cat: "Jewelry", cost: 28.00, price: 88.00, on: 120, image: "" },
+
+            // Cuisinart
+            { sku: "CU-FP-001", model: "DLC-2A", name: "Mini-Prep Plus Food Processor", brand: "Cuisinart", cat: "Home Goods", cost: 22.00, price: 49.95, on: 90, image: "" },
+            { sku: "CU-CM-002", model: "DCC-3200P1", name: "PerfecTemp 14-Cup Coffee Maker", brand: "Cuisinart", cat: "Home Goods", cost: 45.00, price: 99.95, on: 60, image: "" },
+
+            // Burberry
+            { sku: "BU-SC-001", model: "8010111", name: "Classic Check Cashmere Scarf", brand: "Burberry", cat: "Apparel", cost: 210.00, price: 550.00, on: 40, image: "" },
+
+            // YSL
+            { sku: "YSL-BG-001", model: "612544", name: "Lou Camera Bag in Quilted Leather", brand: "Yves Saint Laurent", cat: "Accessories", cost: 750.00, price: 1690.00, on: 15, image: "" },
+            { sku: "YSL-BT-002", model: "RUGE-PUR-01", name: "Rouge Pur Couture Lipstick - 01", brand: "Yves Saint Laurent", cat: "Beauty", cost: 18.00, price: 45.00, on: 200, image: "" },
+
+            // Nest Fragrances
+            { sku: "NF-CN-001", model: "NEST-BAM-3W", name: "Bamboo 3-Wick Candle", brand: "Nest Fragrances", cat: "Home Goods", cost: 32.00, price: 80.00, on: 100, image: "" },
+            { sku: "NF-DF-002", model: "NEST-GF-DIFF", name: "Grapefruit Reed Diffuser", brand: "Nest Fragrances", cat: "Home Goods", cost: 24.00, price: 60.00, on: 120, image: "" },
+
+            // Bala Bangles
+            { sku: "BL-WT-001", model: "BALA-1LB-PNK", name: "Bala Bangles 1lb Weights - Blush", brand: "Bala", cat: "Fitness", cost: 22.00, price: 55.00, on: 300, image: "" },
+
+            // Lux & Nyx
+            { sku: "LN-BG-001", model: "LN-ORIG-BK", name: "The Origami Backpack - Black", brand: "Lux & Nyx", cat: "Accessories", cost: 95.00, price: 228.00, on: 50, image: "" }
+        ];
+
+        function log(msg) {
+            const l = document.getElementById("log");
+            l.innerHTML += `<div>> ${msg}</div>`;
+            l.scrollTop = l.scrollHeight;
+        }
+
+        function seed() {
+            try {
+                let items = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]");
+                let added = 0;
+                let updated = 0;
+
+                brands.forEach(b => {
+                    const idx = items.findIndex(i => i.sku === b.sku);
+                    // Add standard fields
+                    const newItem = {
+                        ...b,
+                        status: "Live",
+                        wh: "WH-A",
+                        sup: "Direct",
+                        hold: 0,
+                        rop: 10,
+                        feeds: [],
+                        vendors: [],
+                        attrs: []
+                    };
+
+                    if (idx >= 0) {
+                        // Optional: Don't overwrite if exists, or update?
+                        // Let's update basic info but keep extended
+                        items[idx] = { ...items[idx], ...b }; // Merge
+                        updated++;
+                    } else {
+                        items.push(newItem);
+                        added++;
+                    }
+                });
+
+                localStorage.setItem(ITEM_KEY, JSON.stringify(items));
+
+                document.getElementById("status").textContent = "Success!";
+                document.getElementById("status").style.color = "#4ade80";
+                log(`Process complete.`);
+                log(`Added ${added} new SKUs.`);
+                log(`Updated ${updated} existing SKUs.`);
+                log(`Total DB Size: ${items.length} items.`);
+
+            } catch (e) {
+                document.getElementById("status").textContent = "Error";
+                document.getElementById("status").style.color = "#ef4444";
+                log("Error: " + e.message);
+            }
+        }
+
+        // Auto run
+        setTimeout(seed, 500);
+
+    </script>
+</body>
+
+</html>
