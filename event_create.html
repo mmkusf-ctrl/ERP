@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Event | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+
+        @media(max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .label-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .label-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body><main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Create New Event</h1>
+            <p class="page-desc">Schedule a company event and allocate necessary inventory.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <form id="eventForm" onsubmit="event.preventDefault(); saveEvent();"
+            style="display:grid; grid-template-columns: 1fr 300px; gap:24px; align-items:start;">
+            <!-- Left Column: Form Fields -->
+            <div style="display:grid; gap:24px;">
+                <div class="card">
+                    <!-- Event Info -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Event Details</div>
+                            <div class="label-desc">Basic information about the event.</div>
+                        </div>
+                        <div class="grid grid-2">
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Event
+                                    Name</label>
+                                <input type="text" class="input" id="eventNameIn" placeholder="e.g. Q4 Sales Conference"
+                                    required>
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Customer
+                                    Name</label>
+                                <input type="text" class="input" id="customerNameIn" placeholder="e.g. Acme Corp"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+
+                    <!-- Logistics -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Logistics</div>
+                            <div class="label-desc">Timeline and shipping details.</div>
+                        </div>
+                        <div style="display:grid; gap:16px;">
+                            <div class="grid grid-2">
+                                <div>
+                                    <label
+                                        style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">In-Hands
+                                        Date</label>
+                                    <input type="date" class="input" id="dateIn" required>
+                                </div>
+                                <div></div>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Shipping
+                                    Address</label>
+                                <div style="display:grid; gap:12px;">
+                                    <input type="text" class="input" id="addrLine1" placeholder="Address Line 1"
+                                        required>
+                                    <input type="text" class="input" id="addrLine2" placeholder="Address Line 2">
+                                    <input type="text" class="input" id="addrLine3" placeholder="Address Line 3">
+                                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:12px;">
+                                        <input type="text" class="input" id="addrCity" placeholder="City" required>
+                                        <input type="text" class="input" id="addrState" placeholder="State" required>
+                                        <input type="text" class="input" id="addrZip" placeholder="Zip Code" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Special
+                                    Instructions</label>
+                                <textarea class="input" id="instructionsIn" style="height:80px; padding-top:10px;"
+                                    placeholder="Gate codes, delivery contacts, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+
+                    <!-- Fulfillment Method -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Fulfillment</div>
+                            <div class="label-desc">How should inventory be handled?</div>
+                        </div>
+                        <div style="display:flex; gap:24px; align-items:center; height:40px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="radio" name="fulfill" value="Hold" checked
+                                    style="accent-color:var(--primary);">
+                                <span style="font-size:13px; font-weight:600;">Hold internal stock</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="radio" name="fulfill" value="Dropship"
+                                    style="accent-color:var(--primary);">
+                                <span style="font-size:13px; font-weight:600;">Dropship (Do not hold)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+
+                    <!-- Items -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Required Inventory</div>
+                            <div class="label-desc">Allocate items needed for this event.</div>
+                        </div>
+                        <div style="display:grid; gap:16px;">
+                            <div
+                                style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid var(--border);">
+                                <div
+                                    style="display:grid; grid-template-columns: 2fr 1fr auto; gap:12px; align-items:end;">
+                                    <div>
+                                        <label
+                                            style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Item
+                                            Lookup</label>
+                                        <input type="text" class="input" id="skuIn"
+                                            placeholder="Search Item Name or SKU..." list="skuList" style="height:40px;"
+                                            oninput="checkStock()">
+                                        <datalist id="skuList"></datalist>
+                                        <div id="stockDisplay" style="margin-top:4px; font-size:11px; display:none;">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Quantity</label>
+                                        <input type="number" class="input" id="qtyIn" placeholder="0"
+                                            style="height:40px;">
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="addItem()"
+                                        style="height:40px;">Add Item</button>
+                                </div>
+                            </div>
+
+                            <!-- Items Table -->
+                            <div class="table-container"
+                                style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+                                <table style="margin:0;">
+                                    <thead style="background:#f8fafc;">
+                                        <tr>
+                                            <th style="font-size:12px; padding:10px 16px;">Item / SKU</th>
+                                            <th style="font-size:12px; padding:10px 16px;">Qty Allocated</th>
+                                            <th style="width:40px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsBody">
+                                        <tr>
+                                            <td colspan="3"
+                                                style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">
+                                                No items allocated yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary -->
+            <div style="position:sticky; top:24px;">
+                <div class="card" style="padding:24px;">
+                    <h3 style="font-size:16px; margin:0 0 20px;">Allocation Summary</h3>
+
+                    <div
+                        style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px; color:var(--text-muted);">
+                        <span>Total Items</span>
+                        <span id="sumItems">0</span>
+                    </div>
+                    <div
+                        style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:14px; color:var(--text-muted);">
+                        <span>Total Qty</span>
+                        <span id="sumQty">0</span>
+                    </div>
+
+                    <div style="border-top:1px solid var(--border); margin-bottom:20px;"></div>
+
+                    <div style="display:grid; gap:12px;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width:100%; justify-content:center; padding:12px;">Create Event</button>
+                        <button type="button" class="btn btn-secondary"
+                            style="width:100%; justify-content:center; padding:12px;"
+                            onclick="window.location.href='events.html'">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const EVENT_KEY = "stark_events_v1"; // Could be used for storing full event objects
+        const ALLOC_KEY = "stark_allocated_items"; // Existing key for simple list of allocated item names
+        let EVENT_ITEMS = [];
+
+        // Init Dates & Datalist
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateIn').value = today;
+
+        // Load Items for Datalist (Mock or LocalStorage)
+        // For now, we'll just populate some dummy data + any from local storage items
+        const ITEM_KEY = "stark_erp_items_v2";
+        const allItems = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]");
+        const dl = document.getElementById('skuList');
+
+        // Check Stock on Input
+        function checkStock() {
+            const val = document.getElementById('skuIn').value;
+            const display = document.getElementById('stockDisplay');
+            if (!val) {
+                display.style.display = 'none';
+                return;
+            }
+
+            const item = allItems.find(i => i.name === val || i.sku === val);
+            if (item) {
+                const hold = item.hold || 0;
+                const onHand = item.on || 0;
+
+                let html = `<span style="color:var(--text-muted);">On Hand: <strong>${onHand}</strong></span>`;
+
+                if (hold > 0) {
+                    html += ` <span style="margin-left:8px; color:var(--warning); font-weight:700;">(Hold: ${hold})</span>`;
+                }
+
+                display.innerHTML = html;
+                display.style.display = 'block';
+            } else {
+                display.style.display = 'none';
+            }
+        }
+
+        // Add existing items
+        allItems.forEach(i => {
+            const op = document.createElement('option');
+            op.value = i.name; // Use Name for easier lookup, or SKU
+            dl.appendChild(op);
+        });
+
+        // Fallback/Demo items if empty
+        if (allItems.length === 0) {
+            ['Office Chair X1', 'Titanium Alloy Sheet', 'Server Rack Mounts', 'Packaging Foam', 'Label Printer'].forEach(s => {
+                const op = document.createElement('option');
+                op.value = s;
+                dl.appendChild(op);
+            });
+        }
+
+        function addItem() {
+            const sku = document.getElementById('skuIn').value;
+            const qty = parseInt(document.getElementById('qtyIn').value || 0);
+
+            if (!sku || qty <= 0) return toast("Error", "Invalid Item details", "error");
+
+            EVENT_ITEMS.push({ sku, qty });
+
+            // Reset inputs
+            document.getElementById('skuIn').value = "";
+            document.getElementById('qtyIn').value = "";
+            document.getElementById('skuIn').focus();
+
+            renderItems();
+            updateSummary();
+        }
+
+        function removeItem(idx) {
+            EVENT_ITEMS.splice(idx, 1);
+            renderItems();
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let totalQty = 0;
+            EVENT_ITEMS.forEach(i => totalQty += i.qty);
+
+            document.getElementById('sumItems').textContent = EVENT_ITEMS.length;
+            document.getElementById('sumQty').textContent = totalQty;
+        }
+
+        function renderItems() {
+            const tbody = document.getElementById('itemsBody');
+            tbody.innerHTML = "";
+
+            if (EVENT_ITEMS.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No items allocated yet.</td></tr>`;
+                return;
+            }
+
+            EVENT_ITEMS.forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.sku}</strong></td>
+                        <td>${item.qty}</td>
+                        <td style="text-align:center;">
+                            <button type="button" onclick="removeItem(${idx})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:700;">&times;</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function saveEvent() {
+            const name = document.getElementById('eventNameIn').value;
+            const customer = document.getElementById('customerNameIn').value;
+            const date = document.getElementById('dateIn').value;
+
+            if (!name || !customer || !date) {
+                toast("Error", "Please fill required fields", "error");
+                return;
+            }
+
+            // Create Event Object
+            const eventId = "evt_" + Date.now();
+            const newEvent = {
+                id: eventId,
+                name: name,
+                customer: customer,
+                date: date,
+                location: document.getElementById('locationIn')?.value || "",
+                address: {
+                    line1: document.getElementById('addrLine1')?.value || "",
+                    line2: document.getElementById('addrLine2')?.value || "",
+                    line3: document.getElementById('addrLine3')?.value || "",
+                    city: document.getElementById('addrCity')?.value || "",
+                    state: document.getElementById('addrState')?.value || "",
+                    zip: document.getElementById('addrZip')?.value || ""
+                },
+                instructions: document.getElementById('instructionsIn')?.value || "",
+                fulfill: document.querySelector('input[name="fulfill"]:checked').value,
+                items: EVENT_ITEMS,
+                status: "Scheduled",
+                inventoryStatus: "Good"
+            };
+
+            // Save to Events List
+            const events = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
+            events.push(newEvent);
+            localStorage.setItem(EVENT_KEY, JSON.stringify(events));
+
+            // Save Allocation & Update Inventory
+            let allocated = JSON.parse(localStorage.getItem(ALLOC_KEY) || "[]");
+
+            // Only update hold if fulfillment method is "Hold"
+            if (newEvent.fulfill === 'Hold') {
+                const inventory = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]");
+                let inventoryChanged = false;
+
+                EVENT_ITEMS.forEach(item => {
+                    // 1. Update Allocated List (Names/SKUs) for Badge
+                    if (!allocated.includes(item.sku)) {
+                        allocated.push(item.sku);
+                    }
+
+                    // 2. Update Inventory Hold Qty
+                    // Match by SKU or Name to ensure we find the right item
+                    const invItem = inventory.find(i => i.sku === item.sku || i.name === item.sku);
+                    if (invItem) {
+                        invItem.hold = Number(invItem.hold || 0) + Number(item.qty);
+                        inventoryChanged = true;
+                    }
+                });
+
+                if (inventoryChanged) {
+                    localStorage.setItem(ITEM_KEY, JSON.stringify(inventory));
+                }
+            } else {
+                // Even if dropship, we might want to track allocation for badges?
+                // For now, only 'Hold' updates the badge list to avoid confusion.
+                EVENT_ITEMS.forEach(item => {
+                    if (!allocated.includes(item.sku)) allocated.push(item.sku);
+                });
+            }
+            localStorage.setItem(ALLOC_KEY, JSON.stringify(allocated));
+
+            toast("Success", "Event Created & Inventory Allocated!", "success");
+
+            setTimeout(() => {
+                window.location.href = "events.html";
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
