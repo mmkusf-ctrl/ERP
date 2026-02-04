@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Data Export | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body><main class="container">
+        <div style="margin-bottom:24px;">
+            <a href="accounting.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600;">← Back to
+                Accounting</a>
+        </div>
+
+        <div class="card animate-enter" style="max-width:800px; margin:0 auto;">
+            <h1 class="page-title">Data Export</h1>
+            <p class="page-desc" style="margin-bottom:32px;">Export system data for backup or external analysis.</p>
+
+            <div style="margin-bottom:24px; padding:20px; background:#f8fafc; border-radius:12px;">
+                <h3 style="margin:0 0 16px 0; font-size:14px; text-transform:uppercase; color:var(--text-muted);">Select
+                    Data to Export</h3>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <label
+                        style="display:flex; align-items:center; gap:12px; padding:12px; background:white; border-radius:8px; border:1px solid #e2e8f0; cursor:pointer;">
+                        <input type="checkbox" checked />
+                        <span style="font-weight:600; font-size:14px;">Invoices & Payments</span>
+                    </label>
+                    <label
+                        style="display:flex; align-items:center; gap:12px; padding:12px; background:white; border-radius:8px; border:1px solid #e2e8f0; cursor:pointer;">
+                        <input type="checkbox" />
+                        <span style="font-weight:600; font-size:14px;">Customer Database</span>
+                    </label>
+                    <label
+                        style="display:flex; align-items:center; gap:12px; padding:12px; background:white; border-radius:8px; border:1px solid #e2e8f0; cursor:pointer;">
+                        <input type="checkbox" />
+                        <span style="font-weight:600; font-size:14px;">Item Master & Inventory</span>
+                    </label>
+                    <label
+                        style="display:flex; align-items:center; gap:12px; padding:12px; background:white; border-radius:8px; border:1px solid #e2e8f0; cursor:pointer;">
+                        <input type="checkbox" />
+                        <span style="font-weight:600; font-size:14px;">Vendor List</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-bottom:32px;">
+                <h3 style="margin:0 0 8px 0; font-size:14px; text-transform:uppercase; color:var(--text-muted);">Date
+                    Range</h3>
+                <div style="display:flex; gap:16px;">
+                    <input type="date" class="input" style="width:auto;" />
+                    <span style="align-self:center; color:#999;">to</span>
+                    <input type="date" class="input" style="width:auto;" />
+                </div>
+            </div>
+
+            <div style="margin-bottom:32px;">
+                <h3 style="margin:0 0 8px 0; font-size:14px; text-transform:uppercase; color:var(--text-muted);">Format
+                </h3>
+                <select class="input" style="max-width:200px;">
+                    <option>CSV (Comma Separated)</option>
+                    <option>Excel (.xlsx)</option>
+                    <option>JSON</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="startExport(this)">Generate Export Archive</button>
+
+            <div id="loading" style="display:none; margin-top:16px; color:var(--text-muted); font-size:13px;">
+                Generating file... please wait...
+            </div>
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        function startExport(btn) {
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            document.getElementById('loading').style.display = "block";
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = "Download Ready";
+                btn.style.background = "var(--success)";
+                document.getElementById('loading').innerHTML = "Export complete! Download starting...";
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
