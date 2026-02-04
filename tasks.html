@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Task Management | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .task-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 0;
+            height: calc(100vh - var(--nav-height));
+            overflow: hidden;
+        }
+
+        .task-list-panel {
+            border-right: 1px solid var(--border);
+            background: var(--bg-surface);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .task-list-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .task-list-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .task-item {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            background: var(--bg-body);
+        }
+
+        .task-item:hover {
+            background: white;
+            border-color: var(--border);
+            box-shadow: var(--shadow-sm);
+            transform: translateX(4px);
+        }
+
+        .task-item.selected {
+            background: var(--primary-fade);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .task-subject {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        .assignee-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(225, 29, 72, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .priority-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .priority-high {
+            background: var(--danger);
+        }
+
+        .priority-medium {
+            background: var(--warning);
+        }
+
+        .priority-low {
+            background: var(--success);
+        }
+
+        .task-detail-panel {
+            background: var(--bg-body);
+            overflow-y: auto;
+            padding: 32px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .detail-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .detail-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-fade);
+        }
+
+        .status-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-body);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .status-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chip-input-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            min-height: 40px;
+            cursor: text;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: chipPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes chipPop {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .chip-remove {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .chip-remove:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .chip-input {
+            flex: 1;
+            min-width: 120px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            margin-top: 4px;
+            min-width: 200px;
+        }
+
+        .autocomplete-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 14px;
+        }
+
+        .autocomplete-item:hover {
+            background: var(--bg-body);
+        }
+
+        .activity-timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .activity-item {
+            position: relative;
+            padding-bottom: 20px;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary-fade);
+        }
+
+        .activity-item::after {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 16px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background: var(--border);
+        }
+
+        .activity-item:last-child::after {
+            display: none;
+        }
+
+        .activity-text {
+            font-size: 13px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 1000px) {
+            .task-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .task-list-panel {
+                border-right: none;
+            }
+
+            .task-detail-panel {
+                display: none;
+            }
+
+            .task-detail-panel.mobile-show {
+                display: block;
+                position: fixed;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 100;
+            }
+        }
+    </style>
+</head>
+
+<body><main class="task-layout">
+        <!-- Left Panel: Task List -->
+        <div class="task-list-panel">
+            <div class="task-list-header">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h1 style="font-size:24px; margin:0; font-weight:800;">Tasks</h1>
+                    <button class="btn btn-primary" onclick="openNewTaskModal()"
+                        style="height:36px; font-size:13px; padding:0 16px;">
+                        + New
+                    </button>
+                </div>
+                <input type="text" id="searchTasks" class="input" placeholder="Search tasks..." oninput="filterTasks()"
+                    style="margin-bottom:12px;">
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-secondary" id="btnMyTasks"
+                        style="height:28px; font-size:12px; padding:0 10px; flex:1;" onclick="setFilter('MyTasks')">My
+                        Tasks</button>
+                    <button class="btn btn-secondary active" id="btnAllTasks"
+                        style="height:28px; font-size:12px; padding:0 10px; flex:1;"
+                        onclick="setFilter('All')">All</button>
+                </div>
+            </div>
+            <div class="task-list-scroll" id="taskList">
+                <!-- Task items rendered here -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Task Detail -->
+        <div class="task-detail-panel" id="taskDetail">
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3 style="margin:0 0 8px; color:var(--text-main);">No Task Selected</h3>
+                <p style="color:var(--text-muted); margin:0;">Select a task from the list to view details</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Task Modal --><div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button class="btn btn-secondary" onclick="closeNewTaskModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="createNewTask()">Create Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const TASK_KEY = "stark_erp_tasks_v2";
+        const TEAM_MEMBERS = ["Admin", "Alex", "Sarah", "Charlie"];
+
+        let currentUser = "Admin";
+        let selectedTaskId = null;
+        let taskFilter = "All";
+
+        // Auth
+        (function () {
+            try {
+                const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+                if (!auth || !auth.user) {
+                    currentUser = "Admin";
+                } else {
+                    currentUser = auth.user;
+                }
+                const switcher = document.getElementById("userSwitch");
+                if (switcher) switcher.value = currentUser;
+            } catch { }
+        })();
+
+        function switchUser(name) {
+            currentUser = name;
+            localStorage.setItem(AUTH_KEY, JSON.stringify({ user: name, token: "mock-token" }));
+            toast("Switched User", `Now viewing as ${name}`, "success");
+            renderTaskList();
+            if (selectedTaskId) renderTaskDetail(selectedTaskId);
+        }
+
+        // Real-time Sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === TASK_KEY) {
+                console.log("Remote update detected, refreshing tasks...");
+                renderTaskList();
+                if (selectedTaskId) renderTaskDetail(selectedTaskId);
+                toast("Sync", "Task list updated remotely.", "info");
+            }
+        });
+
+        // Data
+        function loadTasks() {
+            try {
+                return JSON.parse(localStorage.getItem(TASK_KEY) || "[]");
+            } catch {
+                return [];
+            }
+        }
+
+        function saveTasks(list) {
+            localStorage.setItem(TASK_KEY, JSON.stringify(list));
+        }
+
+        function uid() {
+            return "T-" + Math.random().toString(16).slice(2, 10).toUpperCase();
+        }
+
+        // Filter
+        function setFilter(type) {
+            taskFilter = type;
+            document.querySelectorAll('#btnMyTasks, #btnAllTasks').forEach(b => b.classList.remove('active'));
+            if (type === 'MyTasks') document.getElementById('btnMyTasks').classList.add('active');
+            else document.getElementById('btnAllTasks').classList.add('active');
+            renderTaskList();
+        }
+
+        function filterTasks() {
+            renderTaskList();
+        }
+
+        // Render Task List
+        function renderTaskList() {
+            const tasks = loadTasks();
+            const search = document.getElementById('searchTasks').value.toLowerCase();
+            const container = document.getElementById('taskList');
+
+            let filtered = tasks.filter(t => {
+                if (search && !t.subject.toLowerCase().includes(search)) return false;
+                if (taskFilter === 'MyTasks') {
+                    return t.assignees && t.assignees.includes(currentUser);
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3 style="margin:0 0 8px; color:var(--text-main);">No Tasks Found</h3>
+                        <p style="color:var(--text-muted); margin:0;">Try adjusting your filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(t => {
+                const priorityClass = `priority-${t.priority.toLowerCase()}`;
+                const statusBadge = t.status === 'Completed' ? 'badge-green' : t.status === 'In Progress' ? 'badge-yellow' : 'badge-gray';
+
+                return `
+                    <div class="task-item ${selectedTaskId === t.id ? 'selected' : ''}" onclick="selectTask('${t.id}')">
+                        <div class="task-subject">${escapeHtml(t.subject)}</div>
+                        <div class="task-meta">
+                            <div class="priority-dot ${priorityClass}"></div>
+                            ${t.assignees && t.assignees.length > 0 ? t.assignees.map(a => `<span class="assignee-chip">${a}</span>`).join('') : '<span style="color:var(--text-muted); font-size:11px;">Unassigned</span>'}
+                            <span class="badge ${statusBadge}" style="margin-left:auto;">${t.status}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Select & Render Detail
+        function selectTask(id) {
+            selectedTaskId = id;
+            renderTaskList();
+            renderTaskDetail(id);
+        }
+
+        function renderTaskDetail(id) {
+            const tasks = loadTasks();
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            const panel = document.getElementById('taskDetail');
+            panel.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:24px;">
+                    <h2 style="font-size:20px; margin:0; font-weight:700; color:var(--text-main);">Task Details</h2>
+                    <button class="btn btn-secondary" style="height:32px; font-size:12px; padding:0 12px;" onclick="deleteTask('${task.id}')">Delete</button>
+                </div>
+
+                <div class="detail-section">
+                    <label class="detail-label">Subject</label>
+                    <input class="detail-input" value="${escapeHtml(task.subject)}" onchange="updateTaskField('${task.id}', 'subject', this.value)">
+                </div>
+
+                <div class="detail-section">
+                    <label class="detail-label">Description</label>
+                    <textarea class="detail-input" rows="4" onchange="updateTaskField('${task.id}', 'description', this.value)">${escapeHtml(task.description || '')}</textarea>
+                </div>
+
+                <div class="detail-section">
+                    <label class="detail-label">Assigned To</label>
+                    <div class="chip-input-wrapper" onclick="focusChipInput('${task.id}')">
+                        ${(task.assignees || []).map(a => `<div class="chip">${a}<button class="chip-remove" onclick="removeAssignee('${task.id}', '${a}', event)">×</button></div>`).join('')}
+                        <input class="chip-input" id="assignInput-${task.id}" placeholder="Add team member..." onkeydown="handleAssigneeInput(event, '${task.id}')" autocomplete="off">
+                    </div>
+                    <div id="autocomplete-${task.id}" style="position:relative;"></div>
+                </div>
+
+                <div class="detail-section">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div>
+                            <label class="detail-label">Priority</label>
+                            <select class="detail-input" onchange="updateTaskField('${task.id}', 'priority', this.value)">
+                                <option ${task.priority === 'High' ? 'selected' : ''}>High</option>
+                                <option ${task.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                                <option ${task.priority === 'Low' ? 'selected' : ''}>Low</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="detail-label">Due Date</label>
+                            <input class="detail-input" type="date" value="${task.dueDate || ''}" onchange="updateTaskField('${task.id}', 'dueDate', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <label class="detail-label">Status</label>
+                    <div class="status-toggle">
+                        <button class="status-btn ${task.status === 'Open' ? 'active' : ''}" onclick="updateStatus('${task.id}', 'Open')">Open</button>
+                        <button class="status-btn ${task.status === 'In Progress' ? 'active' : ''}" onclick="updateStatus('${task.id}', 'In Progress')">In Progress</button>
+                        <button class="status-btn ${task.status === 'Completed' ? 'active' : ''}" onclick="updateStatus('${task.id}', 'Completed')">Completed</button>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <label class="detail-label">Activity</label>
+                    <div class="activity-timeline">
+                        ${(task.activity || []).map(a => `
+                            <div class="activity-item">
+                                <div class="activity-text">${formatActivity(a)}</div>
+                                <div class="activity-time">${formatTime(a.at)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Setup autocomplete
+            setupAutocomplete(task.id);
+        }
+
+        function focusChipInput(taskId) {
+            document.getElementById(`assignInput-${taskId}`)?.focus();
+        }
+
+        function setupAutocomplete(taskId) {
+            const input = document.getElementById(`assignInput-${taskId}`);
+            const container = document.getElementById(`autocomplete-${taskId}`);
+
+            input.addEventListener('input', function () {
+                const val = this.value.toLowerCase();
+                if (!val) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                const tasks = loadTasks();
+                const task = tasks.find(t => t.id === taskId);
+                const assigned = task?.assignees || [];
+
+                const matches = TEAM_MEMBERS.filter(m =>
+                    m.toLowerCase().includes(val) && !assigned.includes(m)
+                );
+
+                if (matches.length > 0) {
+                    container.innerHTML = `
+                        <div class="autocomplete-dropdown">
+                            ${matches.map(m => `<div class="autocomplete-item" onclick="addAssignee('${taskId}', '${m}')">${m}</div>`).join('')}
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = '';
+                }
+            });
+        }
+
+        function handleAssigneeInput(e, taskId) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const val = e.target.value.trim();
+                if (val) {
+                    addAssignee(taskId, val);
+                }
+            }
+        }
+
+        function addAssignee(taskId, name) {
+            const tasks = loadTasks();
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            if (!task.assignees) task.assignees = [];
+            if (task.assignees.includes(name)) {
+                toast("Already Assigned", `${name} is already assigned to this task.`, "error");
+                return;
+            }
+
+            task.assignees.push(name);
+            task.activity = task.activity || [];
+            task.activity.unshift({
+                type: 'assigned',
+                to: name,
+                by: currentUser,
+                at: Date.now()
+            });
+
+            saveTasks(tasks);
+            renderTaskDetail(taskId);
+            renderTaskList();
+            toast("Assigned", `Task assigned to ${name}`, "success");
+        }
+
+        function removeAssignee(taskId, name, event) {
+            event.stopPropagation();
+            const tasks = loadTasks();
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            task.assignees = (task.assignees || []).filter(a => a !== name);
+            task.activity = task.activity || [];
+            task.activity.unshift({
+                type: 'unassigned',
+                to: name,
+                by: currentUser,
+                at: Date.now()
+            });
+
+            saveTasks(tasks);
+            renderTaskDetail(taskId);
+            renderTaskList();
+        }
+
+        function updateTaskField(taskId, field, value) {
+            const tasks = loadTasks();
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            task[field] = value;
+            task.updatedAt = Date.now();
+
+            saveTasks(tasks);
+            renderTaskList();
+            toast("Updated", "Task updated successfully", "success");
+        }
+
+        function updateStatus(taskId, status) {
+            const tasks = loadTasks();
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const oldStatus = task.status;
+            task.status = status;
+            task.updatedAt = Date.now();
+            task.activity = task.activity || [];
+            task.activity.unshift({
+                type: 'status_change',
+                from: oldStatus,
+                to: status,
+                by: currentUser,
+                at: Date.now()
+            });
+
+            saveTasks(tasks);
+            renderTaskDetail(taskId);
+            renderTaskList();
+            toast("Status Updated", `Task marked as ${status}`, "success");
+        }
+
+        function deleteTask(taskId) {
+            if (!confirm("Delete this task?")) return;
+            const tasks = loadTasks().filter(t => t.id !== taskId);
+            saveTasks(tasks);
+            selectedTaskId = null;
+            renderTaskList();
+            document.getElementById('taskDetail').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h3 style="margin:0 0 8px; color:var(--text-main);">No Task Selected</h3>
+                    <p style="color:var(--text-muted); margin:0;">Select a task from the list to view details</p>
+                </div>
+            `;
+            toast("Deleted", "Task deleted", "success");
+        }
+
+        // New Task Modal
+        function openNewTaskModal() {
+            document.getElementById('newTaskModal').classList.add('open');
+        }
+
+        function closeNewTaskModal() {
+            document.getElementById('newTaskModal').classList.remove('open');
+            document.getElementById('newSubject').value = '';
+            document.getElementById('newTime').value = '';
+            // Reset priority buttons
+            document.getElementById('urgentBtn').classList.add('active');
+            document.getElementById('normalBtn').classList.remove('active');
+        }
+
+        let selectedPriority = 'urgent';
+
+        function togglePriority(type) {
+            selectedPriority = type;
+            const urgentBtn = document.getElementById('urgentBtn');
+            const normalBtn = document.getElementById('normalBtn');
+
+            if (type === 'urgent') {
+                urgentBtn.classList.add('active');
+                normalBtn.classList.remove('active');
+            } else {
+                normalBtn.classList.add('active');
+                urgentBtn.classList.remove('active');
+            }
+        }
+
+        function createNewTask() {
+            const subject = document.getElementById('newSubject').value.trim();
+            if (!subject) {
+                toast("Missing Info", "Please enter a subject", "error");
+                return;
+            }
+
+            const time = document.getElementById('newTime').value;
+            const priority = selectedPriority === 'urgent' ? 'High' : 'Low';
+
+            // Format time for display in subject if provided
+            const displaySubject = time ? `${subject} (${time})` : subject;
+
+            const task = {
+                id: uid(),
+                subject: displaySubject,
+                description: '',
+                priority: priority,
+                dueDate: '',
+                time: time,
+                assignees: [],
+                owner: currentUser,
+                status: 'Open',
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                activity: [
+                    { type: 'created', by: currentUser, at: Date.now() }
+                ]
+            };
+
+            const tasks = loadTasks();
+            tasks.unshift(task);
+            saveTasks(tasks);
+
+            closeNewTaskModal();
+            renderTaskList();
+            toast("Created", "Task created successfully", "success");
+        }
+
+        // Helpers
+        function formatActivity(a) {
+            if (a.type === 'created') return `<strong>${a.by}</strong> created this task`;
+            if (a.type === 'assigned') return `<strong>${a.by}</strong> assigned to <strong>${a.to}</strong>`;
+            if (a.type === 'unassigned') return `<strong>${a.by}</strong> unassigned <strong>${a.to}</strong>`;
+            if (a.type === 'status_change') return `<strong>${a.by}</strong> changed status from <strong>${a.from}</strong> to <strong>${a.to}</strong>`;
+            return '';
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        // Init
+        renderTaskList();
+    </script>
+</body>
+
+</html>
