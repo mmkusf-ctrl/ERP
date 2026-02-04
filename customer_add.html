@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Add Customer | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+
+        .form-section:hover {
+            box-shadow: var(--shadow-md);
+            border-color: rgba(225, 29, 72, 0.3);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #fff1f2, #fff);
+            border: 1px solid rgba(225, 29, 72, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .section-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* Side Panel */
+        .helper-card {
+            background: linear-gradient(135deg, #fff, #fff1f2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+
+        .step-item.active {
+            opacity: 1;
+        }
+
+        .step-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-circle {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #fff1f2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .page-layout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container page-layout"
+        style="display:grid; grid-template-columns: 3fr 1fr; gap:32px; align-items:start;">
+
+        <!-- Main Form Column -->
+        <div class="animate-enter">
+            <div style="margin-bottom:32px;">
+                <a href="crm.html"
+                    style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:4px; margin-bottom:12px;">
+                    ← Back to CRM
+                </a>
+                <h1 class="page-title">Add New Customer</h1>
+                <p class="page-desc">Create a new customer profile. Fill out the details below to enable billing,
+                    shipping, and order management.</p>
+            </div>
+
+            <!-- 1. Company Information -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🏢</div>
+                    <div>
+                        <h2 class="section-title">Company Profile</h2>
+                        <p class="section-desc">Basic business details and classification.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Company Name *</label>
+                        <input id="cName" class="input" placeholder="e.g. Acme Corporation (Global)" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Customer Type</label>
+                        <select id="cType" class="input">
+                            <option value="Retailer">Retailer</option>
+                            <option value="Wholesale">Wholesale Distributor</option>
+                            <option value="Direct">Direct Consumer</option>
+                            <option value="Partner">Strategic Partner</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Industry / Sector</label>
+                        <input id="cIndustry" class="input" placeholder="e.g. Consumer Electronics">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Website</label>
+                        <input id="cWeb" class="input" placeholder="https://">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tax ID / VAT Number</label>
+                        <input id="cTax" class="input" placeholder="Optional">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Contact Information -->
+            <!-- 2. Contact Information -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👤</div>
+                    <div>
+                        <h2 class="section-title">Contacts</h2>
+                        <p class="section-desc">Manage customer contacts. Select one as the Primary contact.</p>
+                    </div>
+                </div>
+
+                <div id="contactsContainer"></div>
+
+                <button class="btn btn-secondary" style="width:100%; margin-top:16px; border-style:dashed;"
+                    onclick="addContactField()">
+                    + Add Another Contact
+                </button>
+            </section>
+
+            <!-- 3. Address -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">📍</div>
+                    <div>
+                        <h2 class="section-title">Billing Address</h2>
+                        <p class="section-desc">Primary location for invoicing.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Street Address</label>
+                        <input id="cStreet" class="input" placeholder="123 Business Rd, Suite 100">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City *</label>
+                        <input id="cCity" class="input" placeholder="City">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">State / Province</label>
+                        <input id="cState" class="input" placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP / Postal Code</label>
+                        <input id="cZip" class="input" placeholder="10001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <select id="cCountry" class="input">
+                            <option value="USA">United States</option>
+                            <option value="CAN">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="DE">Germany</option>
+                            <option value="JP">Japan</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <div style="display:flex; justify-content:flex-end; gap:16px; margin-top:32px; padding-bottom:60px;">
+                <button class="btn btn-secondary" style="width:120px;"
+                    onclick="window.location.href='crm.html'">Cancel</button>
+                <button class="btn btn-primary" style="min-width:160px;" onclick="saveCustomer()">
+                    <span>Save Customer</span>
+                    <span style="font-size:18px;">→</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="animate-enter stagger-2" style="@media(max-width:768px){display:none;}">
+            <div style="position:sticky; top:100px;">
+                <div class="helper-card">
+                    <h3 style="font-size:15px; margin:0 0 16px;">Completion Status</h3>
+
+                    <div class="step-item active">
+                        <div class="step-circle">1</div>
+                        <div style="font-size:13px; font-weight:600;">Company Details</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-circle">2</div>
+                        <div style="font-size:13px; font-weight:600;">Contact Info</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">3</div>
+                        <div style="font-size:13px; font-weight:600;">Address & Billing</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">4</div>
+                        <div style="font-size:13px; font-weight:600;">Review & Save</div>
+                    </div>
+
+                    <div style="height:1px; background:var(--border); margin:20px 0;"></div>
+                    <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+                        <strong style="display:block; margin-bottom:4px;">Need Help?</strong>
+                        Required fields are marked with an asterisk (*). For bulk imports, use the Data Import tool.
+                    </div>
+                </div>
+
+                <div class="card" style="padding:20px;">
+                    <h3
+                        style="font-size:14px; margin:0 0 12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">
+                        Other Options</h3>
+                    <button class="btn btn-secondary"
+                        style="width:100%; font-size:13px; height:40px; justify-content:flex-start; margin-bottom:8px;"
+                        onclick="window.location.href='data_import.html'">
+                        📂 Import from CSV
+                    </button>
+                    <button class="btn btn-secondary"
+                        style="width:100%; font-size:13px; height:40px; justify-content:flex-start;"
+                        onclick="alert('Salesforce Sync coming soon!')">
+                        ☁️ Sync Salesforce
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const KEY_CUST = "stark_crm_customers";
+
+        // Logic
+        // Multi-Contact Logic
+        let contactIdCounter = 0;
+
+        function addContactField() {
+            contactIdCounter++;
+            const id = contactIdCounter;
+            const isFirst = document.getElementById("contactsContainer").children.length === 0;
+
+            const div = document.createElement("div");
+            div.id = `contact-${id}`;
+            div.className = "contact-card";
+            div.style.cssText = "padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:16px; position:relative;";
+
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;">
+                        <input type="radio" name="primaryContact" value="${id}" ${isFirst ? 'checked' : ''} style="accent-color:var(--primary); width:16px; height:16px;">
+                        <span style="font-size:13px; font-weight:700; color:var(--text-main);">Primary Contact</span>
+                    </label>
+                    ${!isFirst ? `<button onclick="removeContact(${id})" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:12px; font-weight:600;">Remove</button>` : ''}
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input class="input c-name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Job Title</label>
+                        <input class="input c-title" placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input class="input c-email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input class="input c-phone" placeholder="Phone">
+                    </div>
+                </div>
+            `;
+            document.getElementById("contactsContainer").appendChild(div);
+        }
+
+        function removeContact(id) {
+            const el = document.getElementById(`contact-${id}`);
+            if (el) el.remove();
+        }
+
+        // Init with one contact
+        addContactField();
+
+        function saveCustomer() {
+            // Validation
+            const name = document.getElementById("cName").value.trim();
+            if (!name) return toast("Missing Info", "Please enter a Company Name.", "error");
+
+            // Gather Contacts
+            const contactCards = document.querySelectorAll(".contact-card");
+            const contacts = [];
+            let primaryContact = null;
+
+            let hasError = false;
+
+            contactCards.forEach(card => {
+                const isPrimary = card.querySelector("input[type=radio]").checked;
+                const cName = card.querySelector(".c-name").value.trim();
+                const cTitle = card.querySelector(".c-title").value.trim();
+                const cEmail = card.querySelector(".c-email").value.trim();
+                const cPhone = card.querySelector(".c-phone").value.trim();
+
+                if (!cName || !cEmail) {
+                    hasError = true;
+                    return;
+                }
+
+                const obj = { name: cName, title: cTitle, email: cEmail, phone: cPhone, isPrimary };
+                contacts.push(obj);
+                if (isPrimary) primaryContact = obj;
+            });
+
+            if (hasError) return toast("Missing Info", "All contacts must have a Name and Email.", "error");
+            if (contacts.length === 0) return toast("Missing Info", "At least one contact is required.", "error");
+
+            // If no primary selected (edge case), default to first
+            if (!primaryContact) {
+                primaryContact = contacts[0];
+                contacts[0].isPrimary = true;
+            }
+
+            const city = document.getElementById("cCity").value.trim();
+
+            // Build Object
+            const c = {
+                id: "C-" + Date.now(),
+                name: name,
+                type: document.getElementById("cType").value,
+                industry: document.getElementById("cIndustry").value,
+                website: document.getElementById("cWeb").value,
+                taxId: document.getElementById("cTax").value,
+
+                // Legacy / Root fields from Primary
+                contact: primaryContact.name,
+                title: primaryContact.title,
+                email: primaryContact.email,
+                phone: primaryContact.phone,
+
+                // Full list
+                contacts: contacts,
+
+                location: city + (document.getElementById("cState").value ? ", " + document.getElementById("cState").value : ""),
+                shipping: {
+                    street: document.getElementById("cStreet").value,
+                    city: city,
+                    state: document.getElementById("cState").value,
+                    zip: document.getElementById("cZip").value,
+                    country: document.getElementById("cCountry").value
+                },
+                joined: new Date().toISOString()
+            };
+
+            // Save
+            try {
+                const list = JSON.parse(localStorage.getItem(KEY_CUST) || "[]");
+                list.push(c);
+                localStorage.setItem(KEY_CUST, JSON.stringify(list));
+
+                toast("Success", "Customer profile created successfully!", "success");
+
+                // Redirect after brief delay
+                setTimeout(() => {
+                    window.location.href = "crm.html";
+                }, 1000);
+            } catch (e) {
+                console.error(e);
+                toast("Error", "Failed to save customer data.", "error");
+            }
+        }
+
+        // Highlight steps based on focus (simple visual trick)
+        document.querySelectorAll("input").forEach(inp => {
+            inp.addEventListener("focus", () => {
+                // Could animate helper steps here
+            });
+        });
+    </script>
+</body>
+
+</html>
