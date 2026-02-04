@@ -12,122 +12,63 @@
     <link rel="stylesheet" href="style.css?v=2">
 
     <style>
-        /* Shared Premium Dark Theme */
-        :root {
-            --primary: #6366f1;
-            --bg-body: #0f172a;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
-
-        body {
-            background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%) !important;
-            background-color: var(--bg-body) !important;
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-        }
-
+        /* View Specifics */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Topbar Override */
-        .topbar {
-            background: rgba(15, 23, 42, 0.8) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-        }
-
-        .nav-link {
-            color: #94a3b8 !important;
-        }
-
-        .nav-link.active {
-            color: white !important;
-        }
-
-        .logo-text {
-            color: white !important;
-        }
-
-        /* Controls */
-        .input {
-            background: rgba(0, 0, 0, 0.3) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
         }
 
         /* Chart Container */
         .chart-box {
-            height: 300px;
+            height: 350px;
             width: 100%;
             position: relative;
             margin-bottom: 24px;
             padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
-        /* Table */
-        th {
-            color: #94a3b8 !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-            background: transparent !important;
+        /* Table Overrides */
+        #reportTable th {
+            text-align: left;
+            padding: 16px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border);
+            background: #f8fafc;
         }
 
-        td {
-            color: #e2e8f0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        #reportTable td {
+            padding: 14px 16px;
+            color: var(--text-main);
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+            background: white;
         }
 
-        tr:hover {
-            background: rgba(255, 255, 255, 0.05) !important;
+        #reportTable tr:hover td {
+            background: #f8fafc;
         }
     </style>
 </head>
 
-<body>
-    <!-- Top Navigation -->
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a href="dashboard.html" class="logo">
-                <img src="images/stark-logo.png" alt="Stark Premium">
-                <span class="logo-text">Stark ERP</span>
-            </a>
-            <nav class="nav">
-                <a class="nav-link" href="reports.html">← Back to Reports</a>
-            </nav>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="btn btn-secondary" onclick="exportData()"
-                    style="height:36px; padding:0 16px; font-size:13px;">
-                    Export CSV
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="container" style="padding-top:40px;">
+<body><main class="container" style="padding-top:40px;">
 
         <!-- Dynamic Header -->
         <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:32px;">
             <div>
                 <h1 class="page-title" id="reportTitle"
-                    style="color:white; font-size:32px; font-weight:800; margin-bottom:8px;">Report Loading...</h1>
-                <p style="color:#94a3b8;" id="reportDesc">Please wait while we generate your data.</p>
+                    style="font-size:32px; font-weight:800; margin-bottom:8px; color:var(--text-main);">Report
+                    Loading...</h1>
+                <p style="color:var(--text-muted);" id="reportDesc">Please wait while we generate your data.</p>
             </div>
             <div style="display:flex; gap:12px;">
                 <input type="date" class="input" style="width:auto;" id="dateStart">
@@ -150,9 +91,11 @@
             </div>
 
             <!-- Data Grid -->
-            <h3 style="color:white; font-size:16px; margin-bottom:16px; display:flex; justify-content:space-between;">
+            <h3
+                style="color:var(--text-main); font-size:18px; font-weight:700; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
                 <span>Detailed Records</span>
-                <input placeholder="Search records..." class="input" style="width:200px; height:32px; font-size:12px;"
+                <input placeholder="Search query..." class="input"
+                    style="width:240px; height:36px; font-size:13px; background:white; border:1px solid var(--border); color:var(--text-main);"
                     oninput="filterTable(this.value)">
             </h3>
             <div class="table-container" style="max-height:500px; overflow-y:auto;">
@@ -252,8 +195,8 @@
             const controls = document.createElement("div");
             controls.style.cssText = "position:absolute; top:16px; right:16px; display:flex; gap:8px;";
             controls.innerHTML = `
-                <button class="btn btn-xs" style="font-size:10px; padding:4px 8px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:4px; cursor:pointer;" onclick="updateChartType('bar')">Bar</button>
-                <button class="btn btn-xs" style="font-size:10px; padding:4px 8px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:4px; cursor:pointer;" onclick="updateChartType('line')">Line</button>
+                <button class="btn btn-secondary" style="font-size:11px; padding:4px 10px; height:28px;" onclick="updateChartType('bar')">Bar</button>
+                <button class="btn btn-secondary" style="font-size:11px; padding:4px 10px; height:28px;" onclick="updateChartType('line')">Line</button>
             `;
             chartBox.appendChild(controls);
 
@@ -282,11 +225,11 @@
                 const arrow = isPos ? "▲" : "▼";
 
                 return `
-            <div class="card" style="padding:16px; background:rgba(255,255,255,0.05) !important;">
-                <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">${k}</div>
-                <div style="font-size:24px; font-weight:700; color:white; margin-bottom:4px;">${val}</div>
-                <div style="font-size:12px; color:${color}; font-weight:500;">
-                    ${arrow} ${Math.abs(change)}% <span style="color:#64748b; font-weight:400;">vs last period</span>
+            <div class="card" style="padding:20px; background:white; border:1px solid var(--border); box-shadow:var(--card-shadow); border-radius:12px;">
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">${k}</div>
+                <div style="font-size:28px; font-weight:800; color:var(--text-main); margin-bottom:4px;">${val}</div>
+                <div style="font-size:12px; color:${color}; font-weight:600;">
+                    ${arrow} ${Math.abs(change)}% <span style="color:var(--text-muted); font-weight:400;">vs last period</span>
                 </div>
             </div>`;
             }).join("");
