@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Create PO | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+
+        @media(max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .label-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .label-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<!-- Header / Topbar -->
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="dashboard.html" class="logo">
+            <img src="images/stark-logo.png" alt="Stark Premium">
+            <span class="logo-text">Stark ERP</span>
+        </a>
+
+        <nav class="nav">
+            <a class="nav-link" href="dashboard.html">Home</a>
+            <a class="nav-link" href="master.html">Master</a>
+            <a class="nav-link" href="crm.html">CRM</a>
+            <a class="nav-link" href="vendor.html">Vendor</a>
+            <a class="nav-link active" href="purchasing.html">Purchasing</a>
+            <a class="nav-link" href="inventory.html">Inventory</a>
+            <a class="nav-link" href="accounting.html">Accounting</a>
+            <a class="nav-link" href="orders.html">Orders</a>
+            <a class="nav-link" href="logistics.html">Logistics</a>
+            <a class="nav-link" href="reports.html">Reports</a>
+            <a class="nav-link" href="events.html">Events</a>
+        </nav>
+
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                Online
+            </div>
+            <button class="hamburger" onclick="openMobileNav()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+    <div class="mobile-drawer">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <strong style="font-size:16px;">Navigation</strong>
+            <button onclick="closeMobileNav()"
+                style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+        <a class="mobile-link" href="dashboard.html">Home</a>
+        <a class="mobile-link" href="master.html">Master</a>
+        <a class="mobile-link" href="crm.html">CRM</a>
+        <a class="mobile-link" href="vendor.html">Vendor</a>
+        <a class="mobile-link active" href="purchasing.html">Purchasing</a>
+        <a class="mobile-link" href="inventory.html">Inventory</a>
+        <a class="mobile-link" href="accounting.html">Accounting</a>
+        <a class="mobile-link" href="orders.html">Orders</a>
+        <a class="mobile-link" href="logistics.html">Logistics</a>
+        <a class="mobile-link" href="trends.html">Trends</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="container soft-ui-wrapper">
+
+    <!-- Header -->
+    <div style="margin-bottom:32px; display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+            <a href="purchasing.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:4px; margin-bottom:8px;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Purchasing
+            </a>
+            <h1 class="page-title" style="margin-bottom:8px;">Create Purchase Order</h1>
+            <p class="page-desc">Replenish stock and manage vendor relationships.</p>
+            <div class="gold-line" style="margin:16px 0 0;"></div>
+        </div>
+    </div>
+
+    <form id="poForm" onsubmit="event.preventDefault(); savePO();"
+        style="display:grid; grid-template-columns: 1fr 340px; gap:32px; align-items:start;">
+
+        <!-- Left Column: Primary Details -->
+        <div style="display:grid; gap:32px;">
+
+            <!-- 1. Vendor & Logistics -->
+            <div class="card-soft">
+                <div class="card-header">
+                    <div class="card-title" style="font-size:14px; color:var(--primary);">
+                        <i class="fa-solid fa-truck-field" style="margin-right:8px;"></i> Vendor & Logistics
+                    </div>
+                </div>
+
+                <div class="grid grid-2" style="gap:24px;">
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">Vendor Selection</label>
+                        <select class="input" id="vendorIn" required style="width:100%;">
+                            <option value="">Select Vendor...</option>
+                            <option value="Global Logistics">Global Logistics</option>
+                            <option value="Stark Mfg">Stark Mfg</option>
+                            <option value="PackPro">PackPro</option>
+                            <option value="Acme Supply">Acme Supply</option>
+                            <option value="Wayne Enterprises">Wayne Enterprises</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">Destination
+                            Warehouse</label>
+                        <select class="input" id="whIn" onchange="updateAddress()" style="width:100%;">
+                            <option value="WH-A">Main Warehouse (WH-A)</option>
+                            <option value="WH-B">East Coast (WH-B)</option>
+                            <option value="WH-C">West Coast (WH-C)</option>
+                            <option value="Sarasota">Sarasota</option>
+                            <option value="Texas">Texas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top:24px; padding-top:24px; border-top:1px solid #f1f5f9; display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">Shipping Method</label>
+                        <select class="input" id="methodIn" style="width:100%;">
+                            <option value="UPS">UPS</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="USPS">USPS</option>
+                            <option value="DHL">DHL</option>
+                            <option value="Pickup">Pickup</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">Ship To Address</label>
+                        <textarea class="input" id="addrIn" rows="3" required
+                            style="resize:none; font-size:13px;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Timeline -->
+            <div class="card-soft">
+                <div class="card-header">
+                    <div class="card-title" style="font-size:14px; color:var(--primary);">
+                        <i class="fa-regular fa-calendar" style="margin-right:8px;"></i> Timeline
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">Start Date</label>
+                        <input type="text" class="input" id="startIn" placeholder="YYYY-MM-DD" required>
+                    </div>
+                    <div>
+                        <label class="label-title" style="display:block; margin-bottom:6px;">End Date</label>
+                        <input type="text" class="input" id="endIn" placeholder="YYYY-MM-DD" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Line Items -->
+            <div class="card-soft">
+                <div class="card-header" style="margin-bottom:16px;">
+                    <div class="card-title" style="font-size:14px; color:var(--primary);">
+                        <i class="fa-solid fa-list-check" style="margin-right:8px;"></i> Line Items
+                    </div>
+                </div>
+
+                <div
+                    style="background:#f8fafc; padding:20px; border-radius:16px; border:1px solid #e2e8f0; margin-bottom:24px;">
+                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:16px; align-items:end;">
+                        <div>
+                            <label class="label-title" style="font-size:12px; margin-bottom:6px; display:block;">SKU or
+                                Model</label>
+                            <input type="text" class="input" id="skuIn" placeholder="Search product..."
+                                oninput="lookupPrice()" style="background:white;">
+                            <datalist id="skuList"></datalist>
+                        </div>
+                        <div>
+                            <label class="label-title"
+                                style="font-size:12px; margin-bottom:6px; display:block;">Quantity</label>
+                            <input type="number" class="input" id="qtyIn" placeholder="0" style="background:white;">
+                        </div>
+                        <div>
+                            <label class="label-title" style="font-size:12px; margin-bottom:6px; display:block;">Unit
+                                Price</label>
+                            <input type="number" class="input" id="priceIn" placeholder="0.00" step="0.01"
+                                style="background:white;">
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addItem()"
+                            style="height:48px; padding:0 24px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;">
+                            <i class="fa-solid fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enhanced Table -->
+                <div style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                            <tr>
+                                <th
+                                    style="text-align:left; padding:16px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Product</th>
+                                <th
+                                    style="text-align:left; padding:16px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Qty</th>
+                                <th
+                                    style="text-align:left; padding:16px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Price</th>
+                                <th
+                                    style="text-align:left; padding:16px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                                    Total</th>
+                                <th style="width:50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody" style="background:white;">
+                            <tr>
+                                <td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">
+                                    <i class="fa-regular fa-clipboard"
+                                        style="font-size:24px; margin-bottom:8px; opacity:0.5; display:block;"></i>
+                                    No items added yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Summary Panel -->
+        <div style="position:sticky; top:40px;">
+            <div class="card-premium" style="padding:24px; border-radius:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                    <h3 style="font-size:16px; margin:0; font-weight:700;">Order Summary</h3>
+                    <div class="badge badge-yellow">Draft</div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
+                    <div style="display:flex; justify-content:space-between; font-size:14px; color:var(--text-muted);">
+                        <span>Subtotal</span>
+                        <span id="sumSub" style="font-weight:600; color:var(--text-main);">$0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:14px; color:var(--text-muted);">
+                        <span>Tax (5.0%)</span>
+                        <span id="sumTax" style="font-weight:600; color:var(--text-main);">$0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:14px; color:var(--text-muted);">
+                        <span>Shipping</span>
+                        <span id="sumShip" style="font-weight:600; color:var(--text-main);">$0.00</span>
+                    </div>
+                </div>
+
+                <div style="border-top:2px dashed #e2e8f0; margin-bottom:20px;"></div>
+
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:32px;">
+                    <span style="font-size:14px; font-weight:700; color:var(--text-main);">Grand Total</span>
+                    <span id="sumTotal" style="font-size:24px; font-weight:800; color:var(--primary);">$0.00</span>
+                </div>
+
+                <div style="display:grid; gap:12px;">
+                    <button type="submit" class="btn btn-primary"
+                        style="width:100%; justify-content:center; padding:16px; font-size:14px; box-shadow:0 4px 12px rgba(225, 29, 72, 0.25);">
+                        Create Purchase Order
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                        style="width:100%; justify-content:center; padding:14px;"
+                        onclick="window.location.href='purchasing.html'">
+                        Cancel
+                    </button>
+                </div>
+
+                <div
+                    style="margin-top:24px; background:#fff1f2; padding:12px; border-radius:12px; display:flex; gap:10px; align-items:start;">
+                    <i class="fa-solid fa-circle-info"
+                        style="color:var(--primary); font-size:14px; margin-top:3px;"></i>
+                    <p style="margin:0; font-size:11px; color:var(--text-muted); line-height:1.5;">
+                        Approvals required for orders over <strong>$10,000</strong>. Please verify inventory levels
+                        before submitting.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div style="margin-top:60px; text-align:center; color:var(--text-muted); font-size:13px; opacity:0.6;">
+        &copy; 2026 Stark Premium ERP. Secure Environment.
+    </div>
+</main>
+
+<div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+<script src="erp.js"></script>
+<script>
+    const PO_KEY = "stark_erp_pos_v1";
+    const ITEM_KEY = "stark_erp_items_v2";
+    let ORDER_ITEMS = [];
+
+    // Init Dates & Datalist
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startIn').value = today;
+
+    // Load Items for Datalist
+    const allItems = load(ITEM_KEY, []);
+    const dl = document.getElementById('skuList');
+    if (dl) {
+        allItems.forEach(i => {
+            const op = document.createElement('option');
+            // Allow searching by SKU or Model
+            op.value = i.sku;
+            // Add model to label if exists
+            if (i.model) op.label = i.model;
+            dl.appendChild(op);
+
+            // Add separate option for model if distinct
+            if (i.model && i.model !== i.sku) {
+                const op2 = document.createElement('option');
+                op2.value = i.model;
+                op2.label = i.sku; // show SKU as context
+                dl.appendChild(op2);
+            }
+        });
+        // Fallback demos if no items
+        if (allItems.length === 0) {
+            ['SKU-1001', 'SKU-5002', 'WIDGET-X', 'GADGET-Y'].forEach(s => {
+                const op = document.createElement('option');
+                op.value = s;
+                dl.appendChild(op);
+            });
+        }
+    }
+
+    // Logic
+    function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+    function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+
+    function lookupPrice() {
+        const val = document.getElementById('skuIn').value.trim().toLowerCase();
+        if (!val) return;
+
+        // Try matching logic: SKU or Model
+        const item = allItems.find(i =>
+            (i.sku || "").toLowerCase() === val ||
+            (i.model || "").toLowerCase() === val
+        );
+
+        if (item) {
+            // Try to find cost, or net price, or price
+            let cost = item.cost || item.netPrice || item.price || 0;
+            // If it's a string '$10.00', parse it
+            if (typeof cost === 'string') cost = parseFloat(cost.replace('$', '').replace(',', ''));
+
+            if (cost) document.getElementById('priceIn').value = cost.toFixed(2);
+
+            // Optional: If they typed model, maybe update input to SKU for consistency? 
+            // But user might prefer seeing what they typed. Leaving as is, but ensuring we use correct SKU in list.
+            // Actually, for saving the PO item, we probably want the canonical SKU if possible.
+            // Let's store the canonical SKU in a data attribute or resolve it on add.
+        }
+    }
+
+    const WAREHOUSE_ADDRESSES = {
+        "WH-A": "123 Stark Industries Blvd\nNew York, NY 10001\nUnited States",
+        "WH-B": "456 Logistic Way\nJersey City, NJ 07302\nUnited States",
+        "WH-C": "789 Innovation Dr\nSan Francisco, CA 94107\nUnited States",
+        "Sarasota": "1781 Barber Road\nSarasota, FL 34240\nUnited States",
+        "Texas": "200 Energy Way\nHouston, TX 77002\nUnited States"
+    };
+
+    function updateAddress() {
+        const wh = document.getElementById('whIn').value;
+        const addr = WAREHOUSE_ADDRESSES[wh] || "";
+        document.getElementById('addrIn').value = addr;
+    }
+
+    // Init Address
+    updateAddress();
+
+    function addItem() {
+        let val = document.getElementById('skuIn').value.trim();
+        const qty = parseInt(document.getElementById('qtyIn').value || 0);
+        const price = parseFloat(document.getElementById('priceIn').value || 0);
+
+        if (!val || qty <= 0) return toast("Error", "Invalid Item details", "error");
+
+        // Resolve to canonical SKU if matches a model
+        const item = allItems.find(i =>
+            (i.sku || "").toLowerCase() === val.toLowerCase() ||
+            (i.model || "").toLowerCase() === val.toLowerCase()
+        );
+        if (item) val = item.sku; // Use canonical SKU
+
+        ORDER_ITEMS.push({ sku: val, qty, price });
+
+        // Reset inputs
+        document.getElementById('skuIn').value = "";
+        document.getElementById('qtyIn').value = "";
+        document.getElementById('priceIn').value = "";
+        document.getElementById('skuIn').focus();
+
+        renderItems();
+        updateSummary();
+    }
+
+    function removeItem(idx) {
+        ORDER_ITEMS.splice(idx, 1);
+        renderItems();
+        updateSummary();
+    }
+
+    function updateSummary() {
+        let sub = 0;
+        ORDER_ITEMS.forEach(i => sub += (i.qty * i.price));
+
+        let tax = sub * 0.05; // Mock 5% tax
+        let ship = sub > 1000 ? 0 : 50; // Free shipping over $1000
+        let total = sub + tax + ship;
+
+        document.getElementById('sumSub').textContent = '$' + sub.toFixed(2);
+        document.getElementById('sumTax').textContent = '$' + tax.toFixed(2);
+        document.getElementById('sumShip').textContent = ship === 0 ? 'Free' : '$' + ship.toFixed(2);
+        document.getElementById('sumTotal').textContent = '$' + total.toFixed(2);
+    }
+
+    function renderItems() {
+        const tbody = document.getElementById('itemsBody');
+        tbody.innerHTML = "";
+
+        if (ORDER_ITEMS.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No items added yet.</td></tr>`;
+            return;
+        }
+
+        ORDER_ITEMS.forEach((item, idx) => {
+            const total = (item.qty * item.price).toFixed(2);
+            tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.sku}</strong></td>
+                        <td>${item.qty}</td>
+                        <td>$${item.price.toFixed(2)}</td>
+                        <td>$${total}</td>
+                        <td style="text-align:center;">
+                            <button type="button" onclick="removeItem(${idx})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:700;">&times;</button>
+                        </td>
+                    </tr>
+                `;
+        });
+    }
+
+    function savePO() {
+        const vendor = document.getElementById('vendorIn').value;
+        const wh = document.getElementById('whIn').value;
+        const start = document.getElementById('startIn').value;
+        const end = document.getElementById('endIn').value;
+        const method = document.getElementById('methodIn').value;
+        const addr = document.getElementById('addrIn').value;
+
+        if (!vendor || !start || !end) {
+            toast("Error", "Please fill required fields", "error");
+            return;
+        }
+
+        if (ORDER_ITEMS.length === 0) {
+            toast("Error", "Please add at least one item", "error");
+            return;
+        }
+
+        const id = "PO-" + Math.floor(Math.random() * 9000 + 1000);
+
+        // Format items description
+        const linesDesc = ORDER_ITEMS.map(i => `${i.sku} (${i.qty})`).join(", ");
+
+        // Calc total
+        let sub = 0;
+        ORDER_ITEMS.forEach(i => sub += (i.qty * i.price));
+        let total = sub * 1.05 + (sub > 1000 ? 0 : 50);
+
+        const newPO = {
+            id: id,
+            vendor: vendor,
+            wh: wh,
+            eta: end, // using End Date as ETA
+            status: "Open",
+            lines: linesDesc,
+            items: ORDER_ITEMS,
+            totalCost: total,
+            startDate: start,
+            shipMethod: method,
+            shipAddr: addr
+        };
+
+        const pos = load(PO_KEY, []);
+        pos.unshift(newPO);
+        save(PO_KEY, pos);
+
+        toast("Success", "PO Created Successfully!", "success");
+
+        setTimeout(() => {
+            window.location.href = "purchasing.html";
+        }, 1000);
+    }
+</script>
+</body>
+
+</html>
