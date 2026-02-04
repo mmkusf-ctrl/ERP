@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Data Import | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        .import-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            background: white;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .import-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .import-card.selected {
+            border-color: var(--primary);
+            background: #fff1f2;
+            box-shadow: 0 0 0 2px var(--primary-fade);
+        }
+
+        .drop-zone {
+            height: 200px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 24px;
+            transition: all 0.2s;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: #fff1f2;
+        }
+    </style>
+</head>
+
+<body><main class="container">
+        <div style="margin-bottom:24px;">
+            <a href="accounting.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600;">← Back to
+                Accounting</a>
+        </div>
+
+        <div class="card animate-enter">
+            <h1 class="page-title">Data Import Wizard</h1>
+            <p class="page-desc" style="margin-bottom:32px;">Bulk upload data via CSV, Excel, or XML.</p>
+
+            <h3
+                style="font-size:14px; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.05em; margin-bottom:16px;">
+                1. Select Data Type</h3>
+
+            <div class="grid grid-4"
+                style="margin-bottom:32px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="import-card selected" onclick="selectType(this)">
+                    <div style="font-size:32px; margin-bottom:8px;">🧾</div>
+                    <div style="font-weight:700;">AP Invoices</div>
+                </div>
+                <div class="import-card" onclick="selectType(this)">
+                    <div style="font-size:32px; margin-bottom:8px;">📦</div>
+                    <div style="font-weight:700;">Inventory Items</div>
+                </div>
+                <div class="import-card" onclick="selectType(this)">
+                    <div style="font-size:32px; margin-bottom:8px;">👥</div>
+                    <div style="font-weight:700;">Customers</div>
+                </div>
+                <div class="import-card" onclick="selectType(this)">
+                    <div style="font-size:32px; margin-bottom:8px;">🚚</div>
+                    <div style="font-weight:700;">Purchase Orders</div>
+                </div>
+            </div>
+
+            <h3
+                style="font-size:14px; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.05em; margin-bottom:16px;">
+                2. Upload File</h3>
+
+            <div class="drop-zone">
+                <div style="font-size:48px; margin-bottom:16px; opacity:0.5;">☁️</div>
+                <div style="font-weight:600; color:var(--text-main); margin-bottom:4px;">Drag & Drop your file here
+                </div>
+                <p style="font-size:13px; color:var(--text-muted);">or <span
+                        style="color:var(--primary); cursor:pointer; text-decoration:underline;">browse files</span></p>
+            </div>
+
+            <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+                <a href="#" style="font-size:13px; color:var(--primary); font-weight:600; text-decoration:none;">⬇
+                    Download Sample CSV Template</a>
+                <button class="btn btn-primary">Start Import</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        function selectType(el) {
+            document.querySelectorAll('.import-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+    </script>
+</body>
+
+</html>
