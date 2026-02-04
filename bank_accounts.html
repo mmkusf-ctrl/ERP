@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Bank Accounts | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        .bank-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .bank-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .bank-card::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .bank-card.gold {
+            background: linear-gradient(135deg, #b45309 0%, #78350f 100%);
+            box-shadow: 0 10px 25px -5px rgba(180, 83, 9, 0.3);
+        }
+
+        .bank-card .bank-name {
+            font-size: 13px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .bank-card .balance {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .bank-card .account-num {
+            font-family: monospace;
+            opacity: 0.6;
+            letter-spacing: 2px;
+        }
+
+        /* Payment Section */
+        .pay-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link" href="master.html">Master</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+                <a class="nav-link" href="vendor.html">Vendor</a>
+                <a class="nav-link" href="purchasing.html">Purchasing</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link active" href="accounting.html">Accounting</a>
+                <a class="nav-link" href="orders.html">Orders</a>
+                <a class="nav-link" href="logistics.html">Logistics</a>
+                <a class="nav-link" href="reports.html">Reports</a>
+                <a class="nav-link" href="events.html">Events</a>
+            </nav>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
+                    Online
+                </div>
+                <button class="hamburger" onclick="openMobileNav()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="margin-bottom:24px;">
+            <a href="accounting.html"
+                style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600;">← Back to
+                Accounting</a>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">Banking & Payments</h1>
+            <p class="page-desc">Manage liquidity, credit cards, and execute payments.</p>
+        </div>
+
+        <!-- Account Cards -->
+        <div class="grid grid-4 animate-enter"
+            style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom:40px;">
+            <div class="bank-card">
+                <div class="bank-name">Stark Operational Checking</div>
+                <div class="balance">$1,240,500.00</div>
+                <div style="display:flex; justify-content:space-between; align-items:end;">
+                    <div class="account-num">•••• 4829</div>
+                    <div style="font-size:11px; padding:4px 8px; background:rgba(255,255,255,0.2); border-radius:4px;">
+                        Primary</div>
+                </div>
+            </div>
+
+            <div class="bank-card gold">
+                <div class="bank-name">Gold Reserve Savings</div>
+                <div class="balance">$5,000,000.00</div>
+                <div style="display:flex; justify-content:space-between; align-items:end;">
+                    <div class="account-num">•••• 9921</div>
+                    <div style="font-size:11px; padding:4px 8px; background:rgba(255,255,255,0.2); border-radius:4px;">
+                        Yield</div>
+                </div>
+            </div>
+
+            <div class="bank-card" style="background:linear-gradient(135deg, #374151 0%, #111827 100%);">
+                <div class="bank-name">Corporate Amex Platinum</div>
+                <div class="balance" style="color:#ef4444;">-$14,250.00</div>
+                <div style="display:flex; justify-content:space-between; align-items:end;">
+                    <div class="account-num">•••• 1002</div>
+                    <div style="font-size:11px; padding:4px 8px; background:rgba(255,255,255,0.2); border-radius:4px;">
+                        Credit</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Center -->
+        <div class="grid grid-2 animate-enter stagger-1" style="align-items:start;">
+
+            <div class="pay-panel">
+                <h3
+                    style="font-size:18px; font-weight:800; color:var(--text-main); margin-bottom:24px; display:flex; align-items:center; gap:8px;">
+                    <span
+                        style="background:#e0e7ff; color:#4338ca; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:16px;">⚡</span>
+                    Quick Pay
+                </h3>
+
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; font-size:13px; font-weight:700; color:#64748b; margin-bottom:8px;">1.
+                        Find Invoice</label>
+                    <div style="display:flex; gap:8px;">
+                        <input class="input" placeholder="Enter Invoice # (e.g. INV-2024)" id="invInput" />
+                        <button class="btn btn-secondary" onclick="findInvoice()">Check</button>
+                    </div>
+                    <div id="invResult"
+                        style="margin-top:12px; display:none; padding:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px;">
+                        <div style="font-weight:700; color:#166534; display:flex; justify-content:space-between;">
+                            <span>INV-2024 - Acme Corp</span>
+                            <span>$12,500.00</span>
+                        </div>
+                        <div style="font-size:12px; color:#15803d; margin-top:4px;">Due Date: Feb 15, 2026</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:32px;">
+                    <label style="display:block; font-size:13px; font-weight:700; color:#64748b; margin-bottom:8px;">2.
+                        Select Payment Method</label>
+                    <select class="input">
+                        <option>Stark Operational Checking (•••• 4829)</option>
+                        <option>Corporate Amex Platinum (•••• 1002)</option>
+                        <option>Debit Card (•••• 2241)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" style="width:100%; height:56px; font-size:16px;"
+                    onclick="toast('Payment Processing', 'Initiating ACH transfer...', 'success')">
+                    Pay Now
+                </button>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card">
+                <h3 style="font-size:16px; font-weight:700; color:var(--text-main); margin-bottom:16px;">Recent History
+                </h3>
+                <div class="table-container">
+                    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+                        <tbody>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px 0; color:#64748b;">Today</td>
+                                <td style="padding:12px 16px; font-weight:600;">Office Supplies</td>
+                                <td style="padding:12px 0; color:#ef4444; text-align:right;">-$240.50</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px 0; color:#64748b;">Jan 28</td>
+                                <td style="padding:12px 16px; font-weight:600;">Incoming Wire - Client A</td>
+                                <td style="padding:12px 0; color:#10b981; text-align:right;">+$45,000.00</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px 0; color:#64748b;">Jan 27</td>
+                                <td style="padding:12px 16px; font-weight:600;">AWS Web Services</td>
+                                <td style="padding:12px 0; color:#ef4444; text-align:right;">-$1,200.00</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px 0; color:#64748b;">Jan 25</td>
+                                <td style="padding:12px 16px; font-weight:600;">Payroll Run #402</td>
+                                <td style="padding:12px 0; color:#ef4444; text-align:right;">-$102,400.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-sm btn-secondary" style="width:100%; margin-top:16px;">View Full
+                    Statement</button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        function findInvoice() {
+            const val = document.getElementById('invInput').value;
+            if (val.length > 3) {
+                document.getElementById('invResult').style.display = 'block';
+                document.querySelector('#invResult span').innerText = val + " - Acme Corp";
+            } else {
+                toast('Details Needed', 'Please enter a valid invoice number.', 'info');
+            }
+        }
+    </script>
+</body>
+
+</html>
