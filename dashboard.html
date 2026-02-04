@@ -150,6 +150,9 @@
             <div class="gold-line" style="margin:8px 0 16px; width:40px;"></div>
           </div>
           <div style="display:flex; gap:8px;">
+            <button class="btn secondary" onclick="window.location.href='tasks.html'">
+              <i class="fa-solid fa-up-right-from-square" style="margin-right:6px;"></i> Full Board
+            </button>
             <span class="badge" style="background:#f1f5f9; color:#64748b;"><i class="fa-solid fa-users"></i> Team
               View</span>
           </div>
@@ -338,8 +341,10 @@
       if (!subject) return toast("Missing field", "Task subject is required.");
 
       window.taskStore.add({
-        subject, cat, priority: pri, // normalize field names
-        due: due || "",
+        subject,
+        cat,
+        priority: pri,
+        dueDate: due || "",
         time: time || "",
         assignees,
         status: "Open"
@@ -363,9 +368,9 @@
       const d0 = new Date().toISOString().split('T')[0];
 
       const demos = [
-        { subject: "Approve PO #PO-1042 (Vendor: Delta Supplies)", cat: "Purchasing", priority: "High", due: d0, time: "14:00", assignees: ["Admin", "Alex"], status: "Open" },
-        { subject: "Validate Order #SO-8891 (payment pending)", cat: "Orders", priority: "High", due: d0, time: "16:00", assignees: ["Admin", "Sarah"], status: "Open" },
-        { subject: "Follow up on delayed shipment", cat: "Logistics", priority: "Medium", due: "", time: "", assignees: ["Charlie"], status: "Open" }
+        { subject: "Approve PO #PO-1042 (Vendor: Delta Supplies)", cat: "Purchasing", priority: "High", dueDate: d0, time: "14:00", assignees: ["Admin", "Alex"], status: "Open" },
+        { subject: "Validate Order #SO-8891 (payment pending)", cat: "Orders", priority: "High", dueDate: d0, time: "16:00", assignees: ["Admin", "Sarah"], status: "Open" },
+        { subject: "Follow up on delayed shipment", cat: "Logistics", priority: "Medium", dueDate: "", time: "", assignees: ["Charlie"], status: "Open" }
       ];
 
       demos.forEach(d => window.taskStore.add(d));
@@ -419,15 +424,15 @@
       const pri = document.getElementById("priority").value;
       const due = document.getElementById("due").value;
 
-      const list = loadTasks();
+      const list = window.taskStore.getAll();
 
       const filtered = list.filter(t => {
         if (cat && t.cat !== cat) return false;
-        if (pri && t.pri !== pri) return false;
-        if (due && dueBucket(t.due) !== due) return false;
+        if (pri && t.priority !== pri) return false;
+        if (due && dueBucket(t.dueDate) !== due) return false;
 
         if (search) {
-          const blob = `${t.title} ${t.cat} ${t.pri} ${(t.assignees || []).join(",")}`.toLowerCase();
+          const blob = `${t.subject || t.title} ${t.cat} ${t.priority} ${(t.assignees || []).join(",")}`.toLowerCase();
           if (!blob.includes(search)) return false;
         }
         updateKPIs(); // Update other KPIs when tasks render
@@ -436,8 +441,8 @@
 
       // KPI Tasks
       const pending = list.filter(t => t.status !== "Completed").length;
-      const dueToday = list.filter(t => t.status !== "Completed" && dueBucket(t.due) === "today").length;
-      const high = list.filter(t => t.status !== "Completed" && t.pri === "High").length;
+      const dueToday = list.filter(t => t.status !== "Completed" && dueBucket(t.dueDate) === "today").length;
+      const high = list.filter(t => t.status !== "Completed" && t.priority === "High").length;
 
       const kpiTasks = document.getElementById("kpiTasks");
       if (kpiTasks) kpiTasks.textContent = String(pending);
@@ -455,8 +460,8 @@
       }
 
       for (const t of filtered) {
-        const priTag = t.pri === "High" ? "bad" : (t.pri === "Medium" ? "warn" : "good");
-        const dueText = t.due ? t.due : "—";
+        const priTag = t.priority === "High" ? "bad" : (t.priority === "Medium" ? "warn" : "good");
+        const dueText = t.dueDate ? t.dueDate : "—";
         const statusTag = t.status === "Completed" ? `<span class="pilltag good">Completed</span>` : `<span class="pilltag warn">Open</span>`;
         const subj = t.subject || t.title || "No Subject";
 
@@ -467,8 +472,8 @@
              <div style="font-weight:600; color:var(--text-main);">${escapeHtml(subj)}</div>
              <div class="note" style="font-size:10px;">${new Date(t.createdAt).toLocaleDateString()}</div>
           </td>
-          <td><span class="badge" style="background:#f1f5f9; color:#475569;">${escapeHtml(t.cat)}</span></td>
-          <td><span class="pilltag ${priTag}">${escapeHtml(t.pri)}</span></td>
+          <td><span class="badge" style="background:#f1f5f9; color:#475569;">${escapeHtml(t.cat || 'General')}</span></td>
+          <td><span class="pilltag ${priTag}">${escapeHtml(t.priority)}</span></td>
           <td style="font-size:13px; font-variant-numeric:tabular-nums;">${escapeHtml(dueText)} ${t.time ? `<span style="color:var(--text-muted); font-size:11px;">${escapeHtml(t.time)}</span>` : ""}</td>
           <td>${escapeHtml((t.assignees || []).join(", ") || "—")}</td>
           <td>${statusTag}</td>
