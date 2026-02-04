@@ -46,25 +46,7 @@
 
 <body>
 
-    <!-- Header / Topbar -->
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a href="dashboard.html" class="logo">
-                <img src="images/stark-logo.png" alt="Stark Premium">
-                <span class="logo-text">Stark ERP</span>
-            </a>
-            <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="master.html">Items</a>
-                <a class="nav-link" href="inventory.html">Inventory</a>
-            </nav>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green">Online</div>
-            </div>
-        </div>
-    </header>
-
-    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px; margin: 0 auto;">
+    <!-- Header / Topbar --><main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px; margin: 0 auto;">
 
         <!-- Page Header -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
@@ -212,6 +194,10 @@
 
                     <div style="display:grid; gap:16px;">
                         <div>
+                            <label class="input-group-text">MSRP ($)</label>
+                            <input id="pMsrp" type="number" step="0.01" class="input" placeholder="0.00">
+                        </div>
+                        <div>
                             <label class="input-group-text">Retail Price ($)</label>
                             <input id="pRetail" type="number" step="0.01" class="input"
                                 style="font-size:16px; font-weight:600;" oninput="calc()">
@@ -325,6 +311,7 @@
                 material: document.getElementById("iMaterial").value,
                 measure: document.getElementById("iMeasure").value,
                 image: document.getElementById("iImg").value,
+                msrp: parseFloat(document.getElementById("pMsrp").value) || 0,
 
                 // Pricing
                 retail, disc, net, cost, // Unit Price stored as cost
