@@ -9,153 +9,333 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        /* Premium Detail Page Styles */
+        .hero-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 40px 0;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
 
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            object-fit: contain;
+            padding: 24px;
+        }
+
+        .hero-content {
+            padding-top: 10px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .badge-xl {
+            padding: 6px 16px;
+            font-size: 13px;
+            border-radius: 99px;
+            font-weight: 700;
+        }
+
+        .stat-card-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .stat-mini {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        /* Chart */
+        .chart-container {
+            height: 240px;
+            width: 100%;
+            position: relative;
+            margin-top: 24px;
+        }
+
+        .chart-bar {
+            fill: var(--primary-light);
+            rx: 4;
+            transition: height 0.3s ease, fill 0.2s;
+        }
+
+        .chart-bar:hover {
+            fill: var(--primary);
+        }
+
+        .tabs-premium {
+            display: flex;
+            gap: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab-link {
+            padding: 12px 0;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-link:hover {
+            color: var(--text-main);
+        }
+
+        .tab-link.active {
+            color: var(--primary);
+        }
+
+        .tab-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .product-image {
+                width: 120px;
+                margin: 0 auto;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .stat-card-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
 </head>
 
-<body>
-
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a href="dashboard.html" class="logo">
-                <img src="images/stark-logo.png" alt="Stark Premium">
-                <span class="logo-text">Stark ERP</span>
-            </a>
-            <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link active" href="master.html">Items</a>
-                <a class="nav-link" href="inventory.html">Inventory</a>
-                <a class="nav-link" href="orders.html">Orders</a>
-                <a class="nav-link" href="purchasing.html">Purchasing</a>
-                <a class="nav-link" href="crm.html">CRM</a>
-                <a class="nav-link" href="logistics.html">Logistics</a>
-                <a class="nav-link" href="vendor.html">Vendor</a>
-                <a class="nav-link" href="accounting.html">Accounting</a>
-                <a class="nav-link" href="reports.html">Reports</a>
-                <a class="nav-link" href="events.html">Events</a>
-            </nav>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green">Online</div>
-                <button class="hamburger" onclick="openMobileNav()">☰</button>
+<body><div class="hero-section">
+        <div class="container" style="padding-top:0; padding-bottom:0;">
+            <div class="breadcrumb">
+                <a href="master.html">Item Master</a>
+                <span>/</span>
+                <span id="breadSku">...</span>
             </div>
-        </div>
-    </header>
 
-    <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-drawer">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <strong style="font-size:16px;">Navigation</strong>
-                <button onclick="closeMobileNav()"
-                    style="background:none; border:none; font-size:24px;">&times;</button>
+            <div class="hero-grid">
+                <!-- Image -->
+                <img id="dImg" src="images/placeholder.png" class="product-image" alt="Product Image">
+
+                <!-- Content -->
+                <div class="hero-content">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <div>
+                            <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+                                <span class="badge badge-xl badge-green" id="dStatusBadge">Live</span>
+                                <span style="font-family:monospace; color:var(--text-muted); font-size:14px;"
+                                    id="dSku">SKU: ...</span>
+                            </div>
+                            <h1 style="font-size:36px; font-weight:900; letter-spacing:-0.03em; color:var(--text-main); margin:0 0 8px 0;"
+                                id="dName">Loading...</h1>
+                            <div style="font-size:18px; color:var(--text-muted);" id="dModel">Model: ...</div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" onclick="goToEdit()">
+                                <span style="font-size:18px;">✎</span> Edit Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mini Stats Grid -->
+                    <div class="stat-card-row">
+                        <div class="stat-mini">
+                            <div class="stat-label">Stock On Hand</div>
+                            <div class="stat-val" id="dStock">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-label">Available</div>
+                            <div class="stat-val" style="color:var(--success);" id="dAvail">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-label">On Order (PO)</div>
+                            <div class="stat-val" style="color:var(--primary);" id="dPoQty">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-label">Lifetime Sales</div>
+                            <div class="stat-val" id="dSold">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Price Info -->
+                    <div
+                        style="margin-top:24px; display:flex; gap:32px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.05);">
+                        <div>
+                            <div style="font-size:12px; color:#64748b;">Retail Price</div>
+                            <div style="font-size:24px; font-weight:700; color:var(--text-main);" id="dPrice">$0.00
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px; color:#64748b;">Wholesale Cost</div>
+                            <div style="font-size:24px; font-weight:700; color:#64748b;" id="dCost">$0.00</div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px; color:#64748b;">Margin</div>
+                            <div style="font-size:24px; font-weight:700; color:var(--success);" id="dMargin">0%</div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link active" href="master.html">Item Master</a>
-            <a class="mobile-link" href="inventory.html">Inventory</a>
         </div>
     </div>
 
-    <main class="container">
+    <main class="container" style="padding-top:0;">
 
-        <!-- Breadcrumb / Back -->
-        <a href="master.html"
-            style="display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:13px; font-weight:600; margin-bottom:16px;">
-            &larr; Back to Item Master
-        </a>
+        <div class="tabs-premium">
+            <div class="tab-link active" onclick="switchTab('overview')">Overview & Trends</div>
+            <div class="tab-link" onclick="switchTab('history')">Audit History</div>
+            <div class="tab-link" onclick="switchTab('purchasing')">Purchase Orders</div>
+        </div>
 
-        <!-- Header Info -->
-        <div class="card" style="margin-bottom:24px;">
-            <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:16px;">
-                <div>
-                    <div
-                        style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">
-                        Product Detail</div>
-                    <h1 style="margin:0; font-size:28px; font-weight:800; color:var(--text-main);" id="dName">Loading...
-                    </h1>
-                    <div style="display:flex; gap:12px; margin-top:8px; align-items:center;">
-                        <span class="badge badge-gray" id="dSku">SKU: ...</span>
-                        <span class="badge badge-gray" id="dModel">Model: ...</span>
-                        <span id="dStatusBadge"></span>
+        <!-- OVERVIEW TAB -->
+        <div id="view-overview" class="view-section active">
+            <div class="grid grid-2">
+                <!-- Sales Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Sales Performance (Trailing 30 Days)</div>
+                        <select class="input"
+                            style="width:auto; height:32px; font-size:12px; padding:0 12px; border-radius:8px;">
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                            <option>YTD</option>
+                        </select>
+                    </div>
+                    <svg id="salesChart" class="chart-container" viewBox="0 0 800 240"></svg>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Activity</div>
+                    </div>
+                    <div id="activityFeed" style="display:flex; flex-direction:column; gap:16px;">
+                        <!-- Injected JS -->
                     </div>
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-secondary" onclick="alert('Manage Images - Coming Soon')">Images</button>
-                    <button class="btn btn-primary" onclick="editCurrentItem()">Edit Item</button>
-                </div>
-            </div>
-
-            <hr style="margin:24px 0; border:none; border-top:1px solid var(--border);">
-
-            <div class="grid grid-4">
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">On
-                        Hand</div>
-                    <div style="font-size:24px; font-weight:700;" id="dStock">0</div>
-                </div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                        Allocated / Hold</div>
-                    <div style="font-size:24px; font-weight:700; color:var(--warning);" id="dHold">0</div>
-                </div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                        Total Sold (Lifetime)</div>
-                    <div style="font-size:24px; font-weight:700;" id="dSold">0</div>
-                </div>
-                <div>
-                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
-                        Active POs</div>
-                    <div style="font-size:24px; font-weight:700; color:var(--primary);" id="dPos">0</div>
-                </div>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('activity')">Activity Log</div>
-            <div class="tab" onclick="switchTab('history')">Status History</div>
-            <div class="tab" onclick="switchTab('purchasing')">Purchase Orders</div>
-        </div>
-
-        <!-- ACTIVITY LOG -->
-        <div id="view-activity" class="view-section active">
-            <div class="card table-container">
-                <table id="activityTable">
-                    <thead>
+        <!-- HISTORY TAB -->
+        <div id="view-history" class="view-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Audit Log</div>
+                </div>
+                <table style="width:100%; text-align:left; border-collapse:collapse;">
+                    <thead style="border-bottom:1px solid var(--border);">
                         <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Ref #</th>
-                            <th>Entity</th>
-                            <th style="text-align:right;">Qty Change</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Date</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">User</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Action</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Detail</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyActivity"></tbody>
+                    <tbody id="auditBody" style="font-size:13px;"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- HISTORY -->
-        <div id="view-history" class="view-section">
-            <div class="card">
-                <h3 style="font-size:16px; margin:0 0 16px;">Status Changes</h3>
-                <div id="historyList" style="display:grid; gap:12px;"></div>
-            </div>
-        </div>
-
-        <!-- POs -->
+        <!-- PO TAB -->
         <div id="view-purchasing" class="view-section">
-            <div class="card table-container">
-                <table id="poTable">
-                    <thead>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Linked Purchase Orders</div>
+                </div>
+                <table style="width:100%; text-align:left; border-collapse:collapse;">
+                    <thead style="border-bottom:1px solid var(--border);">
                         <tr>
-                            <th>PO #</th>
-                            <th>Date</th>
-                            <th>Vendor</th>
-                            <th>Status</th>
-                            <th>Qty Ordered</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">PO #</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Date</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Vendor</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Status</th>
+                            <th style="padding:12px; font-size:12px; color:var(--text-muted);">Qty</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyPos"></tbody>
+                    <tbody id="poBody" style="font-size:13px;"></tbody>
                 </table>
             </div>
         </div>
@@ -169,91 +349,140 @@
         const ITEM_KEY = "stark_erp_items_v2";
         const PO_KEY = "stark_erp_pos_v1";
 
+        // Helpers
         function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
-        function loadPOs() { try { return JSON.parse(localStorage.getItem(PO_KEY) || "[]"); } catch { return []; } }
 
-        // Get SKU from URL
         const params = new URLSearchParams(window.location.search);
         const SKU = params.get("sku");
-
-        function switchTab(t) {
-            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.view-section').forEach(x => x.classList.remove('active'));
-
-            // Activate
-            if (t === 'activity') document.querySelectorAll('.tab')[0].classList.add('active');
-            if (t === 'history') document.querySelectorAll('.tab')[1].classList.add('active');
-            if (t === 'purchasing') document.querySelectorAll('.tab')[2].classList.add('active');
-
-            document.getElementById('view-' + t).classList.add('active');
-        }
+        let currentItem = null;
 
         function render() {
             if (!SKU) {
-                alert("No SKU specified");
                 window.location.href = "master.html";
                 return;
             }
 
             const items = loadItems();
-            const item = items.find(i => i.sku === SKU);
+            currentItem = items.find(i => i.sku === SKU);
 
-            if (!item) {
-                document.querySelector('main').innerHTML = `<div class="container" style="text-align:center; padding:40px;"><h2>Item Not Found</h2><a href="item_master.html" class="btn btn-primary">Return to List</a></div>`;
+            if (!currentItem) {
+                document.body.innerHTML = "<div class='container' style='text-align:center; padding:50px;'>Item not found</div>";
                 return;
             }
 
             // Bind Header
-            document.getElementById("dName").textContent = item.name;
-            document.getElementById("dSku").textContent = "SKU: " + item.sku;
-            document.getElementById("dModel").textContent = "Model: " + (item.model || "N/A");
+            document.getElementById('breadSku').textContent = currentItem.sku;
+            document.getElementById('dName').textContent = currentItem.name;
+            document.getElementById('dSku').textContent = currentItem.sku;
+            document.getElementById('dModel').textContent = currentItem.model || "N/A";
+            document.getElementById('dImg').src = currentItem.image || "images/placeholder.png";
 
-            let sClass = "badge-gray";
-            if (item.status === "Live") sClass = "badge-green";
-            if (item.status === "Discontinued") sClass = "badge-red";
-            document.getElementById("dStatusBadge").innerHTML = `<span class="badge ${sClass}">${item.status}</span>`;
+            // Status Badge
+            const sBadge = document.getElementById('dStatusBadge');
+            sBadge.textContent = currentItem.status;
+            sBadge.className = `badge badge-xl ${currentItem.status === 'Live' ? 'badge-green' : 'badge-gray'}`;
 
             // Stats
-            document.getElementById("dStock").textContent = item.on || 0;
-            document.getElementById("dHold").textContent = item.hold || 0;
+            document.getElementById('dStock').textContent = currentItem.on || 0;
+            const avail = (currentItem.on || 0) - (currentItem.hold || 0);
+            document.getElementById('dAvail').textContent = avail;
+            document.getElementById('dPoQty').textContent = currentItem.onOrder || 500; // mock
+            document.getElementById('dSold').textContent = 1420; // mock lifetime
 
-            // Mock Stats
-            document.getElementById("dSold").textContent = Math.floor(Math.random() * 500) + 20; // Simulated
+            // Price / Margin
+            const price = parseFloat(currentItem.price) || 0;
+            const cost = parseFloat(currentItem.cost) || 0;
+            document.getElementById('dPrice').textContent = window.formatMoney(price);
+            document.getElementById('dCost').textContent = window.formatMoney(cost);
 
-            // Mock Activity
-            const tbody = document.getElementById("tbodyActivity");
-            tbody.innerHTML = `
-                <tr>
-                    <td>2026-01-20</td>
-                    <td><span class="badge badge-green">Received</span></td>
-                    <td>PO-1001</td>
-                    <td>${item.vendor || "Vendor"}</td>
-                    <td style="text-align:right; color:var(--success);">+50</td>
-                </tr>
-                <tr>
-                    <td>2026-01-18</td>
-                    <td><span class="badge badge-gray">Adjustment</span></td>
-                    <td>ADJ-002</td>
-                    <td>Admin</td>
-                    <td style="text-align:right; color:var(--text-muted);">-2</td>
-                </tr>
-            `;
+            let margin = 0;
+            if (price > 0) margin = ((price - cost) / price) * 100;
+            document.getElementById('dMargin').textContent = margin.toFixed(1) + "%";
 
-            // POs Logic
-            // Ideally filter real POs. For now, empty or mock.
-            const tbodyPos = document.getElementById("tbodyPos");
-            tbodyPos.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No active POs found for this item.</td></tr>`;
+            // Render Charts & Tables
+            renderChart();
+            renderActivity();
+            renderPos();
         }
 
-        function editCurrentItem() {
-            // Re-use logic from item_master or redirect?
-            // Simple way: redirect to item_master with a hash or just an alert for now as modal is on other page.
-            // Better: Load modal here? 
-            // Reuse: just alert for MVP phase 1
-            alert("Edit functionality is currently hosted on the main Item Master list. Please edit there for now.");
+        function renderChart() {
+            const svg = document.getElementById('salesChart');
+            // Generate mock trend data
+            const bars = 14;
+            const width = 800;
+            const height = 240;
+            const gap = 10;
+            const barWidth = (width - ((bars - 1) * gap)) / bars;
+
+            let html = '';
+            for (let i = 0; i < bars; i++) {
+                // Random height between 20% and 90%
+                const val = Math.floor(Math.random() * (height * 0.7)) + 20;
+                const x = i * (barWidth + gap);
+                const y = height - val;
+                html += `<rect class="chart-bar" x="${x}" y="${y}" width="${barWidth}" height="${val}" />`;
+            }
+            svg.innerHTML = html;
         }
 
+        function renderActivity() {
+            const feed = document.getElementById('activityFeed');
+            const acts = [
+                { date: 'Today', text: 'Stock level updated', user: 'System' },
+                { date: 'Yesterday', text: 'Price changed from $45 to $48', user: 'Admin' },
+                { date: 'Jan 22', text: 'Received PO #9921 (50 units)', user: 'Warehouse' }
+            ];
+
+            feed.innerHTML = acts.map(a => `
+                <div style="display:flex; justify-content:space-between; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                    <div>
+                        <div style="font-size:13px; font-weight:600;">${a.text}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${a.user}</div>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-muted);">${a.date}</div>
+                </div>
+             `).join('');
+
+            const audit = document.getElementById('auditBody');
+            audit.innerHTML = acts.map(a => `
+                <tr>
+                    <td style="padding:12px; color:var(--text-muted);">${a.date}</td>
+                    <td style="padding:12px;">${a.user}</td>
+                    <td style="padding:12px;">Update</td>
+                    <td style="padding:12px;">${a.text}</td>
+                </tr>
+             `).join('');
+        }
+
+        function renderPos() {
+            const body = document.getElementById('poBody');
+            // Mock POs
+            body.innerHTML = `
+                <tr>
+                    <td style="padding:12px; font-weight:600;">PO-9921</td>
+                    <td style="padding:12px;">2026-01-20</td>
+                    <td style="padding:12px;">PackPro Inc</td>
+                    <td style="padding:12px;"><span class="badge badge-yellow">Pending</span></td>
+                    <td style="padding:12px;">500</td>
+                </tr>
+             `;
+        }
+
+        function goToEdit() {
+            window.location.href = `item_edit.html?sku=${SKU}`;
+        }
+
+        function switchTab(t) {
+            document.querySelectorAll('.tab-link').forEach(e => e.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
+            document.getElementById('view-' + t).classList.add('active');
+        }
+
+        // Init
         render();
+
     </script>
 </body>
 
