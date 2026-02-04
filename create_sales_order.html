@@ -84,22 +84,7 @@
 
 <body>
 
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a href="dashboard.html" class="logo">
-                <img src="images/stark-logo.png" alt="Stark Premium">
-                <span class="logo-text">Stark ERP</span>
-            </a>
-            <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="master.html">Items</a>
-                <a class="nav-link active" href="orders.html">Orders</a>
-            </nav>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green">Online</div>
-            </div>
-        </div>
-    </header>
+
 
     <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1200px;">
 
@@ -285,6 +270,14 @@
                         <label class="input-group-text">Account # (Optional)</label>
                         <input id="iAcct" class="input" placeholder="Use 3rd party acct...">
                     </div>
+
+                    <div
+                        style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" id="isEvent" style="width:16px; height:16px;">
+                        <label for="isEvent" style="font-size:13px; font-weight:600; color:#1e293b;">Is this an
+                            Event?</label>
+                        <div class="badge badge-purple" style="font-size:10px;">Auto-Create Event</div>
+                    </div>
                 </div>
 
                 <div class="card-soft" style="padding:24px;">
@@ -311,6 +304,9 @@
         let selectedItem = null;
 
         // Init
+        const PARAMS = new URLSearchParams(window.location.search);
+        const EDIT_ID = PARAMS.get("id");
+
         (function init() {
             try { allItems = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { allItems = []; }
 
@@ -320,7 +316,35 @@
                     document.getElementById("skuList").style.display = "none";
                 }
             });
+
+            // Check for edit mode
+            if (EDIT_ID) {
+                document.querySelector(".page-title").textContent = "Edit Sales Order " + EDIT_ID;
+                document.querySelector(".btn-primary").textContent = "Update Order";
+                loadOrder(EDIT_ID);
+            }
         })();
+
+        function loadOrder(id) {
+            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+            const order = orders.find(o => o.id === id);
+
+            if (!order) {
+                toast("Error", "Order not found", "error");
+                return;
+            }
+
+            document.getElementById("iCust").value = order.cust || "";
+            document.getElementById("iPO").value = order.po || "";
+            document.getElementById("iWh").value = order.wh || "Sarasota";
+            document.getElementById("iDate").value = order.inHands || "";
+            document.getElementById("iShip").value = order.ship || "";
+            document.getElementById("iAcct").value = order.acct || "";
+            document.getElementById("iOrderNote").value = order.note || "";
+
+            orderLines = order.lines || [];
+            renderLines();
+        }
 
         // SKU Filter
         function filterSkus(val) {
@@ -450,27 +474,37 @@
             if (!shipMethod) return toast("Error", "Select a Shipping Method");
 
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-            const newId = "ORD-" + (1000 + orders.length + 1);
+
+            // Generate ID if new, or use existing if edit
+            let saveId;
+            if (EDIT_ID) {
+                saveId = EDIT_ID;
+            } else {
+                saveId = "ORD-" + (1000 + orders.length + 1);
+            }
 
             let total = 0;
             orderLines.forEach(l => total += (l.price * l.qty));
 
-            // Validation Logic
+            // Validation Logic (simplified mostly, same as before)
             let status = "Validated";
+            if (EDIT_ID) {
+                // Keep existing status unless overridden by validation issues below
+                const existing = orders.find(o => o.id === EDIT_ID);
+                if (existing) status = existing.status;
+            }
+
             let holdReason = "";
 
             for (const line of orderLines) {
                 const item = allItems.find(i => i.sku === line.sku);
                 if (item) {
-                    // Check 1: Restricted Status
                     const restricted = ["Feeds Only", "Discontinued", "Internal Use", "Presentation"];
                     if (restricted.includes(item.status)) {
                         status = "On Hold";
                         holdReason = `Item ${line.sku} is ${item.status}`;
                         break;
                     }
-
-                    // Check 2: Stock Availability
                     if (line.qty > (item.on || 0)) {
                         status = "On Hold";
                         holdReason = `Insufficient Stock for ${line.sku} (Req: ${line.qty}, OH: ${item.on})`;
@@ -480,7 +514,7 @@
             }
 
             const newOrder = {
-                id: newId,
+                id: saveId,
                 cust: cust,
                 po: document.getElementById("iPO").value,
                 date: new Date().toISOString().split('T')[0],
@@ -492,14 +526,60 @@
                 lines: orderLines,
                 total: total,
                 status: status,
-                holdReason: holdReason
+                holdReason: holdReason,
+                // Preserve other fields if editing
+                invoices: EDIT_ID ? (orders.find(o => o.id === EDIT_ID)?.invoices || []) : [],
+                packages: EDIT_ID ? (orders.find(o => o.id === EDIT_ID)?.packages || []) : []
             };
 
-            orders.unshift(newOrder);
+            if (EDIT_ID) {
+                // Update
+                const idx = orders.findIndex(o => o.id === EDIT_ID);
+                if (idx >= 0) orders[idx] = newOrder;
+            } else {
+                // Create
+                orders.unshift(newOrder);
+            }
+
             localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
 
-            const msg = status === "On Hold" ? `Order Created (ON HOLD): ${holdReason}` : `Order Created: ${newId}`;
+            const msg = status === "On Hold" ? `Order Saved (ON HOLD): ${holdReason}` : `Order Saved: ${saveId}`;
             const type = status === "On Hold" ? "Warning" : "Success";
+
+            // Check Event Creation
+            if (document.getElementById("isEvent").checked) {
+                const EVENT_KEY = "stark_events_v1";
+                const events = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
+
+                const evtId = "evt_" + Date.now();
+                const evtDate = newOrder.inHands || newOrder.date; // Use In-Hands if available
+
+                // Map lines to event items
+                const evtItems = orderLines.map(l => ({ sku: l.sku, qty: l.qty }));
+
+                const newEvent = {
+                    id: evtId,
+                    name: `Event for Order ${saveId}`,
+                    customer: cust,
+                    date: evtDate,
+                    location: "See Order Logistics",
+                    address: {
+                        line1: "See Order " + saveId,
+                        city: "", state: "", zip: ""
+                    },
+                    instructions: `Generated from Order ${saveId}. ${newOrder.note}`,
+                    fulfill: "Hold", // Default for auto-created events
+                    items: evtItems,
+                    status: "Scheduled",
+                    inventoryStatus: "Good"
+                };
+
+                events.push(newEvent);
+                localStorage.setItem(EVENT_KEY, JSON.stringify(events));
+
+                // Also trigger alert
+                alert("Event automatically scheduled for " + evtDate);
+            }
 
             toast(type, msg);
             setTimeout(() => {
