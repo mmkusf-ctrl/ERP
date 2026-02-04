@@ -22,8 +22,8 @@
             </a>
 
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="item_master.html">Items</a>
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link" href="master.html">Master</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link active" href="purchasing.html">Purchasing</a>
@@ -46,6 +46,7 @@
         </div>
     </header>
 
+    <!-- Mobile Drawer -->
     <div class="mobile-nav" id="mobileNav">
         <div class="mobile-drawer">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -53,19 +54,22 @@
                 <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link" href="item_master.html">Items</a>
+            <a class="mobile-link" href="dashboard.html">Home</a>
+            <a class="mobile-link" href="master.html">Master</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link active" href="purchasing.html">Purchasing</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
+            <a class="mobile-link" href="accounting.html">Accounting</a>
             <a class="mobile-link" href="orders.html">Orders</a>
             <a class="mobile-link" href="logistics.html">Logistics</a>
+            <a class="mobile-link" href="reports.html">Reports</a>
+            <a class="mobile-link" href="events.html">Events</a>
             <a class="mobile-link" href="trends.html">Trends</a>
         </div>
     </div>
 
-    <main class="container">
+    <main class="container" style="padding-top:40px;">
         <div class="page-header">
             <h1 class="page-title">Purchasing</h1>
             <p class="page-desc">Manage purchase orders and vendor procurement.</p>
@@ -73,28 +77,23 @@
         </div>
 
         <!-- Stats -->
-        <section class="kpi-grid" style="margin-bottom:32px;">
-            <article class="card-kpi clickable-kpi active" onclick="setFilter('')" id="kAll">
+        <!-- Stats -->
+        <!-- Stats -->
+        <section style="display:flex; gap:24px; margin-bottom:32px;">
+            <article class="card-kpi clickable-kpi active" onclick="setFilter('')" id="kAll" style="flex:1;">
                 <div class="card-header">
                     <div class="card-title">All POs</div>
                 </div>
                 <div class="stat-value" id="cAll">0</div>
             </article>
-            <article class="card-kpi clickable-kpi" onclick="setFilter('Open')" id="kOpen">
+            <article class="card-kpi clickable-kpi" onclick="setFilter('Open')" id="kOpen" style="flex:1;">
                 <div class="card-header">
                     <div class="card-title">Open</div>
                     <div class="badge badge-yellow">Active</div>
                 </div>
                 <div class="stat-value" id="cOpen">0</div>
             </article>
-            <article class="card-kpi clickable-kpi" onclick="setFilter('Approved')" id="kApp">
-                <div class="card-header">
-                    <div class="card-title">Approved</div>
-                    <div class="badge badge-green">Sent</div>
-                </div>
-                <div class="stat-value" id="cApp">0</div>
-            </article>
-            <article class="card-kpi clickable-kpi" onclick="setFilter('Delayed')" id="kDel">
+            <article class="card-kpi clickable-kpi" onclick="setFilter('Delayed')" id="kDel" style="flex:1;">
                 <div class="card-header">
                     <div class="card-title">Delayed</div>
                     <div class="badge badge-red">Alert</div>
@@ -103,18 +102,25 @@
             </article>
         </section>
 
-        <!-- Table -->
         <section class="card">
-            <h2 style="font-size:18px; margin:0 0 20px;" id="listTitle">Purchase Orders</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size:18px; margin:0;" id="listTitle">Purchase Orders</h2>
+                <button class="btn btn-primary" onclick="window.location.href='po_create.html'">+ Create Inventory
+                    PO</button>
+            </div>
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr>
-                            <th>PO #</th>
-                            <th>Vendor</th>
-                            <th>ETA</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                        <tr
+                            style="text-align:left; color:var(--text-muted); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #f1f5f9;">
+                            <th style="padding:16px;">PO #</th>
+                            <th style="padding:16px;">Vendor</th>
+                            <th style="padding:16px;">Tracking</th>
+                            <th style="padding:16px;">Notes</th>
+                            <th style="padding:16px;">ETA</th>
+                            <th style="padding:16px;">Doc</th>
+                            <th style="padding:16px;">Status</th>
+                            <th style="padding:16px;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tbody"></tbody>
@@ -152,7 +158,7 @@
             render();
 
             if (CURRENT_FILTER) {
-                const map = { "Open": "kOpen", "Approved": "kApp", "Delayed": "kDel" };
+                const map = { "Open": "kOpen", "Delayed": "kDel" };
                 const id = map[CURRENT_FILTER];
                 if (id) {
                     document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
@@ -164,7 +170,7 @@
         function setFilter(f) {
             CURRENT_FILTER = f;
             document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
-            const map = { "": "kAll", "Open": "kOpen", "Approved": "kApp", "Delayed": "kDel" };
+            const map = { "": "kAll", "Open": "kOpen", "Delayed": "kDel" };
             const id = map[f] || "kAll";
             document.getElementById(id).classList.add("active");
 
@@ -175,18 +181,40 @@
             window.history.pushState({}, "", url);
         }
 
+        function createPO() {
+            const id = "PO-" + Math.floor(Math.random() * 9000 + 1000);
+            const vendors = ["Global Logistics", "Stark Mfg", "PackPro", "Acme Supply"];
+            const v = vendors[Math.floor(Math.random() * vendors.length)];
+
+            const newPO = {
+                id: id,
+                vendor: v,
+                wh: "WH-A",
+                eta: "2026-03-" + Math.floor(Math.random() * 28 + 1),
+                status: "Open",
+                lines: "New Item, 100"
+            };
+
+            const pos = load(PO_KEY, []);
+            pos.unshift(newPO);
+            save(PO_KEY, pos);
+
+            // Try to use toast if available
+            if (window.toast) toast("PO Created", `Inventory PO ${id} created for ${v}.`, "success");
+            else alert(`Inventory PO ${id} created.`);
+
+            render();
+        }
+
         function render() {
             const pos = load(PO_KEY, []);
 
             document.getElementById("cAll").textContent = pos.length;
             document.getElementById("cOpen").textContent = pos.filter(x => x.status === "Open").length;
-            document.getElementById("cApp").textContent = pos.filter(x => x.status === "Approved" || x.status === "Confirmed").length;
             document.getElementById("cDel").textContent = pos.filter(x => x.status === "Delayed").length;
 
             let shown = pos.filter(p => {
                 if (!CURRENT_FILTER) return true;
-                // fuzzy match "Approved" with "Confirmed"
-                if (CURRENT_FILTER === "Approved" && (p.status === "Confirmed" || p.status === "Approved")) return true;
                 return p.status === CURRENT_FILTER;
             });
 
@@ -195,7 +223,7 @@
             const tbody = document.getElementById("tbody");
             tbody.innerHTML = "";
             if (!shown.length) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">No POs match filter.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px;">No POs match filter.</td></tr>`;
                 return;
             }
 
@@ -205,12 +233,23 @@
                 if (p.status === "Delayed") badge = "badge-red";
 
                 const tr = document.createElement("tr");
+                tr.style.borderBottom = "1px solid #f1f5f9";
+                tr.style.transition = "background 0.2s";
+                tr.onmouseover = () => tr.style.background = "#f8fafc";
+                tr.onmouseout = () => tr.style.background = "white";
+
+                const notePreview = (p.notes || "").length > 20 ? (p.notes.substring(0, 20) + "...") : (p.notes || "—");
+                const docIcon = p.confirmationDoc ? `<span title="Confirmation Uploaded" style="font-size:16px;">📄</span>` : `<span style="color:#e2e8f0;">—</span>`;
+
                 tr.innerHTML = `
-                <td><strong>${p.id}</strong></td>
-                <td>${p.vendor}</td>
-                <td>${p.eta}</td>
-                <td><span class="badge ${badge}">${p.status}</span></td>
-                <td><button class="btn btn-secondary" style="height:32px; font-size:12px;">View</button></td>
+                <td style="padding:24px 16px;"><strong>${p.id}</strong></td>
+                <td style="padding:24px 16px;">${p.vendor}</td>
+                <td style="padding:24px 16px; font-family:monospace; font-size:12px; color:var(--text-purple-dark);">${p.tracking || "—"}</td>
+                <td style="padding:24px 16px; color:var(--text-muted); font-size:13px;" title="${p.notes || ''}">${notePreview}</td>
+                <td style="padding:24px 16px;">${p.eta}</td>
+                <td style="padding:24px 16px; text-align:center;">${docIcon}</td>
+                <td style="padding:24px 16px;"><span class="badge ${badge}">${p.status}</span></td>
+                <td style="padding:24px 16px;"><button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="window.location.href='po_detail.html?id=${p.id}'">View</button></td>
               `;
                 tbody.appendChild(tr);
             });
