@@ -23,8 +23,8 @@
             </a>
 
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Overview</a>
-                <a class="nav-link" href="master.html">Items</a>
+                <a class="nav-link" href="dashboard.html">Home</a>
+                <a class="nav-link" href="master.html">Master</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -55,8 +55,8 @@
                 <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Overview</a>
-            <a class="mobile-link" href="master.html">Items</a>
+            <a class="mobile-link" href="dashboard.html">Home</a>
+            <a class="mobile-link" href="master.html">Master</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -125,7 +125,8 @@
                         Lookup</div>
                     <div style="display:flex; gap:8px;">
                         <input class="search-input-soft" placeholder="Invoice # or Vendor..." />
-                        <button class="btn-purple-soft">🔍</button>
+                        <a href="ap_lookup.html" class="btn-purple-soft"
+                            style="display:flex; align-items:center; text-decoration:none;">🔍</a>
                     </div>
                 </div>
 
@@ -133,10 +134,10 @@
                 <div class="card-soft" style="background:#fff1f2; border:1px solid #fecdd3;">
                     <div style="font-size:16px; font-weight:700; color:#be123c; margin-bottom:4px;">EDI AP Issues</div>
                     <p style="font-size:13px; color:#881337; margin-bottom:16px;">3 invoices failed validation.</p>
-                    <button class="btn btn-secondary"
-                        style="width:100%; border:none; background:rgba(255,255,255,0.6); color:#be123c; justify-content:space-between;">
+                    <a href="ap_issues.html" class="btn btn-secondary"
+                        style="width:100%; border:none; background:rgba(255,255,255,0.6); color:#be123c; justify-content:space-between; text-decoration:none; display:flex;">
                         Resolve Issues <span>&rarr;</span>
-                    </button>
+                    </a>
                 </div>
 
                 <!-- New Invoice -->
@@ -146,10 +147,10 @@
                     <div
                         style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:16px;">
                         Quick Action</div>
-                    <button class="btn btn-secondary"
-                        style="width:100%; border:1px solid #ddd; justify-content:space-between;">
+                    <a href="expense_create.html" class="btn btn-secondary"
+                        style="width:100%; border:1px solid #ddd; justify-content:space-between; text-decoration:none; display:flex;">
                         Add Expense <span>&rarr;</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -165,23 +166,12 @@
                     <div style="font-size:18px; font-weight:700; color:#7c2d12; margin-bottom:8px;">Record Expense</div>
                     <p style="font-size:13px; color:#9a3412; margin-bottom:16px;">Log vendor bills and operational
                         costs.</p>
-                    <button class="btn"
-                        style="width:100%; background:rgba(255,255,255,0.6); color:#c2410c; border:none; justify-content:space-between;">Add
-                        Expense <span>&rarr;</span></button>
+                    <a href="expense_create.html" class="btn"
+                        style="width:100%; background:rgba(255,255,255,0.6); color:#c2410c; border:none; justify-content:space-between; text-decoration:none; display:flex;">Add
+                        Expense <span>&rarr;</span></a>
                 </div>
 
-                <!-- Reports -->
-                <div class="card-soft card-gradient-1">
-                    <div
-                        style="font-size:12px; font-weight:700; color:#6b21a8; text-transform:uppercase; margin-bottom:8px;">
-                        Analysis</div>
-                    <div style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:8px;">Financial
-                        Reports</div>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">P&L, Balance Sheet, and Cash
-                        Flow.</p>
-                    <button class="btn btn-secondary" style="width:100%; justify-content:space-between;">View Reports
-                        <span>&rarr;</span></button>
-                </div>
+
 
                 <!-- Bank -->
                 <div class="card-soft card-gradient-1">
@@ -191,6 +181,10 @@
                     <div style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:8px;">Bank
                         Accounts</div>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Manage connected cards.</p>
+                    <a href="bank_accounts.html" class="btn btn-secondary"
+                        style="width:100%; justify-content:space-between; text-decoration:none; display:flex;">View
+                        Accounts
+                        <span>&rarr;</span></a>
                 </div>
             </div>
 
@@ -203,34 +197,27 @@
                     <div class="card-soft" style="padding:16px; background:#f8fafc;">
                         <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Import AP Invoices</div>
                         <div style="font-size:11px; color:#64748b; margin-bottom:12px;">CSV / Excel / XML</div>
-                        <button class="btn btn-sm btn-secondary" style="width:100%; font-size:12px;">Upload</button>
+                        <a href="data_import.html" class="btn btn-sm btn-secondary"
+                            style="width:100%; font-size:12px; text-decoration:none; display:flex; justify-content:center;">Upload</a>
                     </div>
                     <div class="card-soft" style="padding:16px; background:#f8fafc;">
                         <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Data Imports</div>
                         <div style="font-size:11px; color:#64748b; margin-bottom:12px;">CSV / Excel / XML</div>
-                        <button class="btn btn-sm btn-secondary" style="width:100%; font-size:12px;">Upload</button>
+                        <a href="data_import.html" class="btn btn-sm btn-secondary"
+                            style="width:100%; font-size:12px; text-decoration:none; display:flex; justify-content:center;">Upload</a>
                     </div>
                 </div>
 
                 <!-- Payroll -->
-                <div class="card-soft" style="background:#f3e8ff; border:1px solid #d8b4fe;">
-                    <div
-                        style="font-size:12px; font-weight:700; color:#6b21a8; text-transform:uppercase; margin-bottom:8px;">
-                        HR</div>
-                    <div style="font-size:18px; font-weight:700; color:#581c87; margin-bottom:8px;">Payroll</div>
-                    <p style="font-size:13px; color:#7e22ce; margin-bottom:16px;">Manage employee salaries.</p>
-                    <button class="btn"
-                        style="width:100%; background:rgba(255,255,255,0.6); color:#6b21a8; border:none; justify-content:space-between;">Manage
-                        Payroll <span>&rarr;</span></button>
-                </div>
+
 
                 <!-- Export -->
                 <div class="card-soft" style="background:#f0fdf4; border:1px solid #bbf7d0;">
                     <div style="font-size:16px; font-weight:700; color:#15803d; margin-bottom:4px;">Export Archive</div>
                     <p style="font-size:13px; color:#166534; margin-bottom:16px;">Download full history.</p>
-                    <button class="btn"
-                        style="width:100%; background:rgba(255,255,255,0.6); color:#15803d; border:none; justify-content:space-between;">Export
-                        All</button>
+                    <a href="data_export.html" class="btn"
+                        style="width:100%; background:rgba(255,255,255,0.6); color:#15803d; border:none; justify-content:space-between; text-decoration:none; display:flex;">Export
+                        All</a>
                 </div>
             </div>
 
