@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Add Vendor | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+
+        .form-section:hover {
+            box-shadow: var(--shadow-md);
+            border-color: rgba(225, 29, 72, 0.3);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #fff1f2, #fff);
+            border: 1px solid rgba(225, 29, 72, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .section-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* Side Panel */
+        .helper-card {
+            background: linear-gradient(135deg, #fff, #fff1f2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+
+        .step-item.active {
+            opacity: 1;
+        }
+
+        .step-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-circle {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #fff1f2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .page-layout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container page-layout"
+        style="display:grid; grid-template-columns: 3fr 1fr; gap:32px; align-items:start;">
+
+        <!-- Main Form Column -->
+        <div class="animate-enter">
+            <div style="margin-bottom:32px;">
+                <a href="vendor.html"
+                    style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:4px; margin-bottom:12px;">
+                    ← Back to Vendor List
+                </a>
+                <h1 class="page-title">Onboard New Vendor</h1>
+                <p class="page-desc">Register a new supplier. Configure payment terms, categories, and contact details
+                    for procurement.</p>
+            </div>
+
+            <!-- 1. Company Information -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🏢</div>
+                    <div>
+                        <h2 class="section-title">Vendor Profile</h2>
+                        <p class="section-desc">Business details and categorization.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Vendor Name *</label>
+                        <input id="vName" class="input" placeholder="e.g. Acme Supplies Ltd" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="vCat" class="input">
+                            <option value="Raw Materials">Raw Materials</option>
+                            <option value="Packaging">Packaging</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Services">Services</option>
+                            <option value="Equipment">Equipment</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location (City/Region)</label>
+                        <input id="vLoc" class="input" placeholder="e.g. Austin, TX">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Website</label>
+                        <input id="vWeb" class="input" placeholder="https://">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Contacts -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">👤</div>
+                    <div>
+                        <h2 class="section-title">Contacts</h2>
+                        <p class="section-desc">Manage supplier contacts. Select one as Primary.</p>
+                    </div>
+                </div>
+
+                <div id="contactsContainer"></div>
+
+                <button class="btn btn-secondary" style="width:100%; margin-top:16px; border-style:dashed;"
+                    onclick="addContactField()">
+                    + Add Another Contact
+                </button>
+            </section>
+
+
+            <!-- 3. Financials -->
+            <section class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">💰</div>
+                    <div>
+                        <h2 class="section-title">Financial Details</h2>
+                        <p class="section-desc">Payment terms and tax info.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Payment Terms</label>
+                        <select id="vTerms" class="input">
+                            <option value="Net 30">Net 30</option>
+                            <option value="Net 45">Net 45</option>
+                            <option value="Net 60">Net 60</option>
+                            <option value="Immediate">Immediate / Due on Receipt</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tax ID / EIN</label>
+                        <input id="vTax" class="input" placeholder="Optional">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Billing Address</label>
+                        <input id="vAddress" class="input" placeholder="Full Billing Address">
+                    </div>
+                </div>
+            </section>
+
+            <div style="display:flex; justify-content:flex-end; gap:16px; margin-top:32px; padding-bottom:60px;">
+                <button class="btn btn-secondary" style="width:120px;"
+                    onclick="window.location.href='vendor.html'">Cancel</button>
+                <button class="btn btn-primary" style="min-width:160px;" onclick="submitVendor()">
+                    <span>Save Vendor</span>
+                    <span style="font-size:18px;">→</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="animate-enter stagger-2" style="@media(max-width:768px){display:none;}">
+            <div style="position:sticky; top:100px;">
+                <div class="helper-card">
+                    <h3 style="font-size:15px; margin:0 0 16px;">Completion Status</h3>
+
+                    <div class="step-item active">
+                        <div class="step-circle">1</div>
+                        <div style="font-size:13px; font-weight:600;">Vendor Profile</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-circle">2</div>
+                        <div style="font-size:13px; font-weight:600;">Contact Info</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">3</div>
+                        <div style="font-size:13px; font-weight:600;">Financials</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-circle">4</div>
+                        <div style="font-size:13px; font-weight:600;">Review & Save</div>
+                    </div>
+
+                    <div style="height:1px; background:var(--border); margin:20px 0;"></div>
+                    <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+                        <strong style="display:block; margin-bottom:4px;">Procurement Note</strong>
+                        Vendors must be approved before issuing Purchase Orders over $10k.
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
+    <script src="erp.js"></script>
+    <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const KEY_VEND = "stark_erp_vendors_v1";
+
+        // Logic
+        let contactIdCounter = 0;
+
+        function addContactField() {
+            contactIdCounter++;
+            const id = contactIdCounter;
+            const isFirst = document.getElementById("contactsContainer").children.length === 0;
+
+            const div = document.createElement("div");
+            div.id = `contact-${id}`;
+            div.className = "contact-card";
+            div.style.cssText = "padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:16px; position:relative;";
+
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;">
+                        <input type="radio" name="primaryContact" value="${id}" ${isFirst ? 'checked' : ''} style="accent-color:var(--primary); width:16px; height:16px;">
+                        <span style="font-size:13px; font-weight:700; color:var(--text-main);">Primary Contact</span>
+                    </label>
+                    ${!isFirst ? `<button onclick="removeContact(${id})" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:12px; font-weight:600;">Remove</button>` : ''}
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input class="input c-name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Job Title</label>
+                        <input class="input c-title" placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input class="input c-email" placeholder="Email">
+                    </div>
+                     <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input class="input c-phone" placeholder="Phone">
+                    </div>
+                </div>
+            `;
+            document.getElementById("contactsContainer").appendChild(div);
+        }
+
+        function removeContact(id) {
+            const el = document.getElementById(`contact-${id}`);
+            if (el) el.remove();
+        }
+
+        addContactField();
+
+        function submitVendor() {
+            // Validation
+            const name = document.getElementById("vName").value.trim();
+            if (!name) return toast("Missing Info", "Vendor Name is required.", "error");
+
+            // Gather Contacts
+            const contactCards = document.querySelectorAll(".contact-card");
+            const contacts = [];
+            let primaryContact = null;
+
+            contactCards.forEach(card => {
+                const isPrimary = card.querySelector("input[type=radio]").checked;
+                const cName = card.querySelector(".c-name").value.trim();
+                const cTitle = card.querySelector(".c-title").value.trim();
+                const cEmail = card.querySelector(".c-email").value.trim();
+                const cPhone = card.querySelector(".c-phone").value.trim();
+
+                if (cName) {
+                    const obj = { name: cName, title: cTitle, email: cEmail, phone: cPhone, isPrimary };
+                    contacts.push(obj);
+                    if (isPrimary) primaryContact = obj;
+                }
+            });
+
+            if (!primaryContact && contacts.length > 0) primaryContact = contacts[0];
+
+            // Build Object
+            const v = {
+                id: "V-" + Date.now(),
+                name: name,
+                cat: document.getElementById("vCat").value,
+                loc: document.getElementById("vLoc").value || "Unknown",
+                website: document.getElementById("vWeb").value,
+
+                // Legacy fields from Primary
+                contact: primaryContact ? primaryContact.name : "",
+                email: primaryContact ? primaryContact.email : (document.getElementById("vEmail")?.value || ""), // fallback if manual
+
+                contacts: contacts,
+
+                terms: document.getElementById("vTerms").value,
+                taxId: document.getElementById("vTax").value,
+                address: document.getElementById("vAddress").value,
+
+                rating: 100,
+                spend: 0,
+                status: "Active",
+                joined: new Date().toISOString()
+            };
+
+            // Save
+            try {
+                const list = JSON.parse(localStorage.getItem(KEY_VEND) || "[]");
+                list.push(v);
+                localStorage.setItem(KEY_VEND, JSON.stringify(list));
+
+                toast("Success", "Vendor onboarded!", "success");
+
+                setTimeout(() => {
+                    window.location.href = "vendor.html";
+                }, 1000);
+            } catch (e) {
+                console.error(e);
+                toast("Error", "Failed to save vendor.", "error");
+            }
+        }
+    </script>
+</body>
+
+</html>
