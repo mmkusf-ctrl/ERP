@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>PO Detail | Stark Premium ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+
+        .label-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .label-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Read-only overrides */
+        .input:disabled,
+        .input[readonly] {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border-color: var(--border);
+            cursor: default;
+        }
+
+        /* Document Style Overrides for Reference Look */
+        .doc-header {
+            background: #000;
+            color: #fff;
+            padding: 8px 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            margin-bottom: 0;
+            /* Boxy look */
+        }
+
+        .doc-box {
+            border: 1px solid #000;
+            background: #fff;
+        }
+
+        .doc-section {
+            margin-bottom: 24px;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 5mm;
+            }
+
+            html,
+            body {
+                width: 210mm;
+                height: 297mm;
+                background: white;
+                font-family: 'Inter', sans-serif;
+                font-size: 10pt;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                overflow: hidden;
+                /* Prevent spillover */
+            }
+
+            /* HIDE Non-Essential */
+            .topbar,
+            .nav,
+            .mobile-nav,
+            .btn,
+            #actionButtons,
+            .gold-line,
+            .page-desc,
+            #statusBadge,
+            #fileIn,
+            #fileLink,
+            .badge-yellow,
+            .badge-green,
+            .badge-red,
+            button,
+            div[style*="background:var(--bg-surface)"],
+            /* Lookup box */
+            /* Hide Docs/Notes to save space for A4 fit */
+            /* Actually, let's keep them but shrink everything */
+            /* .doc-section, */
+            hr {
+                display: none !important;
+            }
+
+            /* Layout Resets */
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 10px !important;
+            }
+
+            .card,
+            .doc-box {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                break-inside: avoid;
+            }
+
+            /* Force Scaling to Fit A4 */
+            main {
+                zoom: 0.65;
+                /* aggressive shrink */
+                width: 100%;
+            }
+
+            /* Stack Elements */
+            main>div[style*="grid-template-columns"] {
+                display: block !important;
+            }
+
+            /* Adjust Grid Columns to be block for print */
+            .grid-2 {
+                grid-template-columns: 1fr 1fr !important;
+                /* Keep internal grids */
+                gap: 12px !important;
+            }
+
+            /* Table Adjustments */
+            .table-container {
+                border: 1px solid #000 !important;
+                margin-top: 12px !important;
+            }
+
+            th,
+            td {
+                padding: 4px 8px !important;
+                /* Shrink padding */
+                font-size: 11px !important;
+            }
+
+            /* Input Reset */
+            input,
+            select,
+            textarea {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                resize: none;
+                font-weight: 600;
+                color: #000 !important;
+                font-size: 11px !important;
+                appearance: none;
+                height: auto !important;
+            }
+
+            /* Hide placeholders */
+            ::placeholder {
+                color: transparent !important;
+            }
+        }
+
+        /* Make inputs look like text */
+        .input[readonly] {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            font-weight: 500;
+            color: black;
+            height: auto;
+        }
+
+        label {
+            color: #666;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Summary Card */
+        div[style*="position:sticky"] {
+            position: static !important;
+            margin-top: 20px;
+            border: 1px solid #000;
+            width: 300px;
+            /* Keep it compact */
+            margin-left: auto;
+            /* Align right */
+        }
+
+        /* Table */
+        .table-container {
+            border: 1px solid #000 !important;
+        }
+
+        th {
+            background: #eee !important;
+            color: black !important;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Status Badge */
+        .badge {
+            border: 1px solid #000;
+            color: black;
+            background: #fff !important;
+        }
+
+        /* Add Company Header for Print */
+        @media print {
+            .page-header::before {
+                content: "Stark Premium ERP";
+                display: block;
+                font-size: 12px;
+                color: #999;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+
+<body><main class="container">
+        <div class="page-header">
+            <h1 class="page-title" id="pageTitle">Purchase Order #</h1>
+            <p class="page-desc" id="pageDesc">View details for this purchase order.</p>
+            <div class="gold-line"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 300px; gap:24px; align-items:start;">
+            <!-- Left Column: Details -->
+            <div style="display:grid; gap:24px;">
+                <div class="card card-premium">
+
+                    <!-- Status Banner -->
+                    <div
+                        style="background:linear-gradient(to right, #fff1f2, #fff); padding:16px 24px; border-radius:12px; border:1px solid var(--border); margin-bottom:32px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:8px; height:8px; border-radius:50%; background:var(--primary);"></div>
+                            <span
+                                style="font-size:13px; font-weight:700; color:var(--text-main); text-transform:uppercase; letter-spacing:0.05em;">Current
+                                Status</span>
+                        </div>
+                        <span class="badge badge-yellow" id="statusBadge"
+                            style="font-size:12px; padding:6px 12px;">Loading...</span>
+                    </div>
+
+                    <!-- Document Header Info Row -->
+                    <div
+                        style="display:grid; grid-template-columns: 1fr 1fr; gap:0; border:1px solid #000; margin-bottom:24px;">
+                        <!-- Left: Vendor -->
+                        <div style="border-right:1px solid #000;">
+                            <div class="doc-header">VENDOR INFORMATION</div>
+                            <div style="padding:16px;">
+                                <label style="display:block; font-size:11px; color:#666; margin-bottom:4px;">VENDOR
+                                    NAME</label>
+                                <input type="text" class="input" id="vendorIn" readonly
+                                    style="border:none; padding:0; font-weight:600; font-size:14px; color:#000; margin-bottom:12px;">
+
+                                <label style="display:block; font-size:11px; color:#666; margin-bottom:4px;">ORDER
+                                    DATE</label>
+                                <input type="text" class="input" id="startIn" placeholder="YYYY-MM-DD"
+                                    style="border:none; padding:0; font-weight:600; color:#000;">
+                            </div>
+                        </div>
+
+                        <!-- Right: Ship To -->
+                        <div>
+                            <div class="doc-header">SHIP TO</div>
+                            <div style="padding:16px;">
+                                <label style="display:block; font-size:11px; color:#666; margin-bottom:4px;">DESTINATION
+                                    / WAREHOUSE</label>
+                                <select class="input" id="whIn" onchange="updateAddress()"
+                                    style="border:1px solid #eee; margin-bottom:8px; width:100%; font-weight:600;">
+                                    <option value="WH-A">Main Warehouse (WH-A)</option>
+                                    <option value="WH-B">East Coast (WH-B)</option>
+                                    <option value="WH-C">West Coast (WH-C)</option>
+                                    <option value="Sarasota">Sarasota</option>
+                                    <option value="Texas">Texas</option>
+                                </select>
+
+                                <textarea id="addrIn" readonly
+                                    style="width:100%; border:none; resize:none; font-family:inherit; font-size:13px; color:#000; height:60px; padding:0;"></textarea>
+
+                                <div style="margin-top:12px;">
+                                    <label
+                                        style="display:block; font-size:11px; color:#666; margin-bottom:4px;">EXPECTED
+                                        ARRIVAL</label>
+                                    <input type="text" class="input" id="endIn" placeholder="YYYY-MM-DD"
+                                        style="border:none; padding:0; font-weight:600; color:#000;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Items -->
+                    <div class="form-section">
+                        <h3
+                            style="font-size:15px; font-weight:700; color:var(--text-main); margin:0 0 20px; display:flex; align-items:center; gap:8px;">
+                            <span style="opacity:0.5;">📦</span> Line Items
+                        </h3>
+                        <div style="display:grid; gap:20px;">
+                            <!-- Lookup Box -->
+                            <div
+                                style="background:var(--bg-surface); padding:20px; border-radius:12px; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+                                <div
+                                    style="display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:16px; align-items:end;">
+                                    <div>
+                                        <label
+                                            style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">SKU
+                                            / ITEM</label>
+                                        <div style="position:relative;">
+                                            <input type="text" class="input" id="skuIn" placeholder="Search SKU..."
+                                                list="skuList" style="height:42px; padding-left:36px;"
+                                                oninput="lookupPrice()">
+                                            <span
+                                                style="position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.4;">🔍</span>
+                                        </div>
+                                        <datalist id="skuList"></datalist>
+                                    </div>
+                                    <div>
+                                        <label
+                                            style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">QUANTITY</label>
+                                        <input type="number" class="input" id="qtyIn" placeholder="0"
+                                            style="height:42px;">
+                                    </div>
+                                    <div>
+                                        <label
+                                            style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;">UNIT
+                                            PRICE</label>
+                                        <div style="position:relative;">
+                                            <span
+                                                style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">$</span>
+                                            <input type="number" class="input" id="priceIn" placeholder="0.00"
+                                                step="0.01" style="height:42px; padding-left:24px;">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="addItem()"
+                                        style="height:42px; padding:0 24px;">Add Item</button>
+                                </div>
+                            </div>
+                            <!-- Items Table -->
+                            <div class="table-container"
+                                style="border:1px solid #000; border-radius:0; overflow:hidden; margin-top:12px;">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <thead style="background:#000; border-bottom:1px solid #000;">
+                                        <tr>
+                                            <th
+                                                style="font-size:12px; font-weight:700; color:#fff; padding:12px 16px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; border-right:1px solid #444;">
+                                                Item / SKU</th> <!-- Added border-right for subtle grid -->
+                                            <th
+                                                style="font-size:12px; font-weight:700; color:#fff; padding:12px 16px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; border-right:1px solid #444;">
+                                                Qty</th>
+                                            <th
+                                                style="font-size:12px; font-weight:700; color:#fff; padding:12px 16px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; border-right:1px solid #444;">
+                                                Received</th>
+                                            <th
+                                                style="font-size:12px; font-weight:700; color:#fff; padding:12px 16px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; border-right:1px solid #444;">
+                                                Price</th>
+                                            <th
+                                                style="font-size:12px; font-weight:700; color:#fff; padding:12px 16px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; border-right:1px solid #444;">
+                                                Total</th>
+                                            <th style="width:60px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsBody" style="background:white;">
+                                        <tr>
+                                            <td colspan="5"
+                                                style="text-align:center; padding:32px; color:#666; font-size:13px; border-bottom:1px solid #000;">
+                                                No items added yet.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+
+                    <!-- Logistics & Tracking -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Logistics & Tracking</div>
+                        </div>
+                        <div style="display:grid; gap:16px;">
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Shipping
+                                    Method</label>
+                                <select class="input" id="methodIn"
+                                    style="background:white; border:1px solid var(--border);">
+                                    <option value="UPS">UPS</option>
+                                    <option value="FedEx">FedEx</option>
+                                    <option value="USPS">USPS</option>
+                                    <option value="DHL">DHL</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Tracking
+                                    Number</label>
+                                <input type="text" class="input" id="trackIn" placeholder="Enter tracking..."
+                                    style="background:white; border:1px solid var(--border);">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+
+                    <!-- Docs & Notes -->
+                    <div class="form-section">
+                        <div>
+                            <div class="label-title">Docs & Notes</div>
+                        </div>
+                        <div style="display:grid; gap:16px;">
+                            <div>
+                                <label style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Order
+                                    Confirmation</label>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <input type="file" id="fileIn" onchange="handleFile(this)" style="font-size:12px;">
+                                    <a id="fileLink" href="#" target="_blank"
+                                        style="display:none; font-size:13px; color:var(--primary); font-weight:600;">View
+                                        Doc</a>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Internal
+                                    Notes</label>
+                                <textarea class="input" id="notesIn" placeholder="Add notes here..."
+                                    style="background:white; border:1px solid var(--border); height:80px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary -->
+            <div style="position:sticky; top:24px;">
+                <div class="doc-box" style="padding:0;">
+                    <!-- Totals Table Look -->
+                    <div style="display:grid; grid-template-columns: 140px 1fr; border-bottom:1px solid #000;">
+                        <div class="doc-header" style="border-right:1px solid #000; padding:12px;">SUBTOTAL</div>
+                        <div style="padding:12px; font-weight:600; text-align:right;" id="sumSub">$0.00</div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 140px 1fr; border-bottom:1px solid #000;">
+                        <div class="doc-header" style="border-right:1px solid #000; padding:12px;">TAX (5%)</div>
+                        <div style="padding:12px; font-weight:600; text-align:right;" id="sumTax">$0.00</div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 140px 1fr; border-bottom:1px solid #000;">
+                        <div class="doc-header" style="border-right:1px solid #000; padding:12px;">SHIPPING</div>
+                        <div style="padding:12px; font-weight:600; text-align:right;" id="sumShip">$0.00</div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 140px 1fr;">
+                        <div class="doc-header" style="border-right:1px solid #000; padding:12px; font-size:14px;">GRAND
+                            TOTAL</div>
+                        <div style="padding:12px; font-weight:800; font-size:16px; text-align:right;" id="sumTotal">
+                            $0.00</div>
+                    </div>
+                </div>
+
+                <div style="display:grid; gap:12px; margin-top:24px;" id="actionButtons">
+                    <button type="button" class="btn btn-primary"
+                        style="width:100%; justify-content:center; padding:14px; font-weight:700;"
+                        onclick="savePO()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary"
+                        style="width:100%; justify-content:center; padding:12px;" onclick="window.print()">Print
+                        PO</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:60px; text-align:center; color:var(--text-muted); font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
+        </div>
+    </main>
+
+    <script src="erp.js"></script>
+    <script>
+        const PO_KEY = "stark_erp_pos_v1";
+        const ITEM_KEY = "stark_erp_items_v1";
+        const URL_PARAMS = new URLSearchParams(window.location.search);
+        const PO_ID = URL_PARAMS.get("id");
+        let CURRENT_DOC = "";
+        let CURRENT_PO = null;
+
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fb)); } catch { return fb; } }
+        function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+
+        function init() {
+            if (!PO_ID) {
+                alert("No PO ID specified.");
+                window.location.href = 'purchasing.html';
+                return;
+            }
+
+            const pos = load(PO_KEY, []);
+            CURRENT_PO = pos.find(p => p.id === PO_ID);
+            const po = CURRENT_PO;
+
+            if (!po) {
+                console.warn("PO not found in storage");
+            }
+
+            // Load Items for Datalist
+            const allItems = load(ITEM_KEY, []);
+            const dl = document.getElementById('skuList');
+            if (dl) {
+                dl.innerHTML = "";
+                allItems.forEach(i => {
+                    const op = document.createElement('option');
+                    op.value = i.sku;
+                    dl.appendChild(op);
+                });
+                if (allItems.length === 0) {
+                    ['SKU-1001', 'SKU-5002', 'WIDGET-X', 'GADGET-Y'].forEach(s => {
+                        const op = document.createElement('option');
+                        op.value = s;
+                        dl.appendChild(op);
+                    });
+                }
+            }
+
+            // Populate Fields
+            document.title = `PO ${PO_ID} | Stark ERP`;
+            document.getElementById('pageTitle').textContent = `Purchase Order #${PO_ID}`;
+
+            if (po) {
+                document.getElementById('vendorIn').value = po.vendor || "";
+                document.getElementById('whIn').value = po.wh || "";
+                document.getElementById('startIn').value = po.startDate || "";
+                document.getElementById('endIn').value = po.eta || "";
+                document.getElementById('methodIn').value = po.shipMethod || "Standard";
+                document.getElementById('addrIn').value = po.shipAddr || "";
+
+                // New Fields
+                document.getElementById('trackIn').value = po.tracking || "";
+                document.getElementById('notesIn').value = po.notes || "";
+
+                // Doc Link
+                if (po.confirmationDoc) {
+                    CURRENT_DOC = po.confirmationDoc;
+                    const link = document.getElementById('fileLink');
+                    link.href = CURRENT_DOC;
+                    link.style.display = "inline-block";
+                    link.textContent = "View Uploaded Doc";
+                }
+
+                // Status Badge
+                const badge = document.getElementById('statusBadge');
+                badge.textContent = po.status;
+                badge.className = `badge ${['Open', 'Partial'].includes(po.status) ? 'badge-yellow' : po.status === 'Delayed' ? 'badge-red' : 'badge-green'}`;
+
+                // Items
+                if (!CURRENT_PO.items) CURRENT_PO.items = [];
+                // Fallback for legacy lines
+                if (CURRENT_PO.items.length === 0 && CURRENT_PO.lines && typeof CURRENT_PO.lines === 'string') {
+                    const parts = CURRENT_PO.lines.split(',');
+                    if (parts.length >= 2) {
+                        CURRENT_PO.items.push({
+                            sku: parts[0].trim(),
+                            qty: parseInt(parts[1]) || 1,
+                            price: 0
+                        });
+                    }
+                }
+                renderItems();
+            }
+        }
+
+        function lookupPrice() {
+            const sku = document.getElementById('skuIn').value;
+            if (!sku) return;
+            const allItems = load(ITEM_KEY, []);
+            const item = allItems.find(i => i.sku.toLowerCase() === sku.toLowerCase());
+            if (item) {
+                let cost = item.cost || item.netPrice || item.price || 0;
+                if (typeof cost === 'string') cost = parseFloat(cost.replace('$', '').replace(',', ''));
+                if (cost) document.getElementById('priceIn').value = cost.toFixed(2);
+            }
+        }
+
+        function addItem() {
+            const sku = document.getElementById('skuIn').value;
+            const qty = parseInt(document.getElementById('qtyIn').value || 0);
+            const price = parseFloat(document.getElementById('priceIn').value || 0);
+
+            if (!sku || qty <= 0) return toast("Error", "Invalid Item details", "error");
+
+            if (!CURRENT_PO.items) CURRENT_PO.items = [];
+            CURRENT_PO.items.push({ sku, qty, price });
+
+            document.getElementById('skuIn').value = "";
+            document.getElementById('qtyIn').value = "";
+            document.getElementById('priceIn').value = "";
+            document.getElementById('skuIn').focus();
+
+            renderItems();
+        }
+
+        function removeItem(idx) {
+            if (!confirm("Remove this item?")) return;
+            CURRENT_PO.items.splice(idx, 1);
+            renderItems();
+        }
+
+        function renderItems() {
+            const tbody = document.getElementById('itemsBody');
+            tbody.innerHTML = "";
+            let sub = 0;
+
+            if (CURRENT_PO.items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No items added.</td></tr>`;
+            } else {
+                CURRENT_PO.items.forEach((item, idx) => {
+                    const total = (item.qty * item.price).toFixed(2);
+                    sub += (item.qty * item.price);
+
+                    // Received Input
+                    // If PO is closed, maybe make it readonly? User asked for "if everything received... closed", didn't specify locking.
+                    // I'll keep it editable for corrections unless requested.
+                    const recvVal = item.received || 0;
+
+                    tbody.innerHTML += `
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:12px 16px; font-weight:600;">${item.sku}</td>
+                            <td style="padding:12px 16px;">${item.qty}</td>
+                            <td style="padding:12px 16px;">
+                                <input type="number" id="recv-${idx}" value="${recvVal}" min="0" max="${item.qty}" 
+                                       style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; font-weight:600;"
+                                       onchange="checkStatusPreview()">
+                            </td>
+                            <td style="padding:12px 16px;">$${item.price.toFixed(2)}</td>
+                            <td style="padding:12px 16px;">$${total}</td>
+                            <td style="text-align:center;">
+                                <button type="button" onclick="removeItem(${idx})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:700;">&times;</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Summary
+            let tax = sub * 0.05;
+            let ship = sub > 1000 ? 0 : 50;
+
+            document.getElementById('sumSub').textContent = '$' + sub.toFixed(2);
+            document.getElementById('sumTax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('sumShip').textContent = ship === 0 ? 'Free' : '$' + ship.toFixed(2);
+
+            let total = sub + tax + ship;
+            document.getElementById('sumTotal').textContent = '$' + total.toFixed(2);
+        }
+
+        function handleFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    CURRENT_DOC = e.target.result; // Data URL
+                    const link = document.getElementById('fileLink');
+                    link.href = CURRENT_DOC;
+                    link.style.display = "inline-block";
+                    link.textContent = "Doc Standardized"; // Usually just simulate upload
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function savePO() {
+            const pos = load(PO_KEY, []);
+            const idx = pos.findIndex(p => p.id === PO_ID);
+            if (idx === -1) return;
+
+            // Updates
+            pos[idx].tracking = document.getElementById('trackIn').value;
+            pos[idx].notes = document.getElementById('notesIn').value;
+            pos[idx].confirmationDoc = CURRENT_DOC;
+            pos[idx].shipMethod = document.getElementById('methodIn').value;
+            pos[idx].wh = document.getElementById('whIn').value;
+            pos[idx].shipAddr = document.getElementById('addrIn').value;
+            pos[idx].startDate = document.getElementById('startIn').value;
+            pos[idx].eta = document.getElementById('endIn').value;
+
+            // Save Items & Capture Received Qty
+            let totalOrdered = 0;
+            let totalReceived = 0;
+
+            if (CURRENT_PO.items) {
+                CURRENT_PO.items.forEach((item, i) => {
+                    const input = document.getElementById(`recv-${i}`);
+                    if (input) {
+                        const val = parseInt(input.value) || 0;
+                        item.received = val;
+                    }
+                    totalOrdered += (item.qty || 0);
+                    totalReceived += (item.received || 0);
+                });
+            }
+            pos[idx].items = CURRENT_PO.items;
+
+            // Update Status based on Receiving
+            if (totalOrdered > 0) {
+                if (totalReceived >= totalOrdered) {
+                    pos[idx].status = "Closed";
+                } else if (totalReceived > 0) {
+                    pos[idx].status = "Partial";
+                } else {
+                    // If previously closed/partial but reset to 0, maybe go back to Open?
+                    // Or keep 'Open' / 'Approved' etc.
+                    if (pos[idx].status === 'Closed' || pos[idx].status === 'Partial') {
+                        pos[idx].status = 'Open';
+                    }
+                }
+            }
+
+            // Recalc total cost
+            let sub = 0;
+            if (CURRENT_PO.items) CURRENT_PO.items.forEach(i => sub += (i.qty * i.price));
+            pos[idx].totalCost = sub * 1.05 + (sub > 1000 ? 0 : 50);
+
+            save(PO_KEY, pos);
+            toast("Success", "PO Details & Status Saved", "success");
+
+            // Refund/Reload to show new status badge
+            setTimeout(() => location.reload(), 500);
+        }
+
+        function checkStatusPreview() {
+            // Optional: Visual feedback handling
+        }
+
+
+        const WAREHOUSE_ADDRESSES = {
+            "WH-A": "123 Stark Industries Blvd\nNew York, NY 10001\nUnited States",
+            "WH-B": "456 Logistic Way\nJersey City, NJ 07302\nUnited States",
+            "WH-C": "789 Innovation Dr\nSan Francisco, CA 94107\nUnited States",
+            "Sarasota": "1781 Barber Road\nSarasota, FL 34240\nUnited States",
+            "Texas": "200 Energy Way\nHouston, TX 77002\nUnited States"
+        };
+
+        function updateAddress() {
+            const wh = document.getElementById('whIn').value;
+            const addr = WAREHOUSE_ADDRESSES[wh] || "";
+            document.getElementById('addrIn').value = addr;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
