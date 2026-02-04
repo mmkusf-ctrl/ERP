@@ -255,7 +255,7 @@
             <div class="order-title-lg" id="topId">SO-00000</div>
         </div>
         <div class="action-icons">
-            <button class="icon-btn" title="Edit"><span class="material-icons-round"
+            <button class="icon-btn" title="Edit" onclick="editOrder()"><span class="material-icons-round"
                     style="font-size:18px;">edit</span></button>
             <button class="icon-btn" title="PDF" onclick="window.print()"><span class="material-icons-round"
                     style="font-size:18px;">picture_as_pdf</span></button>
@@ -264,10 +264,30 @@
             <button class="icon-btn" title="Email" onclick="openEmailModal()"><span class="material-icons-round"
                     style="font-size:18px;">email</span></button>
             <div style="border-right:1px solid #e5e7eb; margin:0 4px;"></div>
-            <button class="btn-dropdown">Create <span class="material-icons-round"
-                    style="font-size:16px;">arrow_drop_down</span></button>
-            <button class="btn-dropdown" style="background:#4f46e5; color:white; border-color:#4338ca;">More <span
-                    class="material-icons-round" style="font-size:16px;">arrow_drop_down</span></button>
+
+            <div style="position:relative;">
+                <button class="btn-dropdown" onclick="toggleMoreMenu()"
+                    style="background:#4f46e5; color:white; border-color:#4338ca;">More <span
+                        class="material-icons-round" style="font-size:16px;">arrow_drop_down</span></button>
+
+                <div id="moreMenu"
+                    style="display:none; position:absolute; right:0; top:100%; margin-top:4px; background:white; border:1px solid #e5e7eb; border-radius:6px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:160px; z-index:50;">
+                    <div onclick="validateOrder()" class="dropdown-item"
+                        style="padding:10px 16px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        <span class="material-icons-round" style="font-size:16px; color:#16a34a;">check_circle</span>
+                        Validate
+                    </div>
+                    <div onclick="toggleHold()" class="dropdown-item"
+                        style="padding:10px 16px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                        <span class="material-icons-round" style="font-size:16px; color:#dc2626;">pause_circle</span>
+                        Hold
+                    </div>
+                    <div style="border-top:1px solid #f3f4f6; margin:4px 0;"></div>
+                    <div onclick="alert('Delete not implemented')" class="dropdown-item"
+                        style="padding:10px 16px; font-size:13px; cursor:pointer; color:#ef4444;">Delete Order</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -723,6 +743,53 @@
             render(currentOrder, currentCustomer);
         }
 
+        function validateOrder() {
+            if (!currentOrder) return;
+
+            // Logic to check stock could be re-run here if we had full inventory access
+            // For now, we assume user manual override
+
+            currentOrder.status = "Validated";
+            currentOrder.holdReason = ""; // Clear reason
+
+            updateOrder();
+            render(currentOrder, currentCustomer);
+
+            // Close menu if open
+            const menu = document.getElementById("moreMenu");
+            if (menu) menu.style.display = "none";
+
+            if (window.toast) toast("Order Validated", "Status updated to Validated.", "success");
+        }
+
+        function toggleHold() {
+            if (!currentOrder) return;
+
+            if (currentOrder.status === "On Hold") {
+                currentOrder.status = "Processing"; // Move back to processing or draft
+            } else {
+                currentOrder.status = "On Hold";
+                const reason = prompt("Enter Hold Reason:", "Manual Hold");
+                if (reason) currentOrder.holdReason = reason;
+            }
+
+            updateOrder();
+            render(currentOrder, currentCustomer);
+
+            const menu = document.getElementById("moreMenu");
+            if (menu) menu.style.display = "none";
+        }
+
+        function toggleMoreMenu() {
+            const m = document.getElementById("moreMenu");
+            if (m) m.style.display = m.style.display === "block" ? "none" : "block";
+        }
+
+        function editOrder() {
+            if (!currentOrder) return;
+            window.location.href = `create_sales_order.html?id=${currentOrder.id}`;
+        }
+
         // --- END NEW FEATURES ---
 
         (function () {
@@ -765,10 +832,25 @@
             if (o.inHandsDate) handInput.value = o.inHandsDate;
 
             // Status Badge
+            // Status Badge
             const badge = document.getElementById("docStatusBadge");
-            if (o.status === "Validated") { badge.style.background = "#22c55e"; badge.textContent = "Confirmed"; }
-            else if (o.status === "On Hold") { badge.style.background = "#ef4444"; badge.textContent = "On Hold"; }
-            else { badge.style.background = "#9ca3af"; badge.textContent = "Draft"; }
+            const valBtn = document.getElementById("btnValidate");
+
+            if (o.status === "Validated") {
+                badge.style.background = "#22c55e";
+                badge.textContent = "Validated";
+                valBtn.style.display = "none";
+            }
+            else if (o.status === "On Hold") {
+                badge.style.background = "#ef4444";
+                badge.textContent = "On Hold";
+                valBtn.style.display = "flex"; // Show validate button
+            }
+            else {
+                badge.style.background = "#9ca3af";
+                badge.textContent = o.status || "Draft";
+                valBtn.style.display = "flex"; // Show validate button
+            }
 
             // Packages Logic
             const pkgInfo = document.querySelector("#pkgEmpty"); // The empty notification div inside pkgSection
