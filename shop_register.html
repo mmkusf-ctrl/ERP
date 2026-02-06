@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Set Password | Stark Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #6366f1;
+            --surface: #ffffff;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            text-align: center;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0 0 32px 0;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            transition: 0.2s;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+
+        .status-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 12px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        /* Loading & Success States */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-card" id="mainCard">
+        <div class="logo"><span style="color:var(--accent);">Stark</span>Shop</div>
+
+        <div id="loadingView">
+            <div style="margin:40px 0;">
+                <i class="fa fa-circle-notch fa-spin" style="font-size:24px; color:var(--accent);"></i>
+                <div style="margin-top:16px; font-size:14px; color:var(--text-muted);">Verifying Invitation...</div>
+            </div>
+        </div>
+
+        <div id="formView" class="hidden">
+            <div class="status-badge">
+                <i class="fa fa-check-circle"></i> Secure Invite Verified
+            </div>
+            <h1 id="welcomeText">Welcome!</h1>
+            <p>Please creating a password to access your exclusive catalog.</p>
+
+            <form onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label class="label">Email Address</label>
+                    <input id="emailDisplay" type="email" class="input" disabled
+                        style="background:#f1f5f9; color:#64748b;">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Create Password</label>
+                    <input id="pass1" type="password" class="input" placeholder="Min. 8 characters" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Confirm Password</label>
+                    <input id="pass2" type="password" class="input" placeholder="Re-enter password" required>
+                </div>
+
+                <button type="submit" class="btn">Activate Account</button>
+            </form>
+        </div>
+
+        <div id="errorView" class="hidden">
+            <div style="color:#ef4444; font-size:48px; margin-bottom:16px;"><i class="fa fa-times-circle"></i></div>
+            <h1>Invitation Invalid</h1>
+            <p>This link has expired or is invalid. Please contact your account manager for a new invitation.</p>
+            <button class="btn" style="background:white; color:var(--text-main); border:1px solid var(--border);"
+                onclick="window.close()">Close Page</button>
+        </div>
+
+    </div>
+
+    <script>
+        const CUSTOMER_KEY = "stark_crm_customers";
+        const PARAMS = new URLSearchParams(window.location.search);
+        const TOKEN = PARAMS.get("token");
+
+        // Simulate Delay
+        setTimeout(init, 800);
+
+        let currentUser = null;
+
+        function init() {
+            document.getElementById("loadingView").classList.add("hidden");
+
+            if (!TOKEN) {
+                showError();
+                return;
+            }
+
+            const customers = JSON.parse(localStorage.getItem(CUSTOMER_KEY) || "[]");
+            // Find user with matching token
+            // In a real app, this would be a server call
+            currentUser = customers.find(c => c.auth && c.auth.token === TOKEN);
+
+            // Validation: Must exist, must NOT be verified yet, must not be expired
+            if (!currentUser) {
+                // For demo purposes, if I create a user manually in the previous step, they might not have 'auth' yet.
+                // But the 'update customer_add' step hasn't run yet. 
+                // Checks if token matches. 
+                showError();
+                return;
+            }
+
+            if (currentUser.auth.isVerified) {
+                // Already registered
+                document.getElementById("mainCard").innerHTML = `
+                    <div class="logo"><span style="color:var(--accent);">Stark</span>Shop</div>
+                    <div style="margin-top:32px;">
+                        <h1 style="color:#10b981;">Already Active</h1>
+                        <p>This account has already been set up. Please log in.</p>
+                        <button class="btn" onclick="window.location.href='shop.html'">Go to Login</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check Expiry (Mock: 24 hours)
+            const now = Date.now();
+            if (currentUser.auth.expires && now > currentUser.auth.expires) {
+                showError();
+                return;
+            }
+
+            // Success
+            document.getElementById("formView").classList.remove("hidden");
+            document.getElementById("welcomeText").textContent = `Welcome, ${currentUser.name}!`;
+            document.getElementById("emailDisplay").value = currentUser.email;
+        }
+
+        function showError() {
+            document.getElementById("errorView").classList.remove("hidden");
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const p1 = document.getElementById("pass1").value;
+            const p2 = document.getElementById("pass2").value;
+
+            if (p1.length < 4) { // lax for demo
+                alert("Password too short."); return;
+            }
+            if (p1 !== p2) {
+                alert("Passwords do not match."); return;
+            }
+
+            // Save Credentials
+            const customers = JSON.parse(localStorage.getItem(CUSTOMER_KEY) || "[]");
+            const idx = customers.findIndex(c => c.id === currentUser.id);
+
+            if (idx !== -1) {
+                customers[idx].auth.isVerified = true;
+                customers[idx].auth.passwordHash = btoa(p1); // Simple Base64 for demo (NOT SECURE in real life)
+                customers[idx].auth.token = null; // Clear token
+                customers[idx].auth.status = "Active";
+
+                // Add Audit Log
+                if (!customers[idx].auth.audit) customers[idx].auth.audit = [];
+                customers[idx].auth.audit.push({
+                    action: "Account Activated",
+                    date: new Date().toISOString(),
+                    ip: "127.0.0.1"
+                });
+
+                localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customers));
+
+                // Success Message & Redirect
+                document.getElementById("mainCard").innerHTML = `
+                    <div style="font-size:48px; color:#10b981; margin-bottom:16px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);"><i class="fa fa-check-circle"></i></div>
+                    <h1>All Set!</h1>
+                    <p>Your account is active. Redirecting to your catalog...</p>
+                `;
+
+                setTimeout(() => {
+                    window.location.href = "shop.html";
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+
+</html>
