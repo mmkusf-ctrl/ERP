@@ -230,11 +230,11 @@
   <script>
     // --- CRM Data Logic ---
     const DEMO_DATA = [
-      { id: 'C-101', name: 'Asha Retail', type: 'Retailer', location: 'Austin, TX', ordersMo: 0, spent: 11247.00, status: 'Quiet', email: 'contact@asha.com', phone: '512-555-0101' },
-      { id: 'C-102', name: 'Blue Harbor', type: 'Wholesale', location: 'Miami, FL', ordersMo: 0, spent: 0.00, status: 'Quiet', email: 'sales@blueharbor.com', phone: '305-555-0102' },
-      { id: 'C-103', name: 'Citrine Luxe', type: 'Boutique', location: 'New York, NY', ordersMo: 0, spent: 4912.00, status: 'Quiet', email: 'info@citrine.com', phone: '212-555-0103' },
-      { id: 'C-104', name: 'Stark Enterprises', type: 'Global', location: 'Los Angeles, CA', ordersMo: 5, spent: 1250000.00, status: 'Active', email: 'tony@stark.com', phone: '310-555-0104' },
-      { id: 'C-105', name: 'Wayne Industries', type: 'Conglomerate', location: 'Gotham, NJ', ordersMo: 2, spent: 450000.00, status: 'Active', email: 'bruce@wayne.com', phone: '201-555-0105' }
+      { id: 'C-101', name: 'Asha Retail', type: 'Retailer', location: 'Austin, TX', ordersMo: 0, spent: 11247.00, status: 'Quiet', email: 'contact@asha.com', phone: '512-555-0101', terms: 'Net 30' },
+      { id: 'C-102', name: 'Blue Harbor', type: 'Wholesale', location: 'Miami, FL', ordersMo: 0, spent: 0.00, status: 'Quiet', email: 'sales@blueharbor.com', phone: '305-555-0102', terms: 'Due on Receipt' },
+      { id: 'C-103', name: 'Citrine Luxe', type: 'Boutique', location: 'New York, NY', ordersMo: 0, spent: 4912.00, status: 'Quiet', email: 'info@citrine.com', phone: '212-555-0103', terms: 'Net 15' },
+      { id: 'C-104', name: 'Stark Enterprises', type: 'Global', location: 'Los Angeles, CA', ordersMo: 5, spent: 1250000.00, status: 'Active', email: 'tony@stark.com', phone: '310-555-0104', terms: 'Net 60' },
+      { id: 'C-105', name: 'Wayne Industries', type: 'Conglomerate', location: 'Gotham, NJ', ordersMo: 2, spent: 450000.00, status: 'Active', email: 'bruce@wayne.com', phone: '201-555-0105', terms: 'Net 90' }
     ];
 
     function getCustomers() {
@@ -334,6 +334,9 @@
       const c = getCustomers().find(x => x.id === id);
       if (!c) return;
 
+      const allOrders = JSON.parse(localStorage.getItem('stark_erp_orders_v1') || '[]');
+      const recent = allOrders.filter(o => o.cust === c.name).slice(0, 3);
+
       const panel = document.getElementById('insightPanel');
       panel.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:24px; width:100%;">
@@ -346,9 +349,17 @@
                 
                 <div style="display:grid; gap:16px; width:100%; text-align:left;">
                     <div style="background:#f8fafc; padding:16px; border-radius:12px;">
-                        <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:4px;">Contact</div>
-                        <div style="font-size:13px; font-weight:600; margin-bottom:2px;">${c.email}</div>
-                        <div style="font-size:13px;">${c.phone}</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div>
+                                <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:4px;">Contact</div>
+                                <div style="font-size:13px; font-weight:600;">${c.email || 'No email'}</div>
+                                <div style="font-size:13px;">${c.phone || 'No phone'}</div>
+                            </div>
+                            <div>
+                                <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:4px;">Terms</div>
+                                <div style="font-size:13px; font-weight:600; color:#4f46e5;">${c.terms || 'Due on Receipt'}</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -361,11 +372,100 @@
                              <div style="font-size:16px; font-weight:800; color:#10b981; margin-top:4px;">$${(c.spent / (c.ordersMo || 1)).toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
                         </div>
                     </div>
-                    
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:12px;">View Full Profile</button>
-                    <button class="btn btn-secondary" style="width:100%; justify-content:center;">Create New Order</button>
+
+                    <!-- Recent Orders -->
+                    <div style="border-top:1px solid #e2e8f0; padding-top:16px;">
+                        <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Recent Orders</div>
+                        ${recent.length === 0 ? '<div style="font-size:12px; color:var(--text-muted); font-style:italic;">No orders yet.</div>' : ''}
+                        ${recent.map(o => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px;">
+                                <div style="color:var(--primary); font-weight:600; cursor:pointer;" onclick="window.location.href='order_detail.html?id=${o.id}'">#${o.id}</div>
+                                <div style="color:var(--text-muted);">${o.date}</div>
+                                <div style="font-weight:600;">$${o.total.toLocaleString()}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top:16px; border-top:1px solid #e2e8f0; padding-top:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Account Access</div>
+                            ${c.auth && c.auth.isVerified ?
+          `<span class="badge badge-green" style="font-size:10px;">Active</span>` :
+          `<span class="badge badge-yellow" style="font-size:10px;">Invite Pending</span>`
+        }
+                        </div>
+                        
+                        ${!c.auth || !c.auth.isVerified ? `
+                            <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-bottom:8px; font-size:12px; height:32px;" onclick="resendInvite('${c.id}')">
+                                <i class="fa fa-envelope" style="margin-right:6px;"></i> Resend Invite
+                            </button>
+                        ` : `
+                             <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-bottom:8px; font-size:12px; height:32px; color:#ef4444; border-color:#fee2e2;" onclick="revokeAccess('${c.id}')">
+                                <i class="fa fa-ban" style="margin-right:6px;"></i> Revoke Access
+                            </button>
+                        `}
+                        
+                        <div style="background:#f8fafc; border-radius:8px; padding:12px; max-height:120px; overflow-y:auto; margin-top:8px;">
+                            <div style="font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Audit Log</div>
+                            ${(c.auth && c.auth.audit) ? c.auth.audit.map(log => `
+                                <div style="font-size:10px; margin-bottom:4px; color:#475569; display:flex; justify-content:space-between;">
+                                    <span>${log.action}</span>
+                                    <span style="color:#94a3b8;">${new Date(log.date).toLocaleDateString()}</span>
+                                </div>
+                            `).join('') : '<div style="font-size:10px; color:#94a3b8;">No activity logs.</div>'}
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:12px;" onclick="window.location.href='customer_catalog.html?id=${c.id}'">
+                        <i class="fa fa-list-ul" style="margin-right:8px;"></i> Manage Catalog
+                    </button>
+                    <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="window.location.href='create_sales_order.html?cust=${encodeURIComponent(c.name)}'">
+                        <i class="fa fa-plus" style="margin-right:8px;"></i> Create New Order
+                    </button>
                 </div>
             `;
+    }
+
+    function resendInvite(id) {
+      const customers = getCustomers();
+      const idx = customers.findIndex(c => c.id === id);
+      if (idx === -1) return;
+
+      // Generate new token
+      const token = 'inv_' + Math.random().toString(36).substr(2, 9);
+      if (!customers[idx].auth) customers[idx].auth = { status: 'Invited' };
+
+      customers[idx].auth.token = token;
+      customers[idx].auth.expires = Date.now() + (24 * 60 * 60 * 1000);
+
+      if (!customers[idx].auth.audit) customers[idx].auth.audit = [];
+      customers[idx].auth.audit.unshift({ action: "Invite Resent", date: new Date().toISOString(), ip: "Admin" });
+
+      saveCustomers(customers);
+      showInsights(id);
+
+      // Popup Mailto
+      const inviteLink = `${window.location.origin}/shop_register.html?token=${token}`;
+      const mailBody = encodeURIComponent(`Here is your new invitation link:\n${inviteLink}\n\nValid for 24 hours.`);
+      window.location.href = `mailto:${customers[idx].email}?subject=Invitation Update&body=${mailBody}`;
+      toast("Success", "Invite resent via email.");
+    }
+
+    function revokeAccess(id) {
+      if (!confirm("Are you sure? This will lock the account.")) return;
+      const customers = getCustomers();
+      const idx = customers.findIndex(c => c.id === id);
+      if (idx === -1) return;
+
+      customers[idx].auth.isVerified = false;
+      customers[idx].auth.status = "Locked";
+      customers[idx].auth.passwordHash = null;
+
+      if (!customers[idx].auth.audit) customers[idx].auth.audit = [];
+      customers[idx].auth.audit.unshift({ action: "Access Revoked", date: new Date().toISOString(), ip: "Admin" });
+
+      saveCustomers(customers);
+      showInsights(id);
+      toast("Verified", "Access revoked.");
     }
 
     /* Modal Logic */
@@ -388,7 +488,8 @@
         phone: document.getElementById("cPhone").value || '',
         status: 'Quiet',
         ordersMo: 0,
-        spent: 0
+        spent: 0,
+        terms: 'Due on Receipt'
       };
       const all = getCustomers();
       all.push(newC);
