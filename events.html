@@ -3,135 +3,49 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Company Events | Stark Premium ERP</title>
+    <title>Events | Stark Premium ERP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
     <style>
-        /* Calendar Specific Styles */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #e2e8f0;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
+        .master-row {
+            transition: transform 0.1s, background-color 0.1s;
         }
 
-        .calendar-header {
-            background: #f8fafc;
-            padding: 12px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 13px;
-            color: #64748b;
-            text-transform: uppercase;
+        .master-row:hover {
+            transform: scale(1.002);
+            background-color: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            position: relative;
         }
 
         .calendar-day {
-            background: white;
-            min-height: 80px;
-            padding: 4px;
-            position: relative;
-            transition: background 0.2s;
+            padding: 8px;
+            font-size: 13px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #475569;
         }
 
         .calendar-day:hover {
-            background: #f8fafc;
+            background: #f1f5f9;
+            color: #1e293b;
         }
 
-        .calendar-day.other-month {
-            background: #f9fafb;
-            color: #cbd5e1;
-        }
-
-        .day-number {
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .calendar-day.today .day-number {
-            background: var(--primary);
+        .calendar-day.active {
+            background: #6366f1;
             color: white;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            font-weight: 700;
         }
 
-        .event-chip {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-bottom: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: transform 0.1s;
-        }
-
-        .event-chip:hover {
-            transform: scale(1.02);
-        }
-
-        .event-hr {
-            background: #fee2e2;
-            color: #b91c1c;
-            border-left: 3px solid #b91c1c;
-        }
-
-        .event-sales {
-            background: #dbf4ff;
-            color: #0284c7;
-            border-left: 3px solid #0284c7;
-        }
-
-        .event-ops {
-            background: #dcfce7;
-            color: #15803d;
-            border-left: 3px solid #15803d;
-        }
-
-        .event-logistics {
-            background: #f3e8ff;
-            color: #7e22ce;
-            border-left: 3px solid #7e22ce;
-        }
-
-        .timeline-item {
-            display: flex;
-            gap: 16px;
-            padding-bottom: 24px;
-            border-left: 2px solid #e2e8f0;
-            padding-left: 24px;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: "";
-            position: absolute;
-            left: -7px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid var(--primary);
-        }
-
-        .timeline-item:last-child {
-            border-left: 2px solid transparent;
+        .calendar-day.inactive {
+            color: #cbd5e1;
         }
     </style>
 </head>
@@ -146,8 +60,8 @@
             </a>
 
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Home</a>
-                <a class="nav-link" href="master.html">Master</a>
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="master.html">Items</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -160,9 +74,6 @@
             </nav>
 
             <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-                    Online
-                </div>
                 <button class="hamburger" onclick="openMobileNav()">
                     <span></span><span></span><span></span>
                 </button>
@@ -178,8 +89,8 @@
                 <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Home</a>
-            <a class="mobile-link" href="master.html">Master</a>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="master.html">Items</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
@@ -189,348 +100,406 @@
             <a class="mobile-link" href="logistics.html">Logistics</a>
             <a class="mobile-link" href="reports.html">Reports</a>
             <a class="mobile-link active" href="events.html">Events</a>
-            <a class="mobile-link" href="trends.html">Trends</a>
         </div>
     </div>
 
-    <main class="container" style="padding-top:40px;">
+    <main class="container soft-ui-wrapper" style="padding-top:40px;">
         <!-- Header -->
-        <div class="page-header" style="flex-direction:row; justify-content:space-between; align-items:end;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;">
             <div>
-                <h1 class="page-title">Company Schedule</h1>
-                <p class="page-desc">Upcoming meetings, holidays, and operational deadlines.</p>
+                <h1 class="page-title" style="margin-bottom:8px;">Events & Scheduling</h1>
+                <p class="page-desc">Manage upcoming company-wide events, deadlines, and deliveries.</p>
+                <div
+                    style="height:4px; width:40px; background:linear-gradient(90deg, #6366f1, transparent); border-radius:2px; margin-top:16px;">
+                </div>
             </div>
-            <div style="display:flex; gap:12px;">
-                <button class="btn btn-secondary" onclick="toast('Syncing...', 'Google Calendar Sync Started')">🔄 Sync
-                    Cal</button>
-                <button class="btn btn-primary" onclick="window.location.href='event_create.html'">+ Add Event</button>
+            <button class="btn btn-primary" onclick="openEventModal()"
+                style="padding:10px 24px; font-weight:600; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3);">+ Add
+                Event</button>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-4" style="gap:24px; margin-bottom:32px;">
+            <div class="card-soft clickable-stat-card active" onclick="setFilter('All', this)" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#d97706; text-transform:uppercase; letter-spacing:0.5px;">
+                        Upcoming</div>
+                    <div class="badge badge-yellow">Total</div>
+                </div>
+                <div style="font-size:32px; font-weight:700; color:#d97706;">18</div>
+                <div style="font-size:12px; color:#b45309; margin-top:8px;">Scheduled events</div>
+            </div>
+
+            <div class="card-soft clickable-stat-card" onclick="setFilter('Urgent', this)" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:0.5px;">
+                        Urgent</div>
+                    <div class="badge badge-red">Action</div>
+                </div>
+                <div style="font-size:32px; font-weight:700; color:#dc2626;">9</div>
+                <div style="font-size:12px; color:#b91c1c; margin-top:8px;">Requires attention</div>
+            </div>
+
+            <div class="card-soft clickable-stat-card" onclick="setFilter('Confirmed', this)" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#16a34a; text-transform:uppercase; letter-spacing:0.5px;">
+                        Confirmed</div>
+                    <div class="badge badge-green">Safe</div>
+                </div>
+                <div style="font-size:32px; font-weight:700; color:#16a34a;">2</div>
+                <div style="font-size:12px; color:#15803d; margin-top:8px;">Ready to go</div>
+            </div>
+
+            <div class="card-soft clickable-stat-card" onclick="setFilter('Draft', this)" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:0.5px;">
+                        Drafts</div>
+                    <div class="badge" style="background:#f3e8ff; color:#7c3aed;">Work</div>
+                </div>
+                <div style="font-size:32px; font-weight:700; color:#7c3aed;">4</div>
+                <div style="font-size:12px; color:#6d28d9; margin-top:8px;">In progress</div>
             </div>
         </div>
 
-        <div class="grid" style="grid-template-columns: 1fr 320px; align-items:start; gap:24px;">
-
-            <!-- Inventory Status Section (Left) -->
-            <div class="card animate-enter">
-                <h3 style="font-size:16px; font-weight:700; margin-bottom:16px;">Order Fulfillment Events & Inventory
-                    Risks
-                </h3>
-
-                <div style="margin-bottom:16px;">
-                    <input type="text" id="customerFilter" class="input" placeholder="Filter by Customer Name..."
-                        onkeyup="filterTable()" style="padding:8px 12px; font-size:13px;">
+        <!-- Controls -->
+        <div class="card-soft" style="margin-bottom:24px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div style="display:flex; gap:12px;" id="filterContainer">
+                    <button class="pill-filter active" onclick="setFilter('All', this)">All</button>
+                    <button class="pill-filter" onclick="setFilter('Today', this)">Today</button>
+                    <button class="pill-filter" onclick="setFilter('Tomorrow', this)">Tomorrow</button>
+                    <button class="pill-filter" onclick="setFilter('Week', this)">This Week</button>
                 </div>
+                <div style="position:relative; width:100%; max-width:280px;">
+                    <input class="input" placeholder="Search events..." style="padding-right:32px;"
+                        oninput="searchEvents(this.value)">
+                    <span
+                        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#94a3b8;">🔍</span>
+                </div>
+            </div>
+        </div>
 
-                <div class="table-container">
-                    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+        <div class="grid grid-2" style="align-items:start; grid-template-columns: 3fr 1fr; gap:24px;">
+            <!-- Left: List View -->
+            <div class="card-soft table-container" style="padding:0; overflow:hidden;">
+                <div style="padding:16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                    <div
+                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                        Scheduled Events</div>
+                </div>
+                <div class="table-container" style="box-shadow:none; border:none; border-radius:0;">
+                    <table style="width:100%;">
                         <thead>
-                            <tr style="border-bottom:2px solid #f1f5f9; text-align:left; color:var(--text-muted);">
-                                <th style="padding:12px 8px;">Event Name</th>
-                                <th style="padding:12px 8px;">Customer</th>
-                                <th style="padding:12px 8px;">PO #</th>
-                                <th style="padding:12px 8px;">Ref Item</th>
-                                <th style="padding:12px 8px;">Status</th>
-                                <th style="padding:12px 8px;">Action</th>
+                            <tr
+                                style="background:white; border-bottom:1px solid #f1f5f9; text-transform:uppercase; font-size:11px; letter-spacing:0.5px;">
+                                <th style="padding:16px; color:#64748b;">Event Date</th>
+                                <th style="padding:16px; color:#64748b;">Event Details</th>
+                                <th style="padding:16px; color:#64748b;">Location</th>
+                                <th style="padding:16px; color:#64748b;">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="eventsListBody">
-                            <!-- Populated by JS -->
-                        </tbody>
+                        <tbody id="eventListBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Main Calendar -->
-            <div class="animate-enter">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                    <h2 style="font-size:18px; font-weight:700;">February 2026</h2>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-sm btn-secondary">&lt;</button>
-                        <button class="btn btn-sm btn-secondary">&gt;</button>
+            <!-- Right: Calendar Sidebar -->
+            <aside style="display:grid; gap:24px; position:sticky; top:20px;">
+                <div class="card-soft" style="padding:24px; text-align:center;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h3 style="margin:0; font-size:15px; font-weight:700; color:#1e293b;">April 2026</h3>
+                        <div style="font-size:12px; color:#6366f1; cursor:pointer; font-weight:600;">Today</div>
+                    </div>
+
+                    <div
+                        style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; font-size:11px; margin-bottom:8px;">
+                        <div style="font-weight:700; color:#94a3b8;">S</div>
+                        <div style="font-weight:700; color:#94a3b8;">M</div>
+                        <div style="font-weight:700; color:#94a3b8;">T</div>
+                        <div style="font-weight:700; color:#94a3b8;">W</div>
+                        <div style="font-weight:700; color:#94a3b8;">T</div>
+                        <div style="font-weight:700; color:#94a3b8;">F</div>
+                        <div style="font-weight:700; color:#94a3b8;">S</div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px;">
+                        <!-- Calendar Days -->
+                        <div class="calendar-day inactive">30</div>
+                        <div class="calendar-day inactive">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day active">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day">22</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
                     </div>
                 </div>
 
-                <div class="calendar-grid">
-                    <!-- Headers -->
-                    <div class="calendar-header">Sun</div>
-                    <div class="calendar-header">Mon</div>
-                    <div class="calendar-header">Tue</div>
-                    <div class="calendar-header">Wed</div>
-                    <div class="calendar-header">Thu</div>
-                    <div class="calendar-header">Fri</div>
-                    <div class="calendar-header">Sat</div>
-
-                    <!-- Week 1 -->
-                    <div class="calendar-day other-month"><span class="day-number">26</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">27</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">28</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">29</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">30</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">31</span></div>
-                    <div class="calendar-day"><span class="day-number">1</span></div>
-
-                    <!-- Week 2 -->
-                    <div class="calendar-day"><span class="day-number">2</span></div>
-                    <div class="calendar-day">
-                        <span class="day-number">3</span>
-                        <div class="event-chip event-sales">9:00 AM Sales Sync</div>
-                        <div class="event-chip event-ops">2:00 PM Inventory Audit</div>
+                <div class="card-soft"
+                    style="padding:24px; background:linear-gradient(135deg, #6366f1, #4f46e5); color:white;">
+                    <h3 style="margin:0 0 12px 0; font-size:16px;">Daily Briefing</h3>
+                    <div style="font-size:13px; line-height:1.6; opacity:0.9;">
+                        You have <strong>4 events</strong> scheduled today.
+                        <div style="margin-top:8px; display:flex; gap:8px;">
+                            <span class="badge" style="background:rgba(255,255,255,0.2); color:white;">2
+                                Confirmed</span>
+                            <span class="badge" style="background:rgba(255,255,255,0.2); color:white;">1 Draft</span>
+                        </div>
                     </div>
-                    <div class="calendar-day"><span class="day-number">4</span></div>
-                    <div class="calendar-day">
-                        <span class="day-number">5</span>
-                        <div class="event-chip event-hr">New Hire Orientation</div>
-                    </div>
-                    <div class="calendar-day"><span class="day-number">6</span></div>
-                    <div class="calendar-day"><span class="day-number">7</span></div>
-                    <div class="calendar-day"><span class="day-number">8</span></div>
-
-                    <!-- Week 3 -->
-                    <div class="calendar-day"><span class="day-number">9</span></div>
-                    <div class="calendar-day">
-                        <span class="day-number">10</span>
-                        <div class="event-chip event-sales">Q1 Strategy Review</div>
-                    </div>
-                    <div class="calendar-day"><span class="day-number">11</span></div>
-                    <div class="calendar-day today">
-                        <span class="day-number">12</span>
-                        <div class="event-chip event-logistics">Container Arrival (#8821)</div>
-                    </div>
-                    <div class="calendar-day">
-                        <span class="day-number">13</span>
-                        <div class="event-chip event-hr">Company Lunch</div>
-                    </div>
-                    <div class="calendar-day"><span class="day-number">14</span></div>
-                    <div class="calendar-day"><span class="day-number">15</span></div>
-
-                    <!-- Week 4 -->
-                    <div class="calendar-day"><span class="day-number">16</span></div>
-                    <div class="calendar-day">
-                        <span class="day-number">17</span>
-                        <div class="event-chip event-ops">Server Maintenance</div>
-                    </div>
-                    <div class="calendar-day"><span class="day-number">18</span></div>
-                    <div class="calendar-day"><span class="day-number">19</span></div>
-                    <div class="calendar-day"><span class="day-number">20</span></div>
-                    <div class="calendar-day"><span class="day-number">21</span></div>
-                    <div class="calendar-day"><span class="day-number">22</span></div>
-
-                    <!-- Week 5 -->
-                    <div class="calendar-day"><span class="day-number">23</span></div>
-                    <div class="calendar-day"><span class="day-number">24</span></div>
-                    <div class="calendar-day"><span class="day-number">25</span></div>
-                    <div class="calendar-day"><span class="day-number">26</span></div>
-                    <div class="calendar-day"><span class="day-number">27</span></div>
-                    <div class="calendar-day"><span class="day-number">28</span></div>
-                    <div class="calendar-day other-month"><span class="day-number">1</span></div>
                 </div>
-            </div>
-
+            </aside>
         </div>
 
-        <!-- Add Event Modal (Hidden) -->
-        <div id="addEventModal"
-            style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
-            <div class="card" style="width:400px; max-width:90%;">
-                <h3 style="margin-top:0;">New Event</h3>
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">Event Name</label>
-                    <input class="input" placeholder="e.g. Q2 Planning..." />
-                </div>
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">Type</label>
-                    <select class="input">
-                        <option>General</option>
-                        <option>Sales</option>
-                        <option>HR</option>
-                        <option>Logistics</option>
-                    </select>
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:8px;">
-                    <button class="btn btn-secondary"
-                        onclick="document.getElementById('addEventModal').style.display='none'">Cancel</button>
-                    <button class="btn btn-primary"
-                        onclick="toast('Event Created', 'Added to schedule.', 'success'); document.getElementById('addEventModal').style.display='none'">Save</button>
-                </div>
-            </div>
+        <div style="margin-top:60px; text-align:center; color:#94a3b8; font-size:13px;">
+            &copy; 2026 Stark Premium ERP.
         </div>
-
-
-
-
-
     </main>
+
+    <!-- Create Event Modal -->
+    <div class="mobile-nav" id="eventModal" style="z-index:900;">
+        <div class="card-soft modal-content"
+            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 600px); max-height:90vh; overflow-y:auto; padding:32px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0; font-size:20px; color:#1e293b;">Create New Event</h3>
+                <button onclick="closeEventModal()"
+                    style="border:none; background:transparent; font-size:24px; cursor:pointer; color:#64748b;">&times;</button>
+            </div>
+
+            <div style="display:grid; gap:20px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label class="form-label">Customer Name</label>
+                        <input id="eCustomer" class="input" placeholder="e.g. Acme Corp" />
+                    </div>
+                    <div>
+                        <label class="form-label">Event Name</label>
+                        <input id="eName" class="input" placeholder="e.g. Summer Gala" />
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Ship To Address</label>
+                    <input id="eAddress" class="input" placeholder="123 Main St, City, State" />
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label class="form-label">In Hands Date</label>
+                        <input id="eDate" type="date" class="input" />
+                    </div>
+                    <div>
+                        <label class="form-label">Delivery Method</label>
+                        <select id="eDelivery" class="input">
+                            <option value="ASAP">ASAP (Ship Immediately)</option>
+                            <option value="HOLD">HOLD (Do Not Ship)</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <label class="form-label" style="display:block; margin-bottom:12px;">Add Items</label>
+                    <div style="display:flex; gap:12px; margin-bottom:12px;">
+                        <input id="iSku" class="input" placeholder="SKU / Item Name" style="flex:2;" />
+                        <input id="iQty" type="number" class="input" placeholder="Qty" style="flex:1;" />
+                        <button class="btn btn-secondary" onclick="addItemRow()">+</button>
+                    </div>
+                    <div id="itemList" style="display:grid; gap:8px; max-height:100px; overflow-y:auto;">
+                        <div style="font-size:13px; color:#94a3b8; font-style:italic; padding:4px;">No items added yet.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Special Instructions</label>
+                    <textarea id="eInstr" class="input" rows="3"
+                        placeholder="Gate code, packing requirements, etc."></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px;">
+                    <button class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveEvent()">Create Event</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
     <script src="erp.js"></script>
     <script>
-        const EVENT_KEY = "stark_events_v1";
+        const AUTH_KEY = "stark_erp_auth_v1";
+        const EVENTS_KEY = "stark_erp_events_v1";
 
-        // Seed Data if Empty
-        let events = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
-        if (events.length === 0) {
-            events = [
-                {
-                    id: "evt_seed_1",
-                    name: "Shipment - Order #SO-8891",
-                    customer: "Acme Corp",
-                    date: "2026-02-15",
-                    items: [{ sku: "Office Chair X1", qty: 5 }],
-                    status: "Good",
-                    fulfill: "Hold"
-                },
-                {
-                    id: "evt_seed_2",
-                    name: "Delivery - Order #SO-8920",
-                    customer: "Stark Ind.",
-                    date: "2026-02-18",
-                    items: [{ sku: "Titanium Alloy Sheet", qty: 20 }],
-                    status: "Risk",
-                    fulfill: "Hold"
-                },
-                {
-                    id: "evt_seed_3",
-                    name: "Installation - Project Alpha",
-                    customer: "Globex Corp",
-                    date: "2026-02-22",
-                    items: [{ sku: "Server Rack Mounts", qty: 10 }],
-                    status: "Good",
-                    fulfill: "Hold"
-                }
-            ];
-            localStorage.setItem(EVENT_KEY, JSON.stringify(events));
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
+        function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
+        function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
+        function openEventModal() { document.getElementById("eventModal").classList.add("open"); }
+        function closeEventModal() { document.getElementById("eventModal").classList.remove("open"); }
+
+        // Item Logic
+        let currentItems = [];
+        function addItemRow() {
+            const sku = document.getElementById("iSku").value.trim();
+            const qty = document.getElementById("iQty").value.trim();
+            if (!sku || !qty) return;
+            currentItems.push({ sku, qty });
+            renderItems();
+            document.getElementById("iSku").value = ""; document.getElementById("iQty").value = ""; document.getElementById("iSku").focus();
+        }
+        function removeItem(idx) { currentItems.splice(idx, 1); renderItems(); }
+        function renderItems() {
+            const list = document.getElementById("itemList");
+            if (currentItems.length === 0) { list.innerHTML = `<div style="font-size:13px; color:#94a3b8; font-style:italic; padding:4px;">No items added yet.</div>`; return; }
+            list.innerHTML = currentItems.map((item, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:8px 12px; border:1px solid #e2e8f0; border-radius:6px; font-size:13px;">
+                    <div><strong style="color:#1e293b;">${item.sku}</strong> <span style="color:#64748b;">x${item.qty}</span></div>
+                    <button onclick="removeItem(${idx})" style="border:none; background:transparent; color:#ef4444; cursor:pointer; font-size:16px;">&times;</button>
+                </div>`).join("");
         }
 
-        // Render Table
-        function renderEventsTable() {
-            const tbody = document.getElementById("eventsListBody");
+        function saveEvent() {
+            const customer = document.getElementById("eCustomer").value;
+            const name = document.getElementById("eName").value;
+            const address = document.getElementById("eAddress").value;
+            const date = document.getElementById("eDate").value;
+            const delivery = document.getElementById("eDelivery").value;
+            const instr = document.getElementById("eInstr").value;
+            if (!customer || !name || !date) return alert("Required fields missing.");
+
+            const newEvent = { id: "EVT-" + Date.now(), customer, name, address, date, delivery, instr, items: currentItems, status: "Scheduled" };
+            const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
+            events.push(newEvent);
+            localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+
+            closeEventModal();
+            currentItems = []; renderItems(); document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+            renderEvents();
+            toast("Event Scheduled", "New event created successfully.");
+        }
+
+        function setFilter(type, btn) {
+            window.currentFilter = type;
+
+            // Handle active state for pill buttons
+            if (btn.classList.contains('pill-filter') || btn.classList.contains('clickable-stat-card')) {
+                // If clicked from top cards, update pills too
+                document.querySelectorAll('.pill-filter').forEach(p => {
+                    p.classList.remove('active');
+                    if (p.textContent === type) p.classList.add('active');
+                    if (type === 'All' && p.textContent === 'All') p.classList.add('active');
+                });
+
+                // If clicked from pills, update cards? Optional.
+                document.querySelectorAll('.clickable-stat-card').forEach(c => c.classList.remove('active'));
+
+                // Add active to current pill
+                if (btn.classList.contains('pill-filter')) btn.classList.add('active');
+            }
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const events = JSON.parse(localStorage.getItem(EVENTS_KEY) || "[]");
+            const tbody = document.getElementById("eventListBody");
+            const term = (window.searchTerm || "").toLowerCase();
+            const filter = window.currentFilter || "All";
+
+            events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
             tbody.innerHTML = "";
-            let currentEvents = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
 
-            // URL Filter Logic
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterItemVal = (urlParams.get('item') || "").trim();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
 
-            // Show Filter State if active
-            const filterContainer = document.getElementById("activeFilterDisplay");
-            if (filterItemVal) {
-                // Resolve Name -> SKU using Master Items (v2)
-                const masterItems = JSON.parse(localStorage.getItem("stark_erp_items_v2") || "[]");
-                const foundItem = masterItems.find(i => (i.name || "").toLowerCase() === filterItemVal.toLowerCase());
+            let visibleCount = 0;
 
-                const validIdentifiers = [filterItemVal.toLowerCase()];
-                if (foundItem && foundItem.sku) validIdentifiers.push(foundItem.sku.toLowerCase());
+            events.forEach(e => {
+                if (term && !(e.name + e.customer).toLowerCase().includes(term)) return;
 
-                // Filter events that contain this item
-                currentEvents = currentEvents.filter(evt =>
-                    evt.items && evt.items.some(line => {
-                        const val = (line.sku || "").toLowerCase();
-                        return validIdentifiers.includes(val);
-                    })
-                );
+                const d = new Date(e.date + "T00:00:00");
+                if (filter === "Today" && d.getTime() !== today.getTime()) return;
+                if (filter === "Tomorrow" && d.getTime() !== tomorrow.getTime()) return;
+                if (filter === "Week" && (d < today || d > nextWeek)) return;
 
-                // Inject visual feedback if not already there
-                if (!filterContainer) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.id = "activeFilterDisplay";
-                    statusDiv.style.marginBottom = "12px";
-                    statusDiv.innerHTML = `
-                        <div style="display:inline-flex; align-items:center; gap:8px; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:8px 12px; border-radius:6px; font-size:13px;">
-                            <strong>Filtered by Item:</strong> ${filterItemVal}
-                            <button onclick="window.location.href='events.html'" style="border:none; background:transparent; font-weight:700; color:#1e40af; cursor:pointer;">&times; Clear</button>
-                        </div>
-                    `;
-                    // Insert before the customer filter input
-                    const filterInputDiv = document.getElementById("customerFilter").parentNode;
-                    filterInputDiv.parentNode.insertBefore(statusDiv, filterInputDiv);
-                }
-            } else if (filterContainer) {
-                filterContainer.remove();
-            }
+                if (filter === 'Urgent' && e.delivery !== 'HOLD') return;
+                if (filter === 'Confirmed' && e.delivery !== 'ASAP') return;
+                if (filter === 'Draft' && e.status !== 'Draft') return;
 
-            if (currentEvents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">No events found matching <strong>${filterItemVal}</strong>.</td></tr>`;
-                return;
-            }
+                visibleCount++;
+                const month = d.toLocaleString('default', { month: 'short' });
+                const day = d.getDate();
+                const year = d.getFullYear();
 
-            currentEvents.forEach(evt => {
-                const isRisk = evt.status === "Risk";
-                const bg = isRisk ? "#fee2e2" : "#dcfce7";
-                const color = isRisk ? "#991b1b" : "#166534";
-                const dot = isRisk ? "#dc2626" : "#16a34a";
-                const label = isRisk ? "Risk" : "Good";
-
-                // For 'Action' button, check if allocated
-                const primaryItem = evt.items && evt.items.length > 0 ? evt.items[0].sku : "General Item";
-                const isAllocated = JSON.parse(localStorage.getItem('stark_allocated_items') || "[]").includes(primaryItem);
-
-                let actionBtn;
-                if (isRisk) {
-                    actionBtn = `<button class="btn btn-sm btn-secondary" onclick="window.location.href='purchasing.html'" style="color:#b91c1c; border-color:#fecaca;">Order</button>`;
-                } else if (isAllocated) {
-                    actionBtn = `<button class="btn btn-sm btn-primary" disabled>Allocated ✓</button>`;
-                } else {
-                    actionBtn = `<button class="btn btn-sm btn-secondary" onclick="allocateItem('${primaryItem}', this)">Allocate</button>`;
-                }
+                const statusText = e.delivery === 'HOLD' ? 'Partially Filled' : 'Filled';
+                const bg = e.delivery === 'HOLD' ? '#fef2f2' : '#f0fdf4';
+                const border = e.delivery === 'HOLD' ? '#fecaca' : '#bbf7d0';
+                const color = e.delivery === 'HOLD' ? '#dc2626' : '#16a34a';
 
                 tbody.innerHTML += `
-                     <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                        <td style="padding:12px 8px; font-weight:600;">
-                            <a href="event_view.html?id=${evt.id}" style="color:inherit; text-decoration:none; border-bottom:1px dashed #94a3b8;">${evt.name}</a>
+                    <tr class="master-row">
+                        <td style="padding:16px 24px;">
+                            <div style="font-weight:700; color:#1e293b; font-size:14px;">${month} ${day}, ${year}</div>
                         </td>
-                        <td style="padding:12px 8px;">${evt.customer}</td>
-                        <td style="padding:12px 8px; font-family:monospace; color:var(--text-purple-dark);">PO-${Math.floor(Math.random() * 9000) + 1000}</td>
-                        <td style="padding:12px 8px;">${primaryItem}</td>
-                        <td style="padding:12px 8px;">
-                             <span class="badge" style="background:${bg}; color:${color}; display:inline-flex; align-items:center; gap:6px;">
-                                <span style="width:6px; height:6px; background:${dot}; border-radius:50%;"></span>
-                                ${label}
+                        <td style="padding:16px;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:36px; height:36px; background:#e0e7ff; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#4f46e5;">
+                                    ${e.name.substring(0, 2).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div style="font-weight:600; color:#1e293b; font-size:14px;">${(e.name)}</div>
+                                    <div style="font-size:12px; color:#64748b;">ID: #${e.id.slice(-4)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding:16px;">
+                            <div style="font-weight:600; color:#334155; font-size:14px;">${(e.customer)}</div>
+                            <div style="font-size:12px; color:#94a3b8;">${(e.address)}</div>
+                        </td>
+                        <td style="padding:16px;">
+                            <span style="background:${bg}; border:1px solid ${border}; color:${color}; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;">
+                                ${statusText}
                             </span>
                         </td>
-                        <td style="padding:12px 8px;">${actionBtn}</td>
-                     </tr>
+                    </tr>
                 `;
             });
-        }
 
-        // Init
-        renderEventsTable();
-
-        function allocateItem(itemName, btn) {
-            // Save to localStorage
-            let allocated = JSON.parse(localStorage.getItem('stark_allocated_items') || "[]");
-            if (!allocated.includes(itemName)) {
-                allocated.push(itemName);
-                localStorage.setItem('stark_allocated_items', JSON.stringify(allocated));
-            }
-
-            // Visual Feedback
-            btn.innerHTML = "Allocated ✓";
-            btn.classList.remove('btn-secondary');
-            btn.classList.add('btn-primary');
-            btn.disabled = true;
-
-            toast('Inventory Allocated', `Reserved stock for ${itemName}`, 'success');
-        }
-
-        function filterTable() {
-            const input = document.getElementById("customerFilter");
-            const filter = input.value.toUpperCase();
-            // Select the body rows of the first table (Inventory Risks table)
-            const table = document.querySelector(".table-container table tbody");
-            const tr = table.getElementsByTagName("tr");
-
-            for (let i = 0; i < tr.length; i++) {
-                // Customer is 2nd column (index 1)
-                const td = tr[i].getElementsByTagName("td")[1];
-                if (td) {
-                    const txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
+            if (visibleCount === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding:32px; text-align:center; color:#94a3b8;">No events found for this filter.</td></tr>`;
             }
         }
+
+        function searchEvents(val) {
+            window.searchTerm = val;
+            renderEvents();
+        }
+
+        renderEvents();
     </script>
+</body>
 
 </html>
