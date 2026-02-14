@@ -9,86 +9,98 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* Specific Styles for Receive Page */
-        .split-layout {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        @media (max-width: 900px) {
-            .split-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .po-list-item {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .po-list-item:hover {
-            background: #f8fafc;
-        }
-
-        .po-list-item.active {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary);
-        }
-
-        .qty-input {
-            width: 80px;
-            text-align: center;
-            font-weight: 700;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 
-<body><main class="container">
-        <!-- Header -->
-        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <h1 class="page-title">Receive Inventory</h1>
-                <p class="page-desc">Select a Purchase Order to process incoming stock.</p>
+<body class="theme-dark">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="inventory.html">← Back to Inventory</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Secured Connection</div>
             </div>
-            <button class="btn btn-secondary" onclick="window.location.href='inventory.html'">Close & Return</button>
         </div>
+    </header>
 
-        <div class="split-layout">
-            <!-- Left: PO List -->
-            <div class="card"
-                style="padding:0; overflow:hidden; max-height:calc(100vh - 200px); display:flex; flex-direction:column;">
-                <div
-                    style="padding:16px; border-bottom:1px solid var(--border); background:#f8fafc; display:flex; flex-direction:column; gap:12px;">
-                    <h3 style="margin:0; font-size:14px; color:var(--text-muted); text-transform:uppercase;">Open
-                        Purchase Orders</h3>
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1400px;">
 
-                    <select id="whSelect" class="input" style="font-size:13px; padding:8px;">
+        <div class="receive-tool-layout">
+
+            <!-- Sidebar: PO Selector -->
+            <div class="card-soft"
+                style="padding:0; overflow:hidden; border:none; display:flex; flex-direction:column; height:calc(100vh - 120px);">
+                <div style="padding:20px; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+                    <h3
+                        style="margin:0 0 12px 0; font-size:14px; font-weight:700; color:#475569; text-transform:uppercase;">
+                        Select Purchase Order</h3>
+                    <select id="whSelect" class="input" style="font-size:13px; margin-bottom:8px;">
                         <option value="TX">Warehouse: Texas (Main)</option>
                         <option value="FL">Warehouse: Sarasota</option>
                     </select>
-
-                    <input id="poSearch" class="input" placeholder="Filter by PO # or Vendor..."
-                        style="font-size:13px; padding:8px;" oninput="renderPOList()">
+                    <input id="poSearch" class="input" placeholder="Search PO #..." oninput="renderPOList()"
+                        style="font-size:13px;">
                 </div>
                 <div id="poList" style="overflow-y:auto; flex:1;">
-                    <!-- Populated by JS -->
-                    <div style="padding:24px; text-align:center; color:var(--text-muted);">Loading POs...</div>
+                    <!-- List -->
                 </div>
             </div>
 
-            <!-- Right: Receipt Form -->
-            <div class="card" id="receiptArea"
-                style="min-height:400px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:var(--text-muted);">
-                <span style="font-size:48px; margin-bottom:16px; opacity:0.3;">📄</span>
-                <p>Select a Purchase Order from the list to begin.</p>
+            <!-- Main Area: Receipt Form -->
+            <div id="receiptArea" class="glass-panel-dark"
+                style="min-height:500px; padding:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;">
+
+                <!-- Empty State -->
+                <div id="emptyState" style="text-align:center; opacity:0.5;">
+                    <div style="font-size:64px; margin-bottom:16px;">🚛</div>
+                    <h2 style="margin:0; font-size:24px; font-weight:700;">Ready to Receive</h2>
+                    <p style="margin-top:8px;">Select a pending purchase order from the list to begin processing.</p>
+                </div>
+
+                <!-- Active Form -->
+                <div id="activeForm" style="display:none; width:100%; max-width:900px;">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:24px;">
+                        <div>
+                            <div style="font-size:13px; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">
+                                Receiving Order</div>
+                            <h1 id="recPoId" style="margin:0; font-size:32px; font-weight:800;">PO-00000</h1>
+                            <div id="recVendor" style="color:#cbd5e1; margin-top:4px;">Vendor Name</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <button onclick="commitReceipt()" class="btn btn-primary"
+                                style="background:linear-gradient(135deg, #10b981, #059669); border:none; box-shadow:0 4px 12px rgba(16,185,129,0.3); padding:12px 32px; font-size:16px;">Finalize
+                                Receipt</button>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background:rgba(0,0,0,0.2); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead
+                                style="background:rgba(255,255,255,0.05); color:#94a3b8; font-size:12px; text-transform:uppercase;">
+                                <tr>
+                                    <th style="padding:16px; text-align:left;">Item Details</th>
+                                    <th style="padding:16px; text-align:center; width:100px;">Expected</th>
+                                    <th style="padding:16px; text-align:center; width:120px;">Received</th>
+                                    <th style="padding:16px; text-align:center; width:100px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recTableBody">
+                                <!-- Lines -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
     </main>
@@ -101,149 +113,98 @@
         const ITEM_KEY = "stark_erp_items_v2";
         let SELECTED_PO = null;
 
-        function load(key, fallback) {
-            try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-            catch { return fallback; }
-        }
-        function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-
-        function init() {
-            renderPOList();
-        }
+        function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
+        function loadPOs() { try { return JSON.parse(localStorage.getItem(PO_KEY) || "[]"); } catch { return []; } }
+        function savePOs(d) { localStorage.setItem(PO_KEY, JSON.stringify(d)); }
+        function saveItems(d) { localStorage.setItem(ITEM_KEY, JSON.stringify(d)); }
 
         function renderPOList() {
-            const pos = load(PO_KEY, []);
-            let active = pos.filter(p => p.status !== "Completed" && p.status !== "Delivered");
+            const pos = loadPOs().filter(p => !['Completed', 'Delivered'].includes(p.status));
+            const term = document.getElementById("poSearch").value.toLowerCase();
+            const list = document.getElementById("poList");
 
-            const term = (document.getElementById("poSearch") ? document.getElementById("poSearch").value : "").toLowerCase();
-            if (term) {
-                active = active.filter(p =>
-                    p.id.toLowerCase().includes(term) ||
-                    p.vendor.toLowerCase().includes(term)
-                );
-            }
+            const filtered = pos.filter(p => p.id.toLowerCase().includes(term) || p.vendor.toLowerCase().includes(term));
 
-            const listEl = document.getElementById("poList");
-            if (!active.length) {
-                listEl.innerHTML = `<div style="padding:24px; text-align:center; color:var(--text-muted);">No open purchase orders found.</div>`;
+            if (filtered.length === 0) {
+                list.innerHTML = `<div style="padding:40px; text-align:center; color:#94a3b8;">No open POs found.</div>`;
                 return;
             }
 
-            listEl.innerHTML = active.map(p => `
-        <div class="po-list-item ${SELECTED_PO && SELECTED_PO.id === p.id ? 'active' : ''}" onclick="selectPO('${p.id}')">
-          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-            <strong style="color:var(--text-main);">${p.id}</strong>
-            <span class="badge ${p.status === 'Approved' ? 'badge-green' : 'badge-yellow'}" style="font-size:10px;">${p.status || 'Draft'}</span>
-          </div>
-          <div style="font-size:13px; color:var(--text-main);">${p.vendor}</div>
-          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">ETA: ${p.eta} • ${(p.lines || '').split('\n').length} Items</div>
-        </div>
-      `).join("");
+            list.innerHTML = filtered.map(p => `
+                <div class="po-list-item ${SELECTED_PO && SELECTED_PO.id === p.id ? 'active' : ''}" onclick="selectPO('${p.id}')">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <strong style="color:#1e293b;">${p.id}</strong>
+                         <span class="badge ${p.status === 'Approved' ? 'badge-green' : 'badge-gray'}">${p.status || 'Draft'}</span>
+                    </div>
+                    <div style="font-size:13px; color:#475569;">${p.vendor}</div>
+                    <div style="font-size:11px; color:#94a3b8; margin-top:6px;">ETA: ${p.eta || 'N/A'}</div>
+                </div>
+            `).join("");
         }
 
-        window.selectPO = function (poId) {
-            const pos = load(PO_KEY, []);
-            SELECTED_PO = pos.find(p => p.id === poId);
-            renderPOList(); // refresh active state
-            renderReceiptForm();
-        }
+        window.selectPO = function (id) {
+            SELECTED_PO = loadPOs().find(p => p.id === id);
+            renderPOList();
 
-        function renderReceiptForm() {
             if (!SELECTED_PO) return;
 
-            const container = document.getElementById("receiptArea");
-            // Reset style from "empty state"
-            container.style.display = "block";
-            container.style.alignItems = "initial";
-            container.style.justifyContent = "initial";
-            container.style.textAlign = "initial";
-            container.style.color = "initial";
+            document.getElementById("emptyState").style.display = 'none';
+            const form = document.getElementById("activeForm");
+            form.style.display = 'block';
 
-            // Mock parsing lines: "ItemName | SKU | Qty | Cost" logic or just simple string parsing
-            // Assuming lines structure from previous artifacts: "SKU - Name (Qty: X)"
-            // IF the lines are just strings, we try to parse relevant SKU. 
-            // For this demo, let's assume lines are newline separated strings.
-            // We will try to match them to real items in ITEM_KEY for details.
+            document.getElementById("recPoId").textContent = SELECTED_PO.id;
+            document.getElementById("recVendor").textContent = SELECTED_PO.vendor;
 
+            // Mock lines parsing
             const lines = (SELECTED_PO.lines || "").split("\n").filter(Boolean);
-            const inventory = load(ITEM_KEY, []);
+            const tbody = document.getElementById("recTableBody");
 
-            // Map lines to actionable objects
-            const rowHtml = lines.map((line, idx) => {
-                // Heuristic parse: Look for 'Qty: \d+' or just assume entire line is description
-                // Ideally we'd have structured PO items. We'll fallback to a simple row.
-                // Try to extract QTY
+            tbody.innerHTML = lines.map((line, idx) => {
                 let qty = 1;
-                const qtyMatch = line.match(/Qty:\s*(\d+)/i);
-                if (qtyMatch) qty = parseInt(qtyMatch[1]);
+                const m = line.match(/Qty:\s*(\d+)/i);
+                if (m) qty = parseInt(m[1]);
 
                 return `
-             <tr>
-               <td style="padding:12px;">${line}</td>
-               <td style="padding:12px; text-align:center;">${qty}</td>
-               <td style="padding:12px; text-align:center;">
-                  <input class="input qty-input" id="rec_qty_${idx}" type="number" value="${qty}" min="0">
-               </td>
-               <td style="padding:12px; text-align:center; color:var(--success);">Match</td>
-             </tr>
-           `;
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:16px;">
+                            <div style="font-weight:600; color:white;">${line}</div>
+                        </td>
+                        <td style="padding:16px; text-align:center; color:#94a3b8;">${qty}</td>
+                        <td style="padding:16px; text-align:center;">
+                            <input type="number" class="dark-input" value="${qty}" min="0">
+                        </td>
+                        <td style="padding:16px; text-align:center;">
+                            <span class="badge badge-green">Match</span>
+                        </td>
+                    </tr>
+                `;
             }).join("");
-
-            container.innerHTML = `
-         <div style="margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-               <h2 style="margin:0; font-size:18px;">Receiving: ${SELECTED_PO.id}</h2>
-               <p style="margin:0; color:var(--text-muted); font-size:13px;">${SELECTED_PO.vendor} • ${SELECTED_PO.eta}</p>
-            </div>
-            <button class="btn btn-primary" onclick="commitReceipt()">Finalize Receipt</button>
-         </div>
-         
-         <div class="table-container">
-            <table style="width:100%; border-collapse:collapse;">
-               <thead style="background:#f8fafc; font-size:12px; text-transform:uppercase; color:var(--text-muted);">
-                  <tr>
-                     <th style="padding:12px; text-align:left;">Item Description</th>
-                     <th style="padding:12px; width:100px; text-align:center;">Expected</th>
-                     <th style="padding:12px; width:100px; text-align:center;">Received</th>
-                     <th style="padding:12px; width:100px; text-align:center;">Status</th>
-                  </tr>
-               </thead>
-               <tbody style="font-size:14px;">
-                  ${rowHtml}
-               </tbody>
-            </table>
-         </div>
-       `;
         }
 
         window.commitReceipt = function () {
             if (!SELECTED_PO) return;
 
-            const wh = document.getElementById("whSelect") ? document.getElementById("whSelect").value : 'TX';
-            const whName = wh === 'FL' ? 'Sarasota' : 'Texas';
-
-            // In a real app, we would parse the inputs, match SKUs to Inventory, and update counts.
-            // For this visual demo, we will mark the PO as "Completed" and "Simulate" adding stock.
-
-            const pos = load(PO_KEY, []);
-            const target = pos.find(p => p.id === SELECTED_PO.id);
+            const allPos = loadPOs();
+            const target = allPos.find(p => p.id === SELECTED_PO.id);
             if (target) {
                 target.status = "Completed";
-                save(PO_KEY, pos);
+                savePOs(allPos);
 
-                // Simulate Stock Increase on first item as demo
-                const inventory = load(ITEM_KEY, []);
-                if (inventory.length) {
-                    inventory[0].on += 100; // Mock addition
-                    save(ITEM_KEY, inventory);
+                const inv = loadItems();
+                if (inv.length > 0) {
+                    inv[0].on += 50; // Mock addition
+                    saveItems(inv);
                 }
 
-                toast("Success", `Received ${SELECTED_PO.id} into ${whName}.`);
-                setTimeout(() => window.location.href = "inventory.html", 1500);
+                toast("Success", `Received ${SELECTED_PO.id} successfully.`, "success");
+                SELECTED_PO = null;
+                document.getElementById("activeForm").style.display = 'none';
+                document.getElementById("emptyState").style.display = 'block';
+                renderPOList();
             }
         }
 
-        init();
+        renderPOList();
     </script>
 </body>
 
