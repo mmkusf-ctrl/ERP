@@ -9,368 +9,314 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Local styles removed -->
+    <link rel="stylesheet" href="style.css?v=2">
     <style>
-        /* Minimal layout overrides for split view */
         .split-layout {
             display: grid;
-            grid-template-columns: 380px 1fr;
+            grid-template-columns: 350px 1fr;
             gap: 24px;
             align-items: start;
         }
 
-        @media (max-width: 900px) {
+        @media(max-width:900px) {
             .split-layout {
                 grid-template-columns: 1fr;
             }
         }
 
-        .item-list-container {
-            height: calc(100vh - 180px);
-            display: flex;
-            flex-direction: column;
+        /* Dark Mode Theme for this tool */
+        .glass-panel-dark {
+            background: #0f172a;
+            border-radius: 16px;
+            color: #f1f5f9;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .item-list-item {
+        .item-list-row {
             padding: 16px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.2s;
         }
 
-        .item-list-item:hover {
-            background: var(--hover-bg);
+        .item-list-row:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .item-list-item.active {
-            background: var(--primary-fade);
-            border-left: 4px solid var(--primary);
+        .item-list-row.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-left: 3px solid #6366f1;
         }
 
-        .adjust-option {
+        .adjust-btn {
+            flex: 1;
             padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            cursor: pointer;
             text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
             transition: all 0.2s;
-            background: white;
-            color: var(--text-muted);
-            font-size: 13px;
+            color: #94a3b8;
             font-weight: 600;
         }
 
-        .adjust-option:hover {
-            background: #f8fafc;
+        .adjust-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .adjust-option.active.add {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+        .adjust-btn.active.add {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-color: #10b981;
         }
 
-        .adjust-option.active.remove {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
+        .adjust-btn.active.remove {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border-color: #ef4444;
         }
 
-        .adjust-option.active.set {
-            border-color: var(--primary);
-            background: var(--primary-fade);
-            color: var(--primary);
+        .adjust-btn.active.set {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-color: #3b82f6;
+        }
+
+        .dark-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .dark-input:focus {
+            border-color: #8b5cf6;
         }
     </style>
 </head>
 
-<main class="container" style="margin-top:24px;">
-    <a href="inventory.html"
-        style="text-decoration:none; color:var(--text-muted); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:4px; margin-bottom:16px;">
-        <i class="fa-solid fa-arrow-left"></i> Back to Inventory
-    </a>
+<body>
 
-    <div class="split-layout">
-        <!-- Left: Item Search & List -->
-        <div class="card item-list-container">
-            <div style="padding:24px; border-bottom:1px solid var(--border);">
-                <h2 style="margin:0 0 16px 0; font-size:18px; font-weight:600; color:var(--text-main);">Select
-                    Product</h2>
-                <div style="position:relative;">
-                    <input id="itemSearch" class="input" placeholder="Search by SKU or Name..."
-                        oninput="renderItemList()">
-                    <span
-                        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px; opacity:0.5;">🔍</span>
-                </div>
-            </div>
-            <div id="itemList" style="overflow-y:auto; flex:1;">
-                <!-- Populated by JS -->
-                <div style="padding:40px; text-align:center; color:var(--text-muted); font-size:14px;">Loading
-                    Inventory...
-                </div>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="inventory.html">← Back to Inventory</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Console Mode</div>
             </div>
         </div>
+    </header>
 
-        <!-- Right: Adjustment Form -->
-        <div class="card" id="adjustArea"
-            style="min-height:500px; padding:40px; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; overflow:hidden;">
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1400px;">
 
-            <!-- Empty State -->
-            <div id="emptyState" style="text-align:center; opacity:0.6;">
-                <div style="font-size:64px; margin-bottom:16px;">📦</div>
-                <h3 style="font-weight:500; font-size:20px; color:var(--text-muted);">No Item Selected</h3>
-                <p style="color:var(--text-muted); margin-top:8px;">Select a product from the list to adjust stock
-                    levels.</p>
+        <div class="split-layout">
+
+            <!-- Sidebar -->
+            <div class="glass-panel-dark"
+                style="height:calc(100vh - 120px); display:flex; flex-direction:column; overflow:hidden;">
+                <div style="padding:20px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <h2 style="margin:0 0 12px 0; font-size:16px; font-weight:700;">Select Product</h2>
+                    <input id="itemSearch" class="dark-input" placeholder="Search SKU..." oninput="renderList()">
+                </div>
+                <div id="itemList" style="overflow-y:auto; flex:1;">
+                    <!-- List -->
+                </div>
             </div>
 
-            <!-- Active Form (Hidden initially) -->
-            <div id="activeForm" class="animate-in" style="display:none; width:100%; max-width:600px;">
+            <!-- Main Form -->
+            <div class="glass-panel-dark"
+                style="min-height:500px; padding:40px; display:flex; justify-content:center; align-items:center; flex-direction:column;">
 
-                <!-- Item Header -->
-                <div style="text-align:center; margin-bottom:32px;">
-                    <div id="selectedSku"
-                        style="font-size:13px; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">
-                        SKU: ???</div>
-                    <h2 id="selectedName"
-                        style="font-size:28px; font-weight:700; margin:0; line-height:1.2; color:var(--text-main);">
-                        Product Name</h2>
+                <div id="emptyState" style="text-align:center; opacity:0.5;">
+                    <div style="font-size:64px; margin-bottom:16px;">📦</div>
+                    <h3 style="font-size:24px; font-weight:700; margin:0;">No Item Selected</h3>
+                    <p>Select a product to adjust inventory.</p>
                 </div>
 
-                <!-- Current Stats Row -->
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:32px;">
-                    <div class="card" style="text-align:center; background:#f8fafc; border:1px solid var(--border);">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Current
-                            Stock</div>
-                        <div id="displayCurrentStock" style="font-size:24px; font-weight:700; color:var(--text-main);">0
-                        </div>
-                    </div>
-                    <div class="card" style="text-align:center; background:#f8fafc; border:1px solid var(--border);">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Unit Cost
-                        </div>
-                        <div id="displayCost" style="font-size:24px; font-weight:700; color:var(--text-main);">$0.00
-                        </div>
-                    </div>
-                </div>
+                <div id="activeForm" style="display:none; width:100%; max-width:600px;">
 
-                <!-- Action Type -->
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
-                    <div id="btnRemove" class="adjust-option remove" onclick="setAdjType('remove')">
-                        <div style="font-size:18px; margin-bottom:4px;">-</div>
-                        REMOVE
+                    <div style="text-align:center; margin-bottom:32px;">
+                        <div id="selSku"
+                            style="font-size:13px; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SKU:
+                            ---</div>
+                        <h1 id="selName" style="margin:0; font-size:32px; font-weight:800; color:white;">Item Name</h1>
                     </div>
-                    <div id="btnAdd" class="adjust-option add" onclick="setAdjType('add')">
-                        <div style="font-size:18px; margin-bottom:4px;">+</div>
-                        ADD
-                    </div>
-                    <div id="btnSet" class="adjust-option set" onclick="setAdjType('set')">
-                        <div style="font-size:18px; margin-bottom:4px;">=</div>
-                        SET
-                    </div>
-                </div>
 
-                <!-- Input Grid -->
-                <div style="background:#f8fafc; border-radius:12px; padding:20px; border:1px solid var(--border);">
-                    <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:20px; margin-bottom:20px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:32px;">
+                        <div
+                            style="background:rgba(255,255,255,0.05); padding:16px; border-radius:8px; text-align:center;">
+                            <div style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Current Stock</div>
+                            <div id="selStock" style="font-size:24px; font-weight:700;">0</div>
+                        </div>
+                        <div
+                            style="background:rgba(255,255,255,0.05); padding:16px; border-radius:8px; text-align:center;">
+                            <div style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Unit Cost</div>
+                            <div id="selCost" style="font-size:24px; font-weight:700;">$0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display:flex; gap:16px; margin-bottom:24px;">
+                        <div id="btnRemove" class="adjust-btn remove active" onclick="setType('remove')">REMOVE (-)
+                        </div>
+                        <div id="btnAdd" class="adjust-btn add" onclick="setType('add')">ADD (+)</div>
+                        <div id="btnSet" class="adjust-btn set" onclick="setType('set')">SET (=)</div>
+                    </div>
+
+                    <!-- Inputs -->
+                    <div
+                        style="background:rgba(0,0,0,0.2); border-radius:12px; padding:20px; border:1px solid rgba(255,255,255,0.05); margin-bottom:24px;">
+                        <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+                            <div>
+                                <label
+                                    style="display:block; font-size:12px; color:#94a3b8; margin-bottom:8px;">Quantity</label>
+                                <input id="iQty" type="number" class="dark-input" value="1" min="1"
+                                    style="font-size:18px; font-weight:bold; text-align:center;"
+                                    oninput="updateImpact()">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block; font-size:12px; color:#94a3b8; margin-bottom:8px;">Reason</label>
+                                <select id="iReason" class="dark-input">
+                                    <option>Cycle Count</option>
+                                    <option>Damage / Spoilage</option>
+                                    <option>Theft</option>
+                                    <option>Found Stock</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Impact -->
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(255,255,255,0.03); border-radius:8px; margin-bottom:24px;">
                         <div>
-                            <label
-                                style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:8px;">Quantity</label>
-                            <input id="adjQty" type="number" class="input" value="1" min="1"
-                                style="font-size:18px; font-weight:bold; text-align:center;" oninput="updateImpact()">
+                            <div style="font-size:11px; color:#94a3b8;">NEW STOCK LEVEL</div>
+                            <div id="impactStock" style="font-size:20px; font-weight:700;">0</div>
                         </div>
-                        <div>
-                            <label
-                                style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:8px;">Reason
-                                Code</label>
-                            <select id="adjReason" class="input" style="font-size:14px;">
-                                <option value="Damage">Damaged / Broken</option>
-                                <option value="Expired">Expired</option>
-                                <option value="Theft">Theft / Loss</option>
-                                <option value="Found">Found Inventory</option>
-                                <option value="Audit">Audit Correction</option>
-                            </select>
+                        <div style="text-align:right;">
+                            <div style="font-size:11px; color:#94a3b8;">VALUE VARIANCE</div>
+                            <div id="impactVal" style="font-size:18px; font-weight:700;">$0.00</div>
                         </div>
                     </div>
-                    <div>
-                        <label style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:8px;">Notes
-                            (Optional)</label>
-                        <input id="adjNotes" class="input" placeholder="E.g. Found in backroom...">
-                    </div>
-                </div>
 
-                <!-- Impact Section -->
-                <div
-                    style="margin-top:24px; padding:16px; border-radius:8px; background:white; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:2px;">NEW STOCK LEVEL
-                        </div>
-                        <div id="impactStock" style="font-size:20px; font-weight:700; color:var(--text-main);">0
-                        </div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:2px;">VALUE IMPACT</div>
-                        <div id="impactValue" style="font-size:18px; font-weight:700; color:var(--text-muted);">
-                            $0.00</div>
-                    </div>
-                </div>
+                    <button onclick="commitAdj()" class="btn btn-primary"
+                        style="width:100%; height:48px; background:linear-gradient(135deg, #3b82f6, #2563eb); border:none; box-shadow:0 4px 12px rgba(37,99,235,0.3);">Confirm
+                        Adjustment</button>
 
-                <!-- Apply Button -->
-                <button onclick="commitAdjustment()"
-                    style="width:100%; margin-top:24px; padding:16px; background:var(--primary); border:none; border-radius:12px; color:white; font-weight:700; font-size:16px; cursor:pointer; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3); transition:transform 0.1s;">
-                    Confirm Adjustment
-                </button>
+                </div>
 
             </div>
+
         </div>
-    </div>
-</main>
 
-<div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+    </main>
 
-<script src="erp.js"></script>
-<script>
-    const ITEM_KEY = "stark_erp_items_v2";
-    let SELECTED_ITEM = null;
-    let ADJ_TYPE = 'remove';
+    <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
 
-    function load(key, fallback) {
-        try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-        catch { return fallback; }
-    }
-    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-    function money(num) { return "$" + (num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    <script src="erp.js"></script>
+    <script>
+        const ITEM_KEY = "stark_erp_items_v2";
+        let SELECTED = null;
+        let TYPE = 'remove';
 
-    function init() {
-        renderItemList();
-    }
+        function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
+        function saveItems(d) { localStorage.setItem(ITEM_KEY, JSON.stringify(d)); }
 
-    function renderItemList() {
-        const items = load(ITEM_KEY, []);
-        const term = (document.getElementById("itemSearch").value || "").toLowerCase();
+        function renderList() {
+            const items = loadItems();
+            const term = document.getElementById("itemSearch").value.toLowerCase();
+            const list = document.getElementById("itemList");
+            const filtered = items.filter(i => i.sku.toLowerCase().includes(term) || i.name.toLowerCase().includes(term)).slice(0, 50);
 
-        const filtered = items.filter(i =>
-            i.sku.toLowerCase().includes(term) ||
-            i.name.toLowerCase().includes(term)
-        );
-
-        const listEl = document.getElementById("itemList");
-        if (!filtered.length) {
-            listEl.innerHTML = `<div style="padding:40px; text-align:center; color:rgba(255,255,255,0.3); font-style:italic;">No items found matching "${term}"</div>`;
-            return;
-        }
-
-        listEl.innerHTML = filtered.map(i => `
-                <div class="item-list-item ${SELECTED_ITEM && SELECTED_ITEM.sku === i.sku ? 'active' : ''}" onclick="selectItem('${i.sku}')">
+            list.innerHTML = filtered.map(i => `
+                <div class="item-list-row ${SELECTED && SELECTED.sku === i.sku ? 'active' : ''}" onclick="selectItem('${i.sku}')">
                     <div>
-                        <div class="item-sku" style="font-weight:700; color:var(--text-main); font-size:14px;">${i.sku}</div>
-                        <div class="item-name" style="font-size:12px; color:var(--text-muted); margin-top:2px;">${i.name}</div>
+                        <div style="font-weight:600; font-size:14px; color:#f1f5f9;">${i.sku}</div>
+                        <div style="font-size:12px; color:#94a3b8;">${i.name}</div>
                     </div>
-                    <div class="item-qty" style="font-weight:600; font-size:14px; color:${i.on <= i.rop ? 'var(--danger)' : 'var(--text-main)'}">${i.on}</div>
+                    <div style="color:${i.on <= i.rop ? '#fca5a5' : '#e2e8f0'}; font-weight:600;">${i.on}</div>
                 </div>
-            `).join("");
-    }
-
-    window.selectItem = function (sku) {
-        const items = load(ITEM_KEY, []);
-        SELECTED_ITEM = items.find(i => i.sku === sku);
-        renderItemList(); // Update list active state
-        updateFormUI();
-    }
-
-    window.setAdjType = function (type) {
-        ADJ_TYPE = type;
-        updateFormUI();
-    }
-
-    // Updates the form Inputs and Visuals based on State
-    function updateFormUI() {
-        const emptyState = document.getElementById("emptyState");
-        const activeForm = document.getElementById("activeForm");
-
-        if (!SELECTED_ITEM) {
-            emptyState.style.display = "block";
-            activeForm.style.display = "none";
-            return;
+             `).join("");
         }
 
-        emptyState.style.display = "none";
-        activeForm.style.display = "block";
+        window.selectItem = function (sku) {
+            SELECTED = loadItems().find(i => i.sku === sku);
+            renderList();
 
-        // Populate Static Data
-        document.getElementById("selectedSku").textContent = `SKU: ${SELECTED_ITEM.sku}`;
-        document.getElementById("selectedName").textContent = SELECTED_ITEM.name;
-        document.getElementById("displayCurrentStock").textContent = SELECTED_ITEM.on;
-        document.getElementById("displayCost").textContent = money(SELECTED_ITEM.cost);
+            if (!SELECTED) return;
+            document.getElementById("emptyState").style.display = 'none';
+            document.getElementById("activeForm").style.display = 'block';
 
-        // Update Tabs
-        ['remove', 'add', 'set'].forEach(t => {
-            const el = document.getElementById('btn' + t.charAt(0).toUpperCase() + t.slice(1));
-            if (t === ADJ_TYPE) el.classList.add('active');
-            else el.classList.remove('active');
-        });
+            document.getElementById("selSku").textContent = "SKU: " + SELECTED.sku;
+            document.getElementById("selName").textContent = SELECTED.name;
+            document.getElementById("selStock").textContent = SELECTED.on;
+            document.getElementById("selCost").textContent = window.formatMoney(SELECTED.cost || 0);
 
-        // Recalculate Impact
-        updateImpact();
-    }
+            updateImpact();
+        }
 
-    window.updateImpact = function () {
-        if (!SELECTED_ITEM) return;
-        const qty = parseInt(document.getElementById("adjQty").value || 0);
+        window.setType = function (t) {
+            TYPE = t;
+            document.querySelectorAll('.adjust-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById(t === 'remove' ? 'btnRemove' : (t === 'add' ? 'btnAdd' : 'btnSet'));
+            btn.classList.add('active');
+            updateImpact();
+        }
 
-        let newStock = SELECTED_ITEM.on;
-        if (ADJ_TYPE === 'remove') newStock -= qty;
-        if (ADJ_TYPE === 'add') newStock += qty;
-        if (ADJ_TYPE === 'set') newStock = qty;
+        window.updateImpact = function () {
+            if (!SELECTED) return;
+            const qty = parseInt(document.getElementById("iQty").value) || 0;
+            let next = SELECTED.on;
 
-        const diff = newStock - SELECTED_ITEM.on;
-        const valChange = diff * SELECTED_ITEM.cost;
+            if (TYPE === 'remove') next -= qty;
+            if (TYPE === 'add') next += qty;
+            if (TYPE === 'set') next = qty;
 
-        // Render Stock Impact
-        const stockEl = document.getElementById("impactStock");
-        stockEl.textContent = newStock;
-        stockEl.style.color = newStock < SELECTED_ITEM.on ? 'var(--danger)' : (newStock > SELECTED_ITEM.on ? 'var(--success)' : 'var(--text-main)');
+            const diff = next - SELECTED.on;
+            const val = diff * (SELECTED.cost || 0);
 
-        // Render Value Impact
-        const valEl = document.getElementById("impactValue");
-        valEl.textContent = (valChange > 0 ? "+" : "") + money(valChange);
-        valEl.style.color = valChange < 0 ? 'var(--danger)' : (valChange > 0 ? 'var(--success)' : 'var(--text-muted)');
-    }
+            const sEl = document.getElementById("impactStock");
+            sEl.textContent = next;
+            sEl.style.color = (next < SELECTED.on) ? '#f87171' : ((next > SELECTED.on) ? '#4ade80' : '#f1f5f9');
 
-    window.commitAdjustment = function () {
-        if (!SELECTED_ITEM) return;
-        const qty = parseInt(document.getElementById("adjQty").value || 0);
-        const reason = document.getElementById("adjReason").value;
+            const vEl = document.getElementById("impactVal");
+            vEl.textContent = (val > 0 ? "+" : "") + window.formatMoney(val);
+            vEl.style.color = (val < 0) ? '#f87171' : ((val > 0) ? '#4ade80' : '#94a3b8');
+        }
 
-        // Logic
-        const items = load(ITEM_KEY, []);
-        const target = items.find(i => i.sku === SELECTED_ITEM.sku);
-        if (!target) return;
+        window.commitAdj = function () {
+            if (!SELECTED) return;
+            const items = loadItems();
+            const target = items.find(i => i.sku === SELECTED.sku);
+            if (target) {
+                const qty = parseInt(document.getElementById("iQty").value) || 0;
+                if (TYPE === 'remove') target.on -= qty;
+                if (TYPE === 'add') target.on += qty;
+                if (TYPE === 'set') target.on = qty;
 
-        // Calculate new
-        let newStock = target.on;
-        if (ADJ_TYPE === 'remove') newStock -= qty;
-        if (ADJ_TYPE === 'add') newStock += qty;
-        if (ADJ_TYPE === 'set') newStock = qty;
+                saveItems(items);
+                toast("Success", "Inventory Updated");
+                SELECTED = target;
+                selectItem(target.sku);
+            }
+        }
 
-        // Save
-        target.on = newStock;
-        save(ITEM_KEY, items);
-
-        // UI Feedback
-        toast("Success", "Inventory updated successfully.");
-        SELECTED_ITEM = target; // Update local ref
-
-        // Re-render
-        renderItemList();
-        updateFormUI();
-    }
-
-    init();
-</script>
+        renderList();
+    </script>
 </body>
 
 </html>
