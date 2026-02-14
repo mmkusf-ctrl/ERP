@@ -10,7 +10,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4">
+    <style>
+        /* Specific Vendor Styles */
+        .master-row {
+            transition: transform 0.1s, background-color 0.1s;
+        }
+
+        .master-row:hover {
+            transform: scale(1.002);
+            background-color: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            position: relative;
+        }
+
+        .vendor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            color: #be185d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            border: 1px solid #f9a8d4;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,8 +51,8 @@
             </a>
 
             <nav class="nav">
-                <a class="nav-link" href="dashboard.html">Home</a>
-                <a class="nav-link" href="master.html">Master</a>
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="master.html">Items</a>
                 <a class="nav-link" href="crm.html">CRM</a>
                 <a class="nav-link active" href="vendor.html">Vendor</a>
                 <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -37,9 +65,9 @@
             </nav>
 
             <div style="display:flex; align-items:center; gap:12px;">
-                <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-                    Online
-                </div>
+                <button class="btn btn-primary" onclick="openVendorModal()" style="height:36px; padding:0 24px;">
+                    + Add Vendor
+                </button>
                 <button class="hamburger" onclick="openMobileNav()">
                     <span></span><span></span><span></span>
                 </button>
@@ -55,167 +83,234 @@
                 <button onclick="closeMobileNav()"
                     style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
-            <a class="mobile-link" href="dashboard.html">Home</a>
-            <a class="mobile-link" href="master.html">Master</a>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link" href="master.html">Items</a>
             <a class="mobile-link" href="crm.html">CRM</a>
             <a class="mobile-link active" href="vendor.html">Vendor</a>
             <a class="mobile-link" href="purchasing.html">Purchasing</a>
             <a class="mobile-link" href="inventory.html">Inventory</a>
-            <a class="mobile-link" href="accounting.html">Accounting</a>
             <a class="mobile-link" href="orders.html">Orders</a>
             <a class="mobile-link" href="logistics.html">Logistics</a>
             <a class="mobile-link" href="reports.html">Reports</a>
-            <a class="mobile-link" href="events.html">Events</a>
-            <a class="mobile-link" href="trends.html">Trends</a>
         </div>
     </div>
 
-    <main class="container" style="padding-top:40px;">
+    <main class="container soft-ui-wrapper" style="padding-top:40px;">
 
         <!-- Header -->
-        <div class="page-header">
-            <h1 class="page-title">Vendor Management</h1>
+        <div style="margin-bottom:32px;">
+            <h1 class="page-title" style="margin-bottom:8px;">Vendor Management</h1>
             <p class="page-desc">Track supplier performance, diverse procurement sources, and contract status.</p>
-            <div class="gold-line"></div>
+            <div
+                style="height:4px; width:40px; background:linear-gradient(90deg, #6366f1, transparent); border-radius:2px; margin-top:16px;">
+            </div>
         </div>
 
         <!-- Stats -->
-        <!-- Stats -->
-        <section style="display:flex; gap:24px; margin-bottom:32px;">
-            <article class="card-kpi clickable-kpi active" onclick="setFilter('all')" id="kpiAll" style="flex:1">
-                <div class="card-header">
-                    <div class="card-title">Total Vendors</div>
+        <div class="grid grid-4" style="gap:24px; margin-bottom:32px;">
+
+            <!-- Total -->
+            <div class="card-soft clickable-stat-card active" onclick="setFilter('all')" id="kpiAll"
+                style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                        Total Vendors</div>
                     <div class="badge badge-green">Network</div>
                 </div>
-                <div class="stat-value" id="kVendors">0</div>
-                <div class="stat-trend neutral">Global Supply</div>
-            </article>
+                <div class="stat-value" id="kVendors" style="font-size:32px; color:#1e293b;">0</div>
+                <div style="font-size:12px; color:#64748b; margin-top:8px;">Global Supply Chain</div>
+            </div>
 
-            <article class="card-kpi clickable-kpi" onclick="setFilter('top')" id="kpiTop" style="flex:1">
-                <div class="card-header">
-                    <div class="card-title">Top Rated</div>
+            <!-- Top Rated -->
+            <div class="card-soft clickable-stat-card" onclick="setFilter('top')" id="kpiTop" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                        Top Rated</div>
                     <div class="badge badge-green">Elite</div>
                 </div>
-                <div class="stat-value" id="kTop">0</div>
-                <div class="stat-trend up">Performance > 90%</div>
-            </article>
+                <div class="stat-value" id="kTop" style="font-size:32px; color:#059669;">0</div>
+                <div style="font-size:12px; color:#059669; margin-top:8px;">&uarr; Performance > 90%</div>
+            </div>
 
-            <article class="card-kpi clickable-kpi" onclick="setFilter('risk')" id="kpiRisk" style="flex:1">
-                <div class="card-header">
-                    <div class="card-title">At Risk</div>
-                    <div class="badge badge-red">Attention</div>
+            <!-- At Risk -->
+            <div class="card-soft clickable-stat-card" onclick="setFilter('risk')" id="kpiRisk" style="padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+                    <div
+                        style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                        At Risk</div>
+                    <div class="badge badge-red">Alert</div>
                 </div>
-                <div class="stat-value" id="kRisk">0</div>
-                <div class="stat-trend down">Rating < 70%</div>
-            </article>
-
-
-        </section>
-
-        <!-- Main Content -->
-        <div class="grid grid-2" style="align-items:start;">
-            <!-- Directory -->
-            <section class="card" style="grid-column: span 2; @media(min-width: 1000px){ grid-column: auto; }">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <h2 style="font-size:18px; margin:0;" id="dirTitle">Vendor Directory</h2>
-                        <span class="badge" id="listBadge"
-                            style="display:none; background:var(--primary); color:white;">Filtered</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="window.location.href='vendor_add.html'"
-                        style="height:32px; font-size:13px; padding:0 16px;">
-                        + Add Vendor
-                    </button>
+                <div class="stat-value" id="kRisk" style="font-size:32px; color:#dc2626;">0</div>
+                <div style="font-size:12px; color:#dc2626; margin-top:8px;">&darr; Rating < 70%</div>
                 </div>
 
-                <input id="search" class="input" placeholder="Search vendors..." oninput="render()"
-                    style="margin-bottom:16px;" />
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Vendor</th>
-                                <th>Category</th>
-                                <th>Rating</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vBody"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Details -->
-            <aside
-                style="display:grid; gap:24px; align-content:start; display:none; @media(min-width: 1000px){ display:grid; }">
-                <div class="card">
-                    <h2 style="font-size:16px; margin:0 0 16px;">Vendor Profile</h2>
-
-                    <div id="detailPlaceholder"
-                        style="padding:40px 0; text-align:center; color:var(--text-muted); font-size:13px;">
-                        Select a vendor to view details.
-                    </div>
-
-                    <div id="detailContent" style="display:none;">
+                <!-- Active Spend -->
+                <div class="card-soft clickable-stat-card" onclick="window.location.href='purchasing.html'"
+                    style="padding:24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
                         <div
-                            style="background:var(--bg-body); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:16px;">
-                            <strong style="display:block; font-size:18px; margin-bottom:4px;" id="dName">Name</strong>
-                            <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" id="dCat">Category
-                            </div>
+                            style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                            Active Spend</div>
+                        <div class="badge badge-yellow">YTD</div>
+                    </div>
+                    <div class="stat-value" id="kSpend" style="font-size:24px; color:#d97706;">$0.00</div>
+                    <div style="font-size:12px; color:#64748b; margin-top:8px;">All Contracts</div>
+                </div>
+            </div>
 
-                            <div style="display:grid; gap:8px; font-size:13px;">
-                                <div style="display:flex; gap:8px;">
-                                    <span style="color:var(--text-muted); width:20px;">📍</span> <span
-                                        id="dLoc">Location</span>
-                                </div>
-                                <div style="display:flex; gap:8px;">
-                                    <span style="color:var(--text-muted); width:20px;">👤</span> <span
-                                        id="dContact">Contact</span>
-                                </div>
-                                <div style="display:flex; gap:8px;">
-                                    <span style="color:var(--text-muted); width:20px;">📧</span> <span
-                                        id="dEmail">Email</span>
-                                </div>
-                            </div>
+            <!-- Main Content -->
+            <div class="grid grid-2" style="align-items:start;">
+                <!-- Directory -->
+                <div class="card-soft"
+                    style="padding:0; overflow:hidden; grid-column:span 2; @media(min-width: 1000px){ grid-column: auto; }">
+                    <div
+                        style="padding:24px; border-bottom:1px solid #f1f5f9; display:flex; flex-direction:column; gap:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size:14px; font-weight:700; color:#64748b; margin:0; text-transform:uppercase; letter-spacing:0.5px;"
+                                id="dirTitle">Vendor Directory</h2>
+                        </div>
+                        <input id="search" class="input" placeholder="Search vendors by name, location..."
+                            oninput="render()"
+                            style="background:#f8fafc; border:1px solid #e2e8f0; height:44px; width:100%;">
+                    </div>
+
+                    <div class="table-container" style="box-shadow:none; border:none; border-radius:0;">
+                        <table>
+                            <thead>
+                                <tr
+                                    style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
+                                    <th style="padding:16px 24px; border-bottom:1px solid #e2e8f0;">Vendor</th>
+                                    <th style="padding:16px; border-bottom:1px solid #e2e8f0;">Category</th>
+                                    <th style="padding:16px; border-bottom:1px solid #e2e8f0;">Rating</th>
+                                    <th style="padding:16px; border-bottom:1px solid #e2e8f0;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Details Sidebar -->
+                <aside
+                    style="display:grid; gap:24px; align-content:start; display:none; @media(min-width: 1000px){ display:grid; }">
+                    <div class="card-soft" style="padding:24px;">
+                        <h3
+                            style="margin:0 0 16px; font-size:14px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                            Vendor Profile</h3>
+
+                        <div id="detailPlaceholder"
+                            style="padding:40px 0; text-align:center; color:#94a3b8; font-size:13px;">
+                            Select a vendor to view details.
                         </div>
 
-                        <div
-                            style="background:#f8fafc; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:12px;">
+                        <div id="detailContent" style="display:none;">
+                            <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                                <div id="dAvatar" class="vendor-avatar">V</div>
+                                <div>
+                                    <strong style="display:block; font-size:18px; color:#1e293b;"
+                                        id="dName">Name</strong>
+                                    <div style="font-size:13px; color:#64748b;" id="dCat">Category</div>
+                                </div>
+                            </div>
+
                             <div
-                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <span style="font-size:13px; font-weight:600;">Performance Score</span>
-                                <span class="badge" id="dScoreBadge">0%</span>
+                                style="display:grid; gap:12px; font-size:13px; margin-bottom:24px; background:#f8fafc; padding:16px; border-radius:12px;">
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <span style="color:#94a3b8; width:20px;">📍</span> <span id="dLoc"
+                                        style="color:#475569;">Location</span>
+                                </div>
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <span style="color:#94a3b8; width:20px;">👤</span> <span id="dContact"
+                                        style="font-weight:500;">Contact</span>
+                                </div>
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <span style="color:#94a3b8; width:20px;">📧</span> <a id="dEmail" href="#"
+                                        style="color:#6366f1; text-decoration:none;">Email</a>
+                                </div>
                             </div>
-                            <div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
-                                <div id="dScoreBar"
-                                    style="height:100%; width:0%; background:var(--primary); transition:width 0.5s;">
+
+                            <div style="margin-bottom:24px;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span
+                                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">Performance
+                                        Score</span>
+                                    <span class="badge" id="dScoreBadge">0%</span>
+                                </div>
+                                <div style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
+                                    <div id="dScoreBar"
+                                        style="height:100%; width:0%; background:#10b981; transition:width 0.5s;"></div>
+                                </div>
+                            </div>
+
+                            <div style="padding-top:16px; border-top:1px solid #f1f5f9;">
+                                <strong
+                                    style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:6px;">Payment
+                                    Terms</strong>
+                                <div id="dTerms" style="font-size:14px; color:#1e293b; font-family:monospace;">Net 30
                                 </div>
                             </div>
                         </div>
-
-                        <div
-                            style="background:#f8fafc; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
-                            <strong style="display:block; font-size:13px; margin-bottom:6px;">Payment Terms</strong>
-                            <div id="dTerms" style="font-size:13px; color:var(--text-muted);">Net 30</div>
-                        </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-header"><span class="card-title">Setup</span></div>
-                    <button class="btn btn-secondary" style="width:100%;" onclick="seedVendors()">Generate Demo
-                        Vendors</button>
-                </div>
-            </aside>
-        </div>
+                    <div class="card-soft" style="padding:20px;">
+                        <h3
+                            style="margin:0 0 12px; font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">
+                            Actions</h3>
+                        <button class="btn btn-secondary" style="width:100%; height:40px; font-size:13px;"
+                            onclick="seedVendors()">Reload Demo Vendors</button>
+                    </div>
+                </aside>
+            </div>
 
-        <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
-            &copy; 2026 Stark Premium ERP.
-        </div>
+            <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
+                &copy; 2026 Stark Premium ERP.
+            </div>
     </main>
 
-    <!-- Add Vendor Modal --></div>
+    <!-- Add Vendor Modal -->
+    <div class="mobile-nav" id="vendorModal"
+        style="z-index:900; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);">
+        <div class="card-soft"
+            style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0; font-size:18px;">Add Vendor</h3>
+                <button onclick="closeVendorModal()"
+                    style="border:none; background:transparent; font-size:24px; cursor:pointer; color:#94a3b8;">&times;</button>
+            </div>
+
+            <div style="display:grid; gap:16px;">
+                <input id="vName" class="input" placeholder="Vendor Name"
+                    style="background:#f8fafc; border:1px solid #e2e8f0;" />
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <input id="vCat" class="input" placeholder="Category"
+                        style="background:#f8fafc; border:1px solid #e2e8f0;" />
+                    <input id="vLoc" class="input" placeholder="Location"
+                        style="background:#f8fafc; border:1px solid #e2e8f0;" />
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <input id="vContact" class="input" placeholder="Contact Person"
+                        style="background:#f8fafc; border:1px solid #e2e8f0;" />
+                    <input id="vEmail" class="input" placeholder="Email"
+                        style="background:#f8fafc; border:1px solid #e2e8f0;" />
+                </div>
+
+                <select id="vTerms" class="input" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                    <option value="Net 30">Net 30</option>
+                    <option value="Net 60">Net 60</option>
+                    <option value="Immediate">Immediate</option>
+                </select>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button class="btn btn-secondary" onclick="closeVendorModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="addVendor()">Onboard Vendor</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
@@ -237,7 +332,7 @@
 
         function addVendor() {
             const name = document.getElementById("vName").value.trim();
-            if (!name) return toast("Error", "Name required.");
+            if (!name) return toast("Error", "Name required.", "error");
 
             const v = {
                 id: "V-" + Date.now(),
@@ -262,7 +357,7 @@
 
         function setFilter(f) {
             CURRENT_FILTER = f;
-            document.querySelectorAll(".clickable-kpi").forEach(x => x.classList.remove("active"));
+            document.querySelectorAll(".clickable-stat-card").forEach(x => x.classList.remove("active"));
             if (f === 'all') document.getElementById("kpiAll").classList.add("active");
             if (f === 'top') document.getElementById("kpiTop").classList.add("active");
             if (f === 'risk') document.getElementById("kpiRisk").classList.add("active");
@@ -270,40 +365,7 @@
         }
 
         function render() {
-            // Recalc Metrics
-            const pos = JSON.parse(localStorage.getItem("stark_erp_pos_v1") || "[]");
-            let list = load(KEY_VEND, []);
-            let changed = false;
-
-            list.forEach(v => {
-                const vPos = pos.filter(p => (p.vendor || "").toLowerCase() === (v.name || "").toLowerCase());
-                const openPos = vPos.filter(p => p.status !== 'Completed' && p.status !== 'Cancelled');
-
-                // Spend Calc
-                const spend = vPos.reduce((acc, p) => acc + (p.total || 0), 0); // Need to sum lines? POs usually don't have total stored on root in my seed?
-                // master.html seed didn't put total on PO. 
-                // Let's ignore spend recalc for now or do rough count.
-
-                let newRating = 100;
-
-                if (openPos.length > 0) {
-                    const today = new Date().toISOString().split('T')[0];
-                    const late = openPos.some(p => p.eta < today);
-
-                    if (late) {
-                        newRating = 60; // At Risk (Passed End Date)
-                    } else {
-                        newRating = 98; // Top Rated (Delivered by End Date logic / On Track)
-                    }
-                }
-
-                if (v.rating !== newRating) {
-                    v.rating = newRating;
-                    changed = true;
-                }
-            });
-
-            if (changed) save(KEY_VEND, list);
+            const list = load(KEY_VEND, []);
             const search = document.getElementById("search").value.toLowerCase();
 
             // Calcs
@@ -331,7 +393,7 @@
             const mapTitle = { 'all': "Vendor Directory", 'top': "Top Performing Vendors", 'risk': "At-Risk Vendors" };
             document.getElementById("dirTitle").textContent = mapTitle[CURRENT_FILTER];
 
-            if (!shown.length) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted);">No vendors found.</td></tr>`;
+            if (!shown.length) return tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">No vendors found.</td></tr>`;
 
             shown.forEach(v => {
                 let badge = "badge-green";
@@ -339,22 +401,25 @@
                 if (v.rating < 70) badge = "badge-red";
 
                 const tr = document.createElement("tr");
+                tr.className = "master-row";
                 tr.style.cursor = "pointer";
+                tr.style.borderBottom = "1px solid #f1f5f9";
+
                 tr.onclick = () => showDetail(v);
                 tr.innerHTML = `
-                <td>
-                    <div style="font-weight:600; color:var(--text-main);">${v.name}</div>
-                    <div style="font-size:12px; color:var(--text-muted);">${v.contact || ""}</div>
-                </td>
-                <td>${v.cat}</td>
-                <td>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <div style="width:30px; height:4px; background:#e2e8f0; border-radius:2px;"><div style="width:${v.rating}%; background:${v.rating >= 90 ? 'var(--success)' : (v.rating < 70 ? 'var(--danger)' : 'var(--warning)')}; height:100%; border-radius:2px;"></div></div>
-                        <span style="font-size:11px; font-weight:600;">${v.rating}%</span>
-                    </div>
-                </td>
-                <td><span class="badge ${v.rating < 70 ? 'badge-red' : 'badge-green'}">${v.rating < 70 ? 'Review' : 'Active'}</span></td>
-            `;
+        <td style="padding:16px 24px;">
+            <div style="font-weight:600; color:#1e293b; font-size:14px;">${escapeHtml(v.name)}</div>
+            <div style="font-size:12px; color:#64748b;">${escapeHtml(v.contact || "")}</div>
+        </td>
+        <td style="padding:16px; color:#475569;">${escapeHtml(v.cat)}</td>
+        <td style="padding:16px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:36px; height:4px; background:#e2e8f0; border-radius:2px;"><div style="width:${v.rating}%; background:${v.rating >= 90 ? '#10b981' : (v.rating < 70 ? '#ef4444' : '#f59e0b')}; height:100%; border-radius:2px;"></div></div>
+                <span style="font-size:11px; font-weight:700; color:#64748b;">${v.rating}%</span>
+            </div>
+        </td>
+        <td style="padding:16px;"><span class="badge ${v.rating < 70 ? 'badge-red' : 'badge-green'}">${v.rating < 70 ? 'Review' : 'Active'}</span></td>
+        `;
                 tbody.appendChild(tr);
             });
         }
@@ -365,33 +430,36 @@
 
             document.getElementById("dName").textContent = v.name;
             document.getElementById("dCat").textContent = v.cat;
+            // Use initials
+            document.getElementById("dAvatar").textContent = (v.name || "V").substring(0, 2).toUpperCase();
+
             document.getElementById("dLoc").textContent = v.loc;
             document.getElementById("dContact").textContent = v.contact || "—";
             document.getElementById("dEmail").textContent = v.email || "—";
+            document.getElementById("dEmail").href = v.email ? "mailto:" + v.email : "#";
             document.getElementById("dTerms").textContent = v.terms || "Standard";
 
             document.getElementById("dScoreBadge").textContent = v.rating + "%";
             document.getElementById("dScoreBar").style.width = v.rating + "%";
 
-            let color = "var(--success)";
-            if (v.rating < 90) color = "var(--warning)";
-            if (v.rating < 70) color = "var(--danger)";
+            let color = "#10b981";
+            if (v.rating < 90) color = "#f59e0b";
+            if (v.rating < 70) color = "#ef4444";
             document.getElementById("dScoreBar").style.background = color;
-            document.getElementById("dScoreBadge").style.background = color.replace(")", ", 0.12)").replace("rgb", "rgba");
-            document.getElementById("dScoreBadge").style.color = color;
+
+            // Update badge style
+            const badge = document.getElementById("dScoreBadge");
+            badge.style.background = color + "20"; // 20 hex = approx 12% opacity
+            badge.style.color = color;
         }
 
         function seedVendors() {
             const demo = [
-                { id: "V-KS", name: "Kendra Scott Wholesale", cat: "Jewelry", loc: "Austin, TX", contact: "Kendra S", email: "orders@kendrascott.com", terms: "Net 30", rating: 100, spend: 12000, status: "Active" },
-                { id: "V-GU", name: "Gucci Supply", cat: "Accessories", loc: "Florence, IT", contact: "Marco B", email: "supply@gucci.com", terms: "Net 60", rating: 100, spend: 45000, status: "Active" },
-                { id: "V-GH", name: "Global Home", cat: "Home Goods", loc: "High Point, NC", contact: "Sarah L", email: "sales@globalhome.com", terms: "Net 45", rating: 100, spend: 8200, status: "Active" },
-                { id: "V-PR", name: "Prada Group", cat: "Accessories", loc: "Milan, IT", contact: "Alessia R", email: "b2b@prada.com", terms: "Net 30", rating: 100, spend: 21000, status: "Active" },
-                { id: "V-CU", name: "Cuisinart", cat: "Home Goods", loc: "Stamford, CT", contact: "Bill H", email: "orders@cuisinart.com", terms: "Net 30", rating: 100, spend: 5600, status: "Active" },
-                { id: "V-BU", name: "Burberry Ltd", cat: "Apparel", loc: "London, UK", contact: "James T", email: "wholesale@burberry.com", terms: "Net 60", rating: 100, spend: 0, status: "Active" },
-                { id: "V-YS", name: "Yves Saint Laurent", cat: "Accessories", loc: "Paris, FR", contact: "Pierre D", email: "orders@ysl.com", terms: "Net 45", rating: 100, spend: 0, status: "Active" },
-                { id: "V-NF", name: "Nest Fragrances", cat: "Home Goods", loc: "New York, NY", contact: "Laura M", email: "sales@nest.com", terms: "Net 30", rating: 100, spend: 0, status: "Active" },
-                { id: "V-LN", name: "Lux & Nyx", cat: "Accessories", loc: "St Louis, MO", contact: "Lisa H", email: "hello@luxnyx.com", terms: "Immediate", rating: 100, spend: 0, status: "Active" }
+                { id: "V1", name: "PackPro Industries", cat: "Packaging", loc: "Dallas, TX", contact: "Mike R", email: "mike@packpro.com", terms: "Net 60", rating: 95, spend: 12000 },
+                { id: "V2", name: "Stark Manufacturing", cat: "Raw Materials", loc: "Germany", contact: "Hans G", email: "hans@starkmfg.de", terms: "Net 30", rating: 88, spend: 45000 },
+                { id: "V3", name: "Global Logistics", cat: "Logistics", loc: "Singapore", contact: "Wei L", email: "wei@global.sg", terms: "Immediate", rating: 65, spend: 8200 },
+                { id: "V4", name: "Apex Steel", cat: "Raw Materials", loc: "Cleveland, OH", contact: "Sarah J", email: "sarah@apex.com", terms: "Net 45", rating: 92, spend: 21000 },
+                { id: "V5", name: "TechParts Inc", cat: "Electronics", loc: "San Jose, CA", contact: "Dave K", email: "dave@techparts.com", terms: "Net 30", rating: 78, spend: 5600 }
             ];
             save(KEY_VEND, demo);
             toast("Data Loaded", "Demo Vendors generated.");
