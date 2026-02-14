@@ -5,160 +5,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice | Stark ERP</title>
-    <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="style.css?v=4" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        /* Invoice Specific Overrides - Purple Theme */
+        /* Invoice Specific Overrides */
         body {
-            background-color: #f3f4f6;
-            color: #333;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: #f8fafc;
         }
 
         .top-action-bar {
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .order-title-lg {
-            font-size: 20px;
-            font-weight: 500;
-            color: #111;
-        }
-
-        .action-icons {
-            display: flex;
-            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
         .icon-btn {
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e2e8f0;
             background: white;
-            color: #6b7280;
+            color: #64748b;
             width: 36px;
             height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .icon-btn:hover {
-            background: #f9fafb;
-            color: #111;
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
         }
 
         .doc-canvas {
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 800px;
+            margin: 40px auto;
             background: white;
-            padding: 40px;
-            min-height: 800px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            min-height: 900px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+            border-radius: 4px;
+            /* Paper like */
+            position: relative;
         }
 
         .doc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             margin-bottom: 60px;
+            gap: 32px;
         }
 
         .headline {
-            font-size: 24px;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 8px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
         }
 
         .sub-headline {
             font-size: 14px;
-            color: #111;
+            color: #64748b;
             font-weight: 500;
             margin-bottom: 16px;
         }
 
-        .status-badge-open {
-            background: #eef2ff;
-            color: #4f46e5;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 2px;
-            text-transform: uppercase;
-        }
-
-        .status-badge-paid {
-            background: #dcfce7;
-            color: #166534;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 2px;
-            text-transform: uppercase;
-        }
-
         .section-label {
             font-size: 11px;
-            color: #6b7280;
-            font-weight: 600;
+            color: #94a3b8;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
 
         .addr-text {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.6;
-            color: #111;
-        }
-
-        .link-blue {
-            color: #2563eb;
-            text-decoration: none;
-            cursor: pointer;
+            color: #334155;
         }
 
         /* Table */
-        .zoho-table {
+        .doc-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 40px;
         }
 
-        .zoho-table th {
+        .doc-table th {
             font-size: 11px;
-            font-weight: 600;
-            color: #4b5563;
+            font-weight: 700;
+            color: #64748b;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             text-align: left;
-            padding: 12px 16px;
-            background: #f9fafb;
-            border-top: 1px solid #e5e7eb;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 0;
+            border-bottom: 2px solid #f1f5f9;
         }
 
-        .zoho-table td {
+        .doc-table td {
             font-size: 13px;
-            color: #111;
-            padding: 16px;
-            border-bottom: 1px solid #f3f4f6;
-            vertical-align: middle;
+            color: #334155;
+            padding: 16px 0;
+            border-bottom: 1px solid #f8fafc;
+            vertical-align: top;
         }
 
         /* Totals */
-        .totals-area {
-            display: flex;
-            justify-content: flex-end;
-        }
-
         .totals-table {
             width: 300px;
             font-size: 13px;
@@ -170,9 +137,10 @@
         }
 
         .totals-table tr.grand-total td {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            padding-top: 16px;
+            padding-top: 24px;
+            color: #0f172a;
         }
 
         @media print {
@@ -201,25 +169,27 @@
     <div class="top-action-bar">
         <div style="display:flex; align-items:center; gap:16px;">
             <button onclick="window.history.back()"
-                style="background:none; border:none; color:#6b7280; cursor:pointer; display:flex; align-items:center;">
+                style="background:none; border:none; color:#64748b; cursor:pointer; display:flex; align-items:center; transition:color 0.2s;">
                 <span class="material-icons-round">arrow_back</span>
             </button>
-            <div class="order-title-lg" id="topId">INV-00000</div>
+            <div style="font-size:18px; font-weight:700; color:#1e293b;" id="topId">INV-00000</div>
         </div>
         <div class="action-icons">
             <button class="icon-btn" title="PDF" onclick="window.print()"><span class="material-icons-round"
-                    style="font-size:18px;">picture_as_pdf</span></button>
+                    style="font-size:20px;">picture_as_pdf</span></button>
             <button class="icon-btn" title="Print" onclick="window.print()"><span class="material-icons-round"
-                    style="font-size:18px;">print</span></button>
+                    style="font-size:20px;">print</span></button>
             <button class="icon-btn" title="Email"><span class="material-icons-round"
-                    style="font-size:18px;">email</span></button>
+                    style="font-size:20px;">email</span></button>
         </div>
     </div>
 
-    <div style="padding:20px; text-align:center; display:none;" id="paidBanner">
+    <!-- Paid Banner -->
+    <div style="padding:24px; text-align:center; display:none;" id="paidBanner">
         <div
-            style="background:#dcfce7; color:#166534; display:inline-block; padding:8px 16px; border-radius:20px; font-weight:600; font-size:13px;">
-            ✓ This invoice has been paid
+            style="background:#dcfce7; color:#166534; display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:30px; font-weight:600; font-size:13px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+            <span class="material-icons-round" style="font-size:16px;">check_circle</span>
+            This invoice has been paid
         </div>
     </div>
 
@@ -228,29 +198,32 @@
         <div class="doc-grid">
             <!-- Left: Title & Date -->
             <div>
+                <img src="images/stark-logo.png" alt="Stark" style="height:32px; margin-bottom:24px; opacity:0.8;">
                 <div class="headline">INVOICE</div>
                 <div class="sub-headline">
-                    Invoice# <span id="docId">INV-00000</span>
+                    # <span id="docId">INV-00000</span>
                 </div>
                 <!-- Status Badge -->
-                <span id="docStatusBadge" class="status-badge-open">Open</span>
+                <span id="docStatusBadge"></span>
 
-                <div style="margin-top:60px;">
+                <div style="margin-top:48px;">
                     <div class="section-label">INVOICE DATE</div>
                     <div class="addr-text" style="font-weight:600;" id="docDate">24/05/2017</div>
 
-                    <div class="section-label" style="margin-top:20px;">DUE DATE</div>
-                    <div class="addr-text" style="font-weight:600;" id="dueDate">30/05/2017</div>
+                    <div style="margin-top:24px;">
+                        <div class="section-label">DUE DATE</div>
+                        <div class="addr-text" style="font-weight:600;" id="dueDate">30/05/2017</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Right: Addresses -->
-            <div>
+            <div style="text-align:right;">
                 <div style="margin-bottom:32px;">
                     <div class="section-label">BILL TO</div>
                     <div class="addr-text">
-                        <strong id="billName">Aaron Clark</strong><br>
-                        <div id="billAddr">
+                        <strong style="color:#1e293b;" id="billName">Aaron Clark</strong><br>
+                        <div id="billAddr" style="color:#64748b;">
                             701 N Santa Anita Ave<br>
                             Arcadia,<br>
                             United States - 91006-2725
@@ -261,40 +234,44 @@
         </div>
 
         <!-- Table -->
-        <table class="zoho-table">
+        <table class="doc-table">
             <thead>
                 <tr>
-                    <th style="width:45%;">Item</th>
+                    <th style="width:45%;">Item / Description</th>
                     <th style="text-align:right;">Quantity</th>
                     <th style="text-align:right;">Rate</th>
                     <th style="text-align:right;">Amount</th>
                 </tr>
             </thead>
-            <tbody id="lineBody">
-                <!-- Rows injected here -->
-            </tbody>
+            <tbody id="lineBody"></tbody>
         </table>
 
         <!-- Footer -->
         <div class="totals-area">
             <table class="totals-table">
                 <tr>
-                    <td style="color:#6b7280;">Sub Total</td>
-                    <td id="sSubtotal" style="font-weight:600;">$0.00</td>
+                    <td style="color:#64748b;">Sub Total</td>
+                    <td id="sSubtotal" style="font-weight:600; color:#334155;">$0.00</td>
                 </tr>
                 <tr>
-                    <td style="color:#6b7280;">Sales Tax (8.8%)</td>
-                    <td id="sTax" style="color:#6b7280;">$0.00</td>
+                    <td style="color:#64748b;">Sales Tax (8.8%)</td>
+                    <td id="sTax" style="color:#64748b;">$0.00</td>
                 </tr>
                 <tr class="grand-total">
                     <td>Total</td>
                     <td id="sTotal">$0.00</td>
                 </tr>
                 <tr>
-                    <td style="color:#6b7280; padding-top:4px;">Balance Due</td>
-                    <td id="sBalance" style="color:#111; font-weight:600; padding-top:4px;">$0.00</td>
+                    <td style="color:#64748b; padding-top:12px;">Balance Due</td>
+                    <td id="sBalance" style="color:#1e293b; font-weight:700; padding-top:12px; font-size:14px;">$0.00
+                    </td>
                 </tr>
             </table>
+        </div>
+
+        <div
+            style="margin-top:60px; border-top:1px solid #f1f5f9; padding-top:24px; text-align:center; color:#94a3b8; font-size:12px;">
+            Payment is due within 14 days. Thank you for your business.
         </div>
 
     </div>
@@ -321,14 +298,14 @@
         function init() {
             if (!invId) {
                 alert("No Invoice ID specified");
-                window.location.href = "orders.html"; // Should go to invoice list technically
+                window.location.href = "orders.html";
                 return;
             }
             const invoices = JSON.parse(localStorage.getItem(INV_KEY) || "[]");
             const inv = invoices.find(i => i.id === invId);
 
             if (!inv) {
-                document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Invoice Not Found</h2>";
+                document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px; color:#64748b;'>Invoice Not Found</h2>";
                 return;
             }
 
@@ -345,13 +322,11 @@
             // Status
             const badge = document.getElementById("docStatusBadge");
             if (inv.status === "Paid") {
-                badge.className = "status-badge-paid";
-                badge.textContent = "Paid";
+                badge.innerHTML = `<span class="badge" style="background:#dcfce7; color:#166534;">Paid</span>`;
                 document.getElementById("paidBanner").style.display = "block";
                 document.getElementById("sBalance").textContent = "$0.00";
             } else {
-                badge.className = "status-badge-open";
-                badge.textContent = "Open";
+                badge.innerHTML = `<span class="badge" style="background:#eef2ff; color:#6366f1;">Open</span>`;
                 document.getElementById("sBalance").textContent = window.formatMoney(inv.total);
             }
 
@@ -364,13 +339,13 @@
                 const amount = l.qty * l.price;
                 return `
                     <tr>
-                        <td>
-                            <div style="font-weight:600; color:#111;">${l.name || "Item"}</div>
-                            <div style="font-size:12px; color:#6b7280;">${l.sku}</div>
+                        <td style="padding-top:16px;">
+                            <div style="font-weight:600; color:#1e293b;">${l.name || "Item"}</div>
+                            <div style="font-size:12px; color:#94a3b8;">${l.sku}</div>
                         </td>
                         <td style="text-align:right;">${l.qty}</td>
                         <td style="text-align:right;">${window.formatMoney(l.price)}</td>
-                        <td style="text-align:right; font-weight:600;">${window.formatMoney(amount)}</td>
+                        <td style="text-align:right; font-weight:600; color:#1e293b;">${window.formatMoney(amount)}</td>
                     </tr>
                 `;
             }).join("");
@@ -381,14 +356,8 @@
             document.getElementById("sTotal").textContent = window.formatMoney(inv.total);
         }
 
-        window.formatDate = (d) => {
-            if (!d) return "-";
-            return new Date(d).toLocaleDateString("en-GB");
-        };
-
-        window.formatMoney = window.formatMoney || function (n) {
-            return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-        };
+        window.formatDate = (d) => { if (!d) return "-"; return new Date(d).toLocaleDateString("en-GB"); };
+        window.formatMoney = (n) => { return Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); };
 
         window.addEventListener("DOMContentLoaded", init);
     </script>
