@@ -9,98 +9,62 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=8">
-    <style>
-        .form-section {
-            margin-bottom: 24px;
-        }
+    <link rel="stylesheet" href="style.css?v=9">
 
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
-        .input-group-text {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        /* Autocomplete Styles */
-        .autocomplete-wrapper {
-            position: relative;
-        }
-
-        .autocomplete-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            max-height: 240px;
-            overflow-y: auto;
-            z-index: 50;
-            display: none;
-            margin-top: 4px;
-        }
-
-        .autocomplete-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .autocomplete-item:hover {
-            background: #f8fafc;
-        }
-
-        .autocomplete-item strong {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .autocomplete-item span {
-            color: #64748b;
-            font-size: 13px;
-        }
+    font-size: 13px;
+    }
     </style>
 </head>
 
 <body>
 
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link" href="master.html">Items</a>
+                <a class="nav-link active" href="orders.html">Orders</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+                <a class="nav-link" href="crm.html">CRM</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Online</div>
+                <button class="hamburger"
+                    onclick="document.getElementById('mobileNav').classList.add('open')"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </header>
 
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="document.getElementById('mobileNav').classList.remove('open')"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link active" href="orders.html">Orders</a>
+        </div>
+    </div>
 
     <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1200px;">
 
         <!-- Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-            <div>
-                <button onclick="window.history.back()"
-                    style="background:transparent; border:none; color:#64748b; font-weight:600; cursor:pointer; margin-bottom:8px;">←
-                    Back to Orders</button>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
+            <a href="orders.html" class="text-secondary"
+                style="font-size:13px; font-weight:600; text-decoration:none;">&larr; Back to Order List</a>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                 <h1 class="page-title" style="margin:0;">New Sales Order</h1>
-            </div>
-            <div style="display:flex; gap:12px;">
-                <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
-                <button class="btn btn-primary" onclick="submitOrder()"
-                    style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3); padding:0 32px;">Submit
-                    Order</button>
+                <div style="display:flex; gap:12px;">
+                    <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                    <button class="btn btn-primary" onclick="submitOrder()">Submit Order</button>
+                </div>
             </div>
         </div>
 
@@ -111,14 +75,16 @@
 
                 <!-- Order Basics -->
                 <div class="card-soft" style="padding:24px;">
-                    <div class="section-title">Customer Details</div>
+                    <h3
+                        style="font-size:16px; margin:0 0 20px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                        Customer Details</h3>
                     <div class="grid-2" style="gap:24px;">
                         <div>
-                            <label class="input-group-text">Customer Name</label>
+                            <label class="form-label">Customer Name</label>
                             <input id="iCust" class="input" placeholder="e.g. Acme Corp">
                         </div>
                         <div>
-                            <label class="input-group-text">Customer PO #</label>
+                            <label class="form-label">Customer PO #</label>
                             <input id="iPO" class="input" placeholder="e.g. PO-998877">
                         </div>
                     </div>
@@ -126,7 +92,7 @@
 
                 <!-- Line Items -->
                 <div class="card-soft" style="padding:24px; min-height:400px;">
-                    <div class="section-title">Line Items</div>
+                    <h3 style="font-size:16px; margin:0 0 20px; color:#1e293b;">Line Items</h3>
 
                     <!-- Search Bar area -->
                     <div
@@ -135,7 +101,7 @@
                             style="gap:16px; grid-template-columns: 3fr 1fr 2fr 100px; align-items:end;">
 
                             <div class="autocomplete-wrapper">
-                                <label class="input-group-text">SKU Lookup</label>
+                                <label class="form-label">SKU Lookup</label>
                                 <input id="iSkuSearch" class="input" placeholder="Search by SKU or Name..."
                                     oninput="filterSkus(this.value)" onfocus="filterSkus(this.value)"
                                     style="border-color:#cbd5e1;">
@@ -143,18 +109,18 @@
                             </div>
 
                             <div>
-                                <label class="input-group-text">Qty</label>
+                                <label class="form-label">Qty</label>
                                 <input id="iQty" type="number" class="input" value="1" min="1"
                                     style="text-align:center;">
                             </div>
 
                             <div>
-                                <label class="input-group-text">Notes / Customization</label>
+                                <label class="form-label">Notes / Customization</label>
                                 <input id="iLineNote" class="input" placeholder="Optional notes...">
                             </div>
 
                             <button class="btn btn-primary" onclick="addLine()"
-                                style="height:44px; justify-content:center;">Add</button>
+                                style="height:42px; justify-content:center;">Add</button>
                         </div>
 
                         <!-- Active Selection Preview -->
@@ -170,7 +136,7 @@
                                 </div>
                                 <div style="text-align:right;">
                                     <div
-                                        style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">
+                                        style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">
                                         Inventory Status</div>
                                     <div style="display:flex; gap:12px; margin-top:4px;">
                                         <div class="badge badge-green" id="badgeOH">OH: <span id="infoOH"></span></div>
@@ -182,45 +148,48 @@
                     </div>
 
                     <!-- Table -->
-                    <table style="width:100%; text-align:left; border-collapse:separate; border-spacing:0;">
-                        <thead style="background:#f8fafc;">
-                            <tr>
-                                <th
-                                    style="padding:12px 16px; border-top-left-radius:8px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700;">
-                                    SKU</th>
-                                <th
-                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700;">
-                                    Description</th>
-                                <th
-                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
-                                    Price</th>
-                                <th
-                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
-                                    Qty</th>
-                                <th
-                                    style="padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b; font-weight:700; text-align:right;">
-                                    Line Total</th>
-                                <th
-                                    style="padding:12px 16px; border-top-right-radius:8px; border-bottom:1px solid #e2e8f0;">
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="lineBody">
-                            <tr>
-                                <td colspan="6" style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">
-                                    Your cart is empty. Add items above.</td>
-                            </tr>
-                        </tbody>
-                        <tfoot id="tableFoot" style="display:none;">
-                            <tr>
-                                <td colspan="4" style="text-align:right; padding:16px; font-weight:700; color:#64748b;">
-                                    TOTAL</td>
-                                <td style="text-align:right; padding:16px; font-weight:800; font-size:16px; color:#0f172a;"
-                                    id="orderTotal">$0.00</td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div class="table-container"
+                        style="box-shadow:none; border:1px solid #e2e8f0; padding:0; overflow:hidden;">
+                        <table style="width:100%;">
+                            <thead style="background:#f8fafc;">
+                                <tr>
+                                    <th
+                                        style="padding:12px 16px; font-size:11px; text-transform:uppercase; color:#64748b;">
+                                        SKU</th>
+                                    <th
+                                        style="padding:12px 16px; font-size:11px; text-transform:uppercase; color:#64748b;">
+                                        Description</th>
+                                    <th
+                                        style="padding:12px 16px; font-size:11px; text-transform:uppercase; color:#64748b; text-align:right;">
+                                        Price</th>
+                                    <th
+                                        style="padding:12px 16px; font-size:11px; text-transform:uppercase; color:#64748b; text-align:right;">
+                                        Qty</th>
+                                    <th
+                                        style="padding:12px 16px; font-size:11px; text-transform:uppercase; color:#64748b; text-align:right;">
+                                        Total</th>
+                                    <th style="padding:12px 16px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lineBody">
+                                <tr>
+                                    <td colspan="6"
+                                        style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">Your
+                                        cart is empty. Add items above.</td>
+                                </tr>
+                            </tbody>
+                            <tfoot id="tableFoot" style="display:none; background:#f8fafc;">
+                                <tr>
+                                    <td colspan="4"
+                                        style="text-align:right; padding:16px; font-weight:700; color:#64748b;">TOTAL
+                                    </td>
+                                    <td style="text-align:right; padding:16px; font-weight:800; font-size:16px; color:#0f172a;"
+                                        id="orderTotal">$0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
 
                 </div>
 
@@ -230,10 +199,12 @@
             <div style="display:grid; gap:24px; align-content:start;">
 
                 <div class="card-soft" style="padding:24px;">
-                    <div class="section-title">Shipping & Logistics</div>
+                    <h3
+                        style="font-size:16px; margin:0 0 20px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                        Shipping & Logistics</h3>
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Warehouse</label>
+                        <label class="form-label">Warehouse</label>
                         <select id="iWh" class="input">
                             <option value="Sarasota">Sarasota, FL (Main)</option>
                             <option value="Texas">Austin, TX (West)</option>
@@ -241,14 +212,14 @@
                     </div>
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Need By Date</label>
+                        <label class="form-label">Need By Date</label>
                         <input id="iDate" type="date" class="input">
                     </div>
 
                     <hr style="border:none; border-top:1px solid #f1f5f9; margin:20px 0;">
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Shipping Carrier</label>
+                        <label class="form-label">Shipping Carrier</label>
                         <select id="iShip" class="input" style="font-weight:600;">
                             <optgroup label="UPS">
                                 <option>UPS Ground</option>
@@ -267,21 +238,15 @@
                     </div>
 
                     <div style="margin-bottom:16px;">
-                        <label class="input-group-text">Account # (Optional)</label>
+                        <label class="form-label">Account # (Optional)</label>
                         <input id="iAcct" class="input" placeholder="Use 3rd party acct...">
-                    </div>
-
-                    <div
-                        style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; display:flex; align-items:center; gap:12px;">
-                        <input type="checkbox" id="isEvent" style="width:16px; height:16px;">
-                        <label for="isEvent" style="font-size:13px; font-weight:600; color:#1e293b;">Is this an
-                            Event?</label>
-                        <div class="badge badge-purple" style="font-size:10px;">Auto-Create Event</div>
                     </div>
                 </div>
 
                 <div class="card-soft" style="padding:24px;">
-                    <div class="section-title">Order Notes</div>
+                    <h3
+                        style="font-size:16px; margin:0 0 20px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                        Order Notes</h3>
                     <textarea id="iOrderNote" class="input" rows="4"
                         placeholder="Special instructions for the warehouse team..."></textarea>
                 </div>
@@ -303,76 +268,26 @@
         let orderLines = [];
         let selectedItem = null;
 
-        // Init
-        const PARAMS = new URLSearchParams(window.location.search);
-        const EDIT_ID = PARAMS.get("id");
-
         (function init() {
             try { allItems = JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { allItems = []; }
-
-            // Close autocomplete when clicking outside
             document.addEventListener("click", function (e) {
                 if (!e.target.closest(".autocomplete-wrapper")) {
                     document.getElementById("skuList").style.display = "none";
                 }
             });
-
-            // Check for edit mode
-            if (EDIT_ID) {
-                document.querySelector(".page-title").textContent = "Edit Sales Order " + EDIT_ID;
-                document.querySelector(".btn-primary").textContent = "Update Order";
-                loadOrder(EDIT_ID);
-            }
         })();
 
-        function loadOrder(id) {
-            const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-            const order = orders.find(o => o.id === id);
-
-            if (!order) {
-                toast("Error", "Order not found", "error");
-                return;
-            }
-
-            document.getElementById("iCust").value = order.cust || "";
-            document.getElementById("iPO").value = order.po || "";
-            document.getElementById("iWh").value = order.wh || "Sarasota";
-            document.getElementById("iDate").value = order.inHands || "";
-            document.getElementById("iShip").value = order.ship || "";
-            document.getElementById("iAcct").value = order.acct || "";
-            document.getElementById("iOrderNote").value = order.note || "";
-
-            orderLines = order.lines || [];
-            renderLines();
-        }
-
-        // SKU Filter
         function filterSkus(val) {
             const listEl = document.getElementById("skuList");
-            if (!val) {
-                listEl.style.display = "none";
-                return;
-            }
+            if (!val) { listEl.style.display = "none"; return; }
 
-            const matches = allItems.filter(i =>
-                i.sku.toLowerCase().includes(val.toLowerCase()) ||
-                (i.name && i.name.toLowerCase().includes(val.toLowerCase()))
-            ).slice(0, 8);
-
-            if (matches.length === 0) {
-                listEl.style.display = "none";
-                return;
-            }
+            const matches = allItems.filter(i => i.sku.toLowerCase().includes(val.toLowerCase()) || (i.name && i.name.toLowerCase().includes(val.toLowerCase()))).slice(0, 8);
+            if (matches.length === 0) { listEl.style.display = "none"; return; }
 
             listEl.innerHTML = matches.map(i => `
                 <div class="autocomplete-item" onclick="selectSku('${i.sku}')">
-                    <div>
-                        <strong>${i.sku}</strong>
-                        <div style="font-size:12px; color:#64748b;">${i.name || i.desc || ''}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-weight:600; font-size:12px;">${i.on} OH</div>
-                    </div>
+                    <div><strong>${i.sku}</strong><div style="font-size:12px; color:#64748b;">${i.name || i.desc || ''}</div></div>
+                    <div style="text-align:right;"><div style="font-weight:600; font-size:12px;">${i.on} OH</div></div>
                 </div>
             `).join("");
             listEl.style.display = "block";
@@ -382,46 +297,32 @@
             selectedItem = allItems.find(i => i.sku === sku);
             if (!selectedItem) return;
 
-            // Fill & Show Info
             document.getElementById("iSkuSearch").value = selectedItem.sku;
             document.getElementById("skuList").style.display = "none";
-
             document.getElementById("infoSku").textContent = selectedItem.sku;
             document.getElementById("infoName").textContent = selectedItem.name || selectedItem.desc || "(No Name)";
             document.getElementById("infoPrice").textContent = window.formatMoney(selectedItem.retail || 0);
-
             document.getElementById("infoOH").textContent = selectedItem.on;
 
-            // Sim Open PO check
             const hasPo = (selectedItem.starkEta || "").length > 0;
-            const poHtml = hasPo ? `<div class="badge badge-green">Inbound: ${selectedItem.starkEta}</div>` : ``;
-            document.getElementById("infoPO").innerHTML = poHtml;
-
+            document.getElementById("infoPO").innerHTML = hasPo ? `<div class="badge badge-green">Inbound: ${selectedItem.starkEta}</div>` : ``;
             document.getElementById("skuInfo").style.display = "block";
             document.getElementById("iQty").focus();
         }
 
         function addLine() {
-            if (!selectedItem) return toast("Error", "Please select a valid SKU first.");
+            if (!selectedItem) return toast("Error", "Please select a valid SKU first.", "error");
             const qty = parseInt(document.getElementById("iQty").value) || 1;
             const note = document.getElementById("iLineNote").value;
             const price = selectedItem.retail || 0;
 
-            orderLines.push({
-                sku: selectedItem.sku,
-                name: selectedItem.name || selectedItem.desc,
-                qty: qty,
-                price: price,
-                note: note
-            });
+            orderLines.push({ sku: selectedItem.sku, name: selectedItem.name || selectedItem.desc, qty: qty, price: price, note: note });
 
-            // Reset Line Inputs
             document.getElementById("iSkuSearch").value = "";
             document.getElementById("iQty").value = "1";
             document.getElementById("iLineNote").value = "";
             document.getElementById("skuInfo").style.display = "none";
             selectedItem = null;
-
             renderLines();
         }
 
@@ -444,19 +345,15 @@
             tbody.innerHTML = orderLines.map((l, i) => {
                 const lineTotal = l.qty * l.price;
                 total += lineTotal;
-
                 return `
-                <tr style="border-bottom:1px solid #f1f5f9;">
+                <tr class="master-row"> <!-- Using master-row from style.css for hover effect -->
                     <td style="padding:12px 16px;"><strong>${l.sku}</strong></td>
-                    <td style="padding:12px 16px; font-size:13px;">
-                        ${l.name || ""}
-                        ${l.note ? `<div style="font-size:11px; color:#6366f1; font-style:italic;">Note: ${l.note}</div>` : ''}
-                    </td>
+                    <td style="padding:12px 16px; font-size:13px;">${l.name || ""} ${l.note ? `<div style="font-size:11px; color:#6366f1; font-style:italic;">Note: ${l.note}</div>` : ''}</td>
                     <td style="padding:12px 16px; text-align:right;">${window.formatMoney(l.price)}</td>
                     <td style="padding:12px 16px; text-align:right;">${l.qty}</td>
                     <td style="padding:12px 16px; text-align:right; font-weight:600;">${window.formatMoney(lineTotal)}</td>
                     <td style="padding:12px 16px; text-align:right;">
-                        <button onclick="removeLine(${i})" style="color:#94a3b8; background:none; border:none; cursor:pointer; font-size:18px;">&times;</button>
+                        <button onclick="removeLine(${i})" style="color:#ef4444; background:none; border:none; cursor:pointer; font-size:18px;">&times;</button>
                     </td>
                 </tr>
             `}).join("");
@@ -468,125 +365,41 @@
         function submitOrder() {
             const cust = document.getElementById("iCust").value.trim();
             const shipMethod = document.getElementById("iShip").value;
-
-            if (!cust) return toast("Error", "Customer Name Required");
-            if (orderLines.length === 0) return toast("Error", "Add at least one item.");
-            if (!shipMethod) return toast("Error", "Select a Shipping Method");
+            if (!cust) return toast("Validation Error", "Customer Name Required", "error");
+            if (orderLines.length === 0) return toast("Validation Error", "Add at least one item.", "error");
+            if (!shipMethod) return toast("Validation Error", "Select a Shipping Method", "error");
 
             const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-
-            // Generate ID if new, or use existing if edit
-            let saveId;
-            if (EDIT_ID) {
-                saveId = EDIT_ID;
-            } else {
-                saveId = "ORD-" + (1000 + orders.length + 1);
-            }
-
+            const newId = "ORD-" + (1000 + orders.length + 1);
             let total = 0;
             orderLines.forEach(l => total += (l.price * l.qty));
 
-            // Validation Logic (simplified mostly, same as before)
             let status = "Validated";
-            if (EDIT_ID) {
-                // Keep existing status unless overridden by validation issues below
-                const existing = orders.find(o => o.id === EDIT_ID);
-                if (existing) status = existing.status;
-            }
-
             let holdReason = "";
-
             for (const line of orderLines) {
                 const item = allItems.find(i => i.sku === line.sku);
                 if (item) {
-                    const restricted = ["Feeds Only", "Discontinued", "Internal Use", "Presentation"];
-                    if (restricted.includes(item.status)) {
-                        status = "On Hold";
-                        holdReason = `Item ${line.sku} is ${item.status}`;
-                        break;
+                    if (["Feeds Only", "Discontinued", "Internal Use", "Presentation"].includes(item.status)) {
+                        status = "On Hold"; holdReason = `Item ${line.sku} is ${item.status}`; break;
                     }
                     if (line.qty > (item.on || 0)) {
-                        status = "On Hold";
-                        holdReason = `Insufficient Stock for ${line.sku} (Req: ${line.qty}, OH: ${item.on})`;
-                        break;
+                        status = "On Hold"; holdReason = `Insufficient Stock for ${line.sku} (Req: ${line.qty}, OH: ${item.on})`; break;
                     }
                 }
             }
 
             const newOrder = {
-                id: saveId,
-                cust: cust,
-                po: document.getElementById("iPO").value,
-                date: new Date().toISOString().split('T')[0],
-                inHands: document.getElementById("iDate").value,
-                wh: document.getElementById("iWh").value,
-                ship: shipMethod,
-                acct: document.getElementById("iAcct").value,
-                note: document.getElementById("iOrderNote").value,
-                lines: orderLines,
-                total: total,
-                status: status,
-                holdReason: holdReason,
-                // Preserve other fields if editing
-                invoices: EDIT_ID ? (orders.find(o => o.id === EDIT_ID)?.invoices || []) : [],
-                packages: EDIT_ID ? (orders.find(o => o.id === EDIT_ID)?.packages || []) : []
+                id: newId, cust, po: document.getElementById("iPO").value, date: new Date().toISOString(), inHands: document.getElementById("iDate").value,
+                wh: document.getElementById("iWh").value, ship: shipMethod, acct: document.getElementById("iAcct").value, note: document.getElementById("iOrderNote").value,
+                lines: orderLines, total, status, holdReason
             };
 
-            if (EDIT_ID) {
-                // Update
-                const idx = orders.findIndex(o => o.id === EDIT_ID);
-                if (idx >= 0) orders[idx] = newOrder;
-            } else {
-                // Create
-                orders.unshift(newOrder);
-            }
-
+            orders.unshift(newOrder);
             localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
 
-            const msg = status === "On Hold" ? `Order Saved (ON HOLD): ${holdReason}` : `Order Saved: ${saveId}`;
-            const type = status === "On Hold" ? "Warning" : "Success";
-
-            // Check Event Creation
-            if (document.getElementById("isEvent").checked) {
-                const EVENT_KEY = "stark_events_v1";
-                const events = JSON.parse(localStorage.getItem(EVENT_KEY) || "[]");
-
-                const evtId = "evt_" + Date.now();
-                const evtDate = newOrder.inHands || newOrder.date; // Use In-Hands if available
-
-                // Map lines to event items
-                const evtItems = orderLines.map(l => ({ sku: l.sku, qty: l.qty }));
-
-                const newEvent = {
-                    id: evtId,
-                    name: `Event for Order ${saveId}`,
-                    customer: cust,
-                    date: evtDate,
-                    location: "See Order Logistics",
-                    address: {
-                        line1: "See Order " + saveId,
-                        city: "", state: "", zip: ""
-                    },
-                    instructions: `Generated from Order ${saveId}. ${newOrder.note}`,
-                    fulfill: "Hold", // Default for auto-created events
-                    items: evtItems,
-                    status: "Scheduled",
-                    inventoryStatus: "Good"
-                };
-
-                events.push(newEvent);
-                localStorage.setItem(EVENT_KEY, JSON.stringify(events));
-
-                // Also trigger alert
-                alert("Event automatically scheduled for " + evtDate);
-            }
-
-            toast(type, msg);
-            setTimeout(() => {
-                window.location.href = "orders.html";
-            }, 1500);
+            toast(status === "On Hold" ? "Warning" : "Success", status === "On Hold" ? `Order Created (ON HOLD): ${holdReason}` : `Order Created: ${newId}`, status === "On Hold" ? "error" : "success");
+            setTimeout(() => { window.location.href = "orders.html"; }, 1500);
         }
-
     </script>
 </body>
 
