@@ -9,101 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
-    <style>
-        .split-layout {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        @media(max-width:900px) {
-            .split-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Dark Mode Theme for this tool */
-        .glass-panel-dark {
-            background: #0f172a;
-            border-radius: 16px;
-            color: #f1f5f9;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .item-list-row {
-            padding: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-
-        .item-list-row:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .item-list-row.active {
-            background: rgba(99, 102, 241, 0.2);
-            border-left: 3px solid #6366f1;
-        }
-
-        .adjust-btn {
-            flex: 1;
-            padding: 16px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            color: #94a3b8;
-            font-weight: 600;
-        }
-
-        .adjust-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .adjust-btn.active.add {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border-color: #10b981;
-        }
-
-        .adjust-btn.active.remove {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border-color: #ef4444;
-        }
-
-        .adjust-btn.active.set {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            border-color: #3b82f6;
-        }
-
-        .dark-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .dark-input:focus {
-            border-color: #8b5cf6;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 
-<body>
+<body class="theme-dark">
 
     <header class="topbar">
         <div class="topbar-inner">
