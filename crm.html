@@ -5,30 +5,77 @@
   <meta charset="UTF-8" />
   <title>CRM | Stark Premium ERP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="erp.css">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css?v=4">
+  <style>
+    /* Specific Master/CRM Page Styles */
+    .pill-filter {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: white;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .pill-filter:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+
+    .pill-filter.active {
+      background: #6366f1;
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .master-row {
+      transition: transform 0.1s, background-color 0.1s;
+    }
+
+    .master-row:hover {
+      transform: scale(1.002);
+      background-color: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+      position: relative;
+    }
+
+    .cust-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+      color: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      border: 1px solid #e2e8f0;
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- Header / Topbar -->
+  <!-- Top Navigation -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="dashboard.html" class="logo">
         <img src="images/stark-logo.png" alt="Stark Premium">
         <span class="logo-text">Stark ERP</span>
       </a>
-
       <nav class="nav">
-        <a class="nav-link" href="dashboard.html">Home</a>
-        <a class="nav-link" href="master.html">Master</a>
+        <a class="nav-link" href="dashboard.html">Overview</a>
+        <a class="nav-link" href="master.html">Items</a>
         <a class="nav-link active" href="crm.html">CRM</a>
         <a class="nav-link" href="vendor.html">Vendor</a>
         <a class="nav-link" href="purchasing.html">Purchasing</a>
@@ -39,19 +86,15 @@
         <a class="nav-link" href="reports.html">Reports</a>
         <a class="nav-link" href="events.html">Events</a>
       </nav>
-
-      <div style="display:flex; align-items:center; gap:16px;">
-
+      <div style="display:flex; align-items:center; gap:12px;">
         <div class="badge badge-green" style="display:none; @media(min-width:700px){display:inline-flex;}">
-          Online
-        </div>
-        <button class="hamburger" onclick="openMobileNav()">
-          <span></span><span></span><span></span>
-        </button>
+          Online</div>
+        <button class="hamburger" onclick="openMobileNav()">☰</button>
       </div>
     </div>
   </header>
 
+  <!-- Mobile Drawer -->
   <div class="mobile-nav" id="mobileNav">
     <div class="mobile-drawer">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -61,450 +104,472 @@
       </div>
       <a class="mobile-link" href="dashboard.html">Overview</a>
       <a class="mobile-link active" href="crm.html">CRM</a>
-      <a class="mobile-link" href="vendor.html">Vendor</a>
-      <a class="mobile-link" href="purchasing.html">Purchasing</a>
+      <a class="mobile-link" href="master.html">Items</a>
       <a class="mobile-link" href="inventory.html">Inventory</a>
-      <a class="mobile-link" href="accounting.html">Accounting</a>
       <a class="mobile-link" href="orders.html">Orders</a>
       <a class="mobile-link" href="logistics.html">Logistics</a>
+      <a class="mobile-link" href="reports.html">Reports</a>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="container soft-ui-wrapper">
+  <main class="container soft-ui-wrapper" style="padding-top:40px;">
 
-    <!-- Page Title -->
-    <div style="margin-bottom:32px;">
-      <h1 class="page-title" style="margin-bottom:8px;">Customer Relationship Management</h1>
-      <p class="page-desc" style="max-width:600px;">Manage customer directory, view order activity, and analyze
-        retention signals.</p>
-      <div class="gold-line" style="margin:16px 0 0; width:40px;"></div>
-    </div>
-
-    <!-- Filters & Controls -->
-    <div class="card-soft" style="margin-bottom:32px; padding:24px;">
-      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:16px;">Filters & Controls</div>
-      <div style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; gap:16px;">
-        <input type="text" id="searchInput" class="input" placeholder="Search customer, location..."
-          style="background:#f8fafc; border-color:#e2e8f0; height:48px;" oninput="renderCRM()">
-        <select id="filterCompany" class="input" style="background:#f8fafc; border-color:#e2e8f0; height:48px;"
-          onchange="renderCRM()">
-          <option value="">Filter by Company Name</option>
-          <option value="reset">Show All</option>
-        </select>
-        <div style="position:relative;">
-          <select class="input" style="background:#f8fafc; border-color:#e2e8f0; height:48px;">
-            <option>February 2026</option>
-            <option>January 2026</option>
-            <option>December 2025</option>
-          </select>
+    <!-- Page Header -->
+    <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:32px;">
+      <div>
+        <h1 class="page-title" style="margin-bottom:8px;">Customer Relations</h1>
+        <p class="page-desc">Manage customer directory, view order activity, and analyze retention signals.</p>
+        <div
+          style="height:4px; width:40px; background:linear-gradient(90deg, #6366f1, transparent); border-radius:2px; margin-top:16px;">
         </div>
       </div>
+      <button class="btn btn-primary" onclick="openCustomerModal()"
+        style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3); height:48px; padding:0 24px;">
+        + New Customer
+      </button>
     </div>
 
     <!-- KPI Grid -->
-    <div class="grid grid-4" style="gap:24px; margin-bottom:32px;">
-      <!-- All Customers -->
-      <div class="kpi-card-soft" style="border-left:4px solid #6366f1; cursor:pointer;" onclick="filterStatus('all')">
-        <div class="label">
-          <span>All Customers</span>
-          <span class="badge-soft" style="background:#e0e7ff; color:#4338ca;">Total</span>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px; margin-bottom:32px;">
+      <!-- Total Customers -->
+      <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
+        <div
+          style="width:48px; height:48px; border-radius:12px; background:#f0f9ff; color:#0369a1; display:flex; align-items:center; justify-content:center; font-size:20px;">
+          👥</div>
+        <div>
+          <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Total Customers</div>
+          <div id="kpiTotal" style="font-size:24px; font-weight:800; color:#0f172a;">0</div>
         </div>
-        <div class="val" id="kpiTotal">0</div>
       </div>
 
       <!-- Active Customers -->
-      <div class="kpi-card-soft" style="border-left:4px solid #10b981; cursor:pointer;"
-        onclick="filterStatus('Active')">
-        <div class="label">
-          <span>Active Customers</span>
-          <span class="badge-soft" style="background:#d1fae5; color:#047857;">Engaged</span>
-        </div>
-        <div class="val" id="kpiActive">0</div>
+      <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
         <div
-          style="font-size:11px; background:#fff7ed; color:#c2410c; padding:4px 8px; border-radius:99px; display:inline-block; font-weight:600;">
-          &gt; 1 sale this month
+          style="width:48px; height:48px; border-radius:12px; background:#f0fdf4; color:#15803d; display:flex; align-items:center; justify-content:center; font-size:20px;">
+          ⚡</div>
+        <div>
+          <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Active (Month)</div>
+          <div id="kpiActive" style="font-size:24px; font-weight:800; color:#14532d;">0</div>
         </div>
       </div>
 
       <!-- Zero Sales -->
-      <div class="kpi-card-soft" style="border-left:4px solid #ef4444; cursor:pointer;"
-        onclick="filterStatus('AtRisk')">
-        <div class="label">
-          <span>Zero Sales</span>
-          <span class="badge-soft" style="background:#fee2e2; color:#b91c1c;">At Risk</span>
-        </div>
-        <div class="val" id="kpiRisk">0</div>
+      <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
         <div
-          style="font-size:11px; background:#fef2f2; color:#b91c1c; padding:4px 8px; border-radius:99px; display:inline-block; font-weight:600;">
-          No activity this month
+          style="width:48px; height:48px; border-radius:12px; background:#fef2f2; color:#b91c1c; display:flex; align-items:center; justify-content:center; font-size:20px;">
+          💤</div>
+        <div>
+          <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Zero Activity</div>
+          <div id="kpiZero" style="font-size:24px; font-weight:800; color:#7f1d1d;">0</div>
         </div>
       </div>
 
-      <!-- Monthly Revenue (Mock) -->
-      <div class="kpi-card-soft" style="border-left:4px solid #f59e0b;">
-        <div class="label">
-          <span>Monthly Revenue</span>
-          <span class="badge-soft" style="background:#dcfce7; color:#15803d;">Income</span>
-        </div>
-        <div class="val">$0.00</div>
+      <!-- Revenue -->
+      <div class="card-soft" style="padding:20px; display:flex; align-items:center; gap:16px;">
         <div
-          style="font-size:11px; background:#fffbeb; color:#b45309; padding:4px 8px; border-radius:99px; display:inline-block; font-weight:600;">
-          This month
+          style="width:48px; height:48px; border-radius:12px; background:#fffbeb; color:#b45309; display:flex; align-items:center; justify-content:center; font-size:20px;">
+          💰</div>
+        <div>
+          <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Revenue (Month)</div>
+          <div id="kpiRev" style="font-size:24px; font-weight:800; color:#78350f;">$0.00</div>
         </div>
       </div>
     </div>
 
-    <!-- Directory Table (Full Width) -->
-    <div class="card-soft" style="padding:0; overflow:hidden; min-height:500px;">
-      <div
-        style="padding:24px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-size:16px; margin:0; font-weight:700;">Customer Directory</h3>
-        <button class="btn btn-primary" onclick="window.location.href='customer_add.html'"
-          style="padding:8px 16px; font-weight:600; height:36px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-plus"></i> Add Customer
-        </button>
+    <!-- Controls & Filters -->
+    <div style="margin-bottom:24px; display:flex; flex-direction:column; gap:16px;">
+
+      <!-- Search & Date -->
+      <div class="card-soft" style="padding:12px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <div style="position:relative; flex:1; min-width:200px;">
+          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); opacity:0.4;">🔍</span>
+          <input id="search" class="input" placeholder="Search customer, location, or contact..." oninput="render()"
+            style="padding-left:42px; height:48px; border:none; background:#f8fafc; font-size:14px;">
+        </div>
+        <div style="width:1px; height:24px; background:#e2e8f0; display:none; @media(min-width:600px){display:block;}"></div>
+        <select id="monthSelect" class="input" onchange="render()" style="width:auto; min-width:180px; height:48px; border:none; background:#f8fafc;"></select>
       </div>
 
-      <table style="width:100%; border-collapse:collapse;">
-        <thead>
-          <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
-            <th
-              style="text-align:left; padding:16px 24px; font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">
-              Company Name</th>
-            <th
-              style="text-align:left; padding:16px 24px; font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">
-              Location</th>
-            <th
-              style="text-align:left; padding:16px 24px; font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">
-              Orders (Mo)</th>
-            <th
-              style="text-align:left; padding:16px 24px; font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">
-              Total Spend</th>
-            <th
-              style="text-align:left; padding:16px 24px; font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">
-              Status</th>
-          </tr>
-        </thead>
-        <tbody id="crmTableBody">
-          <!-- Populated via JS -->
-        </tbody>
-      </table>
+      <!-- Dynamic Pills -->
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <div style="font-size:12px; font-weight:700; color:#64748b; margin-right:8px;">FILTER:</div>
+        <div class="pill-filter active" onclick="setFilter('all')">All Customers</div>
+        <div class="pill-filter" onclick="setFilter('active')">Active</div>
+        <div class="pill-filter" onclick="setFilter('nosales')">Inactive / Quiet</div>
+      </div>
     </div>
 
-    <div style="margin-top:60px; text-align:center; color:var(--text-muted); font-size:13px; opacity:0.6;">
+    <div class="grid grid-2" style="align-items:start;">
+      <!-- Directory -->
+      <div class="card-soft table-container"
+        style="padding:0; overflow:hidden; grid-column:span 2; @media(min-width:1100px){grid-column:auto;}">
+        <table id="custTable">
+          <thead>
+            <tr style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:0.8px; color:#64748b;">
+              <th style="padding:16px 24px;">Company</th>
+              <th style="padding:16px;">Location</th>
+              <th style="padding:16px; text-align:right;">Orders (Mo)</th>
+              <th style="padding:16px; text-align:right;">Spend (Life)</th>
+              <th style="padding:16px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="custBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Details Sidebar -->
+      <aside style="display:grid; gap:24px; align-content:start; display:none; @media(min-width:1100px){display:grid;}">
+        <div class="card-soft" style="padding:24px;">
+          <h2 style="font-size:14px; font-weight:700; color:#64748b; margin:0 0 16px; text-transform:uppercase; letter-spacing:0.5px;">Customer Insights</h2>
+
+          <div id="detailPlaceholder"
+            style="padding:40px 0; text-align:center; color:var(--text-muted); font-size:13px;">
+            Select a customer row to view details.
+          </div>
+
+          <div id="detailContent" style="display:none;">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                <div id="dAvatar" class="cust-avatar" style="width:48px; height:48px; font-size:20px;"></div>
+                <div>
+                    <strong style="display:block; font-size:18px; color:#1e293b;" id="dName">Name</strong>
+                    <div style="font-size:13px; color:#64748b;" id="dLoc">Location</div>
+                </div>
+            </div>
+
+            <div style="display:grid; gap:12px; font-size:13px; margin-bottom:24px; background:#f8fafc; padding:16px; border-radius:12px;">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <span style="color:#94a3b8; width:20px;">👤</span> <span id="dContact" style="font-weight:500;">Contact</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <span style="color:#94a3b8; width:20px;">📧</span> <a id="dEmail" href="#" style="color:#6366f1; text-decoration:none;">Email</a>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <span style="color:#94a3b8; width:20px;">📞</span> <span id="dPhone" style="font-family:monospace;">Phone</span>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid #e2e8f0; padding-top:16px;">
+              <strong style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:8px;">Activity (Last 6 Mos)</strong>
+              <div id="monthlyLine" style="font-size:13px; color:#6366f1; font-family:monospace; letter-spacing:4px;">—</div>
+            </div>
+            
+            <div style="margin-top:16px;">
+                <strong style="display:block; font-size:11px; text-transform:uppercase; color:#64748b; margin-bottom:8px;">Favorite Item</strong>
+                <div id="skuLine" style="font-size:14px; font-weight:600; color:#1e293b;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-soft" style="padding:20px;">
+          <h2 style="font-size:12px; font-weight:700; color:#64748b; margin:0 0 12px; text-transform:uppercase;">Quick Actions</h2>
+          <button class="btn btn-secondary" style="width:100%; height:40px; font-size:13px;" onclick="seedCustomers()">Reload Demo Data</button>
+        </div>
+      </aside>
+    </div>
+
+    <div style="margin-top:40px; text-align:center; color:var(--text-muted); font-size:13px;">
       &copy; 2026 Stark Premium ERP.
     </div>
   </main>
 
   <!-- Add Customer Modal -->
-  <div class="modal" id="customerModal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>Add Customer</h3>
-        <button class="x" onclick="closeCustomerModal()">×</button>
+  <div class="mobile-nav" id="customerModal" style="z-index:900; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);">
+    <div class="card-soft"
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:min(90%, 500px); max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.2); border:1px solid #fff;">
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid #f1f5f9;">
+        <h3 style="margin:0; font-size:18px;">Add Customer</h3>
+        <button class="toast-close" onclick="closeCustomerModal()"
+          style="border:none; background:transparent; cursor:pointer; font-size:24px; color:#94a3b8;">&times;</button>
       </div>
 
-      <div class="modal-body">
-        <div class="modal-grid">
-          <input id="cName" class="input" placeholder="Company Name (Required)" />
-          <input id="cType" class="input" placeholder="Type (e.g. Retailer)" />
-          <input id="cLocation" class="input" placeholder="Location (City, State)" />
-
-          <input id="cEmail" class="input" placeholder="Email Contact" />
-          <input id="cPhone" class="input" placeholder="Phone Number" />
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Company Name</label>
+          <input id="cName" class="input" placeholder="e.g. Acme Corp" style="background:#f8fafc; border:1px solid #e2e8f0;">
         </div>
-      </div>
 
-      <div class="modal-footer">
-        <div style="display:flex; justify-content:flex-end; gap:10px; width:100%;">
-          <button class="btn secondary" onclick="closeCustomerModal()">Cancel</button>
-          <button class="btn primary" onclick="addCustomer()">Save Customer</button>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Location</label>
+            <input id="cLocation" class="input" placeholder="City, State" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Type</label>
+            <input id="cType" class="input" placeholder="Retailer" value="Retailer" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Contact Person</label>
+            <input id="cContact" class="input" placeholder="Full Name" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Phone</label>
+            <input id="cPhone" class="input" placeholder="(555) 000-0000" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          </div>
+        </div>
+
+        <div>
+           <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Email Address</label>
+           <input id="cEmail" class="input" placeholder="name@company.com" style="background:#f8fafc; border:1px solid #e2e8f0;">
+        </div>
+
+        <!-- Invite Feature -->
+        <div style="background:#f0f9ff; padding:12px; border-radius:8px; border:1px solid #bae6fd; display:flex; gap:12px; align-items:start;">
+             <input type="checkbox" id="cInvite" checked style="margin-top:4px;">
+             <div>
+                 <strong style="display:block; font-size:13px; color:#0369a1;">Send Shop Invitation</strong>
+                 <p style="margin:0; font-size:12px; color:#0c4a6e; line-height:1.4;">Send an email with a link for this customer to create their wholesale account.</p>
+             </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button class="btn btn-secondary" onclick="closeCustomerModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="addCustomer()" style="background:#6366f1; border:none;">Save Profile</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <div id="toastWrap" style="position:fixed; bottom:20px; right:20px; z-index:9999; display:grid; gap:10px;"></div>
+
   <script src="erp.js"></script>
   <script>
-    // --- CRM Data Logic ---
-    const DEMO_DATA = [
-      { id: 'C-101', name: 'Asha Retail', type: 'Retailer', location: 'Austin, TX', ordersMo: 0, spent: 11247.00, status: 'Quiet', email: 'contact@asha.com', phone: '512-555-0101', terms: 'Net 30' },
-      { id: 'C-102', name: 'Blue Harbor', type: 'Wholesale', location: 'Miami, FL', ordersMo: 0, spent: 0.00, status: 'Quiet', email: 'sales@blueharbor.com', phone: '305-555-0102', terms: 'Due on Receipt' },
-      { id: 'C-103', name: 'Citrine Luxe', type: 'Boutique', location: 'New York, NY', ordersMo: 0, spent: 4912.00, status: 'Quiet', email: 'info@citrine.com', phone: '212-555-0103', terms: 'Net 15' },
-      { id: 'C-104', name: 'Stark Enterprises', type: 'Global', location: 'Los Angeles, CA', ordersMo: 5, spent: 1250000.00, status: 'Active', email: 'tony@stark.com', phone: '310-555-0104', terms: 'Net 60' },
-      { id: 'C-105', name: 'Wayne Industries', type: 'Conglomerate', location: 'Gotham, NJ', ordersMo: 2, spent: 450000.00, status: 'Active', email: 'bruce@wayne.com', phone: '201-555-0105', terms: 'Net 90' }
-    ];
+    const AUTH_KEY = "stark_erp_auth_v1";
+    (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
 
-    function getCustomers() {
-      return JSON.parse(localStorage.getItem('stark_crm_customers') || '[]');
+    const KEY_CUST = "stark_erp_customers_v1";
+    const KEY_SALES = "stark_erp_sales_v1";
+    let CURRENT_FILTER = "all"; // all, active, nosales
+
+    // Setup Month Dropdown
+    const monthSelect = document.getElementById("monthSelect");
+    const today = new Date();
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const lab = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+      const opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = lab;
+      monthSelect.appendChild(opt);
     }
+    monthSelect.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
 
-    function saveCustomers(data) {
-      localStorage.setItem('stark_crm_customers', JSON.stringify(data));
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+      catch { return fallback; }
     }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+    
+    // Using window.formatMoney from erp.js if available, else fallback
+    const fmtMoney = window.formatMoney || function(n) { return "$" + Number(n).toFixed(2); };
 
-    function resetDemoData() {
-      saveCustomers(DEMO_DATA);
-      window.location.reload();
-    }
+    function openCustomerModal() { document.getElementById("customerModal").classList.add("open"); }
+    function closeCustomerModal() { document.getElementById("customerModal").classList.remove("open"); }
 
-    // Init Data
-    if (getCustomers().length === 0) {
-      saveCustomers(DEMO_DATA);
-    }
+    function addCustomer() {
+      const name = (document.getElementById("cName").value || "").trim();
+      const loc = (document.getElementById("cLocation").value || "").trim();
+      const email = (document.getElementById("cEmail").value || "").trim();
+      const sendInvite = document.getElementById("cInvite").checked;
 
-    let currentFilter = '';
+      if (!name) return toast("Required", "Company Name is missing.", "error");
 
-    function renderCRM() {
-      const customers = getCustomers();
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const companyFilter = document.getElementById('filterCompany').value;
+      const c = {
+        id: "C-" + Date.now(),
+        name,
+        location: loc || "Unknown",
+        type: document.getElementById("cType").value,
+        contact: document.getElementById("cContact").value,
+        email: email,
+        phone: document.getElementById("cPhone").value,
+        joined: new Date().toISOString()
+      };
 
-      // Filter Logic
-      let filtered = customers.filter(c =>
-        (c.name.toLowerCase().includes(search) || c.location.toLowerCase().includes(search)) &&
-        (companyFilter && companyFilter !== 'reset' ? c.name === companyFilter : true)
-      );
-
-      if (currentFilter === 'Active') {
-        filtered = filtered.filter(c => c.status === 'Active' || c.ordersMo > 0);
-      } else if (currentFilter === 'AtRisk') {
-        filtered = filtered.filter(c => c.status === 'Quiet' || c.ordersMo === 0);
+      const list = load(KEY_CUST, []);
+      list.push(c);
+      save(KEY_CUST, list);
+      
+      closeCustomerModal();
+      
+      if (sendInvite && email) {
+          setTimeout(() => {
+              toast("Invitation Sent", `Link sent to ${email}`, "success");
+          }, 500);
+      } else if (sendInvite && !email) {
+          toast("Warning", "Customer saved, but no email provided for invitation.", "warning");
+      } else {
+          toast("Success", "Customer profile created.");
       }
+      
+      render();
+    }
+
+    function setFilter(f) {
+      CURRENT_FILTER = f;
+      document.querySelectorAll(".pill-filter").forEach(x => x.classList.remove("active"));
+      // Simple loop to find correct pill (checking text content is fragile, better to pass 'this' or use ID)
+      // Re-doing simple way:
+      const pills = document.querySelectorAll(".pill-filter");
+      if (f === 'all') pills[0].classList.add("active");
+      if (f === 'active') pills[1].classList.add("active");
+      if (f === 'nosales') pills[2].classList.add("active");
+      render();
+    }
+
+    function render() {
+      const customers = load(KEY_CUST, []);
+      const sales = load(KEY_SALES, []);
+      const search = (document.getElementById("search").value || "").toLowerCase();
+      const selMonth = document.getElementById("monthSelect").value; // "YYYY-MM"
+
+      // Stats aggregation
+      const custStats = {};
+      sales.forEach(s => {
+        const ym = s.date.slice(0, 7);
+        if (!custStats[s.customer]) custStats[s.customer] = { monthOrders: 0, monthRev: 0, lifeRev: 0, skus: {}, months: new Set() };
+        const st = custStats[s.customer];
+        st.lifeRev += (Number(s.unitPrice) * Number(s.qty));
+        st.skus[s.sku] = (st.skus[s.sku] || 0) + Number(s.qty);
+        st.months.add(ym);
+
+        if (ym === selMonth) {
+          st.monthOrders++;
+          st.monthRev += (Number(s.unitPrice) * Number(s.qty));
+        }
+      });
 
       // Update KPIs
-      document.getElementById('kpiTotal').textContent = customers.length;
-      document.getElementById('kpiActive').textContent = customers.filter(c => c.status === 'Active' || c.ordersMo > 0).length;
-      document.getElementById('kpiRisk').textContent = customers.filter(c => c.status === 'Quiet' || c.ordersMo === 0).length;
+      let totalRev = 0;
+      let activeCount = 0;
+      let zeroCount = 0;
 
-      // Populate Dropdown if empty
-      const drop = document.getElementById('filterCompany');
-      if (drop.options.length <= 2) {
-        // Keep first 2, remove rest
-        while (drop.options.length > 2) drop.remove(2);
-        customers.forEach(c => {
-          const op = document.createElement('option');
-          op.value = c.name;
-          op.text = c.name;
-          drop.appendChild(op);
-        });
+      customers.forEach(c => {
+        const st = custStats[c.name];
+        if (st && st.monthOrders > 0) {
+          activeCount++;
+          totalRev += st.monthRev;
+        } else {
+          zeroCount++;
+        }
+      });
+
+      document.getElementById("kpiTotal").textContent = customers.length;
+      document.getElementById("kpiActive").textContent = activeCount;
+      document.getElementById("kpiZero").textContent = zeroCount;
+      document.getElementById("kpiRev").textContent = fmtMoney(totalRev);
+
+      // Filter List
+      let shown = customers.filter(c => {
+        const txt = (c.name + " " + c.location + " " + (c.contact || "")).toLowerCase();
+        if (search && !txt.includes(search)) return false;
+
+        const st = custStats[c.name] || { monthOrders: 0 };
+        const isActive = st.monthOrders > 0;
+
+        if (CURRENT_FILTER === 'active' && !isActive) return false;
+        if (CURRENT_FILTER === 'nosales' && isActive) return false;
+
+        return true;
+      });
+
+      // Build Table
+      const tbody = document.getElementById("custBody");
+      tbody.innerHTML = "";
+
+      if (shown.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:40px;">No customers found.</td></tr>`;
       }
 
-      // Render Table
-      const tbody = document.getElementById('crmTableBody');
-      tbody.innerHTML = '';
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--text-muted);">No customers found matching filters.</td></tr>`;
-        return;
-      }
-
-      filtered.forEach(c => {
-        const badgeColor = c.status === 'Active' ? 'background:#d1fae5; color:#047857;' : 'background:#ffedd5; color:#c2410c;';
-
-        const tr = document.createElement('tr');
-        tr.style.cursor = 'pointer';
-        tr.onclick = () => showInsights(c.id);
-        // Hover effect handled by CSS
-        tr.className = 'table-row';
+      shown.forEach(c => {
+        const st = custStats[c.name] || { monthOrders: 0, lifeRev: 0 };
+        const isActive = st.monthOrders > 0;
+        
+        const tr = document.createElement("tr");
+        tr.className = "master-row";
+        tr.style.cursor = "pointer";
+        tr.style.borderBottom = "1px solid #f1f5f9";
+        
+        tr.onclick = () => showDetail(c, st, selMonth);
+        
         tr.innerHTML = `
-                    <td style="padding:16px 24px; border-bottom:1px solid #f1f5f9;">
-                        <div style="font-weight:700; color:var(--text-main); font-size:14px;">${c.name}</div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${c.type}</div>
-                    </td>
-                    <td style="padding:16px 24px; border-bottom:1px solid #f1f5f9; font-size:13px;">${c.location}</td>
-                    <td style="padding:16px 24px; border-bottom:1px solid #f1f5f9; font-size:13px;">${c.ordersMo}</td>
-                    <td style="padding:16px 24px; border-bottom:1px solid #f1f5f9; font-weight:600; font-size:13px;">$${c.spent.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                    <td style="padding:16px 24px; border-bottom:1px solid #f1f5f9;">
-                        <span style="font-size:11px; padding:4px 10px; border-radius:12px; font-weight:700; text-transform:uppercase; ${badgeColor}">${c.status}</span>
-                    </td>
-                `;
+          <td style="padding:16px 24px;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px;">${escapeHtml(c.name)}</div>
+            <div style="font-size:12px; color:#64748b;">${escapeHtml(c.type || "Standard")}</div>
+          </td>
+          <td style="padding:16px; color:#475569;">${escapeHtml(c.location)}</td>
+          <td style="padding:16px; text-align:right; font-weight:600; color:#334155;">${st.monthOrders}</td>
+          <td style="padding:16px; text-align:right; font-variant-numeric:tabular-nums;">${fmtMoney(st.lifeRev)}</td>
+          <td style="padding:16px;">
+            ${isActive 
+                ? `<span class="badge badge-green">Active</span>` 
+                : `<span class="badge badge-yellow" style="opacity:0.7;">Quiet</span>`}
+          </td>
+        `;
         tbody.appendChild(tr);
       });
     }
 
-    function filterStatus(status) {
-      currentFilter = status === 'all' ? '' : status;
-      renderCRM();
-    }
+    function showDetail(c, stats, selMonth) {
+      document.getElementById("detailPlaceholder").style.display = "none";
+      document.getElementById("detailContent").style.display = "block";
+      document.getElementById("mobileNav").classList.remove('open'); // Close nav if open (mobile optimization)
 
-    function showInsights(id) {
-      const c = getCustomers().find(x => x.id === id);
-      if (!c) return;
+      document.getElementById("dName").textContent = c.name;
+      document.getElementById("dLoc").textContent = c.location;
+      document.getElementById("dContact").textContent = c.contact || "—";
+      document.getElementById("dEmail").textContent = c.email || "—";
+      document.getElementById("dEmail").href = c.email ? "mailto:" + c.email : "#";
+      document.getElementById("dPhone").textContent = c.phone || "—";
+      
+      const initials = (c.name || "C").substring(0,2).toUpperCase();
+      document.getElementById("dAvatar").textContent = initials;
 
-      const allOrders = JSON.parse(localStorage.getItem('stark_erp_orders_v1') || '[]');
-      const recent = allOrders.filter(o => o.cust === c.name).slice(0, 3);
-
-      const panel = document.getElementById('insightPanel');
-      panel.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:24px; width:100%;">
-                    <div>
-                        <h3 style="margin:0; font-size:18px; font-weight:800; color:var(--text-main);">${c.name}</h3>
-                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${c.location} • ${c.type}</div>
-                    </div>
-                     <span style="font-size:11px; padding:4px 10px; border-radius:12px; font-weight:700; text-transform:uppercase; background:#f3f4f6;">${c.status}</span>
-                </div>
-                
-                <div style="display:grid; gap:16px; width:100%; text-align:left;">
-                    <div style="background:#f8fafc; padding:16px; border-radius:12px;">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                            <div>
-                                <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:4px;">Contact</div>
-                                <div style="font-size:13px; font-weight:600;">${c.email || 'No email'}</div>
-                                <div style="font-size:13px;">${c.phone || 'No phone'}</div>
-                            </div>
-                            <div>
-                                <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:4px;">Terms</div>
-                                <div style="font-size:13px; font-weight:600; color:#4f46e5;">${c.terms || 'Due on Receipt'}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                        <div style="background:#fff; border:1px solid #e2e8f0; padding:12px; border-radius:12px; text-align:center;">
-                             <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Lifetime Spend</div>
-                             <div style="font-size:16px; font-weight:800; color:#6366f1; margin-top:4px;">$${c.spent.toLocaleString()}</div>
-                        </div>
-                        <div style="background:#fff; border:1px solid #e2e8f0; padding:12px; border-radius:12px; text-align:center;">
-                             <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Avg Order</div>
-                             <div style="font-size:16px; font-weight:800; color:#10b981; margin-top:4px;">$${(c.spent / (c.ordersMo || 1)).toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Orders -->
-                    <div style="border-top:1px solid #e2e8f0; padding-top:16px;">
-                        <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Recent Orders</div>
-                        ${recent.length === 0 ? '<div style="font-size:12px; color:var(--text-muted); font-style:italic;">No orders yet.</div>' : ''}
-                        ${recent.map(o => `
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px;">
-                                <div style="color:var(--primary); font-weight:600; cursor:pointer;" onclick="window.location.href='order_detail.html?id=${o.id}'">#${o.id}</div>
-                                <div style="color:var(--text-muted);">${o.date}</div>
-                                <div style="font-weight:600;">$${o.total.toLocaleString()}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div style="margin-top:16px; border-top:1px solid #e2e8f0; padding-top:16px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--text-muted);">Account Access</div>
-                            ${c.auth && c.auth.isVerified ?
-          `<span class="badge badge-green" style="font-size:10px;">Active</span>` :
-          `<span class="badge badge-yellow" style="font-size:10px;">Invite Pending</span>`
+      // Monthly Line
+      const h = [];
+      if (stats && stats.months) {
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+          const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+          const has = stats.months.has(ym) ? "●" : "○";
+          h.push(has);
         }
-                        </div>
-                        
-                        ${!c.auth || !c.auth.isVerified ? `
-                            <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-bottom:8px; font-size:12px; height:32px;" onclick="resendInvite('${c.id}')">
-                                <i class="fa fa-envelope" style="margin-right:6px;"></i> Resend Invite
-                            </button>
-                        ` : `
-                             <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-bottom:8px; font-size:12px; height:32px; color:#ef4444; border-color:#fee2e2;" onclick="revokeAccess('${c.id}')">
-                                <i class="fa fa-ban" style="margin-right:6px;"></i> Revoke Access
-                            </button>
-                        `}
-                        
-                        <div style="background:#f8fafc; border-radius:8px; padding:12px; max-height:120px; overflow-y:auto; margin-top:8px;">
-                            <div style="font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Audit Log</div>
-                            ${(c.auth && c.auth.audit) ? c.auth.audit.map(log => `
-                                <div style="font-size:10px; margin-bottom:4px; color:#475569; display:flex; justify-content:space-between;">
-                                    <span>${log.action}</span>
-                                    <span style="color:#94a3b8;">${new Date(log.date).toLocaleDateString()}</span>
-                                </div>
-                            `).join('') : '<div style="font-size:10px; color:#94a3b8;">No activity logs.</div>'}
-                        </div>
-                    </div>
+      } else {
+        for (let i = 0; i < 6; i++) h.push("○");
+      }
+      document.getElementById("monthlyLine").textContent = h.join("  ");
 
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:12px;" onclick="window.location.href='customer_catalog.html?id=${c.id}'">
-                        <i class="fa fa-list-ul" style="margin-right:8px;"></i> Manage Catalog
-                    </button>
-                    <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="window.location.href='create_sales_order.html?cust=${encodeURIComponent(c.name)}'">
-                        <i class="fa fa-plus" style="margin-right:8px;"></i> Create New Order
-                    </button>
-                </div>
-            `;
+      // SKU
+      let topSku = "None"; let max = 0;
+      if (stats && stats.skus) {
+        for (const [k, v] of Object.entries(stats.skus)) {
+          if (v > max) { max = v; topSku = k; }
+        }
+      }
+      document.getElementById("skuLine").textContent = topSku + (max ? ` (${max} units)` : "");
     }
 
-    function resendInvite(id) {
-      const customers = getCustomers();
-      const idx = customers.findIndex(c => c.id === id);
-      if (idx === -1) return;
-
-      // Generate new token
-      const token = 'inv_' + Math.random().toString(36).substr(2, 9);
-      if (!customers[idx].auth) customers[idx].auth = { status: 'Invited' };
-
-      customers[idx].auth.token = token;
-      customers[idx].auth.expires = Date.now() + (24 * 60 * 60 * 1000);
-
-      if (!customers[idx].auth.audit) customers[idx].auth.audit = [];
-      customers[idx].auth.audit.unshift({ action: "Invite Resent", date: new Date().toISOString(), ip: "Admin" });
-
-      saveCustomers(customers);
-      showInsights(id);
-
-      // Popup Mailto
-      const inviteLink = `${window.location.origin}/shop_register.html?token=${token}`;
-      const mailBody = encodeURIComponent(`Here is your new invitation link:\n${inviteLink}\n\nValid for 24 hours.`);
-      window.location.href = `mailto:${customers[idx].email}?subject=Invitation Update&body=${mailBody}`;
-      toast("Success", "Invite resent via email.");
-    }
-
-    function revokeAccess(id) {
-      if (!confirm("Are you sure? This will lock the account.")) return;
-      const customers = getCustomers();
-      const idx = customers.findIndex(c => c.id === id);
-      if (idx === -1) return;
-
-      customers[idx].auth.isVerified = false;
-      customers[idx].auth.status = "Locked";
-      customers[idx].auth.passwordHash = null;
-
-      if (!customers[idx].auth.audit) customers[idx].auth.audit = [];
-      customers[idx].auth.audit.unshift({ action: "Access Revoked", date: new Date().toISOString(), ip: "Admin" });
-
-      saveCustomers(customers);
-      showInsights(id);
-      toast("Verified", "Access revoked.");
-    }
-
-    /* Modal Logic */
-    function openCustomerModal() {
-      document.getElementById("customerModal").classList.add("open");
-    }
-    function closeCustomerModal() {
-      document.getElementById("customerModal").classList.remove("open");
-    }
-    function addCustomer() {
-      const name = document.getElementById("cName").value;
-      if (!name) return toast("Error", "Name required", "error");
-
-      const newC = {
-        id: 'C-' + Math.floor(Math.random() * 90000 + 10000),
-        name: name,
-        type: document.getElementById("cType").value || 'Prospect',
-        location: document.getElementById("cLocation").value || 'Unknown',
-        email: document.getElementById("cEmail").value || '',
-        phone: document.getElementById("cPhone").value || '',
-        status: 'Quiet',
-        ordersMo: 0,
-        spent: 0,
-        terms: 'Due on Receipt'
-      };
-      const all = getCustomers();
-      all.push(newC);
-      saveCustomers(all);
-      closeCustomerModal();
-      renderCRM();
-      toast("Success", "Customer added!", "success");
+    /* Demo Data Loading */
+    function seedCustomers() {
+      const demo = [
+        { id: "C1", name: "Asha Retail", location: "Austin, TX", type: "Retailer", contact: "Sarah L", email: "sarah@asharetail.com", phone: "(512) 555-0101" },
+        { id: "C2", name: "Blue Harbor", location: "Miami, FL", type: "Wholesale", contact: "Jim B", email: "jim@blueharbor.com", phone: "(305) 555-0123" },
+        { id: "C3", name: "Citrine Luxe", location: "New York, NY", type: "Boutique", contact: "Elena R", email: "elena@citrine.com", phone: "(212) 555-0199" },
+        { id: "C4", name: "Desert Pearl", location: "Phoenix, AZ", type: "Retailer", contact: "Marc D", email: "marc@desertp.com", phone: "(602) 555-0144" },
+        { id: "C5", name: "Emerald Lane", location: "Seattle, WA", type: "Boutique", contact: "Lisa T", email: "lisa@emerald.com", phone: "(206) 555-0188" }
+      ];
+      save(KEY_CUST, demo);
+      toast("Data Loaded", "Demo Customers loaded.");
+      render();
     }
 
     // Init
-    document.addEventListener('DOMContentLoaded', () => {
-      renderCRM();
-    });
+    if (load(KEY_CUST, []).length === 0) seedCustomers();
+    render();
 
   </script>
 </body>
-
 </html>
