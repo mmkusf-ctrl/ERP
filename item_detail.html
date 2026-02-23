@@ -108,11 +108,38 @@
                         Total Sold (Lifetime)</div>
                     <div style="font-size:28px; font-weight:700; color:#1e293b;" id="dSold">0</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Physical Attributes -->
+        <div class="card-soft" style="margin-bottom:32px; padding:32px;">
+            <h3
+                style="font-size:16px; margin:0 0 24px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                Physical Attributes</h3>
+            <div class="grid grid-4" style="gap:32px;">
                 <div>
                     <div
                         style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
-                        Active POs</div>
-                    <div style="font-size:28px; font-weight:700; color:#6366f1;" id="dPos">0</div>
+                        Color</div>
+                    <div style="font-size:16px; font-weight:600; color:#1e293b;" id="dColor">—</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                        Material</div>
+                    <div style="font-size:16px; font-weight:600; color:#1e293b;" id="dMaterial">—</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                        Origin</div>
+                    <div style="font-size:16px; font-weight:600; color:#1e293b;" id="dOrigin">—</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                        Vendor</div>
+                    <div style="font-size:16px; font-weight:600; color:#1e293b;" id="dVendor">—</div>
                 </div>
             </div>
         </div>
@@ -248,6 +275,12 @@
             // Stats
             document.getElementById("dStock").textContent = item.on || 0;
             document.getElementById("dHold").textContent = item.hold || 0;
+
+            // Physical
+            document.getElementById("dColor").textContent = item.color || "—";
+            document.getElementById("dMaterial").textContent = item.material || "—";
+            document.getElementById("dOrigin").textContent = item.origin || "—";
+            document.getElementById("dVendor").textContent = item.vendor || "—";
 
             // Mock Stats
             document.getElementById("dSold").textContent = Math.floor(Math.random() * 500) + 20; // Simulated
