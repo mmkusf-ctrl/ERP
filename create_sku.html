@@ -9,58 +9,54 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=6">
-    <style>
-        .form-section {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .calc-field {
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-            cursor: not-allowed;
-        }
-
-        .input-group-text {
-            font-size: 13px;
-            color: #64748b;
-            font-weight: 500;
-            margin-bottom: 4px;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 
 <body>
 
-    <!-- Header / Topbar --><main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px; margin: 0 auto;">
-
-        <!-- Page Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-            <div>
-                <button onclick="window.history.back()"
-                    style="background:transparent; border:none; color:#64748b; font-weight:600; cursor:pointer; margin-bottom:8px;">←
-                    Back to Items</button>
-                <h1 class="page-title" style="margin:0;">Create New SKU</h1>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="logo">
+                <img src="images/stark-logo.png" alt="Stark Premium">
+                <span class="logo-text">Stark ERP</span>
+            </a>
+            <nav class="nav">
+                <a class="nav-link" href="dashboard.html">Overview</a>
+                <a class="nav-link active" href="master.html">Items</a>
+                <a class="nav-link" href="inventory.html">Inventory</a>
+            </nav>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="badge badge-green">Online</div>
             </div>
-            <div style="display:flex; gap:12px;">
-                <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveSku()"
-                    style="background:#6366f1; border:none; box-shadow:0 4px 12px rgba(99, 102, 241, 0.3);">Save
-                    Product</button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:16px;">Navigation</strong>
+                <button onclick="closeMobileNav()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <a class="mobile-link" href="dashboard.html">Overview</a>
+            <a class="mobile-link active" href="master.html">Item Master</a>
+            <a class="mobile-link" href="inventory.html">Inventory</a>
+        </div>
+    </div>
+
+    <main class="container soft-ui-wrapper" style="padding-top:40px; max-width:1100px; margin: 0 auto;">
+
+        <!-- Back Link & Header -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
+            <a href="master.html" class="text-secondary"
+                style="font-size:13px; font-weight:600; text-decoration:none;">&larr; Back to Item Master</a>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <h1 class="page-title" style="margin:0;">Create New SKU</h1>
+                <div style="display:flex; gap:12px;">
+                    <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveSku()">Save Product</button>
+                </div>
             </div>
         </div>
 
@@ -69,100 +65,105 @@
             <!-- Main Form -->
             <div class="card-soft" style="padding:32px;">
 
-                <!-- Basic Info -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <span>Basic Information</span>
+                <h3
+                    style="font-size:16px; margin:0 0 24px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    Basic Information</h3>
+
+                <div class="grid-2" style="gap:24px; margin-bottom:24px;">
+                    <div>
+                        <label class="form-label">SKU (Auto-Generated)</label>
+                        <input id="iSku" class="input" placeholder="Generating..."
+                            style="font-weight:700; font-family:monospace; background:#f8fafc; color:#64748b;"
+                            onblur="checkSku()">
                     </div>
-                    <div class="grid-2" style="gap:24px;">
-                        <div>
-                            <label class="input-group-text">SKU (Auto-Generated)</label>
-                            <input id="iSku" class="input" placeholder="Generating..."
-                                style="font-weight:700; font-family:monospace; background:#f8fafc;" onblur="checkSku()">
-                        </div>
-                        <div>
-                            <label class="input-group-text">Model Number</label>
-                            <input id="iModel" class="input" placeholder="e.g. MOD-2024">
-                        </div>
-                    </div>
-                    <div style="margin-top:24px;">
-                        <label class="input-group-text">Product Title</label>
-                        <input id="iName" class="input" placeholder="e.g. Premium Cotton Shirt">
-                    </div>
-                    <div style="margin-top:24px;">
-                        <label class="input-group-text">Description</label>
-                        <textarea id="iDesc" class="input" rows="4"
-                            placeholder="Detailed product description..."></textarea>
+                    <div>
+                        <label class="form-label">Model Number</label>
+                        <input id="iModel" class="input" placeholder="e.g. MOD-2024">
                     </div>
                 </div>
 
-                <!-- Classification -->
-                <div class="form-section">
-                    <div class="section-title">Classification</div>
-                    <div class="grid-3" style="gap:24px;">
-                        <div>
-                            <label class="input-group-text">Brand</label>
-                            <select id="iBrand" class="input">
-                                <option>Stark Mfg</option>
-                                <option>LuxeGold</option>
-                                <option>Urban Wear</option>
-                                <option>TechNova</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="input-group-text">Category</label>
-                            <input id="iCat" class="input" placeholder="e.g. Apparel">
-                        </div>
-                        <div>
-                            <label class="input-group-text">Status</label>
-                            <select id="iStatus" class="input">
-                                <option value="Live">Live</option>
-                                <option value="Fashion">Fashion</option>
-                                <option value="Internal Use">Internal Use</option>
-                                <option value="Discontinued">Discontinued</option>
-                            </select>
-                        </div>
+                <div style="margin-bottom:24px;">
+                    <label class="form-label">Product Title</label>
+                    <input id="iName" class="input" placeholder="e.g. Premium Cotton Shirt">
+                </div>
+
+                <div style="margin-bottom:32px;">
+                    <label class="form-label">Description</label>
+                    <textarea id="iDesc" class="input" rows="4"
+                        placeholder="Detailed product description..."></textarea>
+                </div>
+
+                <h3
+                    style="font-size:16px; margin:0 0 24px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    Classification</h3>
+
+                <div class="grid-3" style="gap:24px; margin-bottom:32px;">
+                    <div>
+                        <label class="form-label">Brand</label>
+                        <select id="iBrand" class="input">
+                            <option>Stark Mfg</option>
+                            <option>LuxeGold</option>
+                            <option>Urban Wear</option>
+                            <option>TechNova</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Category</label>
+                        <input id="iCat" class="input" placeholder="e.g. Apparel">
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select id="iStatus" class="input">
+                            <option value="Live">Live</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Internal Use">Internal Use</option>
+                            <option value="Discontinued">Discontinued</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Attributes -->
-                <div class="form-section">
-                    <div class="section-title">Physical Attributes</div>
-                    <div class="grid-3" style="gap:24px;">
-                        <div>
-                            <label class="input-group-text">Vendor</label>
-                            <input id="iVendor" class="input" placeholder="Manufacturer Name">
-                        </div>
-                        <div>
-                            <label class="input-group-text">Color</label>
-                            <input id="iColor" class="input" placeholder="e.g. Midnight Blue">
-                        </div>
-                        <div>
-                            <label class="input-group-text">Material</label>
-                            <input id="iMaterial" class="input" placeholder="e.g. 100% Cotton">
-                        </div>
+                <h3
+                    style="font-size:16px; margin:0 0 24px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    Physical Attributes</h3>
+
+                <div class="grid-4" style="gap:24px; margin-bottom:24px;">
+                    <div>
+                        <label class="form-label">Vendor</label>
+                        <input id="iVendor" class="input" placeholder="Manufacturer Name">
                     </div>
-                    <div style="margin-top:24px;">
-                        <label class="input-group-text">Measurements</label>
-                        <input id="iMeasure" class="input" placeholder="e.g. 10x10x5 cm">
+                    <div>
+                        <label class="form-label">Color</label>
+                        <input id="iColor" class="input" placeholder="e.g. Midnight Blue">
+                    </div>
+                    <div>
+                        <label class="form-label">Material</label>
+                        <input id="iMaterial" class="input" placeholder="e.g. 100% Cotton">
+                    </div>
+                    <div>
+                        <label class="form-label">Origin</label>
+                        <input id="iOrigin" class="input" placeholder="e.g. USA">
                     </div>
                 </div>
 
-                <!-- Image Upload -->
-                <div class="form-section" style="margin-bottom:0;">
-                    <div class="section-title">Media</div>
-                    <div style="display:flex; gap:24px; align-items:start;">
-                        <div id="imgPreview"
-                            style="width:140px; height:140px; border-radius:12px; background:#f8fafc; border:2px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:32px; overflow:hidden;">
-                            📷
-                        </div>
-                        <div style="flex:1;">
-                            <label class="input-group-text">Primary Image URL</label>
-                            <input id="iImg" class="input" placeholder="https://..."
-                                oninput="updatePreview(this.value)">
-                            <div style="margin-top:12px; font-size:12px; color:#64748b;">
-                                Paste a direct image link. Supported formats: JPG, PNG, WEBP.
-                            </div>
+                <div style="margin-bottom:32px;">
+                    <label class="form-label">Measurements</label>
+                    <input id="iMeasure" class="input" placeholder="e.g. 10x10x5 cm">
+                </div>
+
+                <h3
+                    style="font-size:16px; margin:0 0 24px; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+                    Media</h3>
+
+                <div style="display:flex; gap:24px; align-items:start;">
+                    <div id="imgPreview"
+                        style="width:120px; height:120px; border-radius:12px; background:#f8fafc; border:2px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:32px; overflow:hidden; flex-shrink:0;">
+                        📷
+                    </div>
+                    <div style="flex:1;">
+                        <label class="form-label">Primary Image URL</label>
+                        <input id="iImg" class="input" placeholder="https://..." oninput="updatePreview(this.value)">
+                        <div style="margin-top:8px; font-size:12px; color:#64748b;">
+                            Paste a direct image link. Supported formats: JPG, PNG, WEBP.
                         </div>
                     </div>
                 </div>
@@ -172,44 +173,40 @@
             <!-- Side Panel: Pricing -->
             <div style="display:grid; gap:24px; align-content:start;">
 
-                <div class="card-soft"
-                    style="padding:24px; border:1px solid #e2e8f0; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05); position:sticky; top:24px;">
-                    <div class="section-title" style="color:#0f172a; border-bottom:none;">Pricing & Financials</div>
+                <div class="card-soft" style="padding:24px; position:sticky; top:24px;">
+                    <h3 style="font-size:16px; margin:0 0 24px; color:#1e293b;">Pricing & Financials</h3>
 
+                    <!-- Margin Card -->
                     <div
-                        style="background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding:20px; border-radius:16px; margin-bottom:24px; border:1px solid #e2e8f0;">
+                        style="background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding:20px; border-radius:12px; margin-bottom:24px; border:1px solid #e2e8f0;">
                         <div
                             style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                             <span
                                 style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;">Gross
                                 Margin</span>
-                            <span id="pMargin" style="font-weight:800; font-size:16px; color:#6366f1;">0.0%</span>
+                            <span id="pMargin" style="font-weight:800; font-size:18px; color:#6366f1;">0.0%</span>
                         </div>
                         <div
-                            style="height:8px; background:white; border-radius:4px; overflow:hidden; border:1px solid #e2e8f0;">
+                            style="height:6px; background:white; border-radius:3px; overflow:hidden; border:1px solid #e2e8f0;">
                             <div id="marginBar"
-                                style="width:0%; height:100%; background:#6366f1; transition:width 0.3s;"></div>
+                                style="width:0%; height:100%; background:#6366f1; transition:width 0.3s ease;"></div>
                         </div>
                     </div>
 
                     <div style="display:grid; gap:16px;">
                         <div>
-                            <label class="input-group-text">MSRP ($)</label>
-                            <input id="pMsrp" type="number" step="0.01" class="input" placeholder="0.00">
-                        </div>
-                        <div>
-                            <label class="input-group-text">Retail Price ($)</label>
-                            <input id="pRetail" type="number" step="0.01" class="input"
-                                style="font-size:16px; font-weight:600;" oninput="calc()">
+                            <label class="form-label">Retail Price ($)</label>
+                            <input id="pRetail" type="number" step="0.01" class="input" style="font-weight:600;"
+                                oninput="calc()">
                         </div>
 
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div class="grid-2" style="gap:12px;">
                             <div>
-                                <label class="input-group-text">Discount (%)</label>
+                                <label class="form-label">Discount (%)</label>
                                 <input id="pDisc" type="number" step="1" class="input" placeholder="0" oninput="calc()">
                             </div>
                             <div>
-                                <label class="input-group-text">Net Price</label>
+                                <label class="form-label">Net Price</label>
                                 <div id="pNet"
                                     style="height:42px; background:#f8fafc; border-radius:8px; display:flex; align-items:center; padding:0 12px; font-weight:700; color:#334155; border:1px solid #e2e8f0;">
                                     $0.00</div>
@@ -217,7 +214,7 @@
                         </div>
 
                         <div>
-                            <label class="input-group-text" style="color:#ef4444;">Unit Cost ($)</label>
+                            <label class="form-label">Unit Cost ($)</label>
                             <input id="pCost" type="number" step="0.01" class="input" placeholder="0.00"
                                 oninput="calc()">
                         </div>
@@ -241,11 +238,17 @@
 
     <script src="erp.js"></script>
     <script>
+        const AUTH_KEY = "stark_erp_auth_v1";
         const ITEM_KEY = "stark_erp_items_v2";
+
+        (function () { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); if (!a || !a.user) window.location.href = "index.html"; } catch { window.location.href = "index.html"; } })();
+
         function loadItems() { try { return JSON.parse(localStorage.getItem(ITEM_KEY) || "[]"); } catch { return []; } }
         function saveItems(list) { localStorage.setItem(ITEM_KEY, JSON.stringify(list)); }
 
-        // Auto Calc Financials
+        function openMobileNav() { document.getElementById("mobileNav").classList.add("open"); }
+        function closeMobileNav() { document.getElementById("mobileNav").classList.remove("open"); }
+
         function calc() {
             const retail = parseFloat(document.getElementById("pRetail").value) || 0;
             const disc = parseFloat(document.getElementById("pDisc").value) || 0;
@@ -262,15 +265,16 @@
             const profit = net - cost;
 
             document.getElementById("pMargin").textContent = margin.toFixed(1) + "%";
-            document.getElementById("pMargin").style.color = margin < 20 ? "#ef4444" : "#6366f1";
+            const mCol = margin < 20 ? "#ef4444" : "#6366f1";
+            document.getElementById("pMargin").style.color = mCol;
             document.getElementById("marginBar").style.width = Math.max(0, Math.min(100, margin)) + "%";
-            document.getElementById("marginBar").style.background = margin < 20 ? "#ef4444" : "#6366f1";
+            document.getElementById("marginBar").style.background = mCol;
+
 
             document.getElementById("pProfit").textContent = window.formatMoney(profit);
             document.getElementById("pProfit").style.color = profit < 0 ? "#ef4444" : "#166534";
         }
 
-        // Generate SKU ID on load
         (function init() {
             document.getElementById("iSku").value = "SKU-" + Math.floor(1000 + Math.random() * 9000);
         })();
@@ -287,11 +291,11 @@
         function saveSku() {
             const sku = document.getElementById("iSku").value.trim();
             const name = document.getElementById("iName").value.trim();
-            if (!sku) return toast("Error", "SKU is required");
-            if (!name) return toast("Error", "Product Title is required");
+            if (!sku) return toast("Validation Error", "SKU is required", "error");
+            if (!name) return toast("Validation Error", "Product Title is required", "error");
 
             const list = loadItems();
-            if (list.find(x => x.sku === sku)) return toast("Error", "SKU already exists!");
+            if (list.find(x => x.sku === sku)) return toast("Duplicate SKU", "This SKU already exists!", "error");
 
             const retail = parseFloat(document.getElementById("pRetail").value) || 0;
             const disc = parseFloat(document.getElementById("pDisc").value) || 0;
@@ -307,33 +311,27 @@
                 cat: document.getElementById("iCat").value,
                 status: document.getElementById("iStatus").value,
                 vendor: document.getElementById("iVendor").value,
+                origin: document.getElementById("iOrigin").value,
                 color: document.getElementById("iColor").value,
                 material: document.getElementById("iMaterial").value,
                 measure: document.getElementById("iMeasure").value,
                 image: document.getElementById("iImg").value,
-                msrp: parseFloat(document.getElementById("pMsrp").value) || 0,
-
-                // Pricing
-                retail, disc, net, cost, // Unit Price stored as cost
-
-                // Defaults
-                on: 0,
-                hold: 0,
+                retail, disc, net, cost,
+                on: 0, hold: 0,
                 createdAt: Date.now()
             };
 
             list.unshift(newItem);
             saveItems(list);
 
-            // Redirect back to Master
-            toast("Success", "Product Created!");
+            toast("Success", "Product Created Successfully!", "success");
             setTimeout(() => {
                 window.location.href = "master.html";
             }, 800);
         }
 
         function checkSku() {
-            // Optional: check if exists
+            // Placeholder: Check if exists
         }
     </script>
 </body>
